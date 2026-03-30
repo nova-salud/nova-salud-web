@@ -27,7 +27,7 @@ const AppSidebar = () => {
       >
         <div className="border-b border-slate-200 px-5 py-5">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 text-sm font-semibold text-white shadow-sm">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-linear-to-br from-sky-500 to-blue-600 text-sm font-semibold text-white shadow-sm">
               T
             </div>
 
@@ -73,7 +73,7 @@ const AppSidebar = () => {
             </div>
 
             <div className="min-w-0">
-              <p className="truncate text-sm font-medium text-slate-900">
+              <p className="truncate text-base font-medium text-slate-900">
                 {user?.username ?? 'Usuario'}
               </p>
               <p className="text-xs text-slate-400">
