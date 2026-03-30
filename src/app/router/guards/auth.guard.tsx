@@ -1,0 +1,15 @@
+import { Navigate, Outlet, useLocation } from 'react-router'
+import { useAuth } from '@/shared/hooks/useAuth'
+
+const AuthGuard = () => {
+  const location = useLocation()
+  const { isAuthenticated } = useAuth()
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace state={{ from: location }} />
+  }
+
+  return <Outlet />
+}
+
+export default AuthGuard

@@ -1,75 +1,288 @@
-# React + TypeScript + Vite
+# 🧩 Nova Peru SST - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend del sistema **Nova Peru SST**, enfocado en la gestión de salud ocupacional, con módulos como:
 
-Currently, two official plugins are available:
+* Atención médica
+* Historia clínica
+* Seguridad
+* Farmacia / Inventario
+* Reportería
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Este proyecto está desarrollado con:
 
-## React Compiler
+* ⚛️ React + TypeScript
+* 🎨 TailwindCSS
+* 🌐 React Router
+* 🔗 Axios
+* 🧠 Zustand (manejo de estado)
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+---
 
-Note: This will impact Vite dev & build performances.
+# 🏗️ Arquitectura
 
-## Expanding the ESLint configuration
+El proyecto sigue una arquitectura **feature-first** con separación clara de responsabilidades:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```text
+app/       → configuración global (router, layouts, guards)
+core/      → infraestructura base (api, auth, enums, utils)
+shared/    → componentes y lógica reutilizable
+features/  → módulos del sistema (auth, inventory, etc.)
+config/    → configuración general (env, api)
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+# 📁 Estructura del Proyecto
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```text
+src/
+  app/
+    layouts/
+    providers/
+    router/
+
+  core/
+    api/
+    auth/
+    constants/
+    enums/
+    types/
+    utils/
+
+  shared/
+    components/
+    hooks/
+    store/
+    styles/
+
+  features/
+    auth/
 ```
+
+---
+
+# 🔐 Autenticación
+
+Se maneja mediante:
+
+* Zustand (`auth.store.ts`)
+* Persistencia en `localStorage`
+* Token leído automáticamente por Axios
+
+### Flujo
+
+1. Login → obtiene token
+2. Token se guarda en store + storage
+3. Axios lo inyecta en cada request
+4. Guards validan acceso a rutas
+
+---
+
+# 🌐 API
+
+## Axios Instance
+
+Ubicación:
+
+```text
+core/api/axios.instance.ts
+```
+
+Responsabilidades:
+
+* Base URL
+* Interceptors
+* Inyección de token
+* Manejo de errores globales
+
+---
+
+## ApiService
+
+Ubicación:
+
+```text
+core/api/api.service.ts
+```
+
+Clase base para servicios:
+
+* GET
+* POST
+* PATCH
+* DELETE
+
+Los servicios por feature heredan de esta clase.
+
+---
+
+# 🧭 Routing
+
+Se utiliza:
+
+```text
+createBrowserRouter + RouteObject[]
+```
+
+Ubicación:
+
+```text
+app/router/
+```
+
+---
+
+## Características
+
+* Layouts anidados
+* Guards de autenticación
+* Validación por roles
+* Configuración centralizada
+
+---
+
+# 🛡️ Guards
+
+## AuthGuard
+
+* Verifica si el usuario está autenticado
+
+## RoleGuard
+
+* Verifica si el usuario tiene permisos
+
+---
+
+# 🎭 Roles
+
+Definidos en:
+
+```text
+core/enums/role.enum.ts
+```
+
+Usados en:
+
+* rutas
+* guards
+* lógica de autorización
+
+---
+
+# 🧩 Shared
+
+Contiene:
+
+## Componentes
+
+```text
+shared/components/
+```
+
+* navegación
+* feedback
+* layout UI
+
+## Hooks
+
+```text
+shared/hooks/
+```
+
+## Store
+
+```text
+shared/store/
+```
+
+* auth
+* UI global
+
+---
+
+# 🧪 Features
+
+Cada módulo se organiza así:
+
+```text
+feature/
+  pages/
+  services/
+  types/
+  hooks/
+```
+
+Ejemplo:
+
+```text
+features/auth/
+```
+
+---
+
+# 🎨 Estilos
+
+* TailwindCSS
+* Archivo base:
+
+```text
+shared/styles/index.css
+```
+
+---
+
+# 📌 Convenciones de Código
+
+## Naming
+
+| Tipo           | Convención |
+| -------------- | ---------- |
+| Componentes    | PascalCase |
+| Páginas        | PascalCase |
+| Hooks          | camelCase  |
+| Servicios      | kebab-case |
+| Config / utils | kebab-case (archivo) / PascalCase (clase) |
+| Tipos / DTOs   | kebab-case |
+| Carpetas       | kebab-case |
+
+---
+
+# 🚀 Principios del Proyecto
+
+* Separación por features
+* Escalabilidad alineada con backend
+* Bajo acoplamiento
+* Reutilización controlada
+* Código legible y mantenible
+
+---
+
+# 📈 Estado actual
+
+Actualmente incluye:
+
+* Autenticación (login)
+* Configuración base
+* Arquitectura lista para crecimiento
+* Integración preparada con backend de inventario
+
+---
+
+# 🔜 Próximos módulos
+
+* Inventory (Farmacia)
+* Atención médica
+* Reportería
+* Seguridad
+
+---
+
+# 🧠 Notas finales
+
+Este frontend está diseñado para crecer al mismo nivel que el backend, manteniendo:
+
+* claridad estructural
+* consistencia
+* facilidad de mantenimiento
+
+---
