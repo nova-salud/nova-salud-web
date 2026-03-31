@@ -5,6 +5,8 @@ import DashboardPage from '@/features/dashboard/pages/DashboardPage'
 import MedicationsPage from '@/features/inventory/medications/pages/MedicationsPage'
 import DeliveriesPage from '@/features/inventory/deliveries/pages/DeliveriesPage'
 import DeliveryDetailPage from '@/features/inventory/deliveries/pages/DeliveryDetailPage'
+import MovementsPage from '@/features/inventory/movements/pages/MovementsPage'
+import MedicationDetailPage from '@/features/inventory/medications/pages/MedicationDetailPage'
 
 export const appRoutes: RouteObject = {
   element: <AuthGuard />,
@@ -21,12 +23,20 @@ export const appRoutes: RouteObject = {
           element: <MedicationsPage />,
         },
         {
+          path: '/medications/:id',
+          element: <MedicationDetailPage />,
+        },
+        {
           path: '/deliveries',
           element: <DeliveriesPage />,
         },
         {
           path: '/deliveries/:id',
           element: <DeliveryDetailPage />,
+        },
+        {
+          path: '/movements',
+          element: <MovementsPage />,
         }
       ],
     },

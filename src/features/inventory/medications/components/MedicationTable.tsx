@@ -1,6 +1,6 @@
+import { useNavigate } from 'react-router'
 import DataTable from '@/shared/components/ui/table/DataTable'
 import type { InventoryStockResponseDto } from '@/features/inventory/stocks/types/inventory-stock-response.dto'
-import { cn } from '@/shared/utils'
 
 type Props = {
   items: InventoryStockResponseDto[]
@@ -8,6 +8,8 @@ type Props = {
 }
 
 const MedicationTable = ({ items, isLoading = false }: Props) => {
+  const navigate = useNavigate()
+
   return (
     <DataTable
       data={items}
@@ -20,6 +22,7 @@ const MedicationTable = ({ items, isLoading = false }: Props) => {
         'Stock',
         'OTC',
         'Estado',
+        'Acciones',
       ]}
       renderRow={(item) => (
         <tr
@@ -53,12 +56,12 @@ const MedicationTable = ({ items, isLoading = false }: Props) => {
 
           <td className="px-6 py-5">
             <span
-              className={cn([
+              className={[
                 'inline-flex rounded-xl px-3 py-1 text-xs font-medium',
                 item.isOtc
                   ? 'border border-emerald-100 bg-emerald-50 text-emerald-700'
                   : 'border border-slate-200 bg-slate-50 text-slate-500',
-              ])}
+              ].join(' ')}
             >
               {item.isOtc ? 'Sí' : 'No'}
             </span>
@@ -66,15 +69,25 @@ const MedicationTable = ({ items, isLoading = false }: Props) => {
 
           <td className="px-6 py-5">
             <span
-              className={cn([
+              className={[
                 'inline-flex rounded-xl px-3 py-1 text-xs font-medium',
                 item.isActive
                   ? 'border border-emerald-100 bg-emerald-50 text-emerald-700'
                   : 'border border-slate-200 bg-slate-50 text-slate-500',
-              ])}
+              ].join(' ')}
             >
               {item.isActive ? 'Activo' : 'Inactivo'}
             </span>
+          </td>
+
+          <td className="px-6 py-5">
+            <button
+              type="button"
+              onClick={() => navigate(`/medications/${item.medicationId}`)}
+              className="rounded-xl border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"
+            >
+              Ver detalle
+            </button>
           </td>
         </tr>
       )}
