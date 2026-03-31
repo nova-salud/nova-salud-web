@@ -1,4 +1,4 @@
-import { navigationConfig } from './navigation.config'
+import { navigationConfig } from '@/app/router/navigation.config'
 import NavItem from './NavItem'
 import { useSidebar } from '@/shared/hooks/useSidebar'
 import { useAuth } from '@/shared/hooks/useAuth'
@@ -53,6 +53,7 @@ const AppSidebar = () => {
                 <div className="space-y-1">
                   {section.items.map((item) => (
                     <NavItem
+                      icon={item.icon}
                       key={item.path}
                       label={item.label}
                       path={item.path}

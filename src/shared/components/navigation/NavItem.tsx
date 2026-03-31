@@ -1,13 +1,15 @@
 import { NavLink } from 'react-router'
+import type { LucideIcon } from 'lucide-react'
 
 type Props = {
   label: string
   path: string
+  icon?: LucideIcon
   badge?: number
   onClick?: () => void
 }
 
-const NavItem = ({ label, path, badge, onClick }: Props) => {
+const NavItem = ({ label, path, icon: Icon, badge, onClick }: Props) => {
   return (
     <NavLink
       to={path}
@@ -21,7 +23,10 @@ const NavItem = ({ label, path, badge, onClick }: Props) => {
         ].join(' ')
       }
     >
-      <span>{label}</span>
+      <div className="flex items-center gap-3">
+        {Icon &&<Icon size={18} className="shrink-0" />}
+        <span>{label}</span>
+      </div>
 
       {badge ? (
         <span className="min-w-5 rounded-full bg-red-100 px-1.5 py-0.5 text-center text-[10px] font-semibold text-red-500">
