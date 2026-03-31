@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router'
 import DataTable from '@/shared/components/ui/table/DataTable'
 import type { InventoryDeliveryResponseDto } from '../types/inventory-delivery-response.dto'
 
@@ -22,6 +23,8 @@ const getStatusClasses = (status: string): string => {
 }
 
 const DeliveryTable = ({ items, isLoading = false }: Props) => {
+  const navigate = useNavigate()
+
   return (
     <DataTable
       data={items}
@@ -71,6 +74,7 @@ const DeliveryTable = ({ items, isLoading = false }: Props) => {
           <td className="px-6 py-5">
             <button
               type="button"
+              onClick={() => navigate(`/deliveries/${item.id}`)}
               className="rounded-xl border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"
             >
               Ver detalle

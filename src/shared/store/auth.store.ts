@@ -6,6 +6,7 @@ type AuthState = {
   session: UserSession | null
   token: string | null
   isAuthenticated: boolean
+  isHydrated: boolean
   hydrateSession: () => void
   setSession: (session: UserSession) => void
   clearSession: () => void
@@ -15,6 +16,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   session: null,
   token: null,
   isAuthenticated: false,
+  isHydrated: false,
 
   hydrateSession: () => {
     const session = authSession.get()
@@ -23,6 +25,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       session,
       token: session?.token ?? null,
       isAuthenticated: !!session?.token,
+      isHydrated: true,
     })
   },
 
@@ -33,6 +36,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       session,
       token: session.token,
       isAuthenticated: true,
+      isHydrated: true,
     })
   },
 
@@ -43,6 +47,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       session: null,
       token: null,
       isAuthenticated: false,
+      isHydrated: true,
     })
   },
 }))

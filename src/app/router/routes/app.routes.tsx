@@ -4,6 +4,7 @@ import PrivateLayout from '@/app/layouts/PrivateLayout'
 import DashboardPage from '@/features/dashboard/pages/DashboardPage'
 import MedicationsPage from '@/features/inventory/medications/pages/MedicationsPage'
 import DeliveriesPage from '@/features/inventory/deliveries/pages/DeliveriesPage'
+import DeliveryDetailPage from '@/features/inventory/deliveries/pages/DeliveryDetailPage'
 
 export const appRoutes: RouteObject = {
   element: <AuthGuard />,
@@ -22,6 +23,10 @@ export const appRoutes: RouteObject = {
         {
           path: '/deliveries',
           element: <DeliveriesPage />,
+        },
+        {
+          path: '/deliveries/:id',
+          element: <DeliveryDetailPage />,
         }
       ],
     },
