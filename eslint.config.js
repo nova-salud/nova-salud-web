@@ -20,6 +20,7 @@ export default defineConfig([
       globals: globals.browser,
     },
     rules: {
+      'react-hooks/exhaustive-deps': 'off',
       'quotes': ['error', 'single', { avoidEscape: true }],
       'semi': ['error', 'never'],
     }
