@@ -5,7 +5,7 @@ export type NavigationItem = {
   label: string
   path: string
   badge?: number
-  icon?: LucideIcon
+  icon: LucideIcon
   roles?: RoleEnum[]
 }
 
