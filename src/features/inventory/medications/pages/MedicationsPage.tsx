@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import PageContainer from '@/shared/components/ui/PageContainer'
 import MedicationTable from '../components/MedicationTable'
 import { useStocks } from '@/features/inventory/stocks/hooks/useStocks'
+import { NavLink } from 'react-router'
 
 const MedicationsPage = () => {
   const [search, setSearch] = useState('')
@@ -23,12 +24,14 @@ const MedicationsPage = () => {
       title="Medicamentos"
       description="Stock consolidado por medicamento"
       action={
-        <button
-          type="button"
-          className="rounded-2xl bg-[#0B1739] px-4 py-2 text-sm font-medium text-white"
-        >
-          Nuevo medicamento
-        </button>
+        <NavLink to="/medications/new">
+          <button
+            type="button"
+            className="rounded-2xl bg-[#0B1739] px-4 py-2 text-sm font-medium text-white cursor-pointer transition hover:bg-[#0A152E]"
+          >
+            Nuevo medicamento
+          </button>
+        </NavLink>
       }
     >
       <div className="space-y-5">

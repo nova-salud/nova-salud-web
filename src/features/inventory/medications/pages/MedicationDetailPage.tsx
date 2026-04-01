@@ -6,6 +6,7 @@ import { useMedicationLots } from '@/features/inventory/lots/hooks/useMedication
 import { useMedicationMovements } from '@/features/inventory/movements/hooks/useMedicationMovements'
 import MedicationLotsTable from '@/features/inventory/lots/components/MedicationLotsTable'
 import MedicationMovementsTable from '@/features/inventory/movements/components/MedicationMovementsTable'
+import { cn } from '@/shared/utils'
 
 const MedicationDetailPage = () => {
   const navigate = useNavigate()
@@ -32,7 +33,7 @@ const MedicationDetailPage = () => {
   if (Number.isNaN(medicationId)) {
     return (
       <PageContainer title="Detalle de medicamento" description="Identificador inválido.">
-        <div className="rounded-[24px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+        <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
           El identificador del medicamento no es válido.
         </div>
       </PageContainer>
@@ -45,21 +46,21 @@ const MedicationDetailPage = () => {
       description="Vista maestra y operativa del medicamento"
     >
       <div className="space-y-5">
-        {error ? (
-          <div className="rounded-[24px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+        {error && (
+          <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
             {error}
           </div>
-        ) : null}
+        )}
 
-        {isLoading ? (
-          <div className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm">
+        {isLoading && (
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <p className="text-sm text-slate-500">Cargando detalle del medicamento...</p>
           </div>
-        ) : null}
+        )}
 
-        {medication ? (
+        {medication && (
           <>
-            <div className="flex flex-col gap-4 rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm md:flex-row md:items-center md:justify-between">
+            <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:flex-row md:items-center md:justify-between">
               <div>
                 <h1 className="text-xl font-semibold text-slate-900">
                   {medication.commercialName}
@@ -75,34 +76,34 @@ const MedicationDetailPage = () => {
                   </span>
 
                   <span
-                    className={[
+                    className={cn(
                       'inline-flex rounded-xl px-3 py-1 text-xs font-medium',
                       medication.isOtc
                         ? 'border border-emerald-100 bg-emerald-50 text-emerald-700'
                         : 'border border-slate-200 bg-slate-50 text-slate-500',
-                    ].join(' ')}
+                    )}
                   >
                     {medication.isOtc ? 'OTC' : 'No OTC'}
                   </span>
 
                   <span
-                    className={[
+                    className={cn(
                       'inline-flex rounded-xl px-3 py-1 text-xs font-medium',
                       medication.requiresPrescription
                         ? 'border border-red-100 bg-red-50 text-red-600'
                         : 'border border-emerald-100 bg-emerald-50 text-emerald-700',
-                    ].join(' ')}
+                    )}
                   >
                     {medication.requiresPrescription ? 'Con receta' : 'Sin receta'}
                   </span>
 
                   <span
-                    className={[
+                    className={cn(
                       'inline-flex rounded-xl px-3 py-1 text-xs font-medium',
                       medication.isActive
                         ? 'border border-emerald-100 bg-emerald-50 text-emerald-700'
                         : 'border border-slate-200 bg-slate-50 text-slate-500',
-                    ].join(' ')}
+                    )}
                   >
                     {medication.isActive ? 'Activo' : 'Inactivo'}
                   </span>
@@ -120,6 +121,14 @@ const MedicationDetailPage = () => {
 
                 <button
                   type="button"
+                  onClick={() => navigate(`/medications/${medication.id}/edit`)}
+                  className="rounded-2xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                >
+                  Editar
+                </button>
+
+                <button
+                  type="button"
                   className="rounded-2xl bg-[#0B1739] px-4 py-2 text-sm font-medium text-white"
                 >
                   Registrar lote
@@ -128,35 +137,35 @@ const MedicationDetailPage = () => {
             </div>
 
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-              <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
                 <p className="text-sm text-slate-400">Stock actual</p>
                 <p
-                  className={[
+                  className={cn(
                     'mt-3 text-4xl font-semibold',
                     currentStock < medication.minimumStock
                       ? 'text-red-500'
                       : 'text-slate-900',
-                  ].join(' ')}
+                  )}
                 >
                   {currentStock}
                 </p>
               </div>
 
-              <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
                 <p className="text-sm text-slate-400">Stock mínimo</p>
                 <p className="mt-3 text-4xl font-semibold text-slate-900">
                   {medication.minimumStock}
                 </p>
               </div>
 
-              <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
                 <p className="text-sm text-slate-400">Lotes activos</p>
                 <p className="mt-3 text-4xl font-semibold text-slate-900">
                   {lots.length}
                 </p>
               </div>
 
-              <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
                 <p className="text-sm text-slate-400">Unidad</p>
                 <p className="mt-3 text-lg font-semibold text-slate-900">
                   {medication.unitOfMeasure}
@@ -164,7 +173,8 @@ const MedicationDetailPage = () => {
               </div>
             </div>
 
-            <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
+            {/* INFO */}
+            <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
               <h2 className="mb-4 text-base font-semibold text-slate-900">
                 Información general
               </h2>
@@ -217,48 +227,28 @@ const MedicationDetailPage = () => {
               </div>
             </div>
 
-            {lotsError ? (
-              <div className="rounded-[24px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+            {/* LOTES */}
+            {lotsError && (
+              <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
                 {lotsError}
               </div>
-            ) : null}
+            )}
 
-            <div className="space-y-3">
-              <div>
-                <h2 className="text-base font-semibold text-slate-900">
-                  Lotes
-                </h2>
-                <p className="text-sm text-slate-500">
-                  Lotes activos y disponibles del medicamento.
-                </p>
-              </div>
+            <MedicationLotsTable items={lots} isLoading={isLotsLoading} />
 
-              <MedicationLotsTable items={lots} isLoading={isLotsLoading} />
-            </div>
-
-            {movementsError ? (
-              <div className="rounded-[24px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+            {/* MOVIMIENTOS */}
+            {movementsError && (
+              <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
                 {movementsError}
               </div>
-            ) : null}
+            )}
 
-            <div className="space-y-3">
-              <div>
-                <h2 className="text-base font-semibold text-slate-900">
-                  Movimientos
-                </h2>
-                <p className="text-sm text-slate-500">
-                  Historial de entradas, salidas y ajustes de este medicamento.
-                </p>
-              </div>
-
-              <MedicationMovementsTable
-                items={movements}
-                isLoading={isMovementsLoading}
-              />
-            </div>
+            <MedicationMovementsTable
+              items={movements}
+              isLoading={isMovementsLoading}
+            />
           </>
-        ) : null}
+        )}
       </div>
     </PageContainer>
   )

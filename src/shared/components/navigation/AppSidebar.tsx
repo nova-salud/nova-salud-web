@@ -1,4 +1,4 @@
-import { PanelLeftClose, PanelLeftOpen } from 'lucide-react'
+import { LogOut, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import NavItem from './NavItem'
 import { useSidebar } from '@/shared/hooks/useSidebar'
 import { useAuth } from '@/shared/hooks/useAuth'
@@ -12,7 +12,7 @@ const AppSidebar = () => {
     closeSidebar,
     toggleSidebarCollapsed,
   } = useSidebar()
-  const { user } = useAuth()
+  const { user, clearSession } = useAuth()
 
   const desktopWidthClass = sidebarCollapsed ? 'lg:w-[92px]' : 'lg:w-[230px]'
 
@@ -36,12 +36,23 @@ const AppSidebar = () => {
           'lg:static lg:translate-x-0',
         ])}
       >
-        <div className="border-b border-slate-200 h-17.5 px-3 py-3">
-          <div className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'justify-between gap-3'}`}>
+        <div className="border-b border-slate-200 px-3 py-4">
+          <div className="relative flex items-center justify-center">
             {!sidebarCollapsed ? (
-              <h1 className="text-lg font-semibold text-slate-900">
-                Nova Peru SST
-              </h1>
+              <>
+                <h1 className="text-lg font-semibold text-slate-900">
+                  Nova Peru SST
+                </h1>
+
+                <button
+                  type="button"
+                  onClick={toggleSidebarCollapsed}
+                  aria-label="Colapsar menú lateral"
+                  className="absolute right-0 hidden h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 lg:inline-flex"
+                >
+                  <PanelLeftClose size={18} />
+                </button>
+              </>
             ) : (
               <button
                 type="button"
@@ -52,17 +63,6 @@ const AppSidebar = () => {
                 <PanelLeftOpen size={18} />
               </button>
             )}
-
-            {!sidebarCollapsed ? (
-              <button
-                type="button"
-                onClick={toggleSidebarCollapsed}
-                aria-label="Colapsar menú lateral"
-                className="hidden h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 lg:inline-flex"
-              >
-                <PanelLeftClose size={18} />
-              </button>
-            ) : null}
           </div>
         </div>
 
@@ -94,7 +94,7 @@ const AppSidebar = () => {
           </div>
         </div>
 
-        <div className="border-t border-slate-200 px-3 py-4">
+        <div className="border-t border-slate-200 px-3 py-4 space-y-3">
           {!sidebarCollapsed ? (
             <div className="flex items-center gap-3 rounded-2xl bg-white px-3 py-3 shadow-sm">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-xs font-semibold text-emerald-700">
@@ -119,6 +119,22 @@ const AppSidebar = () => {
                 DR
               </div>
             </div>
+          )}
+
+          {!sidebarCollapsed ? (
+            <button
+              onClick={clearSession}
+              className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-600 hover:bg-slate-100"
+            >
+              Cerrar sesión
+            </button>
+          ) : (
+            <button
+              onClick={clearSession}
+              className="flex justify-center"
+            >
+              <LogOut className="h-5 w-5 text-slate-600" />
+            </button>
           )}
         </div>
       </aside>

@@ -25,7 +25,7 @@ export const navigationConfig: NavigationSection[] = [
     label: 'FARMACIA',
     items: [
       { label: 'Medicamentos', path: '/medications', icon: Pill },
-      { label: 'Entregas', path: '/deliveries', icon: Truck },
+      { label: 'Requerimientos', path: '/requirements', icon: Truck },
       { label: 'Dispensaciones', path: '/dispensations', icon: ClipboardList },
       { label: 'Movimientos', path: '/movements', icon: ArrowLeftRight },
     ],

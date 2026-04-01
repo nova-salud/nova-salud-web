@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import type { BackendError } from '@/core/types/backend-error.type'
 import type { PaginatedResponse } from '@/core/types/paginated-response.type'
-import { deliveryService } from '../services/delivery.service'
-import type { FindInventoryDeliveriesDto } from '../types/find-inventory-deliveries.dto'
-import type { InventoryDeliveryResponseDto } from '../types/inventory-delivery-response.dto'
+import { requirementService } from '../services/requirement.service'
+import type { FindInventoryRequirementsDto } from '../types/find-inventory-requirements.dto'
+import type { InventoryRequirementResponseDto } from '../types/inventory-requirement-response.dto'
 
-type UseDeliveriesReturn = {
-  data: InventoryDeliveryResponseDto[]
+type UseRequirementsReturn = {
+  data: InventoryRequirementResponseDto[]
   total: number
   page: number
   pageSize: number
@@ -16,10 +16,10 @@ type UseDeliveriesReturn = {
   refetch: () => Promise<void>
 }
 
-export const useDeliveries = (
-  query: FindInventoryDeliveriesDto,
-): UseDeliveriesReturn => {
-  const [response, setResponse] = useState<PaginatedResponse<InventoryDeliveryResponseDto>>({
+export const useRequirements = (
+  query: FindInventoryRequirementsDto,
+): UseRequirementsReturn => {
+  const [response, setResponse] = useState<PaginatedResponse<InventoryRequirementResponseDto>>({
     data: [],
     total: 0,
     page: query.page ?? 1,
@@ -30,20 +30,20 @@ export const useDeliveries = (
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const fetchDeliveries = async (): Promise<void> => {
+  const fetchRequirements = async (): Promise<void> => {
     try {
       setIsLoading(true)
       setError(null)
 
-      const result = await deliveryService.findAll(query)
+      const result = await requirementService.findAll(query)
       setResponse(result)
     } catch (err) {
       const backendError = err as BackendError
 
       if (Array.isArray(backendError.message)) {
-        setError(backendError.message[0] ?? 'No se pudo obtener las entregas.')
+        setError(backendError.message[0] ?? 'No se pudo obtener los requerimientos.')
       } else {
-        setError(backendError.message ?? 'No se pudo obtener las entregas.')
+        setError(backendError.message ?? 'No se pudo obtener los requerimientos.')
       }
     } finally {
       setIsLoading(false)
@@ -51,15 +51,15 @@ export const useDeliveries = (
   }
 
   useEffect(() => {
-    void fetchDeliveries()
+    void fetchRequirements()
   }, [
     query.page,
     query.pageSize,
     query.sortBy,
     query.sortOrder,
     query.status,
+    query.requestedByUserId,
     query.deliveredByUserId,
-    query.receivedByUserId,
   ])
 
   return {
@@ -70,6 +70,6 @@ export const useDeliveries = (
     totalPages: response.totalPages,
     isLoading,
     error,
-    refetch: fetchDeliveries,
+    refetch: fetchRequirements,
   }
 }

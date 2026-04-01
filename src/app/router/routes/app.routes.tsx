@@ -3,10 +3,13 @@ import AuthGuard from '@/app/router/guards/auth.guard'
 import PrivateLayout from '@/app/layouts/PrivateLayout'
 import DashboardPage from '@/features/dashboard/pages/DashboardPage'
 import MedicationsPage from '@/features/inventory/medications/pages/MedicationsPage'
-import DeliveriesPage from '@/features/inventory/deliveries/pages/DeliveriesPage'
-import DeliveryDetailPage from '@/features/inventory/deliveries/pages/DeliveryDetailPage'
 import MovementsPage from '@/features/inventory/movements/pages/MovementsPage'
 import MedicationDetailPage from '@/features/inventory/medications/pages/MedicationDetailPage'
+import CreateMedicationPage from '@/features/inventory/medications/pages/CreateMedicationPage'
+import EditMedicationPage from '@/features/inventory/medications/pages/EditMedicationPage'
+import CreateRequirementPage from '@/features/inventory/requirements/pages/CreateRequirementPage'
+import RequirementDetailPage from '@/features/inventory/requirements/pages/RequirementDetailPage'
+import RequirementsPage from '@/features/inventory/requirements/pages/RequirementsPage'
 
 export const appRoutes: RouteObject = {
   element: <AuthGuard />,
@@ -27,17 +30,29 @@ export const appRoutes: RouteObject = {
           element: <MedicationDetailPage />,
         },
         {
-          path: '/deliveries',
-          element: <DeliveriesPage />,
+          path: '/medications/new',
+          element: <CreateMedicationPage />,
         },
         {
-          path: '/deliveries/:id',
-          element: <DeliveryDetailPage />,
+          path: '/medications/:id/edit',
+          element: <EditMedicationPage />,
         },
         {
           path: '/movements',
           element: <MovementsPage />,
-        }
+        },
+        {
+          path: '/requirements',
+          element: <RequirementsPage />,
+        },
+        {
+          path: '/requirements/create',
+          element: <CreateRequirementPage />,
+        },
+        {
+          path: '/requirements/:id',
+          element: <RequirementDetailPage />,
+        },
       ],
     },
   ],
