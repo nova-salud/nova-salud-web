@@ -1,8 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import PageContainer from '@/shared/components/ui/PageContainer'
-import { useAuth } from '@/shared/hooks/useAuth'
-import { RoleEnum } from '@/core/enums/role.enum'
 import { cn } from '@/shared/utils'
 import { useRequirement } from '../hooks/useRequirement'
 import { useMarkRequirementDelivered } from '../hooks/useMarkRequirementDelivered'
@@ -49,7 +47,6 @@ const RequirementDetailPage = () => {
   const params = useParams()
   const id = Number(params.id)
 
-  const { user } = useAuth()
   const { data, isLoading, error, refetch } = useRequirement(id)
   const { markDelivered, isLoading: isDelivering, error: deliverError } = useMarkRequirementDelivered()
   const { confirm, isLoading: isConfirming, error: confirmError } = useConfirmRequirement()
