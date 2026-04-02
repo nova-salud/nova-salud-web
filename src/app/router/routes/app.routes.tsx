@@ -10,6 +10,9 @@ import EditMedicationPage from '@/features/inventory/medications/pages/EditMedic
 import CreateRequirementPage from '@/features/inventory/requirements/pages/CreateRequirementPage'
 import RequirementDetailPage from '@/features/inventory/requirements/pages/RequirementDetailPage'
 import RequirementsPage from '@/features/inventory/requirements/pages/RequirementsPage'
+import DispensationsPage from '@/features/inventory/dispensations/pages/DispensationsPage'
+import CreateDispensationPage from '@/features/inventory/dispensations/pages/CreateDispensationPage'
+import DispensationDetailPage from '@/features/inventory/dispensations/pages/DispensationDetailPage'
 
 export const appRoutes: RouteObject = {
   element: <AuthGuard />,
@@ -52,6 +55,18 @@ export const appRoutes: RouteObject = {
         {
           path: '/requirements/:id',
           element: <RequirementDetailPage />,
+        },
+        {
+          path: '/dispensations',
+          element: <DispensationsPage />,
+        },
+        {
+          path: '/dispensations/create',
+          element: <CreateDispensationPage />,
+        },
+        {
+          path: '/dispensations/:id',
+          element: <DispensationDetailPage />,
         },
       ],
     },
