@@ -89,7 +89,7 @@ const CreateRequirementPage = () => {
             label="Observación"
             placeholder="Ej: Reposición urgente por consumo semanal."
             value={requestNote}
-            onChange={(e) => setRequestNote(e.target.value)}
+            onChange={(value) => setRequestNote(value)}
           />
         </div>
 

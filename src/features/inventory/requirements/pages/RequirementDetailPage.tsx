@@ -295,7 +295,7 @@ const RequirementDetailPage = () => {
                     label="Observación de entrega"
                     placeholder="Ej: Compra realizada y entregada a farmacia."
                     value={deliveryNote}
-                    onChange={(e) => setDeliveryNote(e.target.value)}
+                    onChange={(value) => setDeliveryNote(value)}
                   />
                 </div>
 
