@@ -1,5 +1,5 @@
-import type { CreateDispensationItemDto } from './create-dispensation-item.dto'
 import type { DispenseTypeEnum } from './dispense-type.enum'
+import type { CreateDispensationItemDto } from './create-dispensation-item.dto'
 
 export type CreateDispensationDto = {
   dispenseType: DispenseTypeEnum
@@ -8,8 +8,6 @@ export type CreateDispensationDto = {
   attentionId?: number
   diagnosisCode?: string
   reason: string
-  authorizedByUserId?: number
-  dispensedByUserId: number
   notes?: string
   items: CreateDispensationItemDto[]
 }

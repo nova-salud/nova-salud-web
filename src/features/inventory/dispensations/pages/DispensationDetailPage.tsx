@@ -2,32 +2,10 @@ import { useNavigate, useParams } from 'react-router'
 import PageContainer from '@/shared/components/ui/PageContainer'
 import { cn } from '@/shared/utils'
 import { useDispensation } from '../hooks/useDispensation'
-
-const getTypeLabel = (type: string) => {
-  switch (type) {
-    case 'COLLABORATOR':
-      return 'Colaborador'
-    case 'THIRD_PARTY':
-      return 'Tercero'
-    case 'ATTENTION':
-      return 'Atención'
-    default:
-      return type
-  }
-}
-
-const getTypeClassName = (type: string) => {
-  switch (type) {
-    case 'COLLABORATOR':
-      return 'border-sky-100 bg-sky-50 text-sky-700'
-    case 'THIRD_PARTY':
-      return 'border-amber-100 bg-amber-50 text-amber-700'
-    case 'ATTENTION':
-      return 'border-emerald-100 bg-emerald-50 text-emerald-700'
-    default:
-      return 'border-slate-200 bg-slate-50 text-slate-500'
-  }
-}
+import {
+  DISPENSE_TYPE_CLASS_MAP,
+  DISPENSE_TYPE_LABEL_MAP,
+} from '../types/dispensation-response.dto'
 
 const DispensationDetailPage = () => {
   const navigate = useNavigate()
@@ -69,15 +47,15 @@ const DispensationDetailPage = () => {
 
         {data ? (
           <>
-            <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">
+            <div className="space-y-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
               <div className="flex flex-wrap items-center gap-3">
                 <span
                   className={cn(
                     'inline-flex rounded-xl border px-3 py-1 text-xs font-medium',
-                    getTypeClassName(data.dispenseType),
+                    DISPENSE_TYPE_CLASS_MAP[data.dispenseType] ?? 'border-slate-200 bg-slate-50 text-slate-500',
                   )}
                 >
-                  {getTypeLabel(data.dispenseType)}
+                  {DISPENSE_TYPE_LABEL_MAP[data.dispenseType] ?? data.dispenseType}
                 </span>
               </div>
 
@@ -114,6 +92,11 @@ const DispensationDetailPage = () => {
                   <p className="mt-1 text-sm text-slate-700">{data.diagnosisCode ?? '-'}</p>
                 </div>
 
+                <div>
+                  <p className="text-xs uppercase tracking-[0.14em] text-slate-400">Dispensado por</p>
+                  <p className="mt-1 text-sm text-slate-700">{data.dispensedByUserName ?? '-'}</p>
+                </div>
+
                 <div className="md:col-span-2">
                   <p className="text-xs uppercase tracking-[0.14em] text-slate-400">Observaciones</p>
                   <p className="mt-1 text-sm text-slate-700">{data.notes ?? 'Sin observaciones.'}</p>
@@ -121,7 +104,7 @@ const DispensationDetailPage = () => {
               </div>
             </div>
 
-            <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">
+            <div className="space-y-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
               <h3 className="text-sm font-semibold text-slate-900">Medicamentos dispensados</h3>
 
               <div className="space-y-3">
@@ -133,9 +116,11 @@ const DispensationDetailPage = () => {
                     <div className="grid gap-4 md:grid-cols-2">
                       <div>
                         <p className="text-sm font-medium text-slate-900">
-                          {item.medicationName ?? `Medicamento ${item.medicationId}`}
+                          {item.medicationName || `Medicamento ${item.medicationId}`}
                         </p>
-                        <p className="text-xs text-slate-500">Lote: {item.lotCode ?? '-'}</p>
+                        <p className="text-xs text-slate-500">
+                          Lote: {item.medicationLotCode || '-'}
+                        </p>
                       </div>
 
                       <div>

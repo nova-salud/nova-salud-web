@@ -1,8 +1,6 @@
-export type FindInventoryStocksDto = {
-  page?: number
-  pageSize?: number
-  sortBy?: string
-  sortOrder?: 'ASC' | 'DESC'
+import type { QueryParams } from '@/core/types/query-params.type'
+
+export type FindInventoryStocksDto = QueryParams & {
   commercialName?: string
   genericName?: string
   therapeuticCategoryId?: number

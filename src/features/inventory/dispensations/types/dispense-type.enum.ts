@@ -5,4 +5,5 @@ export const DispenseTypeEnum = {
   THIRD_PARTY: 'THIRD_PARTY',
 } as const
 
-export type DispenseTypeEnum = typeof DispenseTypeEnum[keyof typeof DispenseTypeEnum]
+export type DispenseTypeEnum =
+  typeof DispenseTypeEnum[keyof typeof DispenseTypeEnum]

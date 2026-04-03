@@ -4,17 +4,26 @@ import PageContainer from '@/shared/components/ui/PageContainer'
 import DispensationTable from '../components/DispensationTable'
 import { useDispensations } from '../hooks/useDispensations'
 import { DispenseTypeEnum } from '../types/dispense-type.enum'
+import type { FindDispensationsDto } from '../types/find-dispensations.dto'
+import { SortOrder } from '@/core/types/query-params.type'
 import { Select } from '@/shared/components/ui/form'
+
+const DISPENSE_TYPE_OPTIONS = [
+  { label: 'Atención médica', value: DispenseTypeEnum.ATTENTION },
+  { label: 'OTC (Libre)', value: DispenseTypeEnum.OTC },
+  { label: 'Emergencia', value: DispenseTypeEnum.EMERGENCY },
+  { label: 'Tercero', value: DispenseTypeEnum.THIRD_PARTY },
+]
 
 const DispensationsPage = () => {
   const navigate = useNavigate()
   const [dispenseType, setDispenseType] = useState<DispenseTypeEnum | ''>('')
 
-  const query = useMemo(() => ({
+  const query = useMemo<FindDispensationsDto>(() => ({
     page: 1,
     pageSize: 10,
     sortBy: 'dispensedAt',
-    sortOrder: 'DESC' as const,
+    sortOrder: SortOrder.DESC,
     dispenseType: dispenseType || undefined,
   }), [dispenseType])
 
@@ -47,12 +56,7 @@ const DispensationsPage = () => {
                 label="Tipo"
                 value={dispenseType}
                 onChange={(value) => setDispenseType(value as DispenseTypeEnum)}
-                options={[
-                  { label: 'Atención médica', value: DispenseTypeEnum.ATTENTION },
-                  { label: 'OTC (Libre)', value: DispenseTypeEnum.OTC },
-                  { label: 'Emergencia', value: DispenseTypeEnum.EMERGENCY },
-                  { label: 'Tercero', value: DispenseTypeEnum.THIRD_PARTY },
-                ]}
+                options={DISPENSE_TYPE_OPTIONS}
               />
             </div>
           </div>

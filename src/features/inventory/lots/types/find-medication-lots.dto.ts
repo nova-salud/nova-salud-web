@@ -1,7 +1,5 @@
-export type FindMedicationLotsDto = {
-  page?: number
-  pageSize?: number
-  sortBy?: string
-  sortOrder?: 'ASC' | 'DESC'
+import type { QueryParams } from '@/core/types/query-params.type'
+
+export type FindMedicationLotsDto = QueryParams & {
   medicationId?: number
 }

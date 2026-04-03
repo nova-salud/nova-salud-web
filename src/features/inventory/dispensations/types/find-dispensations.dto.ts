@@ -1,10 +1,7 @@
+import type { QueryParams } from '@/core/types/query-params.type'
 import type { DispenseTypeEnum } from './dispense-type.enum'
 
-export type FindDispensationsDto = {
-  page?: number
-  pageSize?: number
-  sortBy?: string
-  sortOrder?: 'ASC' | 'DESC'
+export type FindDispensationsDto = QueryParams & {
   dispenseType?: DispenseTypeEnum
   collaboratorDni?: string
   thirdPartyDni?: string

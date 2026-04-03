@@ -1,7 +1,11 @@
 import { useNavigate } from 'react-router'
 import DataTable from '@/shared/components/ui/table/DataTable'
 import { cn } from '@/shared/utils'
-import { getTypeClassName, getTypeLabel, type DispensationResponseDto } from '../types/dispensation-response.dto'
+import {
+  DISPENSE_TYPE_CLASS_MAP,
+  DISPENSE_TYPE_LABEL_MAP,
+  type DispensationResponseDto,
+} from '../types/dispensation-response.dto'
 
 type Props = {
   items: DispensationResponseDto[]
@@ -25,16 +29,18 @@ const DispensationTable = ({ items, isLoading = false }: Props) => {
             <span
               className={cn(
                 'inline-flex rounded-xl border px-3 py-1 text-xs font-medium',
-                getTypeClassName(item.dispenseType),
+                DISPENSE_TYPE_CLASS_MAP[item.dispenseType] ?? 'border-slate-200 bg-slate-50 text-slate-500',
               )}
             >
-              {getTypeLabel(item.dispenseType)}
+              {DISPENSE_TYPE_LABEL_MAP[item.dispenseType] ?? item.dispenseType}
             </span>
           </td>
 
           <td className="px-6 py-5 text-slate-500">{item.reason}</td>
           <td className="px-6 py-5 text-slate-500">{item.items.length}</td>
-          <td className="px-6 py-5 text-slate-500">{new Date(item.dispensedAt).toLocaleDateString('es-PE')}</td>
+          <td className="px-6 py-5 text-slate-500">
+            {new Date(item.dispensedAt).toLocaleDateString('es-PE')}
+          </td>
 
           <td className="px-6 py-5">
             <button

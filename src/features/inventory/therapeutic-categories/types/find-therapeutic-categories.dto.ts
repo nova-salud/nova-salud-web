@@ -1,8 +1,6 @@
-export type FindTherapeuticCategoriesDto = {
-  page?: number
-  pageSize?: number
-  sortBy?: string
-  sortOrder?: 'ASC' | 'DESC'
+import type { QueryParams } from '@/core/types/query-params.type'
+
+export type FindTherapeuticCategoriesDto = QueryParams & {
   name?: string
   isActive?: boolean
 }
