@@ -1,4 +1,7 @@
-export type MedicationResponseDto = {
+import type { AuditResponseDto } from '@/core/types/audit-response.dto'
+import type { TherapeuticCategoryResponseDto } from '../../therapeutic-categories/types/therapeutic-category-response.dto'
+
+export type MedicationResponseDto = AuditResponseDto & {
   id: number
   commercialName: string
   genericName: string | null
@@ -11,12 +14,5 @@ export type MedicationResponseDto = {
   requiresPrescription: boolean
   isActive: boolean
   notes: string | null
-  createdAt: string
-  createdBy: number | null
-  updatedAt: string
-  updatedBy: number | null
-  therapeuticCategory: {
-    id: number
-    name: string
-  }
+  therapeuticCategory: TherapeuticCategoryResponseDto
 }

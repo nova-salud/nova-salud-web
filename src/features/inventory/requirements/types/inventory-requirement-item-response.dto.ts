@@ -1,4 +1,6 @@
-export type InventoryRequirementItemResponseDto = {
+import type { AuditResponseDto } from '@/core/types/audit-response.dto'
+
+export type InventoryRequirementItemResponseDto = AuditResponseDto & {
   id: number
   inventoryRequirementId: number
   medicationId: number
@@ -7,8 +9,4 @@ export type InventoryRequirementItemResponseDto = {
   receivedQuantity: number | null
   isReceived: boolean
   notes: string | null
-  createdAt: string
-  createdBy: number | null
-  updatedAt: string
-  updatedBy: number | null
 }

@@ -1,7 +1,8 @@
+import type { AuditResponseDto } from '@/core/types/audit-response.dto'
 import type { InventoryRequirementItemResponseDto } from './inventory-requirement-item-response.dto'
 import type { InventoryRequirementStatusEnum } from './inventory-requirement-status.enum'
 
-export type InventoryRequirementResponseDto = {
+export type InventoryRequirementResponseDto = AuditResponseDto & {
   id: number
   requestedByUserId: number
   deliveredByUserId: number | null
@@ -11,13 +12,10 @@ export type InventoryRequirementResponseDto = {
   evidenceUrl: string | null
   deliveredAt: string | null
   receivedAt: string | null
-  createdAt: string
-  createdBy: number | null
-  updatedAt: string
-  updatedBy: number | null
   items: InventoryRequirementItemResponseDto[]
 }
 
+//TODO: change to map
 export const getStatusLabel = (status: InventoryRequirementResponseDto['status']) => {
   switch (status) {
     case 'PENDING':

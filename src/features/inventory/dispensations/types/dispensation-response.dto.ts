@@ -1,7 +1,8 @@
 import type { DispenseTypeEnum } from './dispense-type.enum'
 import type { DispensationLotItemResponseDto } from './dispensation-lot-item-response.dto'
+import type { AuditResponseDto } from '@/core/types/audit-response.dto'
 
-export type DispensationResponseDto = {
+export type DispensationResponseDto = AuditResponseDto & {
   id: number
   dispenseType: DispenseTypeEnum
   collaboratorDni: string | null
@@ -13,10 +14,6 @@ export type DispensationResponseDto = {
   dispensedByUserName: string | null
   dispensedAt: string
   notes: string | null
-  createdAt: string
-  createdBy: number | null
-  updatedAt: string
-  updatedBy: number | null
   items: DispensationLotItemResponseDto[]
 }
 
