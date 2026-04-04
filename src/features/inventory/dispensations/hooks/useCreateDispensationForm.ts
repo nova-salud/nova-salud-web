@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { SortOrder } from '@/core/types/query-params.type'
 import { useStocks } from '@/features/inventory/stocks/hooks/useStocks'
+import type { FindInventoryStocksDto } from '@/features/inventory/stocks/types/find-inventory-stocks.dto'
 import { DispenseTypeEnum } from '../types/dispense-type.enum'
 import type { CreateDispensationDto } from '../types/create-dispensation.dto'
 import type { CreateDispensationItemDto } from '../types/create-dispensation-item.dto'
@@ -57,7 +58,7 @@ export const DISPENSE_TYPE_OPTIONS = [
 export const useCreateDispensationForm = (): UseCreateDispensationFormReturn => {
   const [values, setValues] = useState<CreateDispensationFormValues>(INITIAL_VALUES)
 
-  const stocksQuery = useMemo(() => ({
+  const stocksQuery = useMemo<FindInventoryStocksDto>(() => ({
     page: 1,
     pageSize: 100,
     sortBy: 'commercialName',
@@ -78,11 +79,11 @@ export const useCreateDispensationForm = (): UseCreateDispensationFormReturn => 
     [stocks],
   )
 
-  const medicationNameMap = useMemo(() => {
+  const medicationNameMap = useMemo<Map<number, string>>(() => {
     return new Map(stocks.map((item) => [item.medicationId, item.commercialName]))
   }, [stocks])
 
-  const canSubmit = useMemo(() => {
+  const canSubmit = useMemo<boolean>(() => {
     return values.items.length > 0 && values.reason.trim().length > 0
   }, [values.items.length, values.reason])
 
@@ -138,7 +139,10 @@ export const useCreateDispensationForm = (): UseCreateDispensationFormReturn => 
 
     return {
       dispenseType: values.dispenseType,
-      thirdPartyDni: values.thirdPartyDni.trim() || undefined,
+      thirdPartyDni:
+        values.dispenseType === DispenseTypeEnum.THIRD_PARTY
+          ? values.thirdPartyDni.trim() || undefined
+          : undefined,
       reason: values.reason.trim(),
       notes: values.notes.trim() || undefined,
       items: values.items,

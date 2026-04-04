@@ -1,11 +1,17 @@
-import { useState } from 'react'
-import type { BackendError } from '@/core/types/backend-error.type'
-import { useAuthStore } from '@/shared/store/auth.store'
+import { useCallback, useState } from 'react'
+import { useNavigate } from 'react-router'
 import { authService } from '../services/auth.service'
-import type { LoginDto } from '../types/login.dto'
+import { parseBackendError } from '@/core/utils/parse-backend-error'
+import { toastService } from '@/core/services/toast.service'
+import { useAuthStore } from '@/shared/store/auth.store'
+
+type LoginDto = {
+  username: string
+  password: string
+}
 
 type UseLoginReturn = {
-  login: (payload: LoginDto) => Promise<void>
+  login: (dto: LoginDto) => Promise<void>
   isLoading: boolean
   error: string | null
   clearError: () => void
@@ -13,35 +19,32 @@ type UseLoginReturn = {
 
 export const useLogin = (): UseLoginReturn => {
   const setSession = useAuthStore((state) => state.setSession)
+  const navigate = useNavigate()
 
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const login = async (payload: LoginDto): Promise<void> => {
+  const login = useCallback(async (dto: LoginDto) => {
     try {
       setIsLoading(true)
       setError(null)
 
-      const session = await authService.login(payload)
+      const session = await authService.login(dto)
       setSession(session)
+
+      toastService.success('Bienvenido 👋')
+      navigate('/')
     } catch (err) {
-      const backendError = err as BackendError
+      const message = parseBackendError(err)
 
-      if (Array.isArray(backendError.message)) {
-        setError(backendError.message[0] ?? 'Ocurrió un error al iniciar sesión.')
-      } else {
-        setError(backendError.message ?? 'Ocurrió un error al iniciar sesión.')
-      }
-
-      throw err
+      setError(message)
+      toastService.error(message)
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [navigate])
 
-  const clearError = (): void => {
-    setError(null)
-  }
+  const clearError = () => setError(null)
 
   return {
     login,

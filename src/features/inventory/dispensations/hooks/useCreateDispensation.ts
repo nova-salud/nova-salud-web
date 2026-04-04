@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router'
-import type { BackendError } from '@/core/types/backend-error.type'
+import { parseBackendError } from '@/core/utils/parse-backend-error'
 import { dispensationService } from '../services/dispensation.service'
 import type { CreateDispensationDto } from '../types/create-dispensation.dto'
 
@@ -15,24 +15,20 @@ export const useCreateDispensation = (): UseCreateDispensationReturn => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const create = async (dto: CreateDispensationDto): Promise<void> => {
+  const create = useCallback(async (dto: CreateDispensationDto): Promise<void> => {
     try {
       setIsLoading(true)
       setError(null)
 
       const result = await dispensationService.create(dto)
+
       navigate(`/dispensations/${result.id}`)
-    } catch (err) {
-      const backendError = err as BackendError
-      if (Array.isArray(backendError.message)) {
-        setError(backendError.message[0] ?? 'No se pudo registrar la dispensación.')
-      } else {
-        setError(backendError.message ?? 'No se pudo registrar la dispensación.')
-      }
+    } catch (error) {
+      setError(parseBackendError(error))
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [navigate])
 
   return {
     create,

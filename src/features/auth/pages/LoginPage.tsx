@@ -1,11 +1,13 @@
-import { useState } from 'react'
+import { useState, type FormEvent } from 'react'
 import { Navigate } from 'react-router'
+import { LockKeyhole, ShieldUser } from 'lucide-react'
+import { Button, Input } from '@/shared/components/ui/form'
 import { useAuth } from '@/shared/hooks/useAuth'
 import { useLogin } from '../hooks/useLogin'
 
 const LoginPage = () => {
   const { isAuthenticated } = useAuth()
-  const { login, isLoading, error, clearError } = useLogin()
+  const { login, isLoading, clearError } = useLogin()
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -14,9 +16,8 @@ const LoginPage = () => {
     return <Navigate to="/" replace />
   }
 
-  const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-
     clearError()
 
     await login({
@@ -26,65 +27,80 @@ const LoginPage = () => {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-100 px-4">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
-      >
-        <div className="mb-6 text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-900 text-white">
-            N
+    <div className="flex min-h-screen bg-slate-100">
+      <div className="hidden flex-1 bg-[#0B1739] lg:flex lg:flex-col lg:justify-between lg:p-10">
+        <div>
+          <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-white/10 text-white">
+            <ShieldUser size={26} />
           </div>
-          <h1 className="text-xl font-semibold text-slate-900">Nova Perú</h1>
-          <p className="mt-1 text-xs text-slate-500">
-            Sistema médico ocupacional
+
+          <div className="mt-8 max-w-md">
+            <p className="text-sm font-medium uppercase tracking-[0.2em] text-slate-300">
+              Nova Perú SST
+            </p>
+
+            <h1 className="mt-4 text-4xl font-semibold leading-tight text-white">
+              Sistema médico ocupacional
+            </h1>
+
+            <p className="mt-4 text-base leading-7 text-slate-300">
+              Gestiona medicamentos, requerimientos, dispensaciones y movimientos
+              de inventario desde una sola plataforma.
+            </p>
+          </div>
+        </div>
+
+        <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
+          <p className="text-sm text-slate-300">
+            Acceso exclusivo para personal autorizado.
           </p>
         </div>
+      </div>
 
-        <div className="mb-4">
-          <label htmlFor="username" className="mb-1 block text-sm font-medium text-slate-700">
-            Usuario
-          </label>
-          <input
-            id="username"
-            type="text"
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-            className="w-full rounded-xl border border-slate-300 px-3 py-2 outline-none focus:border-slate-500"
-            autoComplete="username"
-            required
-          />
-        </div>
+      <div className="flex flex-1 items-center justify-center px-4 py-10 sm:px-6 lg:px-10">
+        <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+          <div className="mb-8 text-center">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-3xl bg-[#0B1739] text-white shadow-sm">
+              <LockKeyhole size={24} />
+            </div>
 
-        <div className="mb-4">
-          <label htmlFor="password" className="mb-1 block text-sm font-medium text-slate-700">
-            Contraseña
-          </label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            className="w-full rounded-xl border border-slate-300 px-3 py-2 outline-none focus:border-slate-500"
-            autoComplete="current-password"
-            required
-          />
-        </div>
+            <h2 className="mt-4 text-2xl font-semibold text-slate-900">
+              Iniciar sesión
+            </h2>
 
-        {error ? (
-          <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">
-            {error}
+            <p className="mt-2 text-sm text-slate-500">
+              Ingresa tus credenciales para continuar.
+            </p>
           </div>
-        ) : null}
 
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full rounded-xl bg-slate-900 px-4 py-2 text-white disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {isLoading ? 'Ingresando...' : 'Ingresar'}
-        </button>
-      </form>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Input
+              label="Usuario"
+              placeholder="Ingresa tu usuario"
+              value={username}
+              onChange={setUsername}
+              autoComplete="username"
+            />
+
+            <Input
+              label="Contraseña"
+              type="password"
+              placeholder="Ingresa tu contraseña"
+              value={password}
+              onChange={setPassword}
+              autoComplete="current-password"
+            />
+
+            <Button
+              type="submit"
+              isLoading={isLoading}
+              loadingText="Ingresando..."
+            >
+              Ingresar
+            </Button>
+          </form>
+        </div>
+      </div>
     </div>
   )
 }
