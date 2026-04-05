@@ -13,6 +13,9 @@ import RequirementsPage from '@/features/inventory/requirements/pages/Requiremen
 import DispensationsPage from '@/features/inventory/dispensations/pages/DispensationsPage'
 import CreateDispensationPage from '@/features/inventory/dispensations/pages/CreateDispensationPage'
 import DispensationDetailPage from '@/features/inventory/dispensations/pages/DispensationDetailPage'
+import EmployeeDetailPage from '@/features/employees/pages/EmployeeDetailPage'
+import EmployeesPage from '@/features/employees/pages/EmployeesPage'
+import EmployeeAreasPage from '@/features/employees/pages/EmployeeAreasPage'
 
 export const appRoutes: RouteObject = {
   element: <AuthGuard />,
@@ -68,6 +71,18 @@ export const appRoutes: RouteObject = {
           path: '/dispensations/:id',
           element: <DispensationDetailPage />,
         },
+        {
+          path: '/employees',
+          element: <EmployeesPage />,
+        },
+        {
+          path: '/employees/:id',
+          element: <EmployeeDetailPage />,
+        },
+        {
+          path: '/areas',
+          element: <EmployeeAreasPage />,
+        }
       ],
     },
   ],

@@ -9,6 +9,7 @@ type ButtonVariant =
   | 'warning'
   | 'error'
   | 'ghost'
+  | 'outline'
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: ButtonVariant
@@ -24,6 +25,8 @@ const VARIANT_STYLES: Record<ButtonVariant, string> = {
   warning: 'bg-amber-500 text-white hover:bg-amber-600',
   error: 'bg-red-600 text-white hover:bg-red-700',
   ghost: 'bg-transparent text-slate-700 hover:bg-slate-100',
+  outline:
+    'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50',
 }
 
 export const Button = ({
@@ -39,7 +42,7 @@ export const Button = ({
     <button
       disabled={disabled || isLoading}
       className={cn(
-        'rounded-lg px-4 py-3 text-sm font-medium transition',
+        'rounded-lg px-3 py-2 text-xs font-medium transition',
         'disabled:cursor-not-allowed disabled:opacity-60',
         VARIANT_STYLES[variant],
         className,
