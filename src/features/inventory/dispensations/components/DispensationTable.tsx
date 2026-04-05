@@ -6,6 +6,7 @@ import {
   DISPENSE_TYPE_LABEL_MAP,
   type DispensationResponseDto,
 } from '../types/dispensation-response.dto'
+import { Button } from '@/shared/components/ui/form'
 
 type Props = {
   items: DispensationResponseDto[]
@@ -43,13 +44,14 @@ const DispensationTable = ({ items, isLoading = false }: Props) => {
           </td>
 
           <td className="px-6 py-5">
-            <button
+            <Button
               type="button"
+              variant="secondary"
               onClick={() => navigate(`/dispensations/${item.id}`)}
-              className="rounded-xl border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"
+              className="w-auto px-3 py-2 text-xs"
             >
               Ver detalle
-            </button>
+            </Button>
           </td>
         </tr>
       )}

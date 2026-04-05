@@ -39,7 +39,7 @@ export const Button = ({
     <button
       disabled={disabled || isLoading}
       className={cn(
-        'rounded-2xl px-4 py-3 text-sm font-medium transition',
+        'rounded-lg px-4 py-3 text-sm font-medium transition',
         'disabled:cursor-not-allowed disabled:opacity-60',
         VARIANT_STYLES[variant],
         className,

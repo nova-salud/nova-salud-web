@@ -1,8 +1,10 @@
 import PageContainer from '@/shared/components/ui/PageContainer'
+import { Button, Input, Select, Textarea } from '@/shared/components/ui/form'
 import { useCreateDispensation } from '../hooks/useCreateDispensation'
-import { DISPENSE_TYPE_OPTIONS, useCreateDispensationForm } from '../hooks/useCreateDispensationForm'
-import { Input, Select, Textarea } from '@/shared/components/ui/form'
-
+import {
+  useCreateDispensationForm,
+} from '../hooks/useCreateDispensationForm'
+import { DISPENSE_TYPE_OPTIONS } from '../types/dispense-type.enum'
 
 const CreateDispensationPage = () => {
   const { create, isLoading, error } = useCreateDispensation()
@@ -40,14 +42,18 @@ const CreateDispensationPage = () => {
         ) : null}
 
         <div className="space-y-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h3 className="text-sm font-semibold text-slate-900">Información general</h3>
+          <h3 className="text-sm font-semibold text-slate-900">
+            Información general
+          </h3>
 
           <div className="grid gap-4 md:grid-cols-2">
             <Select
               label="Tipo de dispensación"
               value={values.dispenseType}
-              onChange={(value) => handleChange('dispenseType')(value as typeof values.dispenseType)}
-              options={DISPENSE_TYPE_OPTIONS.map((item) => ({ ...item }))}
+              onChange={(value) =>
+                handleChange('dispenseType')(value as typeof values.dispenseType)
+              }
+              options={DISPENSE_TYPE_OPTIONS}
             />
 
             <Input
@@ -74,7 +80,9 @@ const CreateDispensationPage = () => {
         </div>
 
         <div className="space-y-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h3 className="text-sm font-semibold text-slate-900">Medicamentos</h3>
+          <h3 className="text-sm font-semibold text-slate-900">
+            Medicamentos
+          </h3>
 
           <div className="grid gap-4 md:grid-cols-2">
             <Select
@@ -108,18 +116,21 @@ const CreateDispensationPage = () => {
           </div>
 
           <div>
-            <button
+            <Button
               type="button"
+              variant="secondary"
               onClick={handleAddItem}
-              className="rounded-2xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+              className="w-auto px-4 py-2"
             >
               Agregar medicamento
-            </button>
+            </Button>
           </div>
 
           <div className="space-y-2">
             {values.items.length === 0 ? (
-              <p className="text-sm text-slate-500">No has agregado medicamentos.</p>
+              <p className="text-sm text-slate-500">
+                No has agregado medicamentos.
+              </p>
             ) : (
               values.items.map((item) => (
                 <div
@@ -135,13 +146,14 @@ const CreateDispensationPage = () => {
                     </p>
                   </div>
 
-                  <button
+                  <Button
                     type="button"
+                    variant="error"
                     onClick={() => handleRemoveItem(item.medicationId)}
-                    className="text-sm text-red-500"
+                    className="w-auto px-3 py-2"
                   >
                     Quitar
-                  </button>
+                  </Button>
                 </div>
               ))
             )}
@@ -149,14 +161,16 @@ const CreateDispensationPage = () => {
         </div>
 
         <div className="flex justify-end">
-          <button
+          <Button
             type="button"
-            disabled={isLoading || !canSubmit}
+            isLoading={isLoading}
+            loadingText="Guardando..."
+            disabled={!canSubmit}
             onClick={() => void handleSubmit()}
-            className="rounded-2xl bg-[#0B1739] px-6 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
+            className="w-auto px-6 py-2"
           >
-            {isLoading ? 'Guardando...' : 'Guardar dispensación'}
-          </button>
+            Guardar dispensación
+          </Button>
         </div>
       </div>
     </PageContainer>

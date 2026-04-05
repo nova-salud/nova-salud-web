@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
-import type { BackendError } from '@/core/types/backend-error.type'
+import { useCallback, useEffect, useState } from 'react'
+import { toastService } from '@/core/services/toast.service'
+import { parseBackendError } from '@/core/utils/parse-backend-error'
 import { dispensationService } from '../services/dispensation.service'
 import type { DispensationResponseDto } from '../types/dispensation-response.dto'
 
@@ -15,30 +16,28 @@ export const useDispensation = (id: number): UseDispensationReturn => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const fetchDispensation = async (): Promise<void> => {
+  const fetchDispensation = useCallback(async (): Promise<void> => {
     try {
       setIsLoading(true)
       setError(null)
 
       const result = await dispensationService.findById(id)
       setData(result)
-    } catch (err) {
-      const backendError = err as BackendError
-      if (Array.isArray(backendError.message)) {
-        setError(backendError.message[0] ?? 'No se pudo obtener la dispensación.')
-      } else {
-        setError(backendError.message ?? 'No se pudo obtener la dispensación.')
-      }
+    } catch (error) {
+      const message = parseBackendError(error)
+
+      setError(message)
+      toastService.error(message)
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [id])
 
   useEffect(() => {
     if (!Number.isNaN(id)) {
       void fetchDispensation()
     }
-  }, [id])
+  }, [id, fetchDispensation])
 
   return {
     data,

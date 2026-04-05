@@ -1,11 +1,14 @@
 import { useNavigate, useParams } from 'react-router'
 import PageContainer from '@/shared/components/ui/PageContainer'
+import { Button } from '@/shared/components/ui/form'
 import { cn } from '@/shared/utils'
 import { useDispensation } from '../hooks/useDispensation'
 import {
   DISPENSE_TYPE_CLASS_MAP,
   DISPENSE_TYPE_LABEL_MAP,
 } from '../types/dispensation-response.dto'
+
+const DEFAULT_TYPE_CLASS_NAME = 'border-slate-200 bg-slate-50 text-slate-500'
 
 const DispensationDetailPage = () => {
   const navigate = useNavigate()
@@ -23,13 +26,14 @@ const DispensationDetailPage = () => {
       title={`Dispensación #${data?.id ?? id}`}
       description="Detalle de la dispensación"
       action={
-        <button
+        <Button
           type="button"
+          variant="secondary"
           onClick={() => navigate('/dispensations')}
-          className="rounded-2xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+          className="w-auto px-4 py-2"
         >
           Volver
-        </button>
+        </Button>
       }
     >
       <div className="space-y-5">
@@ -52,7 +56,7 @@ const DispensationDetailPage = () => {
                 <span
                   className={cn(
                     'inline-flex rounded-xl border px-3 py-1 text-xs font-medium',
-                    DISPENSE_TYPE_CLASS_MAP[data.dispenseType] ?? 'border-slate-200 bg-slate-50 text-slate-500',
+                    DISPENSE_TYPE_CLASS_MAP[data.dispenseType] ?? DEFAULT_TYPE_CLASS_NAME,
                   )}
                 >
                   {DISPENSE_TYPE_LABEL_MAP[data.dispenseType] ?? data.dispenseType}
