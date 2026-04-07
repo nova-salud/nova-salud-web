@@ -16,6 +16,7 @@ import DispensationDetailPage from '@/features/inventory/dispensations/pages/Dis
 import EmployeeDetailPage from '@/features/employees/pages/EmployeeDetailPage'
 import EmployeesPage from '@/features/employees/pages/EmployeesPage'
 import EmployeeAreasPage from '@/features/employees/pages/EmployeeAreasPage'
+import EmployeeSyncSettingsPage from '@/features/system-settings/pages/EmployeeSyncSettingsPage'
 
 export const appRoutes: RouteObject = {
   element: <AuthGuard />,
@@ -82,6 +83,10 @@ export const appRoutes: RouteObject = {
         {
           path: '/areas',
           element: <EmployeeAreasPage />,
+        },
+        {
+          path: '/system-settings/employee-sync',
+          element: <EmployeeSyncSettingsPage />,
         }
       ],
     },

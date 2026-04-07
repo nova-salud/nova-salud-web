@@ -1,5 +1,5 @@
 import { RoleEnum } from '@/core/enums/role.enum'
-import { ArrowLeftRight, ClipboardList, LayoutDashboard, Pill, Truck, Users, type LucideIcon } from 'lucide-react'
+import { ArrowLeftRight, ClipboardList, LayoutDashboard, Pill, Settings, Truck, Users, type LucideIcon } from 'lucide-react'
 
 export type NavigationItem = {
   label: string
@@ -31,10 +31,20 @@ export const navigationConfig: NavigationSection[] = [
     ],
   },
   {
-    label: 'ADMINISTRACIÓN',
+    label: 'RRHH',
     items: [
       { label: 'Empleados', path: '/employees', icon: Users },
       { label: 'Áreas', path: '/areas', icon: ClipboardList },
     ],
-  }
+  },
+  {
+    label: 'SISTEMA',
+    items: [
+      {
+        label: 'Sync RRHH',
+        path: '/system-settings/employee-sync',
+        icon: Settings,
+      },
+    ],
+  },
 ]
