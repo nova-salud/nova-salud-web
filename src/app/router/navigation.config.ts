@@ -47,4 +47,10 @@ export const navigationConfig: NavigationSection[] = [
       },
     ],
   },
+  {
+    label: 'Seguridad',
+    items: [
+      { label: 'Usuarios', path: '/users', icon: Users, roles: [RoleEnum.ADMIN] },
+    ]
+  }
 ]
