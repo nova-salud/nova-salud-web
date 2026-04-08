@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router'
+import { Button } from '@/shared/components/ui/form'
 import DataTable from '@/shared/components/ui/table/DataTable'
 import { cn } from '@/shared/utils'
 import type { EmployeeResponseDto } from '../types/employee-response.dto'
-import { Button } from '@/shared/components/ui/form'
 
 type Props = {
   items: EmployeeResponseDto[]
@@ -21,6 +21,7 @@ const EmployeeTable = ({ items, isLoading = false }: Props) => {
         'ID',
         'Nombre',
         'DNI',
+        'Empresa',
         'Área',
         'Cargo',
         'Estado',
@@ -43,7 +44,13 @@ const EmployeeTable = ({ items, isLoading = false }: Props) => {
             </div>
           </td>
 
-          <td className="px-6 py-5 text-slate-500">{item.dni}</td>
+          <td className="px-6 py-5 text-slate-500">
+            {item.dni}
+          </td>
+
+          <td className="px-6 py-5 text-slate-500">
+            {item.company}
+          </td>
 
           <td className="px-6 py-5 text-slate-500">
             {item.area?.name ?? '—'}
@@ -68,8 +75,10 @@ const EmployeeTable = ({ items, isLoading = false }: Props) => {
 
           <td className="px-6 py-5">
             <Button
-              variant='outline'
+              type="button"
+              variant="outline"
               onClick={() => navigate(`/employees/${item.id}`)}
+              className="w-auto rounded-xl px-3 py-2 text-xs"
             >
               Ver detalle
             </Button>

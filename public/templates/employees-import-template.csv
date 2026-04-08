@@ -1,0 +1,2 @@
+dni,firstName,lastName,fullName,company,birthDate,areaName,position,immediateBoss,employmentStatus,isActive
+12345678,Juan,Perez,Juan Perez,empresa2,1990-01-10,Operaciones,Operario,Carlos Ruiz,ACTIVE,true

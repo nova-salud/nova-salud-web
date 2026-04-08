@@ -1,10 +1,8 @@
-export type EmployeeAreaResponseDto = {
+import type { AuditResponseDto } from '@/core/types/audit-response.dto'
+
+export type EmployeeAreaResponseDto = AuditResponseDto &{
   id: number
-  externalId: number
+  externalId: number | null
   name: string
   isActive: boolean
-  createdAt: string
-  createdBy: number | null
-  updatedAt: string
-  updatedBy: number | null
 }
