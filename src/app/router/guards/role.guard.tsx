@@ -3,7 +3,7 @@ import type { RoleEnum } from '@/core/enums/role.enum'
 import { useAuth } from '@/shared/hooks/useAuth'
 
 type Props = {
-  roles: RoleEnum[]
+  roles?: RoleEnum[]
 }
 
 const RoleGuard = ({ roles }: Props) => {
@@ -11,6 +11,10 @@ const RoleGuard = ({ roles }: Props) => {
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />
+  }
+
+  if (!roles || roles.length === 0) {
+    return <Outlet />
   }
 
   if (!user?.role) {

@@ -4,6 +4,7 @@ import { useSidebar } from '@/shared/hooks/useSidebar'
 import { useAuth } from '@/shared/hooks/useAuth'
 import { navigationConfig } from '@/app/router/navigation.config'
 import { cn } from '@/shared/utils'
+import { UserRoleEnum } from '@/features/users/types'
 
 const AppSidebar = () => {
   const {
@@ -15,6 +16,15 @@ const AppSidebar = () => {
   const { user, clearSession } = useAuth()
 
   const desktopWidthClass = sidebarCollapsed ? 'lg:w-[92px]' : 'lg:w-[230px]'
+
+  const filteredSections = navigationConfig
+    .map(section => ({
+      ...section,
+      items: section.items.filter(item =>
+        !item.roles || item.roles.includes(user?.role ?? UserRoleEnum.EMPLOYEE)
+      ),
+    }))
+    .filter(section => section.items.length > 0)
 
   return (
     <>
@@ -68,7 +78,7 @@ const AppSidebar = () => {
 
         <div className="flex-1 overflow-y-auto px-3 py-5">
           <div className="space-y-7">
-            {navigationConfig.map((section) => (
+            {filteredSections.map((section) => (
               <div key={section.label}>
                 {!sidebarCollapsed ? (
                   <p className="mb-3 px-2 text-[11px] font-semibold tracking-[0.18em] text-slate-400">

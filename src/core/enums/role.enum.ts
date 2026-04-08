@@ -1,9 +1,12 @@
 export const RoleEnum = {
   ADMIN: 'ADMIN',
-  DOCTOR: 'DOCTOR',
+  OCCUPATIONAL_DOCTOR: 'OCCUPATIONAL_DOCTOR',
   NURSE: 'NURSE',
+  SST: 'SST',
   HR: 'HR',
-  PHARMACY: 'PHARMACY',
+  SUPERVISOR: 'SUPERVISOR',
+  MANAGEMENT: 'MANAGEMENT',
+  EMPLOYEE: 'EMPLOYEE',
 } as const
 
 export type RoleEnum = typeof RoleEnum[keyof typeof RoleEnum]

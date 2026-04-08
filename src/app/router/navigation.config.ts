@@ -18,23 +18,91 @@ export const navigationConfig: NavigationSection[] = [
   {
     label: 'PRINCIPAL',
     items: [
-      { label: 'Dashboard', path: '/', icon: LayoutDashboard },
+      {
+        label: 'Dashboard',
+        path: '/',
+        icon: LayoutDashboard,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.NURSE,
+          RoleEnum.SST,
+          RoleEnum.HR,
+          RoleEnum.SUPERVISOR,
+          RoleEnum.MANAGEMENT,
+        ],
+      },
     ],
   },
   {
     label: 'FARMACIA',
     items: [
-      { label: 'Medicamentos', path: '/medications', icon: Pill },
-      { label: 'Requerimientos', path: '/requirements', icon: Truck },
-      { label: 'Dispensaciones', path: '/dispensations', icon: ClipboardList },
-      { label: 'Movimientos', path: '/movements', icon: ArrowLeftRight },
+      {
+        label: 'Medicamentos',
+        path: '/medications',
+        icon: Pill,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.NURSE,
+        ],
+      },
+      {
+        label: 'Requerimientos',
+        path: '/requirements',
+        icon: Truck,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.NURSE,
+        ],
+      },
+      {
+        label: 'Dispensaciones',
+        path: '/dispensations',
+        icon: ClipboardList,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.NURSE,
+          RoleEnum.SUPERVISOR,
+        ],
+      },
+      {
+        label: 'Movimientos',
+        path: '/movements',
+        icon: ArrowLeftRight,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.NURSE,
+        ],
+      },
     ],
   },
   {
     label: 'RRHH',
     items: [
-      { label: 'Empleados', path: '/employees', icon: Users },
-      { label: 'Áreas', path: '/areas', icon: ClipboardList },
+      {
+        label: 'Empleados',
+        path: '/employees',
+        icon: Users,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.HR,
+          RoleEnum.MANAGEMENT,
+        ],
+      },
+      {
+        label: 'Áreas',
+        path: '/areas',
+        icon: ClipboardList,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.HR,
+          RoleEnum.MANAGEMENT,
+        ],
+      },
     ],
   },
   {
@@ -44,13 +112,23 @@ export const navigationConfig: NavigationSection[] = [
         label: 'Sync RRHH',
         path: '/system-settings/employee-sync',
         icon: Settings,
+        roles: [
+          RoleEnum.ADMIN,
+        ],
       },
     ],
   },
   {
-    label: 'Seguridad',
+    label: 'SEGURIDAD',
     items: [
-      { label: 'Usuarios', path: '/users', icon: Users, roles: [RoleEnum.ADMIN] },
-    ]
-  }
+      {
+        label: 'Usuarios',
+        path: '/users',
+        icon: Users,
+        roles: [
+          RoleEnum.ADMIN,
+        ],
+      },
+    ],
+  },
 ]
