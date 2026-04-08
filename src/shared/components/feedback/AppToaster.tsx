@@ -3,7 +3,7 @@ import { Toaster } from 'sonner'
 const AppToaster = () => {
   return (
     <Toaster
-      position="bottom-right"
+      position="top-center"
       richColors
       closeButton
       expand

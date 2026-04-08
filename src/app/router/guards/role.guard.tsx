@@ -1,6 +1,7 @@
 import { Navigate, Outlet } from 'react-router'
 import type { RoleEnum } from '@/core/enums/role.enum'
 import { useAuth } from '@/shared/hooks/useAuth'
+import NotAuthorizedPage from '@/shared/pages/NotAuthorizedPage'
 
 type Props = {
   roles?: RoleEnum[]
@@ -18,11 +19,11 @@ const RoleGuard = ({ roles }: Props) => {
   }
 
   if (!user?.role) {
-    return <Navigate to="/" replace />
+    return <NotAuthorizedPage />
   }
 
   if (!roles.includes(user.role)) {
-    return <Navigate to="/" replace />
+    return <NotAuthorizedPage />
   }
 
   return <Outlet />

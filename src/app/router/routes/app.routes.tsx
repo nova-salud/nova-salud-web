@@ -2,6 +2,8 @@ import type { RouteObject } from 'react-router'
 import PrivateLayout from '@/app/layouts/PrivateLayout'
 import AuthGuard from '@/app/router/guards/auth.guard'
 import RoleGuard from '@/app/router/guards/role.guard'
+import NotFoundPage from '@/shared/pages/NotFoundPage'
+import ErrorPage from '@/shared/pages/ErrorPage'
 
 import DashboardPage from '@/features/dashboard/pages/DashboardPage'
 import MedicationsPage from '@/features/inventory/medications/pages/MedicationsPage'
@@ -25,6 +27,7 @@ import { RoleEnum } from '@/core/enums/role.enum'
 
 export const appRoutes: RouteObject = {
   element: <AuthGuard />,
+  errorElement: <ErrorPage />,
   children: [
     {
       element: <PrivateLayout />,
@@ -146,6 +149,10 @@ export const appRoutes: RouteObject = {
             },
           ],
         },
+        {
+          path: '*',
+          element: <NotFoundPage />,
+        }
       ],
     },
   ],
