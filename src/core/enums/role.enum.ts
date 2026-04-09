@@ -7,6 +7,7 @@ export const RoleEnum = {
   SUPERVISOR: 'SUPERVISOR',
   MANAGEMENT: 'MANAGEMENT',
   EMPLOYEE: 'EMPLOYEE',
+  EMPLOYEE_EXT: 'EMPLOYEE_EXT',
 } as const
 
 export type RoleEnum = typeof RoleEnum[keyof typeof RoleEnum]
