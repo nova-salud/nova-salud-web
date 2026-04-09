@@ -116,7 +116,7 @@ const AppSidebar = () => {
                   {user?.username ?? 'Usuario'}
                 </p>
                 <p className="text-xs text-slate-400">
-                  Médico Ocupacional
+                  {user?.role}
                 </p>
               </div>
             </div>
