@@ -4,6 +4,7 @@ import type { InventoryRequirementStatusEnum } from './inventory-requirement-sta
 
 export type InventoryRequirementResponseDto = AuditResponseDto & {
   id: number
+  code: string
   requestedByUserId: number
   deliveredByUserId: number | null
   status: InventoryRequirementStatusEnum

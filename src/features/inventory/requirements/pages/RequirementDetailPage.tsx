@@ -8,6 +8,9 @@ import { useConfirmRequirement } from '../hooks/useConfirmRequirement'
 import type { ConfirmInventoryRequirementItemDto } from '../types/confirm-inventory-requirement.dto'
 import { Input, Textarea } from '@/shared/components/ui/form'
 
+//TODO!: Refactor to use maps for status labels
+//TODO!: Refactor all to use custom hook for logic and keep component clean
+
 const getStatusLabel = (status: string) => {
   switch (status) {
     case 'PENDING':
@@ -127,7 +130,7 @@ const RequirementDetailPage = () => {
 
   return (
     <PageContainer
-      title={`Requerimiento #${data?.id ?? id}`}
+      title={`Requerimiento ${data?.code ?? 'REQ-XXXX'}`}
       description="Detalle del requerimiento"
       action={
         <button
@@ -164,6 +167,13 @@ const RequirementDetailPage = () => {
                 >
                   {getStatusLabel(data.status)}
                 </span>
+              </div>
+
+              <div>
+                <p className="text-xs uppercase tracking-[0.14em] text-slate-400">Código</p>
+                <p className="mt-1 text-sm font-medium text-slate-900">
+                  {data.code}
+                </p>
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
