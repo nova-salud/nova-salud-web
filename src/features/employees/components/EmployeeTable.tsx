@@ -48,8 +48,15 @@ const EmployeeTable = ({ items, isLoading = false }: Props) => {
             {item.dni}
           </td>
 
-          <td className="px-6 py-5 text-slate-500">
-            {item.company}
+          <td className="px-6 py-5">
+            <span
+              className={cn(
+                'inline-flex rounded-xl border px-3 py-1 text-xs font-medium',
+                item.company === 'empresa2' && 'border-slate-200 bg-red-400 text-white',
+              )}
+            >
+              {item.company}
+            </span>
           </td>
 
           <td className="px-6 py-5 text-slate-500">
