@@ -1,8 +1,13 @@
-import type { UserRoleEnum } from './user-role.enum'
+import type { RoleEnum } from '@/core/enums/role.enum'
 
 export type UpdateUserDto = {
   username?: string
   fullName?: string
-  role?: UserRoleEnum
+  role?: RoleEnum
   isActive?: boolean
+  dni?: string
+  area?: string | null
+  position?: string | null
+  isExternal?: boolean
+  company?: string | null
 }

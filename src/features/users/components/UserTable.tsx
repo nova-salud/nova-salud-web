@@ -27,6 +27,8 @@ const UserTable = ({
         'ID',
         'Usuario',
         'Nombre completo',
+        'DNI',
+        'Empresa',
         'Rol',
         'Estado',
         'Acciones',
@@ -43,6 +45,14 @@ const UserTable = ({
 
           <td className="px-6 py-5 text-slate-700">
             {item.fullName}
+          </td>
+
+          <td className="px-6 py-5 text-slate-700">
+            {item.dni}
+          </td>
+
+          <td className="px-6 py-5 text-slate-700">
+            {item.company}
           </td>
 
           <td className="px-6 py-5">
@@ -62,7 +72,7 @@ const UserTable = ({
                 'inline-flex rounded-xl border px-3 py-1 text-xs font-medium',
                 item.isActive
                   ? 'border-emerald-100 bg-emerald-50 text-emerald-700'
-                  : 'border-slate-200 bg-slate-50 text-slate-500',
+                  : 'border-red-200 bg-red-500 text-white',
               )}
             >
               {item.isActive ? 'Activo' : 'Inactivo'}

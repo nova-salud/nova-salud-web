@@ -4,7 +4,8 @@ import { useSidebar } from '@/shared/hooks/useSidebar'
 import { useAuth } from '@/shared/hooks/useAuth'
 import { navigationConfig } from '@/app/router/navigation.config'
 import { cn } from '@/shared/utils'
-import { UserRoleEnum } from '@/features/users/types'
+import { USER_ROLE_LABEL_MAP } from '@/features/users/types'
+import { RoleEnum } from '@/core/enums/role.enum'
 
 const AppSidebar = () => {
   const {
@@ -21,7 +22,7 @@ const AppSidebar = () => {
     .map(section => ({
       ...section,
       items: section.items.filter(item =>
-        !item.roles || item.roles.includes(user?.role ?? UserRoleEnum.EMPLOYEE)
+        !item.roles || item.roles.includes(user?.role ?? RoleEnum.EMPLOYEE)
       ),
     }))
     .filter(section => section.items.length > 0)
@@ -116,7 +117,7 @@ const AppSidebar = () => {
                   {user?.username ?? 'Usuario'}
                 </p>
                 <p className="text-xs text-slate-400">
-                  {user?.role}
+                  {USER_ROLE_LABEL_MAP[user?.role ?? RoleEnum.EMPLOYEE]}
                 </p>
               </div>
             </div>

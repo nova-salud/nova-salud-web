@@ -83,7 +83,9 @@ export const UserDetailSidebar = ({
 
       {!isLoading && !user ? (
         <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-          <p className="text-sm text-slate-500">No se encontró información del usuario.</p>
+          <p className="text-sm text-slate-500">
+            No se encontró información del usuario.
+          </p>
         </div>
       ) : null}
 
@@ -110,6 +112,17 @@ export const UserDetailSidebar = ({
               >
                 {user.isActive ? 'Activo' : 'Inactivo'}
               </span>
+
+              <span
+                className={cn(
+                  'inline-flex rounded-xl border px-3 py-1 text-xs font-medium',
+                  user.isExternal
+                    ? 'border-sky-100 bg-sky-50 text-sky-700'
+                    : 'border-amber-100 bg-amber-50 text-amber-700',
+                )}
+              >
+                {user.isExternal ? 'Externo' : 'Interno'}
+              </span>
             </div>
 
             <div className="mt-5 grid gap-4 md:grid-cols-2">
@@ -130,9 +143,44 @@ export const UserDetailSidebar = ({
                   {user.fullName}
                 </p>
               </div>
+
+              <div>
+                <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
+                  DNI
+                </p>
+                <p className="mt-1 text-sm text-slate-700">
+                  {user.dni}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
+                  Empresa
+                </p>
+                <p className="mt-1 text-sm text-slate-700">
+                  {user.company}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
+                  Área
+                </p>
+                <p className="mt-1 text-sm text-slate-700">
+                  {user.area ?? '—'}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
+                  Cargo
+                </p>
+                <p className="mt-1 text-sm text-slate-700">
+                  {user.position ?? '—'}
+                </p>
+              </div>
             </div>
           </div>
-
         </div>
       ) : null}
     </Sidebar>

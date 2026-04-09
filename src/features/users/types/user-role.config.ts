@@ -9,6 +9,7 @@ export const USER_ROLE_LABEL_MAP: Record<UserResponseDto['role'], string> = {
   SUPERVISOR: 'Supervisor',
   MANAGEMENT: 'Gerencia',
   EMPLOYEE: 'Colaborador',
+  EMPLOYEE_EXT: 'Colaborador externo',
 }
 
 export const USER_ROLE_CLASS_MAP: Record<UserResponseDto['role'], string> = {
@@ -20,6 +21,7 @@ export const USER_ROLE_CLASS_MAP: Record<UserResponseDto['role'], string> = {
   SUPERVISOR: 'border-orange-100 bg-orange-50 text-orange-700',
   MANAGEMENT: 'border-indigo-100 bg-indigo-50 text-indigo-700',
   EMPLOYEE: 'border-slate-200 bg-slate-50 text-slate-600',
+  EMPLOYEE_EXT: 'border-slate-200 bg-slate-50 text-slate-600',
 }
 
 export const USER_ROLE_OPTIONS = [
@@ -31,4 +33,5 @@ export const USER_ROLE_OPTIONS = [
   { label: 'Supervisor', value: 'SUPERVISOR' },
   { label: 'Gerencia', value: 'MANAGEMENT' },
   { label: 'Colaborador', value: 'EMPLOYEE' },
+  { label: 'Colaborador externo', value: 'EMPLOYEE_EXT' },
 ]

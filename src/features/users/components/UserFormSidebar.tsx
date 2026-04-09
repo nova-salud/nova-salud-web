@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react'
-import { Button, Input, Select } from '@/shared/components/ui/form'
+import { Button, Checkbox, Input, Select } from '@/shared/components/ui/form'
 import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
 import { USER_ROLE_OPTIONS } from '../types/user-role.config'
 import type { CreateUserDto } from '../types/create-user.dto'
 import type { UpdateUserDto } from '../types/update-user.dto'
 import type { UserResponseDto } from '../types/user-response.dto'
-import type { UserRoleEnum } from '../types/user-role.enum'
+import type { RoleEnum } from '@/core/enums/role.enum'
 
 type UserFormMode = 'create' | 'edit'
 
@@ -15,6 +15,11 @@ type UserFormValues = {
   password: string
   role: string
   isActive: boolean
+  dni: string
+  isExternal: boolean
+  area: string | null
+  position: string | null
+  company: string | null
 }
 
 type Props = {
@@ -33,6 +38,11 @@ const INITIAL_VALUES: UserFormValues = {
   password: '',
   role: '',
   isActive: true,
+  dni: '',
+  isExternal: false,
+  area: null,
+  position: null,
+  company: null,
 }
 
 const UserFormSidebarContent = ({
@@ -51,6 +61,11 @@ const UserFormSidebarContent = ({
         password: '',
         role: user.role ?? '',
         isActive: user.isActive,
+        dni: user.dni ?? '',
+        isExternal: user.isExternal,
+        area: user.area,
+        position: user.position,
+        company: user.company,
       }
     }
 
@@ -61,9 +76,9 @@ const UserFormSidebarContent = ({
 
   const handleChange =
     <K extends keyof UserFormValues>(key: K) =>
-    (value: UserFormValues[K]) => {
-      setValues((prev) => ({ ...prev, [key]: value }))
-    }
+      (value: UserFormValues[K]) => {
+        setValues((prev) => ({ ...prev, [key]: value }))
+      }
 
   const isValid = useMemo<boolean>(() => {
     if (!values.username.trim() || !values.fullName.trim() || !values.role) {
@@ -86,7 +101,12 @@ const UserFormSidebarContent = ({
       username: values.username.trim(),
       fullName: values.fullName.trim(),
       password: values.password,
-      role: values.role as UserRoleEnum,
+      role: values.role as RoleEnum,
+      dni: values.dni.trim(),
+      isExternal: values.isExternal,
+      area: values.area,
+      position: values.position,
+      company: values.company,
     }
   }
 
@@ -98,8 +118,13 @@ const UserFormSidebarContent = ({
     return {
       username: values.username.trim(),
       fullName: values.fullName.trim(),
-      role: values.role as UserRoleEnum,
+      role: values.role as RoleEnum,
       isActive: values.isActive,
+      dni: values.dni.trim(),
+      isExternal: values.isExternal,
+      area: values.area,
+      position: values.position,
+      company: values.company,
     }
   }
 
@@ -156,16 +181,29 @@ const UserFormSidebarContent = ({
     <div className="space-y-4">
       <Input
         label="Usuario"
-        placeholder="Ingresa el nombre de usuario"
+        placeholder="jhondoe"
         value={values.username}
         onChange={handleChange('username')}
       />
 
       <Input
         label="Nombre completo"
-        placeholder="Ingresa el nombre completo"
+        placeholder="Jhon Doe"
         value={values.fullName}
         onChange={handleChange('fullName')}
+      />
+
+      <Input
+        label="DNI"
+        placeholder="12345678"
+        value={values.dni}
+        onChange={handleChange('dni')}
+      />
+
+      <Checkbox
+        label="Usuario externo"
+        checked={values.isExternal}
+        onChange={handleChange('isExternal')}
       />
 
       <Select
@@ -175,6 +213,33 @@ const UserFormSidebarContent = ({
         options={USER_ROLE_OPTIONS}
       />
 
+      {
+        !values.isExternal ? (
+          <>
+            <Input
+              label="Área"
+              placeholder="Recursos Humanos"
+              value={values.area ?? ''}
+              onChange={handleChange('area')}
+            />
+
+            <Input
+              label="Cargo o posición"
+              placeholder="Gerente de RRHH"
+              value={values.position ?? ''}
+              onChange={handleChange('position')}
+            />
+          </>
+        ): (
+          <Input
+            label="Empresa"
+            placeholder="Empresa XYZ"
+            value={values.company ?? ''}
+            onChange={handleChange('company')}
+          />
+        )
+      }
+
       {mode === 'create' ? (
         <Input
           type="password"
@@ -182,18 +247,6 @@ const UserFormSidebarContent = ({
           placeholder="Ingresa la contraseña"
           value={values.password}
           onChange={handleChange('password')}
-        />
-      ) : null}
-
-      {mode === 'edit' ? (
-        <Select
-          label="Estado"
-          value={values.isActive ? 'true' : 'false'}
-          onChange={(value) => handleChange('isActive')(value === 'true')}
-          options={[
-            { label: 'Activo', value: 'true' },
-            { label: 'Inactivo', value: 'false' },
-          ]}
         />
       ) : null}
 
