@@ -24,6 +24,7 @@ import EmployeeSyncSettingsPage from '@/features/system-settings/pages/EmployeeS
 import UsersPage from '@/features/users/pages/UsersPage'
 
 import { RoleEnum } from '@/core/enums/role.enum'
+import DiseasesPage from '@/features/attentions/diseases/pages/DiseasesPage'
 
 export const appRoutes: RouteObject = {
   element: <AuthGuard />,
@@ -48,6 +49,10 @@ export const appRoutes: RouteObject = {
             />
           ),
           children: [
+            {
+              path: '/diseases',
+              element: <DiseasesPage />,
+            },
             {
               path: '/medications',
               element: <MedicationsPage />,

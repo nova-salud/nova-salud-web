@@ -35,6 +35,21 @@ export const navigationConfig: NavigationSection[] = [
     ],
   },
   {
+    label: 'ATENCIONES',
+    items: [
+      {
+        label: 'Enfermedades',
+        path: '/diseases',
+        icon: ClipboardList,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.NURSE,
+        ],
+      },
+    ],
+  },
+  {
     label: 'FARMACIA',
     items: [
       {
