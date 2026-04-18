@@ -24,7 +24,7 @@ const MovementsPage = () => {
       description="Trazabilidad de entradas, salidas y ajustes de inventario"
     >
       <div className="space-y-5">
-        <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
               <p className="text-sm font-medium text-slate-800">
@@ -35,7 +35,7 @@ const MovementsPage = () => {
               </p>
             </div>
 
-            <div className="w-full md:w-[240px]">
+            <div className="w-full md:w-60">
               <select
                 value={movementType}
                 onChange={(event) => setMovementType(event.target.value)}
@@ -53,7 +53,7 @@ const MovementsPage = () => {
         </div>
 
         {error ? (
-          <div className="rounded-[24px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+          <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
             {error}
           </div>
         ) : null}
