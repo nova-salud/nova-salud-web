@@ -1,23 +1,32 @@
-import type { ClinicalHistoryAllergyResponseDto } from '../types/clinical-history-full-response.dto'
+import { Button } from '@/shared/components/ui/form'
+import type { AllergyResponseDto } from '../../allergies/types'
 
 type Props = {
-  allergies: ClinicalHistoryAllergyResponseDto[]
+  allergies: AllergyResponseDto[]
+  onAdd: () => void
 }
 
-const ClinicalHistoryAllergies = ({ allergies }: Props) => {
+const ClinicalHistoryAllergies = ({
+  allergies,
+  onAdd,
+}: Props) => {
   return (
-    <div className="rounded-2xl  bg-white p-5 shadow-sm">
-      <div className="mb-4 flex items-center justify-between">
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="mb-4 flex items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold">Alergias</h2>
-          <p className="text-sm text-muted-foreground">
+          <h2 className="text-lg font-semibold text-slate-900">Alergias</h2>
+          <p className="text-sm text-slate-500">
             Alergias registradas en la historia clínica
           </p>
         </div>
+
+        <Button type="button" className="w-auto" onClick={onAdd}>
+          Agregar alergia
+        </Button>
       </div>
 
       {allergies.length === 0 ? (
-        <div className="text-sm text-muted-foreground">
+        <div className="text-sm text-slate-500">
           No hay alergias registradas
         </div>
       ) : (
@@ -25,29 +34,24 @@ const ClinicalHistoryAllergies = ({ allergies }: Props) => {
           {allergies.map((allergy) => (
             <div
               key={allergy.id}
-              className="flex flex-col gap-2 rounded-xl  p-3 md:flex-row md:items-center md:justify-between"
+              className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4 md:flex-row md:items-center md:justify-between"
             >
               <div className="space-y-1">
-                <p className="font-medium">{allergy.allergen}</p>
+                <p className="font-medium text-slate-900">
+                  {allergy.medication?.name || 'Medicamento no disponible'}
+                </p>
 
-                {allergy.reaction && (
-                  <p className="text-sm text-muted-foreground">
-                    Reacción: {allergy.reaction}
-                  </p>
-                )}
-
-                {allergy.medicationId && (
-                  <p className="text-xs text-muted-foreground">
-                    Medicamento ID: {allergy.medicationId}
-                  </p>
-                )}
+                <p className="text-sm text-slate-600">
+                  Reacción: {allergy.reaction || 'No registrada'}
+                </p>
               </div>
 
               <div>
                 <span
-                  className={`rounded-full px-3 py-1 text-xs  ${
-                    allergy.isActive ? 'bg-red-50' : 'bg-gray-100'
-                  }`}
+                  className={`rounded-full px-3 py-1 text-xs font-medium ${allergy.isActive
+                    ? 'bg-red-100 text-red-700'
+                    : 'bg-slate-200 text-slate-600'
+                    }`}
                 >
                   {allergy.isActive ? 'Activa' : 'Inactiva'}
                 </span>

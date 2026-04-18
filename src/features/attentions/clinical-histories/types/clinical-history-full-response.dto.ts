@@ -1,14 +1,6 @@
 import type { AuditResponseDto } from '@/core/types/audit-response.dto'
 import type { EmployeeResponseDto } from '@/features/employees/types/employee-response.dto'
-
-export type ClinicalHistoryAllergyResponseDto = {
-  id: number
-  clinicalHistoryId: number
-  allergen: string
-  medicationId: number | null
-  reaction: string | null
-  isActive: boolean
-}
+import type { AllergyResponseDto } from '../../allergies/types'
 
 export type ClinicalHistoryAttentionAttachmentResponseDto = {
   id: number
@@ -58,6 +50,6 @@ export type ClinicalHistoryFullResponseDto = AuditResponseDto & {
   isActive: boolean
 
   employee: EmployeeResponseDto
-  allergies: ClinicalHistoryAllergyResponseDto[]
+  allergies: AllergyResponseDto[]
   attentions: ClinicalHistoryAttentionResponseDto[]
 }
