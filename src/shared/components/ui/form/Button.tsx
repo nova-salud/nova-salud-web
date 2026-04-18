@@ -44,6 +44,7 @@ export const Button = ({
       className={cn(
         'rounded-lg px-3 py-2 text-xs font-medium transition',
         'disabled:cursor-not-allowed disabled:opacity-60',
+        'flex justify-center items-center',
         VARIANT_STYLES[variant],
         className,
       )}
