@@ -20,6 +20,12 @@ class DispensationService extends ApiService {
     )
   }
 
+  async findByAttentionId(attentionId: number): Promise<DispensationResponseDto> {
+    return await this.get<DispensationResponseDto>(
+      `/inventory/dispensations/attention/${attentionId}`,
+    )
+  }
+
   async create(dto: CreateDispensationDto): Promise<DispensationResponseDto> {
     return await this.post<DispensationResponseDto, CreateDispensationDto>(
       '/inventory/dispensations',

@@ -27,6 +27,8 @@ import DiseasesPage from '@/features/attentions/diseases/pages/DiseasesPage'
 import ClinicalHistoryDetailPage from '@/features/attentions/clinical-histories/pages/ClinicalHistoryDetailPage'
 import ClinicalAttentionEntryPage from '@/features/attentions/clinical-attention/pages/ClinicalAttentionEntryPage'
 import CreateClinicalHistoryPage from '@/features/attentions/clinical-histories/pages/CreateClinicalHistoryPage'
+import CreateAttentionPage from '@/features/attentions/attentions/pages/CreateAttentionPage'
+import AttentionDetailPage from '@/features/attentions/attentions/pages/AttentionDetailPage'
 
 
 export const appRoutes: RouteObject = {
@@ -63,6 +65,14 @@ export const appRoutes: RouteObject = {
             {
               path: '/clinical-histories/:employeeId',
               element: <ClinicalHistoryDetailPage />,
+            },
+            {
+              path: '/clinical-histories/:employeeId/attentions/new',
+              element: <CreateAttentionPage />,
+            },
+            {
+              path: '/clinical-histories/:employeeId/attentions/:attentionId',
+              element: <AttentionDetailPage />,
             },
             {
               path: '/diseases',

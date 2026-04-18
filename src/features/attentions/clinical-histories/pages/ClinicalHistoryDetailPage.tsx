@@ -1,4 +1,4 @@
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import { useClinicalHistory } from '../hooks/useClinicalHistory'
 import PageContainer from '@/shared/components/ui/PageContainer'
 
@@ -9,8 +9,15 @@ import ClinicalHistoryAttentionsTable from '../components/ClinicalHistoryAttenti
 
 const ClinicalHistoryDetailPage = () => {
   const { employeeId } = useParams()
+  const navigate = useNavigate()
 
-  const { data, isLoading } = useClinicalHistory(Number(employeeId))
+  const numericEmployeeId = Number(employeeId)
+
+  const { data, isLoading } = useClinicalHistory(numericEmployeeId)
+
+  const handleGoToAttentionDetail = (attentionId: number) => {
+    navigate(`/clinical-histories/${numericEmployeeId}/attentions/${attentionId}`)
+  }
 
   if (isLoading) return <div>Cargando...</div>
   if (!data) return <div>No encontrado</div>
@@ -21,14 +28,19 @@ const ClinicalHistoryDetailPage = () => {
         <ClinicalHistoryHeader
           data={data}
           onEdit={() => { }}
-          onCreateAttention={() => { }}
+          onCreateAttention={() =>
+            navigate(`/clinical-histories/${numericEmployeeId}/attentions/new`)
+          }
         />
 
         <ClinicalHistoryInfoCard data={data} />
 
         <ClinicalHistoryAllergies allergies={data.allergies} />
 
-        <ClinicalHistoryAttentionsTable attentions={data.attentions} />
+        <ClinicalHistoryAttentionsTable
+          attentions={data.attentions}
+          onViewDetail={handleGoToAttentionDetail}
+        />
       </div>
     </PageContainer>
   )
