@@ -1,0 +1,5 @@
+export * from './clinical-history-full-response.dto'
+export * from './clinical-history-response.dto'
+export * from './create-clinical-history.dto'
+export * from './find-clinical-histories.dto'
+export * from './update-clinical-history.dto'

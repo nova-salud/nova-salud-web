@@ -38,6 +38,16 @@ export const navigationConfig: NavigationSection[] = [
     label: 'ATENCIONES',
     items: [
       {
+        label: 'Atención clínica',
+        path: '/clinical-attention',
+        icon: ClipboardList,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.NURSE,
+        ],
+      },
+      {
         label: 'Enfermedades',
         path: '/diseases',
         icon: ClipboardList,

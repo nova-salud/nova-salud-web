@@ -4,6 +4,7 @@ import AuthGuard from '@/app/router/guards/auth.guard'
 import RoleGuard from '@/app/router/guards/role.guard'
 import NotFoundPage from '@/shared/pages/NotFoundPage'
 import ErrorPage from '@/shared/pages/ErrorPage'
+import { RoleEnum } from '@/core/enums/role.enum'
 
 import DashboardPage from '@/features/dashboard/pages/DashboardPage'
 import MedicationsPage from '@/features/inventory/medications/pages/MedicationsPage'
@@ -22,9 +23,11 @@ import EmployeeDetailPage from '@/features/employees/pages/EmployeeDetailPage'
 import EmployeeAreasPage from '@/features/employees/pages/EmployeeAreasPage'
 import EmployeeSyncSettingsPage from '@/features/system-settings/pages/EmployeeSyncSettingsPage'
 import UsersPage from '@/features/users/pages/UsersPage'
-
-import { RoleEnum } from '@/core/enums/role.enum'
 import DiseasesPage from '@/features/attentions/diseases/pages/DiseasesPage'
+import ClinicalHistoryDetailPage from '@/features/attentions/clinical-histories/pages/ClinicalHistoryDetailPage'
+import ClinicalAttentionEntryPage from '@/features/attentions/clinical-attention/pages/ClinicalAttentionEntryPage'
+import CreateClinicalHistoryPage from '@/features/attentions/clinical-histories/pages/CreateClinicalHistoryPage'
+
 
 export const appRoutes: RouteObject = {
   element: <AuthGuard />,
@@ -49,6 +52,18 @@ export const appRoutes: RouteObject = {
             />
           ),
           children: [
+            {
+              path: '/clinical-attention',
+              element: <ClinicalAttentionEntryPage />,
+            },
+            {
+              path: '/clinical-histories/new',
+              element: <CreateClinicalHistoryPage />,
+            },
+            {
+              path: '/clinical-histories/:employeeId',
+              element: <ClinicalHistoryDetailPage />,
+            },
             {
               path: '/diseases',
               element: <DiseasesPage />,
