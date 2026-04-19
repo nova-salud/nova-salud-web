@@ -5,6 +5,7 @@ import { Button } from '@/shared/components/ui/form'
 import { useAttention } from '../hooks/useAttention'
 import { useDispensationByAttention } from '@/features/inventory/dispensations/hooks/useDispensationByAttention'
 import AttentionAttachmentsSection from '../../attachments/components/AttentionAttachmentsSection'
+import AttentionSignaturesSection from '../../signatures/components/AttentionSignaturesSection'
 
 const AttentionDetailPage = () => {
   const navigate = useNavigate()
@@ -225,6 +226,8 @@ const AttentionDetailPage = () => {
         </div>
 
         <AttentionAttachmentsSection attentionId={numericAttentionId} />
+
+        <AttentionSignaturesSection attentionId={numericAttentionId} />
 
       </div>
     </PageContainer>
