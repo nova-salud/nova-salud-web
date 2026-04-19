@@ -8,15 +8,12 @@ import { employeeService } from '@/features/employees/services/employee.service'
 import { useDiseases } from '@/features/attentions/diseases/hooks'
 import type { EmployeeResponseDto } from '@/features/employees/types/employee-response.dto'
 import type { FindDiseasesDto } from '@/features/attentions/diseases/types'
-import { useCreateAttention } from '../hooks/useCreateAttention'
 import { SearchSelect } from '@/shared/components/ui/form/SearchSelect'
 import type { DispensationFormItem } from '../types'
 import { useStocks } from '@/features/inventory/stocks/hooks/useStocks'
 import type { FindInventoryStocksDto } from '@/features/inventory/stocks/types/find-inventory-stocks.dto'
-import { useCreateDispensation } from '@/features/inventory/dispensations/hooks/useCreateDispensation'
 import DispensationSection from '../components/DispensationSection'
-import { DispenseTypeEnum } from '@/features/inventory/dispensations/types/dispense-type.enum'
-import { toastService } from '@/core/services/toast.service'
+import { useCreateAttentionWithDispensation } from '../hooks/useCreateAttentionWithDispensation'
 
 const CreateAttentionPage = () => {
   const navigate = useNavigate()
@@ -72,18 +69,10 @@ const CreateAttentionPage = () => {
   )
 
   const {
-    create: createDispensation,
-    isLoading: isCreatingDispensation,
-    error: dispensationError,
-  } = useCreateDispensation({
-    redirectOnSuccess: false
-  })
-
-  const {
-    createAttention,
+    createAttentionWithDispensation,
     isLoading: isCreating,
     error: createError,
-  } = useCreateAttention()
+  } = useCreateAttentionWithDispensation()
 
   useEffect(() => {
     const loadEmployee = async () => {
@@ -114,45 +103,36 @@ const CreateAttentionPage = () => {
       return
     }
 
-    const attention = await createAttention({
+    const validItems = dispensationItems
+      .filter((item) => item.medicationId && Number(item.quantity) > 0)
+      .map((item) => ({
+        medicationId: Number(item.medicationId),
+        quantity: Number(item.quantity),
+        doseInstruction: item.doseInstruction.trim() || undefined,
+        observation: item.observation.trim() || undefined,
+      }))
+
+    const result = await createAttentionWithDispensation({
       employeeId: employee.id,
       symptoms: symptoms.trim() || undefined,
       diagnosisCode: hasDiagnosis ? diagnosisCode || undefined : undefined,
       eva: eva.trim() ? Number(eva) : undefined,
       treatment: treatment.trim() || undefined,
       notes: notes.trim() || undefined,
+      requiresDispensation,
+      dispensationReason: requiresDispensation
+        ? dispensationReason.trim() || undefined
+        : undefined,
+      dispensationNotes: requiresDispensation
+        ? dispensationNotes.trim() || undefined
+        : undefined,
+      dispensationItems: requiresDispensation ? validItems : undefined,
     })
 
-    if (!attention) {
+    if (!result) {
       return
     }
 
-    if (requiresDispensation) {
-      const validItems = dispensationItems.filter(
-        (item) => item.medicationId && Number(item.quantity) > 0,
-      )
-
-      const dispensation = await createDispensation({
-        dispenseType: DispenseTypeEnum.ATTENTION,
-        attentionId: attention.id,
-        collaboratorDni: employee.dni,
-        diagnosisCode: hasDiagnosis ? diagnosisCode || undefined : undefined,
-        reason: dispensationReason.trim(),
-        notes: dispensationNotes.trim() || undefined,
-        items: validItems.map((item) => ({
-          medicationId: Number(item.medicationId),
-          quantity: Number(item.quantity),
-          doseInstruction: item.doseInstruction.trim() || undefined,
-          observation: item.observation.trim() || undefined,
-        })),
-      })
-
-      if (!dispensation) {
-        return
-      }
-    }
-
-    toastService.success('Atención creada correctamente')
     navigate(`/clinical-histories/${employee.id}`)
   }
 
@@ -346,9 +326,9 @@ const CreateAttentionPage = () => {
         />
 
 
-        {dispensationError ? (
+        {createError ? (
           <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-            {dispensationError}
+            {createError}
           </div>
         ) : null}
 
@@ -366,7 +346,7 @@ const CreateAttentionPage = () => {
             type="button"
             className="w-auto"
             onClick={() => void handleSubmit()}
-            isLoading={isCreating || isCreatingDispensation}
+            isLoading={isCreating}
             loadingText="Guardando..."
             disabled={!employee}
           >
