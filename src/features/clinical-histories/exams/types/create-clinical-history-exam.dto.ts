@@ -1,3 +1,4 @@
 export type CreateClinicalHistoryExamDto = {
-  name: string
+  clinicalHistoryId: number
+  examName: string
 }
