@@ -1,5 +1,5 @@
+import type { AllergyResponseDto } from '@/features/clinical-histories/allergies/types'
 import { Button } from '@/shared/components/ui/form'
-import type { AllergyResponseDto } from '../../allergies/types'
 
 type Props = {
   allergies: AllergyResponseDto[]

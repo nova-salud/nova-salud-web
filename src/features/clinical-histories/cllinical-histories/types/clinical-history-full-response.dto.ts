@@ -1,6 +1,6 @@
 import type { AuditResponseDto } from '@/core/types/audit-response.dto'
+import type { AllergyResponseDto } from '@/features/clinical-histories/allergies/types'
 import type { EmployeeResponseDto } from '@/features/employees/types/employee-response.dto'
-import type { AllergyResponseDto } from '../../allergies/types'
 
 export type ClinicalHistoryAttentionAttachmentResponseDto = {
   id: number

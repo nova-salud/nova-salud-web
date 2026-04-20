@@ -1,8 +1,8 @@
-import type { EmployeeResponseDto } from '@/features/employees/types/employee-response.dto'
 import { useCallback, useState } from 'react'
-import type { ClinicalHistoryResponseDto } from '../../clinical-histories/types'
-import { clinicalAttentionService } from '../services/clinical-attention.service'
+import type { EmployeeResponseDto } from '@/features/employees/types/employee-response.dto'
 import { parseBackendError } from '@/core/utils/parse-backend-error'
+import { clinicalAttentionService } from '../services/clinical-attention.service'
+import type { ClinicalHistoryResponseDto } from '../../cllinical-histories/types'
 
 export const useEmployeeClinicalLookup = () => {
   const [employee, setEmployee] = useState<EmployeeResponseDto | null>(null)

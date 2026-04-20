@@ -24,11 +24,11 @@ import EmployeeAreasPage from '@/features/employees/pages/EmployeeAreasPage'
 import EmployeeSyncSettingsPage from '@/features/system-settings/pages/EmployeeSyncSettingsPage'
 import UsersPage from '@/features/users/pages/UsersPage'
 import DiseasesPage from '@/features/attentions/diseases/pages/DiseasesPage'
-import ClinicalHistoryDetailPage from '@/features/attentions/clinical-histories/pages/ClinicalHistoryDetailPage'
-import ClinicalAttentionEntryPage from '@/features/attentions/clinical-attention/pages/ClinicalAttentionEntryPage'
-import CreateClinicalHistoryPage from '@/features/attentions/clinical-histories/pages/CreateClinicalHistoryPage'
 import CreateAttentionPage from '@/features/attentions/attentions/pages/CreateAttentionPage'
 import AttentionDetailPage from '@/features/attentions/attentions/pages/AttentionDetailPage'
+import ClinicalAttentionEntryPage from '@/features/clinical-histories/clinical-attention/pages/ClinicalAttentionEntryPage'
+import ClinicalHistoryDetailPage from '@/features/clinical-histories/cllinical-histories/pages/ClinicalHistoryDetailPage'
+import CreateClinicalHistoryPage from '@/features/clinical-histories/cllinical-histories/pages/CreateClinicalHistoryPage'
 
 
 export const appRoutes: RouteObject = {

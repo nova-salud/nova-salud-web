@@ -1,6 +1,6 @@
 import type { EmployeeResponseDto } from '@/features/employees/types/employee-response.dto'
-import type { ClinicalHistoryResponseDto } from '../../clinical-histories/types'
 import { ApiService } from '@/core/api/api.service'
+import type { ClinicalHistoryResponseDto } from '../../cllinical-histories/types'
 
 export type ClinicalAttentionLookupResult = {
   employee: EmployeeResponseDto | null
