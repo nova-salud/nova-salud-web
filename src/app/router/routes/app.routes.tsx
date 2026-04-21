@@ -30,6 +30,8 @@ import ClinicalAttentionEntryPage from '@/features/clinical-histories/clinical-a
 import ClinicalHistoryDetailPage from '@/features/clinical-histories/cllinical-histories/pages/ClinicalHistoryDetailPage'
 import CreateClinicalHistoryPage from '@/features/clinical-histories/cllinical-histories/pages/CreateClinicalHistoryPage'
 import ExamsPage from '@/features/exams/pages/ExamsPage'
+import EmoProtocolsPage from '@/features/emo-protocols/pages/EmoProtocolsPage'
+import EmoProtocolDetailPage from '@/features/emo-protocols/pages/EmoProtocolDetailPage'
 
 
 export const appRoutes: RouteObject = {
@@ -114,6 +116,14 @@ export const appRoutes: RouteObject = {
             {
               path: '/requirements/:id',
               element: <RequirementDetailPage />,
+            },
+            {
+              path: '/emo-protocols',
+              element: <EmoProtocolsPage />,
+            },
+            {
+              path: '/emo-protocols/:id',
+              element: <EmoProtocolDetailPage />,
             },
           ],
         },

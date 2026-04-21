@@ -138,6 +138,15 @@ export const navigationConfig: NavigationSection[] = [
           RoleEnum.MANAGEMENT,
         ],
       },
+      {
+        label: 'Protocolos EMO',
+        path: '/emo-protocols',
+        icon: ClipboardList,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+        ],
+      },
     ],
   },
   {
