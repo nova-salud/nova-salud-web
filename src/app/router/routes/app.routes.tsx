@@ -32,6 +32,7 @@ import CreateClinicalHistoryPage from '@/features/clinical-histories/cllinical-h
 import ExamsPage from '@/features/exams/pages/ExamsPage'
 import EmoProtocolsPage from '@/features/emo-protocols/pages/EmoProtocolsPage'
 import EmoProtocolDetailPage from '@/features/emo-protocols/pages/EmoProtocolDetailPage'
+import EmoCycleDetailPage from '@/features/clinical-histories/emo-cycles/pages/EmoCycleDetailPage'
 
 
 export const appRoutes: RouteObject = {
@@ -76,6 +77,10 @@ export const appRoutes: RouteObject = {
             {
               path: '/clinical-histories/:employeeId/attentions/:attentionId',
               element: <AttentionDetailPage />,
+            },
+            {
+              path: '/clinical-histories/:employeeId/cycle/:cycleId',
+              element: <EmoCycleDetailPage />
             },
             {
               path: '/diseases',

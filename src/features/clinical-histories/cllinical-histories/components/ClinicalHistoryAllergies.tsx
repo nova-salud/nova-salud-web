@@ -11,12 +11,12 @@ const ClinicalHistoryAllergies = ({
   onAdd,
 }: Props) => {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="mb-4 flex items-center justify-between gap-3">
+    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="mb-5 flex items-center justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold text-slate-900">Alergias</h2>
           <p className="text-sm text-slate-500">
-            Alergias registradas en la historia clínica
+            Alergias registradas en la historia clínica.
           </p>
         </div>
 
@@ -26,35 +26,38 @@ const ClinicalHistoryAllergies = ({
       </div>
 
       {allergies.length === 0 ? (
-        <div className="text-sm text-slate-500">
-          No hay alergias registradas
+        <div className="rounded-2xl border border-dashed border-slate-200 px-4 py-8 text-center text-sm text-slate-500">
+          No hay alergias registradas.
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {allergies.map((allergy) => (
             <div
               key={allergy.id}
-              className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4 md:flex-row md:items-center md:justify-between"
+              className="rounded-2xl bg-slate-50 px-4 py-3"
             >
-              <div className="space-y-1">
-                <p className="font-medium text-slate-900">
+              <div className="flex items-start justify-between gap-3">
+                <h3 className="font-semibold text-slate-700">
                   {allergy.medication?.name || 'Medicamento no disponible'}
-                </p>
+                </h3>
 
-                <p className="text-sm text-slate-600">
-                  Reacción: {allergy.reaction || 'No registrada'}
-                </p>
-              </div>
-
-              <div>
                 <span
-                  className={`rounded-full px-3 py-1 text-xs font-medium ${allergy.isActive
-                    ? 'bg-red-100 text-red-700'
-                    : 'bg-slate-200 text-slate-600'
+                  className={`inline-flex rounded-xl px-3 py-1 text-xs ${allergy.isActive
+                      ? 'bg-red-100 text-red-700'
+                      : 'bg-slate-200 text-slate-600'
                     }`}
                 >
                   {allergy.isActive ? 'Activa' : 'Inactiva'}
                 </span>
+              </div>
+
+              <div className="mt-3">
+                <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
+                  Reacción
+                </p>
+                <p className="mt-1 text-sm text-slate-700">
+                  {allergy.reaction?.trim() || 'No registrada'}
+                </p>
               </div>
             </div>
           ))}

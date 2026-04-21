@@ -1,75 +1,91 @@
 import { Button } from '@/shared/components/ui/form'
-import type { ClinicalHistoryFullResponseDto } from '../types/clinical-history-full-response.dto'
+import { cn } from '@/shared/utils'
+import type { ClinicalHistoryFullResponseDto } from '../types'
 
 type Props = {
   data: ClinicalHistoryFullResponseDto
+  canCreateAttention: boolean
   onEdit?: () => void
   onCreateAttention?: () => void
 }
 
+type InfoItemProps = {
+  label: string
+  value: string | null
+}
+
+const InfoItem = ({ label, value }: InfoItemProps) => (
+  <div className="rounded-2xl bg-slate-50 px-4 py-3">
+    <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
+      {label}
+    </p>
+    <p className="mt-1 text-sm font-medium text-slate-700">
+      {value?.trim() ? value : '—'}
+    </p>
+  </div>
+)
+
 const ClinicalHistoryHeader = ({
   data,
-  onEdit,
+  canCreateAttention,
   onCreateAttention,
 }: Props) => {
   const { employee } = data
 
   return (
-    <div className="rounded-2xl bg-white p-6 shadow-sm border border-slate-200">
-      <div className="space-y-2">
-        <div className='flex justify-between'>
-          <h1 className="text-2xl font-semibold text-slate-900">
+    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-xl font-semibold text-slate-900">
             Historia clínica #{data.id}
           </h1>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <span className="rounded-xl bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
+              Grupo {data.bloodType || '—'}
+            </span>
 
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={onEdit}>
-              Editar
-            </Button>
+            <span
+              className={cn(
+                'rounded-xl px-3 py-1 text-xs font-medium',
+                data.isActive
+                  ? 'bg-emerald-100 text-emerald-700'
+                  : 'bg-red-100 text-red-700',
+              )}
+            >
+              {data.isActive ? 'Activa' : 'Inactiva'}
+            </span>
 
-            <Button onClick={onCreateAttention}>
-              Nueva atención
-            </Button>
+            <span className="rounded-xl bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">
+              {data.allergies.length} alergias
+            </span>
+
+            <span className="rounded-xl bg-purple-100 px-3 py-1 text-xs font-medium text-purple-700">
+              {data.attentions.length} atenciones
+            </span>
           </div>
         </div>
 
-        {employee && (
-          <div className="flex flex-col gap-1 text-sm">
-            <span className="font-medium text-slate-900">
-              {employee.fullName}
-            </span>
-            <span className="text-slate-500">
-              DNI: {employee.dni}
-            </span>
-            <span className="text-slate-500">
-              {employee.company} · {employee.area?.name ?? '—'} · {employee.position ?? '—'}
-            </span>
-          </div>
-        )}
+        <div className="flex gap-2">
+          {/* <Button variant="outline" className="w-auto" onClick={onEdit}>
+            Editar
+          </Button> */}
 
-        <div className="flex flex-wrap gap-2 text-xs mt-4">
-          <span className="rounded-xl bg-slate-100 px-3 py-1 text-slate-600">
-            Grupo: {data.bloodType || '—'}
-          </span>
-
-          <span
-            className={`rounded-xl px-3 py-1 font-medium ${data.isActive
-              ? 'bg-emerald-100 text-emerald-700'
-              : 'bg-red-100 text-red-700'
-              }`}
-          >
-            {data.isActive ? 'Activa' : 'Inactiva'}
-          </span>
-
-          <span className="rounded-xl bg-blue-100 px-3 py-1 text-blue-700">
-            {data.allergies.length} alergias
-          </span>
-
-          <span className="rounded-xl bg-purple-100 px-3 py-1 text-purple-700">
-            {data.attentions.length} atenciones
-          </span>
+          {canCreateAttention && <Button className="w-auto" onClick={onCreateAttention}>
+            Nueva atención
+          </Button>}
         </div>
       </div>
+
+      {employee && (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          <InfoItem label="Nombre" value={employee.fullName} />
+          <InfoItem label="DNI" value={employee.dni} />
+          <InfoItem
+            label="Empresa / Área / Puesto"
+            value={`${employee.company} · ${employee.area?.name ?? '—'} · ${employee.position ?? '—'}`}
+          />
+        </div>
+      )}
     </div>
   )
 }
