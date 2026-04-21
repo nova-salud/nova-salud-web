@@ -7,12 +7,15 @@ import EmoCycleConclusionSection from '../components/EmoCycleConclusionSection'
 import EmoCycleConformitySection from '../components/EmoCycleConformitySection'
 import { getEmoCycleViewState } from '../helpers/getEmoCycleViewState'
 import { cn } from '@/shared/utils'
+import { useState } from 'react'
+import EmitClinicalHistoryConclusionSidebar from '../components/EmitClinicalHistoryConclusionSidebar'
 
 const EmoCycleDetailPage = () => {
   const { cycleId } = useParams()
   const numericCycleId = Number(cycleId)
 
   const { data: emoCycle, isLoading, error, refetch } = useEmoCycle(numericCycleId)
+  const [isEmitConclusionSidebarOpen, setIsEmitConclusionSidebarOpen] = useState(false)
 
   if (isLoading) return <div>Cargando ciclo...</div>
   if (error) return <div>{error}</div>
@@ -49,6 +52,7 @@ const EmoCycleDetailPage = () => {
           cycle={emoCycle}
           canEmitConclusion={viewState.canEmitConclusion}
           areRequiredExamsCompleted={viewState.areRequiredExamsCompleted}
+          onEmitConclusion={() => setIsEmitConclusionSidebarOpen(true)}
         />
 
         {viewState.showConformitySection ? (
@@ -59,6 +63,13 @@ const EmoCycleDetailPage = () => {
           />
         ) : null}
       </div>
+
+      <EmitClinicalHistoryConclusionSidebar
+        isOpen={isEmitConclusionSidebarOpen}
+        cycle={emoCycle}
+        onClose={() => setIsEmitConclusionSidebarOpen(false)}
+        onSuccess={refetch}
+      />
     </PageContainer>
   )
 }

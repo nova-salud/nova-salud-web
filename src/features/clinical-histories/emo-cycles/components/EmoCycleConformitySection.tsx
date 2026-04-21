@@ -33,12 +33,6 @@ const EmoCycleConformitySection = ({ cycle, showEmployeeConformity, canEmployeeS
         </div>
       ) : null}
 
-      {canEmployeeSign ? (
-        <div className="mb-4 rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700">
-          Ya puedes registrar la conformidad del trabajador para este ciclo EMO.
-        </div>
-      ) : null}
-
       <div className={cn('grid grid-cols-1 gap-4', showEmployeeConformity && 'md:grid-cols-2')}>
         <div className="rounded-2xl bg-slate-50 px-4 py-3">
           <p className="text-xs uppercase tracking-[0.14em] text-slate-400">

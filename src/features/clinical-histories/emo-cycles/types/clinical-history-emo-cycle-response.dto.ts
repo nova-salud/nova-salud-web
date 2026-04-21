@@ -86,8 +86,8 @@ export const EMO_CONCLUSION_LABEL: Record<ClinicalHistoryConclusion, string> = {
 
 export const EMO_CONCLUSION_CLASSNAME: Record<ClinicalHistoryConclusion, string> = {
   'APTO': 'bg-emerald-100 text-emerald-700',
-  'NO_APTO': 'bg-amber-100 text-amber-700',
-  'APTO_CON_RESTRICCIONES': 'bg-red-100 text-red-700'
+  'APTO_CON_RESTRICCIONES': 'bg-amber-100 text-amber-700',
+  'NO_APTO': 'bg-red-100 text-red-700'
 }
 
 export const EMO_CYCLE_SHOW_CONFORMITY_SECTION: Record<ClinicalHistoryEmoCycleStatus, boolean> = {

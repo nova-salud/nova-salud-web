@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { Button } from '@/shared/components/ui/form'
 import { cn } from '@/shared/utils'
 import type { ClinicalHistoryEmoCycleResponseDto, ClinicalHistoryExamResponseDto } from '../types'
+import CompleteClinicalHistoryExamSidebar from '../../clinical-histories-emo-exams/components/CompleteClinicalHistoryExamSidebar'
 
 type Props = {
   exams: ClinicalHistoryExamResponseDto[]
@@ -10,9 +12,21 @@ type Props = {
 
 const EmoCycleExamsSection = ({
   exams,
+  onRefresh,
 }: Props) => {
-
+  const [selectedExam, setSelectedExam] = useState<ClinicalHistoryExamResponseDto | null>(null)
+  const [isCompleteSidebarOpen, setIsCompleteSidebarOpen] = useState(false)
   const completedCount = exams.filter((e) => e.isCompleted).length
+
+  const handleOpenCompleteSidebar = (exam: ClinicalHistoryExamResponseDto) => {
+    setSelectedExam(exam)
+    setIsCompleteSidebarOpen(true)
+  }
+
+  const handleCloseCompleteSidebar = () => {
+    setSelectedExam(null)
+    setIsCompleteSidebarOpen(false)
+  }
 
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -68,9 +82,7 @@ const EmoCycleExamsSection = ({
                 type="button"
                 variant="outline"
                 className="w-auto text-xs"
-                onClick={() => {
-                  // 👉 luego abrimos sidebar
-                }}
+                onClick={() => handleOpenCompleteSidebar(exam)}
               >
                 {exam.isCompleted ? 'Ver detalle' : 'Completar'}
               </Button>
@@ -78,6 +90,13 @@ const EmoCycleExamsSection = ({
           </div>
         ))}
       </div>
+
+      <CompleteClinicalHistoryExamSidebar
+        isOpen={isCompleteSidebarOpen}
+        exam={selectedExam}
+        onClose={handleCloseCompleteSidebar}
+        onSuccess={onRefresh}
+      />
     </div>
   )
 }

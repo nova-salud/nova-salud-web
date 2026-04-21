@@ -6,21 +6,32 @@ type Props = {
   cycle: ClinicalHistoryEmoCycleResponseDto
   canEmitConclusion: boolean
   areRequiredExamsCompleted: boolean
+  onEmitConclusion?: () => void
 }
-const EmoCycleConclusionSection = ({ cycle, canEmitConclusion, areRequiredExamsCompleted }: Props) => {
+
+const EmoCycleConclusionSection = ({ cycle, canEmitConclusion, areRequiredExamsCompleted, onEmitConclusion }: Props) => {
   const doctorConformity = cycle.conformities.find(
     (item) => item.conformityType === 'DOCTOR',
   )
 
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-      <div className="mb-5">
-        <h2 className="text-lg font-semibold text-slate-900">
-          Conclusión médica
-        </h2>
-        <p className="mt-1 text-sm text-slate-500">
-          Resultado emitido por el médico ocupacional para este ciclo EMO.
-        </p>
+      <div className="flex gap-x-2 items-center justify-between">
+        <div className="mb-5">
+          <h2 className="text-lg font-semibold text-slate-900">
+            Conclusión médica
+          </h2>
+          <p className="mt-1 text-sm text-slate-500">
+            Resultado emitido por el médico ocupacional para este ciclo EMO.
+          </p>
+        </div>
+        {canEmitConclusion && onEmitConclusion ? (
+          <div className="mb-4 flex justify-end">
+            <Button type="button" className="w-auto" onClick={onEmitConclusion}>
+              Emitir conclusión
+            </Button>
+          </div>
+        ) : null}
       </div>
 
       {!areRequiredExamsCompleted ? (
@@ -29,19 +40,7 @@ const EmoCycleConclusionSection = ({ cycle, canEmitConclusion, areRequiredExamsC
         </div>
       ) : null}
 
-      {canEmitConclusion ? (
-        <div className="mb-4 rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700">
-          Ya puedes emitir la conclusión médica para este ciclo EMO.
-        </div>
-      ) : null}
 
-      {canEmitConclusion ? (
-        <div className="mb-4 flex justify-end">
-          <Button type="button" className="w-auto">
-            Emitir conclusión
-          </Button>
-        </div>
-      ) : null}
 
       <div className="mb-4 flex flex-wrap gap-2">
         <span
