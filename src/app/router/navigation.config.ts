@@ -57,6 +57,16 @@ export const navigationConfig: NavigationSection[] = [
           RoleEnum.NURSE,
         ],
       },
+      {
+        label: 'Exámenes',
+        path: '/exams',
+        icon: ClipboardList,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.NURSE,
+        ],
+      },
     ],
   },
   {

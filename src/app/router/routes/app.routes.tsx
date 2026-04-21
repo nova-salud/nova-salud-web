@@ -29,6 +29,7 @@ import AttentionDetailPage from '@/features/attentions/attentions/pages/Attentio
 import ClinicalAttentionEntryPage from '@/features/clinical-histories/clinical-attention/pages/ClinicalAttentionEntryPage'
 import ClinicalHistoryDetailPage from '@/features/clinical-histories/cllinical-histories/pages/ClinicalHistoryDetailPage'
 import CreateClinicalHistoryPage from '@/features/clinical-histories/cllinical-histories/pages/CreateClinicalHistoryPage'
+import ExamsPage from '@/features/exams/pages/ExamsPage'
 
 
 export const appRoutes: RouteObject = {
@@ -77,6 +78,10 @@ export const appRoutes: RouteObject = {
             {
               path: '/diseases',
               element: <DiseasesPage />,
+            },
+            {
+              path: '/exams',
+              element: <ExamsPage />,
             },
             {
               path: '/medications',
