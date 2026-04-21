@@ -6,8 +6,11 @@ type Props = {
   cycle: ClinicalHistoryEmoCycleResponseDto
   showEmployeeConformity: boolean
   canEmployeeSign: boolean
+  onSignEmployeeConformity?: () => void
+  onPreviewSignature?: (signatureData: string, title: string) => void
 }
-const EmoCycleConformitySection = ({ cycle, showEmployeeConformity, canEmployeeSign }: Props) => {
+
+const EmoCycleConformitySection = ({ cycle, showEmployeeConformity, canEmployeeSign, onPreviewSignature, onSignEmployeeConformity }: Props) => {
   const doctorConformity = cycle.conformities.find(
     (item) => item.conformityType === 'DOCTOR',
   )
@@ -54,6 +57,19 @@ const EmoCycleConformitySection = ({ cycle, showEmployeeConformity, canEmployeeS
                 : '—'}
             </p>
           </div>
+
+          {doctorConformity?.signatureData && onPreviewSignature ? (
+            <div className="mt-4 flex justify-end">
+              <Button
+                type="button"
+                variant="outline"
+                className="w-auto"
+                onClick={() => onPreviewSignature(doctorConformity.signatureData!, 'Firma del doctor')}
+              >
+                Ver firma
+              </Button>
+            </div>
+          ) : null}
         </div>
 
         {showEmployeeConformity ? (
@@ -78,13 +94,24 @@ const EmoCycleConformitySection = ({ cycle, showEmployeeConformity, canEmployeeS
               </p>
             </div>
 
-            {canEmployeeSign ? (
-              <div className="mt-4 flex justify-end">
-                <Button type="button" className="w-auto">
+            <div className="mt-4 flex justify-end gap-2">
+              {employeeConformity?.signatureData && onPreviewSignature ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-auto"
+                  onClick={() => onPreviewSignature(employeeConformity.signatureData!, 'Firma del trabajador')}
+                >
+                  Ver firma
+                </Button>
+              ) : null}
+
+              {canEmployeeSign && onSignEmployeeConformity ? (
+                <Button type="button" className="w-auto" onClick={onSignEmployeeConformity}>
                   Firmar conformidad
                 </Button>
-              </div>
-            ) : null}
+              ) : null}
+            </div>
           </div>
         ) : null}
       </div>

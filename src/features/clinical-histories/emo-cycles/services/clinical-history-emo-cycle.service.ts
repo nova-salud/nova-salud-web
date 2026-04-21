@@ -1,6 +1,6 @@
 
 import { ApiService } from '@/core/api/api.service'
-import type { ClinicalHistoryEmoCycleResponseDto, EmitClinicalHistoryConclusionDto } from '../types'
+import type { ClinicalHistoryEmoCycleResponseDto, EmitClinicalHistoryConclusionDto, SignClinicalHistoryConformityDto } from '../types'
 
 class ClinicalHistoryEmoCycleService extends ApiService {
   async findById(
@@ -25,6 +25,16 @@ class ClinicalHistoryEmoCycleService extends ApiService {
   ): Promise<ClinicalHistoryEmoCycleResponseDto> {
     return await this.patch<ClinicalHistoryEmoCycleResponseDto>(
       `/clinical-history-emo-cycles/${id}/emit-conclusion`,
+      dto,
+    )
+  }
+
+  async signConformity(
+    id: number,
+    dto: SignClinicalHistoryConformityDto,
+  ): Promise<ClinicalHistoryEmoCycleResponseDto> {
+    return await this.patch<ClinicalHistoryEmoCycleResponseDto>(
+      `/clinical-history-emo-cycles/${id}/sign-conformity`,
       dto,
     )
   }

@@ -1,14 +1,16 @@
-import PageContainer from '@/shared/components/ui/PageContainer'
+import { useState } from 'react'
 import { useParams } from 'react-router'
+import { cn } from '@/shared/utils'
+import PageContainer from '@/shared/components/ui/PageContainer'
 import EmoCycleExamsSection from '../components/EmoCycleExamsSection'
 import { useEmoCycle } from '../hooks/useEmoCycle'
 import { EMO_STATUS_CLASSNAME, EMO_STATUS_LABEL } from '../types'
 import EmoCycleConclusionSection from '../components/EmoCycleConclusionSection'
 import EmoCycleConformitySection from '../components/EmoCycleConformitySection'
 import { getEmoCycleViewState } from '../helpers/getEmoCycleViewState'
-import { cn } from '@/shared/utils'
-import { useState } from 'react'
 import EmitClinicalHistoryConclusionSidebar from '../components/EmitClinicalHistoryConclusionSidebar'
+import SignClinicalHistoryConformitySidebar from '../components/SignClinicalHistoryConformitySidebar'
+import SignaturePreviewModal from '../components/SignaturePreviewModal'
 
 const EmoCycleDetailPage = () => {
   const { cycleId } = useParams()
@@ -16,12 +18,20 @@ const EmoCycleDetailPage = () => {
 
   const { data: emoCycle, isLoading, error, refetch } = useEmoCycle(numericCycleId)
   const [isEmitConclusionSidebarOpen, setIsEmitConclusionSidebarOpen] = useState(false)
+  const [isSignConformitySidebarOpen, setIsSignConformitySidebarOpen] = useState(false)
+  const [previewSignatureData, setPreviewSignatureData] = useState<string | null>(null)
+  const [previewSignatureTitle, setPreviewSignatureTitle] = useState('Vista previa de firma')
 
   if (isLoading) return <div>Cargando ciclo...</div>
   if (error) return <div>{error}</div>
   if (!emoCycle) return <div>No encontrado</div>
 
   const viewState = getEmoCycleViewState(emoCycle)
+
+  const handlePreviewSignature = (signatureData: string, title: string) => {
+    setPreviewSignatureData(signatureData)
+    setPreviewSignatureTitle(title)
+  }
 
   return (
     <PageContainer>
@@ -60,6 +70,8 @@ const EmoCycleDetailPage = () => {
             cycle={emoCycle}
             showEmployeeConformity={viewState.showEmployeeConformity}
             canEmployeeSign={viewState.canEmployeeSign}
+            onSignEmployeeConformity={() => setIsSignConformitySidebarOpen(true)}
+            onPreviewSignature={handlePreviewSignature}
           />
         ) : null}
       </div>
@@ -69,6 +81,23 @@ const EmoCycleDetailPage = () => {
         cycle={emoCycle}
         onClose={() => setIsEmitConclusionSidebarOpen(false)}
         onSuccess={refetch}
+      />
+
+      <SignClinicalHistoryConformitySidebar
+        isOpen={isSignConformitySidebarOpen}
+        cycle={emoCycle}
+        onClose={() => setIsSignConformitySidebarOpen(false)}
+        onSuccess={refetch}
+      />
+
+      <SignaturePreviewModal
+        isOpen={Boolean(previewSignatureData)}
+        title={previewSignatureTitle}
+        signatureData={previewSignatureData}
+        onClose={() => {
+          setPreviewSignatureData(null)
+          setPreviewSignatureTitle('Vista previa de firma')
+        }}
       />
     </PageContainer>
   )
