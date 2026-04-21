@@ -64,11 +64,7 @@ const ClinicalHistoryDetailPage = () => {
           data={data}
           canCreateAttention={canCreateAttention}
           onEdit={() => { }}
-          onCreateAttention={() =>
-            canCreateAttention
-              ? () => navigate(`/clinical-histories/${numericEmployeeId}/attentions/new`)
-              : undefined
-          }
+          onCreateAttention={() => navigate(`/clinical-histories/${numericEmployeeId}/attentions/new`)}
         />
 
         <ClinicalHistoryInfoCard data={data} />
