@@ -26,7 +26,7 @@ const UsersPage = () => {
 
   const query = useMemo<FindUsersDto>(() => ({
     page: 1,
-    pageSize: 10,
+    pageSize: 30,
     sortBy: 'username',
     sortOrder: SortOrder.ASC,
     username: username.trim() || undefined,
