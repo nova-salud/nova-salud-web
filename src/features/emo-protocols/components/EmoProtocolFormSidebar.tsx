@@ -30,6 +30,8 @@ const EmoProtocolFormSidebar = ({
 }: Props) => {
   const [name, setName] = useState('')
   const [isActive, setIsActive] = useState(true)
+  const [nextEmoDaysFit, setNextEmoDaysFit] = useState(365)
+  const [nextEmoDaysFitWithRestrictions, setNextEmoDaysFitWithRestrictions] = useState(180)
 
   useEffect(() => {
     if (!isOpen) {
@@ -37,14 +39,17 @@ const EmoProtocolFormSidebar = ({
     }
 
     if (mode === 'edit' && emoProtocol) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setName(emoProtocol.name)
       setIsActive(emoProtocol.isActive)
+      setNextEmoDaysFit(emoProtocol.nextEmoDaysFit)
+      setNextEmoDaysFitWithRestrictions(emoProtocol.nextEmoDaysFitWithRestrictions)
       return
     }
 
     setName('')
     setIsActive(true)
+    setNextEmoDaysFit(365)
+    setNextEmoDaysFitWithRestrictions(180)
   }, [isOpen, mode, emoProtocol])
 
   const handleSubmit = async () => {
@@ -55,6 +60,8 @@ const EmoProtocolFormSidebar = ({
     if (mode === 'create') {
       await onCreate?.({
         name: name.trim(),
+        nextEmoDaysFit,
+        nextEmoDaysFitWithRestrictions
       })
       return
     }
@@ -66,6 +73,8 @@ const EmoProtocolFormSidebar = ({
     await onUpdate?.(emoProtocol.id, {
       name: name.trim(),
       isActive,
+      nextEmoDaysFit,
+      nextEmoDaysFitWithRestrictions
     })
   }
 
@@ -83,7 +92,23 @@ const EmoProtocolFormSidebar = ({
           label="Nombre"
           placeholder="Ej. Protocolo administrativo"
           value={name}
-          onChange={setName}
+          onChange={(val) => setName(String(val))}
+        />
+
+        <Input
+          label="Días recurrentes - Personal Apto"
+          placeholder="Ej. 365"
+          value={nextEmoDaysFit}
+          onChange={(val) => setNextEmoDaysFit(+val)}
+          type='number'
+        />
+
+        <Input
+          label="Días recurrentes - Personal Apto con restricciones"
+          placeholder="Ej. 180"
+          value={nextEmoDaysFitWithRestrictions}
+          onChange={(val) => setNextEmoDaysFitWithRestrictions(+val)}
+          type='number'
         />
 
         {mode === 'edit' && <label className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">

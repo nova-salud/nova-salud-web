@@ -23,6 +23,7 @@ export default defineConfig([
       'react-hooks/exhaustive-deps': 'off',
       'quotes': ['error', 'single', { avoidEscape: true }],
       'semi': ['error', 'never'],
+      'react-hooks/set-state-in-effect': 'off'
     }
   },
 ])

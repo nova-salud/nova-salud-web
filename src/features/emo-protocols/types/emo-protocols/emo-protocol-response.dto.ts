@@ -5,6 +5,8 @@ export type EmoProtocolResponseDto = AuditResponseDto & {
   id: number
   name: string
   isActive: boolean
+  nextEmoDaysFit: number,
+  nextEmoDaysFitWithRestrictions: number,
 
   areas: EmployeeAreaResponseDto[]
 }
