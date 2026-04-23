@@ -8,7 +8,7 @@ type Props = {
 
 export const Checkbox = ({ label, checked, onChange }: Props) => {
   return (
-    <label className="flex items-center gap-2 text-sm text-slate-700">
+    <label className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">
       <input
         type="checkbox"
         checked={checked}

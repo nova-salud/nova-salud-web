@@ -20,6 +20,7 @@ type UserFormValues = {
   area: string | null
   position: string | null
   company: string | null
+  isBlocked: boolean
 }
 
 type Props = {
@@ -43,6 +44,7 @@ const INITIAL_VALUES: UserFormValues = {
   area: null,
   position: null,
   company: null,
+  isBlocked: false
 }
 
 const UserFormSidebarContent = ({
@@ -66,6 +68,7 @@ const UserFormSidebarContent = ({
         area: user.area,
         position: user.position,
         company: user.company,
+        isBlocked: user.isBlocked
       }
     }
 
@@ -206,6 +209,14 @@ const UserFormSidebarContent = ({
         onChange={handleChange('isExternal')}
       />
 
+      {mode === 'edit' &&
+        <Checkbox
+          label='Vetado'
+          checked={values.isBlocked}
+          onChange={handleChange('isBlocked')}
+        />
+      }
+
       <Select
         label="Rol"
         value={values.role}
@@ -230,7 +241,7 @@ const UserFormSidebarContent = ({
               onChange={handleChange('position')}
             />
           </>
-        ): (
+        ) : (
           <Input
             label="Empresa"
             placeholder="Empresa XYZ"

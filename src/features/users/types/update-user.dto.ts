@@ -10,4 +10,5 @@ export type UpdateUserDto = {
   position?: string | null
   isExternal?: boolean
   company?: string | null
+  isBlocked?: boolean
 }

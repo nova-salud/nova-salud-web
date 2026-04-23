@@ -6,7 +6,7 @@ import { Label } from './Label'
 type Props = Omit<ComponentProps<'input'>, 'onChange'> & {
   label?: string
   error?: string
-  onChange?: (value: string | number) => void
+  onChange?: (value: string) => void
 }
 
 export const Input = ({ label, error, id, placeholder, onChange, className, type, ...props }: Props) => {
@@ -17,7 +17,7 @@ export const Input = ({ label, error, id, placeholder, onChange, className, type
     const val = e.target.value
 
     if (type === 'number') {
-      onChange?.(val === '' ? 0 : val)
+      onChange?.(val === '' ? '0': val)
     } else {
       onChange?.(val)
     }

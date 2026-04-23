@@ -30,6 +30,7 @@ const UserTable = ({
         'DNI',
         'Empresa',
         'Rol',
+        'Vetado',
         'Estado',
         'Acciones',
       ]}
@@ -63,6 +64,19 @@ const UserTable = ({
               )}
             >
               {USER_ROLE_LABEL_MAP[item.role]}
+            </span>
+          </td>
+
+          <td className="px-6 py-5">
+            <span
+              className={cn(
+                'inline-flex rounded-xl border px-3 py-1 text-xs font-medium',
+                !item.isBlocked
+                  ? 'border-emerald-100 bg-emerald-50 text-emerald-700'
+                  : 'border-red-200 bg-red-500 text-white',
+              )}
+            >
+              {item.isBlocked ? 'Vetado' : 'Habilitado'}
             </span>
           </td>
 

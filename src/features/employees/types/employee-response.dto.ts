@@ -17,4 +17,5 @@ export type EmployeeResponseDto = AuditResponseDto & {
   employmentStatus: string
   isActive: boolean
   lastSyncedAt: string | null
+  isBlocked: number
 }

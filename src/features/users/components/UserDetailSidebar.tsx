@@ -15,6 +15,7 @@ type Props = {
   onEdit?: (user: UserResponseDto) => void
   onChangePassword?: (user: UserResponseDto) => void
   onToggleStatus?: (user: UserResponseDto) => void
+  onBlock?: (user: UserResponseDto) => void
   isUpdatingStatus?: boolean
 }
 
@@ -26,10 +27,24 @@ export const UserDetailSidebar = ({
   onEdit,
   onChangePassword,
   onToggleStatus,
+  onBlock,
   isUpdatingStatus = false,
 }: Props) => {
   const footer = user ? (
     <div className="flex flex-wrap justify-end gap-3">
+      {onBlock ? (
+        <Button
+          type="button"
+          variant="outline"
+          isLoading={isUpdatingStatus}
+          loadingText="Actualizando..."
+          onClick={() => onBlock(user)}
+          className="w-auto"
+        >
+          {user.isBlocked ? 'Habilitar' : 'Vetar'}
+        </Button>
+      ) : null}
+
       {onToggleStatus ? (
         <Button
           type="button"
@@ -111,6 +126,17 @@ export const UserDetailSidebar = ({
                 )}
               >
                 {user.isActive ? 'Activo' : 'Inactivo'}
+              </span>
+
+              <span
+                className={cn(
+                  'inline-flex rounded-xl border px-3 py-1 text-xs font-medium',
+                  !user.isBlocked
+                    ? 'border-emerald-100 bg-emerald-50 text-emerald-700'
+                    : 'border-red-200 bg-red-500 text-white',
+                )}
+              >
+                {user.isBlocked ? 'Vetado' : 'Habilitado'}
               </span>
 
               <span

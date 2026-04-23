@@ -103,6 +103,18 @@ const UsersPage = () => {
     setSidebarMode('detail')
   }
 
+  const handleToggleBlock = async (user: UserResponseDto) => {
+    const result = await update(user.id, { isBlocked: !user.isBlocked})
+
+    if (!result) {
+      return
+    }
+
+    setSelectedUser(result)
+    await refetch()
+    setSidebarMode('detail')
+  }
+
   const handleUpdateUserPassword = async (
     id: number,
     dto: UpdateUserPasswordDto,
@@ -197,6 +209,7 @@ const UsersPage = () => {
         onEdit={handleOpenEditSidebar}
         onChangePassword={handleOpenPasswordSidebar}
         onToggleStatus={handleToggleUserStatus}
+        onBlock={handleToggleBlock}
         isUpdatingStatus={isUpdatingStatus}
       />
 

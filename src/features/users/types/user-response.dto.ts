@@ -12,4 +12,5 @@ export type UserResponseDto = AuditResponseDto & {
   position: string | null
   isExternal: boolean
   company: string
+  isBlocked: boolean
 }

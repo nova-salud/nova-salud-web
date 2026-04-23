@@ -24,6 +24,7 @@ const EmployeeTable = ({ items, isLoading = false }: Props) => {
         'Empresa',
         'Área',
         'Cargo',
+        'Vetado',
         'Estado',
         'Acciones',
       ]}
@@ -65,6 +66,19 @@ const EmployeeTable = ({ items, isLoading = false }: Props) => {
 
           <td className="px-6 py-5 text-slate-500">
             {item.position ?? '—'}
+          </td>
+
+          <td className="px-6 py-5">
+            <span
+              className={cn(
+                'inline-flex rounded-xl border px-3 py-1 text-xs font-medium',
+                !item.isBlocked
+                  ? 'border-emerald-100 bg-emerald-50 text-emerald-700'
+                  : 'border-red-200 bg-red-500 text-white',
+              )}
+            >
+              {item.isBlocked ? 'Vetado' : 'Habilitado'}
+            </span>
           </td>
 
           <td className="px-6 py-5">
