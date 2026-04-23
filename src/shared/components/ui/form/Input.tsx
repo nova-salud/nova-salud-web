@@ -31,6 +31,7 @@ export const Input = ({ label, error, id, placeholder, onChange, className, type
         id={inputId}
         placeholder={placeholder}
         onChange={handleChange}
+        type={type}
         className={cn(
           'h-11 w-full rounded-xl border px-3 text-sm outline-none transition',
           'border-slate-200 bg-white text-slate-900',
