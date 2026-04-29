@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import PageContainer from '@/shared/components/ui/PageContainer'
-import { Button, Input, Textarea } from '@/shared/components/ui/form'
+import { Button, Input, Select, Textarea } from '@/shared/components/ui/form'
 import { SortOrder } from '@/core/types/query-params.type'
 import { parseBackendError } from '@/core/utils/parse-backend-error'
 import { employeeService } from '@/features/employees/services/employee.service'
@@ -17,6 +17,7 @@ import { useCreateAttentionWithDispensation } from '../hooks/useCreateAttentionW
 import { FollowUpSection } from '../components/FollowUpSection'
 import { usePendingFollowUps } from '../../follow-ups/hooks/usePendingFollowUps'
 import { FollowUpSelectionSection } from '../../follow-ups/components/FollowUpSelectionSection'
+import { TRIAGE_LEVEL_OPTIONS, TriageLevelEnum } from '../types/triage.enum'
 
 const CreateAttentionPage = () => {
   const navigate = useNavigate()
@@ -34,6 +35,7 @@ const CreateAttentionPage = () => {
   const [eva, setEva] = useState('')
   const [treatment, setTreatment] = useState('')
   const [notes, setNotes] = useState('')
+  const [triageLevel, setTriageLevel] = useState<TriageLevelEnum>(TriageLevelEnum.LOW)
 
   const [requiresDispensation, setRequiresDispensation] = useState(false)
   const [dispensationReason, setDispensationReason] = useState('')
@@ -141,6 +143,7 @@ const CreateAttentionPage = () => {
       dispensationItems: requiresDispensation ? validItems : undefined,
       ...followUp,
       originFollowUpId,
+      triageLevel
     })
 
     if (!result) {
@@ -331,6 +334,15 @@ const CreateAttentionPage = () => {
                 onChange={setNotes}
                 rows={4}
               />
+            </div>
+
+            <div className="md:col-span-2">
+              <Select
+                label='Clasificación triaje'
+                value={triageLevel}
+                options={TRIAGE_LEVEL_OPTIONS}
+                onChange={(value) => setTriageLevel(value as TriageLevelEnum)}
+              ></Select>
             </div>
           </div>
         </div>

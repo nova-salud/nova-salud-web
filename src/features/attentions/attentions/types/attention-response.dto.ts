@@ -1,5 +1,6 @@
 import type { AuditResponseDto } from '@/core/types/audit-response.dto'
 import type { AttentionFollowUpResponseDto } from '../../follow-ups/types/attention-follow-up-response.dto'
+import type { TriageLevelEnum } from './triage.enum'
 
 export type AttentionResponseDto = AuditResponseDto & {
   id: number
@@ -7,11 +8,15 @@ export type AttentionResponseDto = AuditResponseDto & {
   attendedByUserId: number
   originFollowUpId: number | null
 
+  originFollowUp: AttentionFollowUpResponseDto | null
+
   symptoms: string | null
   diagnosisCode: string | null
   eva: number | null
   treatment: string | null
   notes: string | null
+
+  triageLevel: TriageLevelEnum
 
   followUps: AttentionFollowUpResponseDto[]
 }

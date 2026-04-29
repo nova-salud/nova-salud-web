@@ -7,6 +7,7 @@ import { useDispensationByAttention } from '@/features/inventory/dispensations/h
 import AttentionAttachmentsSection from '../../attachments/components/AttentionAttachmentsSection'
 import AttentionSignaturesSection from '../../signatures/components/AttentionSignaturesSection'
 import { AttentionFollowUpsSection } from '../../follow-ups/components/AttentionFollowUpsSection'
+import { TRIAGE_LEVEL_CLASSNAME, TRIAGE_LEVEL_LABEL } from '../types/triage.enum'
 
 const AttentionDetailPage = () => {
   const navigate = useNavigate()
@@ -68,9 +69,33 @@ const AttentionDetailPage = () => {
               <span className="rounded-xl bg-blue-100 px-3 py-1 text-blue-700">
                 EVA: {attention.eva ?? '-'}
               </span>
+
+              {attention.triageLevel && (
+                <span
+                  className={`rounded-xl px-3 py-1 text-xs ${TRIAGE_LEVEL_CLASSNAME[attention.triageLevel]
+                    }`}
+                >
+                  Triaje: {TRIAGE_LEVEL_LABEL[attention.triageLevel]}
+                </span>
+              )}
             </div>
           </div>
         </div>
+
+        {attention.originFollowUp && (
+          <div className="rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700">
+            Esta atención corresponde a un seguimiento programado
+            {attention.originFollowUp.scheduledAt && (
+              <>
+                {' '}para el{' '}
+                {format(
+                  new Date(attention.originFollowUp.scheduledAt),
+                  'dd/MM/yyyy HH:mm',
+                )}
+              </>
+            )}
+          </div>
+        )}
 
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="text-lg font-semibold text-slate-900">

@@ -1,3 +1,5 @@
+import type { TriageLevelEnum } from './triage.enum'
+
 export type CreateAttentionWithDispensationItemDto = {
   medicationId: number
   quantity: number
@@ -20,4 +22,6 @@ export type CreateAttentionWithDispensationDto = {
   followUpScheduledAt?: string
   followUpReason?: string
   originFollowUpId?: number
+
+  triageLevel: TriageLevelEnum
 }
