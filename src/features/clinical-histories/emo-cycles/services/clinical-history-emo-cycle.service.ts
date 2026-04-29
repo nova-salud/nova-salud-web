@@ -3,6 +3,14 @@ import { ApiService } from '@/core/api/api.service'
 import type { ClinicalHistoryEmoCycleResponseDto, EmitClinicalHistoryConclusionDto, SignClinicalHistoryConformityDto } from '../types'
 
 class ClinicalHistoryEmoCycleService extends ApiService {
+  async create(
+    clinicalHistoryId: number
+  ): Promise<ClinicalHistoryEmoCycleResponseDto> {
+    return await this.post<ClinicalHistoryEmoCycleResponseDto>(
+      `/clinical-history-emo-cycles/${clinicalHistoryId}`,
+    )
+  }
+
   async findById(
     id: number,
   ): Promise<ClinicalHistoryEmoCycleResponseDto> {

@@ -57,6 +57,7 @@ const ClinicalHistoryDetailPage = () => {
 
         <ClinicalHistoryEmoCycleSection
           cycle={activeEmoCycle}
+          clinicalHistoryId={data.id}
           isLoading={isLoadingActiveEmoCycle}
           error={activeEmoCycleError}
           onViewHistory={() => navigate(`/clinical-histories/${numericEmployeeId}/emo-cycles`)}

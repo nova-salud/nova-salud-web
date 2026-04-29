@@ -1,3 +1,5 @@
 export * from './useActiveClinicalHistoryEmoCycle'
+export * from './useCreateEmoCycle'
 export * from './useEmitClinicalHistoryConclusion'
+export * from './useEmoCycle'
 export * from './useSignClinicalHistoryConformity'

@@ -4,9 +4,15 @@ import { Button } from '@/shared/components/ui/form'
 import { cn } from '@/shared/utils'
 import { EMO_CONCLUSION_LABEL, EMO_STATUS_CLASSNAME, EMO_STATUS_LABEL, type ClinicalHistoryEmoCycleResponseDto } from '../types'
 import { ClinicalHistoryEmoCycleSectionSkeleton } from './ClinicalHistoryEmoCycleSectionSkeleton'
+import { useState } from 'react'
+import { useCreateEmoCycle } from '../hooks'
+import { useAuth } from '@/shared/hooks/useAuth'
+import { RoleEnum } from '@/core/enums/role.enum'
+import { CreateEmoCycleModal } from './CreateEmoCycleModal'
 
 type Props = {
   cycle: ClinicalHistoryEmoCycleResponseDto | null
+  clinicalHistoryId: number
   isLoading?: boolean
   error?: string | null
   onViewHistory?: () => void
@@ -17,9 +23,25 @@ const ClinicalHistoryEmoCycleSection = ({
   cycle,
   isLoading = false,
   error = null,
+  clinicalHistoryId,
   onViewHistory,
   onViewDetail
 }: Props) => {
+  const { user } = useAuth()
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const { createEmoCycle, isLoading: isCreating } = useCreateEmoCycle()
+
+  const handleCreateCycle = async () => {
+    if (!clinicalHistoryId) return
+
+    await createEmoCycle(clinicalHistoryId)
+    setIsModalOpen(false)
+
+    window.location.reload()
+  }
+
+  const canGenerateEmo = user?.role === RoleEnum.OCCUPATIONAL_DOCTOR || user?.role === RoleEnum.ADMIN
 
   if (isLoading) return <ClinicalHistoryEmoCycleSectionSkeleton />
 
@@ -42,6 +64,16 @@ const ClinicalHistoryEmoCycleSection = ({
               onClick={onViewHistory}
             >
               Ver historial EMO
+            </Button>
+          )}
+
+          {!cycle && canGenerateEmo && (
+            <Button
+              type="button"
+              className="w-auto"
+              onClick={() => setIsModalOpen(true)}
+            >
+              EMO extraordinario
             </Button>
           )}
 
@@ -165,6 +197,13 @@ const ClinicalHistoryEmoCycleSection = ({
           </div>
         </div>
       )}
+
+      <CreateEmoCycleModal
+        isOpen={isModalOpen}
+        isLoading={isCreating}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleCreateCycle}
+      />
     </div>
   )
 }
