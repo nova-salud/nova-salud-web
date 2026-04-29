@@ -16,4 +16,8 @@ export type CreateAttentionWithDispensationDto = {
   dispensationReason?: string
   dispensationNotes?: string
   dispensationItems?: CreateAttentionWithDispensationItemDto[]
+
+  followUpScheduledAt?: string
+  followUpReason?: string
+  originFollowUpId?: number
 }

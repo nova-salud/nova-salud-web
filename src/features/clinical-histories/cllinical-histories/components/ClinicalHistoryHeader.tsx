@@ -4,7 +4,6 @@ import type { ClinicalHistoryFullResponseDto } from '../types'
 
 type Props = {
   data: ClinicalHistoryFullResponseDto
-  canCreateAttention: boolean
   onEdit?: () => void
   onCreateAttention?: () => void
 }
@@ -27,8 +26,7 @@ const InfoItem = ({ label, value }: InfoItemProps) => (
 
 const ClinicalHistoryHeader = ({
   data,
-  canCreateAttention,
-  onCreateAttention,
+  onCreateAttention
 }: Props) => {
   const { employee } = data
 
@@ -70,9 +68,9 @@ const ClinicalHistoryHeader = ({
             Editar
           </Button> */}
 
-          {canCreateAttention && <Button className="w-auto" onClick={onCreateAttention}>
+          <Button className="w-auto" onClick={onCreateAttention}>
             Nueva atención
-          </Button>}
+          </Button>
         </div>
       </div>
 

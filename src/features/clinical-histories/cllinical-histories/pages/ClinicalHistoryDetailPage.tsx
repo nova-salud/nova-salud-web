@@ -10,8 +10,6 @@ import ClinicalHistoryAllergies from '../components/ClinicalHistoryAllergies'
 import ClinicalHistoryAttentionsTable from '../components/ClinicalHistoryAttentionsTable'
 import AllergyFormSidebar from '../../allergies/components/AllergyFormSidebar'
 import ClinicalHistoryEmoCycleSection from '../../emo-cycles/components/ClinicalHistoryEmoCycleSection'
-import { cn } from '@/shared/utils'
-import { EMO_ALERT_STYLES, EMO_ATTENTION_BLOCK_RULES } from '../../emo-cycles/types'
 
 const ClinicalHistoryDetailPage = () => {
   const { employeeId } = useParams()
@@ -41,19 +39,6 @@ const ClinicalHistoryDetailPage = () => {
     setIsAllergySidebarOpen(true)
   }
 
-  const emoBlock = activeEmoCycle
-    ? EMO_ATTENTION_BLOCK_RULES[activeEmoCycle.status]
-    : {
-      message: 'No existe un ciclo EMO activo. Debe iniciarse uno antes de registrar atenciones.',
-      tone: 'warning' as const,
-    }
-
-  const canCreateAttention =
-    !!activeEmoCycle &&
-    activeEmoCycle.status === 'COMPLETED' &&
-    (activeEmoCycle.conclusion === 'APTO' ||
-      activeEmoCycle.conclusion === 'APTO_CON_RESTRICCIONES')
-
   if (isLoading) return <div>Cargando...</div>
   if (!data) return <div>No encontrado</div>
 
@@ -62,7 +47,6 @@ const ClinicalHistoryDetailPage = () => {
       <div className="space-y-6">
         <ClinicalHistoryHeader
           data={data}
-          canCreateAttention={canCreateAttention}
           onEdit={() => { }}
           onCreateAttention={() => navigate(`/clinical-histories/${numericEmployeeId}/attentions/new`)}
         />
@@ -79,23 +63,10 @@ const ClinicalHistoryDetailPage = () => {
           onViewDetail={handleGoToEmoCycleDetail}
         />
 
-        {emoBlock ? (
-          <div
-            className={cn(
-              'rounded-2xl border px-4 py-3 text-sm',
-              EMO_ALERT_STYLES[emoBlock.tone],
-            )}
-          >
-            {emoBlock.message}
-          </div>
-        ) : null}
-
-        {canCreateAttention && (
-          <ClinicalHistoryAttentionsTable
-            attentions={data.attentions}
-            onViewDetail={handleGoToAttentionDetail}
-          />
-        )}
+        <ClinicalHistoryAttentionsTable
+          attentions={data.attentions}
+          onViewDetail={handleGoToAttentionDetail}
+        />
       </div>
 
       <AllergyFormSidebar

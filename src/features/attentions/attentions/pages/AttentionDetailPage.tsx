@@ -6,6 +6,7 @@ import { useAttention } from '../hooks/useAttention'
 import { useDispensationByAttention } from '@/features/inventory/dispensations/hooks/useDispensationByAttention'
 import AttentionAttachmentsSection from '../../attachments/components/AttentionAttachmentsSection'
 import AttentionSignaturesSection from '../../signatures/components/AttentionSignaturesSection'
+import { AttentionFollowUpsSection } from '../../follow-ups/components/AttentionFollowUpsSection'
 
 const AttentionDetailPage = () => {
   const navigate = useNavigate()
@@ -19,7 +20,6 @@ const AttentionDetailPage = () => {
   const {
     data: dispensation,
     isLoading: isLoadingDispensation,
-    error: dispensationError,
   } = useDispensationByAttention(numericAttentionId)
 
   if (isLoading) return <div>Cargando...</div>
@@ -44,12 +44,6 @@ const AttentionDetailPage = () => {
         {error ? (
           <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
             {error}
-          </div>
-        ) : null}
-
-        {dispensationError ? (
-          <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-            {dispensationError}
           </div>
         ) : null}
 
@@ -226,6 +220,8 @@ const AttentionDetailPage = () => {
         </div>
 
         <AttentionAttachmentsSection attentionId={numericAttentionId} />
+
+        <AttentionFollowUpsSection followUps={attention.followUps} />
 
         <AttentionSignaturesSection attentionId={numericAttentionId} />
 

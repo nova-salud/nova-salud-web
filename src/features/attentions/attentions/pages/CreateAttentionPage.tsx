@@ -14,6 +14,9 @@ import { useStocks } from '@/features/inventory/stocks/hooks/useStocks'
 import type { FindInventoryStocksDto } from '@/features/inventory/stocks/types/find-inventory-stocks.dto'
 import DispensationSection from '../components/DispensationSection'
 import { useCreateAttentionWithDispensation } from '../hooks/useCreateAttentionWithDispensation'
+import { FollowUpSection } from '../components/FollowUpSection'
+import { usePendingFollowUps } from '../../follow-ups/hooks/usePendingFollowUps'
+import { FollowUpSelectionSection } from '../../follow-ups/components/FollowUpSelectionSection'
 
 const CreateAttentionPage = () => {
   const navigate = useNavigate()
@@ -36,6 +39,15 @@ const CreateAttentionPage = () => {
   const [dispensationReason, setDispensationReason] = useState('')
   const [dispensationNotes, setDispensationNotes] = useState('')
   const [dispensationItems, setDispensationItems] = useState<DispensationFormItem[]>([])
+  const [originFollowUpId, setOriginFollowUpId] = useState<number | undefined>()
+
+  const [followUp, setFollowUp] = useState<{
+    followUpScheduledAt?: string
+    followUpReason?: string
+  }>({})
+
+  const { data: followUps, isLoading, error } =
+    usePendingFollowUps(employeeId ? +employeeId : 0)
 
   const diseasesQuery = useMemo<FindDiseasesDto>(() => ({
     page: 1,
@@ -127,6 +139,8 @@ const CreateAttentionPage = () => {
         ? dispensationNotes.trim() || undefined
         : undefined,
       dispensationItems: requiresDispensation ? validItems : undefined,
+      ...followUp,
+      originFollowUpId,
     })
 
     if (!result) {
@@ -232,6 +246,15 @@ const CreateAttentionPage = () => {
           ) : null}
         </div>
 
+        <FollowUpSelectionSection
+          followUps={followUps}
+          selectedId={originFollowUpId}
+          onChange={setOriginFollowUpId}
+          isLoading={isLoading}
+          error={error}
+        />
+
+
         <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
           <h2 className="text-base font-semibold text-slate-900">
             Información de la atención
@@ -312,6 +335,7 @@ const CreateAttentionPage = () => {
           </div>
         </div>
 
+
         <DispensationSection
           requiresDispensation={requiresDispensation}
           onRequiresDispensationChange={setRequiresDispensation}
@@ -325,6 +349,11 @@ const CreateAttentionPage = () => {
           isLoadingMedications={isLoadingStocks}
         />
 
+        <FollowUpSection
+          followUpScheduledAt={followUp.followUpScheduledAt}
+          followUpReason={followUp.followUpReason}
+          onChange={setFollowUp}
+        />
 
         {createError ? (
           <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
