@@ -1,5 +1,5 @@
 import { RoleEnum } from '@/core/enums/role.enum'
-import { ArrowLeftRight, ClipboardList, LayoutDashboard, Pill, Settings, Truck, Users, type LucideIcon } from 'lucide-react'
+import { Ambulance, ArrowLeftRight, ClipboardList, LayoutDashboard, Pill, Settings, Truck, Users, type LucideIcon } from 'lucide-react'
 
 export type NavigationItem = {
   label: string
@@ -65,6 +65,22 @@ export const navigationConfig: NavigationSection[] = [
           RoleEnum.ADMIN,
           RoleEnum.OCCUPATIONAL_DOCTOR,
           RoleEnum.NURSE,
+        ],
+      },
+    ],
+  },
+  {
+    label: 'SALUD OCUPACIONAL',
+    items: [
+      {
+        label: 'Establecimientos de salud',
+        path: '/healthcare-centers',
+        icon: Ambulance,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.NURSE,
+          RoleEnum.SST,
         ],
       },
     ],

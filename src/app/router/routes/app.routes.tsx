@@ -33,6 +33,7 @@ import ExamsPage from '@/features/exams/pages/ExamsPage'
 import EmoProtocolsPage from '@/features/emo-protocols/pages/EmoProtocolsPage'
 import EmoProtocolDetailPage from '@/features/emo-protocols/pages/EmoProtocolDetailPage'
 import EmoCycleDetailPage from '@/features/clinical-histories/emo-cycles/pages/EmoCycleDetailPage'
+import HealthcareCentersPage from '@/features/healthcare-centers/pages/HealthcareCentersPage'
 
 
 export const appRoutes: RouteObject = {
@@ -132,7 +133,24 @@ export const appRoutes: RouteObject = {
             },
           ],
         },
-
+        {
+          element: (
+            <RoleGuard
+              roles={[
+                RoleEnum.ADMIN,
+                RoleEnum.OCCUPATIONAL_DOCTOR,
+                RoleEnum.NURSE,
+                RoleEnum.SST
+              ]}
+            />
+          ),
+          children: [
+            {
+              path: '/healthcare-centers',
+              element: <HealthcareCentersPage />,
+            },
+          ]
+        },
         {
           element: (
             <RoleGuard
