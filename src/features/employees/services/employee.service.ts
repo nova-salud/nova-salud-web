@@ -18,6 +18,10 @@ class EmployeeService extends ApiService {
     return await this.get<EmployeeResponseDto>(`/employees/${id}`)
   }
 
+  async findByDni(dni: string): Promise<EmployeeResponseDto> {
+    return await this.get<EmployeeResponseDto>(`/employees/dni/${dni}`)
+  }
+
   async importCsv(file: File): Promise<ImportEmployeesResultDto> {
     const formData = new FormData()
     formData.append('file', file)

@@ -10,7 +10,7 @@ import ClinicalHistoryAllergies from '../components/ClinicalHistoryAllergies'
 import ClinicalHistoryAttentionsTable from '../components/ClinicalHistoryAttentionsTable'
 import AllergyFormSidebar from '../../allergies/components/AllergyFormSidebar'
 import ClinicalHistoryEmoCycleSection from '../../emo-cycles/components/ClinicalHistoryEmoCycleSection'
-import { ClinicalHistoryAccidentsSection } from '@/features/accidents/components/ClinicalHistoryAccidentsSection'
+import { ClinicalHistoryAccidentsSection } from '@/features/accidents/accidents/components/ClinicalHistoryAccidentsSection'
 import { cn } from '@/shared/utils'
 import ClinicalHistoryDetailSkeleton from '../components/ClinicalHistoryDetailSkeleton'
 

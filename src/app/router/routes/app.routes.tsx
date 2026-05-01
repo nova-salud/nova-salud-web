@@ -34,8 +34,10 @@ import EmoProtocolsPage from '@/features/emo-protocols/pages/EmoProtocolsPage'
 import EmoProtocolDetailPage from '@/features/emo-protocols/pages/EmoProtocolDetailPage'
 import EmoCycleDetailPage from '@/features/clinical-histories/emo-cycles/pages/EmoCycleDetailPage'
 import HealthcareCentersPage from '@/features/healthcare-centers/pages/HealthcareCentersPage'
-import CreateAccidentPage from '@/features/accidents/pages/CreateAccidentPage'
-import AccidentDetailPage from '@/features/accidents/pages/AccidentDetailPage'
+import AccidentDetailPage from '@/features/accidents/accidents/pages/AccidentDetailPage'
+import { AccidentsPage } from '@/features/accidents/accidents/pages/AccidentsPage'
+import CreateAccidentFromClinicaHistoryPage from '@/features/accidents/accidents/pages/CreateAccidentFromClinicalHistoryPage'
+import { CreateAccidentPage } from '@/features/accidents/accidents/pages/CreateAccidentPage'
 
 
 export const appRoutes: RouteObject = {
@@ -87,7 +89,7 @@ export const appRoutes: RouteObject = {
             },
             {
               path: '/clinical-histories/:employeeId/accidents/new',
-              element: <CreateAccidentPage />,
+              element: <CreateAccidentFromClinicaHistoryPage />,
             },
             {
               path: '/clinical-histories/:employeeId/cycle/:cycleId',
@@ -213,7 +215,6 @@ export const appRoutes: RouteObject = {
             },
           ],
         },
-
         {
           element: <RoleGuard roles={[RoleEnum.ADMIN]} />,
           children: [
@@ -224,6 +225,26 @@ export const appRoutes: RouteObject = {
             {
               path: '/users',
               element: <UsersPage />,
+            },
+          ],
+        },
+        {
+          element: <RoleGuard roles={[
+            RoleEnum.SST,
+            RoleEnum.ADMIN
+          ]} />,
+          children: [
+            {
+              path: '/accidents',
+              element: <AccidentsPage />,
+            },
+            {
+              path: '/accidents/create',
+              element: <CreateAccidentPage />,
+            },
+            {
+              path: '/accidents/:accidentId',
+              element: <AccidentDetailPage />,
             },
           ],
         },

@@ -7,6 +7,7 @@ type Props = {
   onChange: (id?: number) => void
   isLoading?: boolean
   error?: string | null
+  isLocked?: boolean
 }
 
 export const FollowUpSelectionSection = ({
@@ -14,6 +15,7 @@ export const FollowUpSelectionSection = ({
   selectedId,
   onChange,
   isLoading,
+  isLocked,
   error,
 }: Props) => {
   if (isLoading) {
@@ -28,6 +30,36 @@ export const FollowUpSelectionSection = ({
     return (
       <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
         {error}
+      </div>
+    )
+  }
+
+  if (isLocked && selectedId) {
+    const selected = followUps.find(f => f.id === selectedId)
+
+    if (!selected) return null
+
+    return (
+      <div className="rounded-2xl border border-blue-200 bg-blue-50 p-6 shadow-sm">
+        <h2 className="text-lg font-semibold text-slate-900">
+          Atención desde seguimiento
+        </h2>
+
+        <p className="text-sm text-slate-600 mt-1">
+          Esta atención está vinculada automáticamente a un seguimiento.
+        </p>
+
+        <div className="mt-3 text-sm text-slate-700">
+          <span className="font-medium">
+            {format(new Date(selected.scheduledAt), 'dd/MM/yyyy')}
+          </span>
+
+          {selected.reason && (
+            <span className="ml-2 text-slate-500">
+              - {selected.reason}
+            </span>
+          )}
+        </div>
       </div>
     )
   }

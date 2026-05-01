@@ -1,5 +1,5 @@
 import type { AuditResponseDto } from '@/core/types/audit-response.dto'
-import type { AccidentResponseDto } from '@/features/accidents/types'
+import type { AccidentResponseDto } from '@/features/accidents/accidents/types'
 import type { AllergyResponseDto } from '@/features/clinical-histories/allergies/types'
 import type { EmployeeResponseDto } from '@/features/employees/types/employee-response.dto'
 import type { FollowUpResponseDto } from '@/features/follow-ups/types/follow-up-response.dto'

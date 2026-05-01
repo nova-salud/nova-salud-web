@@ -3,9 +3,12 @@ import type { HealthcareCenterResponseDto } from '@/features/healthcare-centers/
 import type { UserResponseDto } from '@/features/users/types'
 import type { AccidentTypeEnum } from './accident-type.enum'
 import type { AccidentStatusEnum } from './accident-status.enum'
+import type { AccidentCaseResponseDto } from '../../accident-cases/types/accident-case-response.dto'
+import type { FollowUpResponseDto } from '@/features/follow-ups/types/follow-up-response.dto'
 
 export interface AccidentResponseDto extends AuditResponseDto {
   id: number
+  employeeFullName: string | null
 
   clinicalHistoryId: number
   reportedByUserId: number
@@ -20,4 +23,7 @@ export interface AccidentResponseDto extends AuditResponseDto {
   healthcareCenter: HealthcareCenterResponseDto | null
 
   status: AccidentStatusEnum
+  accidentCase: AccidentCaseResponseDto | null
+
+  followUps: FollowUpResponseDto[]
 }

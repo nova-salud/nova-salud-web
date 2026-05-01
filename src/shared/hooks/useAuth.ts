@@ -1,3 +1,4 @@
+import { RoleEnum } from '@/core/enums/role.enum'
 import { useAuthStore } from '@/shared/store/auth.store'
 
 export const useAuth = () => {
@@ -9,12 +10,15 @@ export const useAuth = () => {
   const setSession = useAuthStore((state) => state.setSession)
   const clearSession = useAuthStore((state) => state.clearSession)
 
+  const isAdmin = session?.user.role === RoleEnum.ADMIN
+
   return {
     session,
     token,
     user: session?.user ?? null,
     isAuthenticated,
     isHydrated,
+    isAdmin,
     hydrateSession,
     setSession,
     clearSession,

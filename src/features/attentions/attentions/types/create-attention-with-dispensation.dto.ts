@@ -24,4 +24,6 @@ export type CreateAttentionWithDispensationDto = {
   originFollowUpId?: number
 
   triageLevel: TriageLevelEnum
+
+  accidentId?: number
 }

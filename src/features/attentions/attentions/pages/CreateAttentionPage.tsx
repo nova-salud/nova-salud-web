@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate, useParams } from 'react-router'
+import { useNavigate, useParams, useSearchParams } from 'react-router'
 import PageContainer from '@/shared/components/ui/PageContainer'
 import { Button, Input, Select, Textarea } from '@/shared/components/ui/form'
 import { SortOrder } from '@/core/types/query-params.type'
@@ -22,8 +22,13 @@ import { TRIAGE_LEVEL_OPTIONS, TriageLevelEnum } from '../types/triage.enum'
 const CreateAttentionPage = () => {
   const navigate = useNavigate()
   const { employeeId } = useParams()
+  const [searchParams] = useSearchParams()
 
   const numericEmployeeId = Number(employeeId)
+
+  const followUpIdParam = searchParams.get('followUpId')
+  const accidentIdParam = searchParams.get('accidentId')
+
 
   const [employee, setEmployee] = useState<EmployeeResponseDto | null>(null)
   const [employeeError, setEmployeeError] = useState<string | null>(null)
@@ -112,6 +117,12 @@ const CreateAttentionPage = () => {
     void loadEmployee()
   }, [numericEmployeeId])
 
+  useEffect(() => {
+    if (followUpIdParam) {
+      setOriginFollowUpId(Number(followUpIdParam))
+    }
+  }, [followUpIdParam])
+
   const handleSubmit = async () => {
     if (!employee) {
       return
@@ -143,7 +154,8 @@ const CreateAttentionPage = () => {
       dispensationItems: requiresDispensation ? validItems : undefined,
       ...followUp,
       originFollowUpId,
-      triageLevel
+      triageLevel,
+      accidentId: accidentIdParam ? Number(accidentIdParam) : undefined,
     })
 
     if (!result) {
@@ -255,6 +267,7 @@ const CreateAttentionPage = () => {
           onChange={setOriginFollowUpId}
           isLoading={isLoading}
           error={error}
+          isLocked={!!followUpIdParam}
         />
 
 

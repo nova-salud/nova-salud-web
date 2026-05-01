@@ -16,14 +16,15 @@ export const ClinicalHistoryAccidentsSection = ({
 }: Props) => {
   return (
     <div className="px-5">
-      <div className="mb-4 flex items-start justify-between">
-        <div>
+      <div className="mb-4 flex items-center justify-between">
+        <div className="flex items-center gap-3">
           <h2 className="text-lg font-semibold text-slate-900">
             Accidentes
           </h2>
-          <p className="text-sm text-slate-500">
-            Eventos e incidentes registrados del trabajador.
-          </p>
+
+          <span className="rounded-xl bg-slate-100 px-3 py-1 text-xs text-slate-600">
+            {items.length}
+          </span>
         </div>
 
         {onCreate && (
@@ -37,6 +38,10 @@ export const ClinicalHistoryAccidentsSection = ({
         )}
       </div>
 
+      <p className="mb-4 text-sm text-slate-500">
+        Eventos e incidentes registrados del trabajador.
+      </p>
+
       {items.length === 0 ? (
         <div className="text-sm text-slate-500">
           No hay accidentes registrados.
@@ -48,11 +53,32 @@ export const ClinicalHistoryAccidentsSection = ({
               key={item.id}
               className="rounded-xl border border-slate-200 bg-slate-50 p-4"
             >
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <div>
-                  <p className="text-sm font-medium text-slate-900">
-                    Accidente #{index + 1}
-                  </p>
+              <div className="flex items-start justify-between gap-2">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-medium text-slate-900">
+                      Accidente #{index + 1}
+                    </p>
+
+                    <span
+                      className={cn(
+                        'rounded-xl px-2 py-0.5 text-xs',
+                        ACCIDENT_TYPE_CLASSNAME[item.type],
+                      )}
+                    >
+                      {ACCIDENT_TYPE_LABEL[item.type]}
+                    </span>
+
+                    <span
+                      className={cn(
+                        'rounded-xl px-2 py-0.5 text-xs',
+                        ACCIDENT_STATUS_CLASSNAME[item.status],
+                      )}
+                    >
+                      {ACCIDENT_STATUS_LABEL[item.status]}
+                    </span>
+                  </div>
+
                   <p className="text-xs text-slate-500">
                     {item.occurredAt
                       ? format(new Date(item.occurredAt), 'dd/MM/yyyy HH:mm')
@@ -60,33 +86,7 @@ export const ClinicalHistoryAccidentsSection = ({
                   </p>
                 </div>
 
-                <div className="flex gap-2 text-xs">
-                  <span
-                    className={cn(
-                      'rounded-xl px-3 py-1',
-                      ACCIDENT_TYPE_CLASSNAME[item.type],
-                    )}
-                  >
-                    {ACCIDENT_TYPE_LABEL[item.type]}
-                  </span>
-
-                  <span
-                    className={cn(
-                      'rounded-xl px-3 py-1',
-                      ACCIDENT_STATUS_CLASSNAME[item.status],
-                    )}
-                  >
-                    {ACCIDENT_STATUS_LABEL[item.status]}
-                  </span>
-                </div>
-              </div>
-
-              <p className="mt-3 text-sm text-slate-700">
-                {item.description || 'Sin descripción'}
-              </p>
-
-              {onViewDetail && (
-                <div className="mt-3 flex justify-end">
+                {onViewDetail && (
                   <Button
                     type="button"
                     variant="outline"
@@ -95,8 +95,12 @@ export const ClinicalHistoryAccidentsSection = ({
                   >
                     Ver detalle
                   </Button>
-                </div>
-              )}
+                )}
+              </div>
+
+              <p className="mt-3 text-sm text-slate-700">
+                {item.description || 'Sin descripción'}
+              </p>
             </div>
           ))}
         </div>

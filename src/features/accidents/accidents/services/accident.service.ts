@@ -9,7 +9,6 @@ class AccidentService extends ApiService {
   }
 
   async findById(id: number) {
-    console.log(id)
     return await this.get<AccidentResponseDto>(`/accidents/${id}`)
   }
 

@@ -4,7 +4,7 @@ import { accidentService } from '../services/accident.service'
 import type { AccidentResponseDto } from '../types'
 import type { FindAccidentsDto } from '../types/find-accidents.dto'
 
-export const useAccidents = (query: FindAccidentsDto) => {
+export const useAccidents = (query?: FindAccidentsDto) => {
   const [data, setData] = useState<AccidentResponseDto[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
