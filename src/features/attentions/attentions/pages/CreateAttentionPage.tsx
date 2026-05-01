@@ -162,7 +162,7 @@ const CreateAttentionPage = () => {
       return
     }
 
-    navigate(`/clinical-histories/${employee.id}`)
+    navigate(-1)
   }
 
   return (

@@ -71,6 +71,10 @@ export const AccidentCaseSection = ({
 
   const canCloseWithConsent = accidentCase.status !== AccidentCaseStatusEnum.CLOSED
 
+  const showNorestrictionsMessage = !hasActiveRestrictions &&
+    accidentCase.dischargeType ===
+    AccidentDischargeTypeEnum.WITH_RESTRICTIONS && accidentCase.status !== AccidentCaseStatusEnum.CLOSED
+
   const handleDischarge = async (type: AccidentDischargeTypeEnum) => {
     await registerDischarge(accidentCase.id, {
       dischargeType: type,
@@ -91,8 +95,7 @@ export const AccidentCaseSection = ({
   }
 
   const handleCloseCase = async () => {
-    const result = await closeCase(accidentCase.id)
-    if (!result) return
+    await closeCase(accidentCase.id)
     onRefresh()
   }
 
@@ -210,13 +213,11 @@ export const AccidentCaseSection = ({
           </div>
         ))}
 
-        {!hasActiveRestrictions &&
-          accidentCase.dischargeType ===
-          AccidentDischargeTypeEnum.WITH_RESTRICTIONS && (
-            <div className="rounded-xl bg-emerald-50 border border-emerald-200 px-4 py-3 text-sm text-emerald-700">
-              Todas las restricciones han sido levantadas. Puedes dar alta definitiva.
-            </div>
-          )}
+        {showNorestrictionsMessage && (
+          <div className="rounded-xl bg-emerald-50 border border-emerald-200 px-4 py-3 text-sm text-emerald-700">
+            Todas las restricciones han sido levantadas. Puedes dar alta definitiva.
+          </div>
+        )}
       </div>
 
       {isDischargeModalOpen && (

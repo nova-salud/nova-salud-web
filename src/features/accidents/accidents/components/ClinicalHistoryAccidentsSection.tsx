@@ -57,7 +57,7 @@ export const ClinicalHistoryAccidentsSection = ({
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-medium text-slate-900">
-                      Accidente #{index + 1}
+                      Accidente #{items.length - index}
                     </p>
 
                     <span

@@ -113,7 +113,9 @@ const ClinicalHistoryDetailPage = () => {
 
             {activeTab === 'accidents' && (
               <ClinicalHistoryAccidentsSection
-                items={data.accidents}
+                items={
+                  data.accidents.toSorted((a,b) => new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime())
+                }
                 onCreate={() =>
                   navigate(
                     `/clinical-histories/${numericEmployeeId}/accidents/new`
