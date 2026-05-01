@@ -10,6 +10,9 @@ import ClinicalHistoryAllergies from '../components/ClinicalHistoryAllergies'
 import ClinicalHistoryAttentionsTable from '../components/ClinicalHistoryAttentionsTable'
 import AllergyFormSidebar from '../../allergies/components/AllergyFormSidebar'
 import ClinicalHistoryEmoCycleSection from '../../emo-cycles/components/ClinicalHistoryEmoCycleSection'
+import { ClinicalHistoryAccidentsSection } from '@/features/accidents/components/ClinicalHistoryAccidentsSection'
+import { cn } from '@/shared/utils'
+import ClinicalHistoryDetailSkeleton from '../components/ClinicalHistoryDetailSkeleton'
 
 const ClinicalHistoryDetailPage = () => {
   const { employeeId } = useParams()
@@ -18,6 +21,7 @@ const ClinicalHistoryDetailPage = () => {
   const numericEmployeeId = Number(employeeId)
 
   const [isAllergySidebarOpen, setIsAllergySidebarOpen] = useState(false)
+  const [activeTab, setActiveTab] = useState<'attentions' | 'accidents'>('attentions')
 
   const { data, isLoading, refetch } = useClinicalHistory(numericEmployeeId)
 
@@ -39,7 +43,7 @@ const ClinicalHistoryDetailPage = () => {
     setIsAllergySidebarOpen(true)
   }
 
-  if (isLoading) return <div>Cargando...</div>
+  if (isLoading) return <ClinicalHistoryDetailSkeleton />
   if (!data) return <div>No encontrado</div>
 
   return (
@@ -48,26 +52,82 @@ const ClinicalHistoryDetailPage = () => {
         <ClinicalHistoryHeader
           data={data}
           onEdit={() => { }}
-          onCreateAttention={() => navigate(`/clinical-histories/${numericEmployeeId}/attentions/new`)}
         />
 
         <ClinicalHistoryInfoCard data={data} />
 
-        <ClinicalHistoryAllergies allergies={data.allergies} onAdd={onAddAllergy} />
+        <ClinicalHistoryAllergies
+          allergies={data.allergies}
+          onAdd={onAddAllergy}
+        />
 
         <ClinicalHistoryEmoCycleSection
           cycle={activeEmoCycle}
           clinicalHistoryId={data.id}
           isLoading={isLoadingActiveEmoCycle}
           error={activeEmoCycleError}
-          onViewHistory={() => navigate(`/clinical-histories/${numericEmployeeId}/emo-cycles`)}
+          onViewHistory={() =>
+            navigate(`/clinical-histories/${numericEmployeeId}/emo-cycles`)
+          }
           onViewDetail={handleGoToEmoCycleDetail}
         />
 
-        <ClinicalHistoryAttentionsTable
-          attentions={data.attentions}
-          onViewDetail={handleGoToAttentionDetail}
-        />
+        <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="flex gap-2 border-b border-slate-200">
+            <button
+              className={cn(
+                'px-4 py-2 text-sm font-medium',
+                activeTab === 'attentions'
+                  ? 'border-b-2 border-blue-600 text-blue-600'
+                  : 'text-slate-500'
+              )}
+              onClick={() => setActiveTab('attentions')}
+            >
+              Atenciones ({data.attentions.length})
+            </button>
+
+            <button
+              className={cn(
+                'px-4 py-2 text-sm font-medium',
+                activeTab === 'accidents'
+                  ? 'border-b-2 border-blue-600 text-blue-600'
+                  : 'text-slate-500'
+              )}
+              onClick={() => setActiveTab('accidents')}
+            >
+              Accidentes ({data.accidents.length})
+            </button>
+          </div>
+
+          <div className="mt-4">
+            {activeTab === 'attentions' && (
+              <ClinicalHistoryAttentionsTable
+                onCreateAttention={() => {
+                  navigate(`/clinical-histories/${numericEmployeeId}/attentions/new`)
+                  window.scrollTo(0, 0)
+                }}
+                attentions={data.attentions}
+                onViewDetail={handleGoToAttentionDetail}
+              />
+            )}
+
+            {activeTab === 'accidents' && (
+              <ClinicalHistoryAccidentsSection
+                items={data.accidents}
+                onCreate={() =>
+                  navigate(
+                    `/clinical-histories/${numericEmployeeId}/accidents/new`
+                  )
+                }
+                onViewDetail={(id) =>
+                  navigate(
+                    `/clinical-histories/${numericEmployeeId}/accidents/${id}`
+                  )
+                }
+              />
+            )}
+          </div>
+        </div>
       </div>
 
       <AllergyFormSidebar
@@ -79,4 +139,5 @@ const ClinicalHistoryDetailPage = () => {
     </PageContainer>
   )
 }
+
 export default ClinicalHistoryDetailPage

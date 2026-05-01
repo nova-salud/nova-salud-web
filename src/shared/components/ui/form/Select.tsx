@@ -11,10 +11,11 @@ type Props = {
   error?: string
   value: string | number
   options: Option[]
+  disabled?: boolean
   onChange: (value: string) => void
 }
 
-export const Select = ({ label, error, value, options, onChange }: Props) => {
+export const Select = ({ label, error, value, options, disabled = false, onChange }: Props) => {
   return (
     <div className="flex flex-col gap-1.5">
       {label && <Label>{label}</Label>}
@@ -22,6 +23,7 @@ export const Select = ({ label, error, value, options, onChange }: Props) => {
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        disabled={disabled}
         className={cn(
           'h-11 w-full rounded-xl border px-3 text-sm outline-none transition',
           'border-slate-200 bg-white text-slate-900',

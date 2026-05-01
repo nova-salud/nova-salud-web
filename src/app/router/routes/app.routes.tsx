@@ -34,6 +34,8 @@ import EmoProtocolsPage from '@/features/emo-protocols/pages/EmoProtocolsPage'
 import EmoProtocolDetailPage from '@/features/emo-protocols/pages/EmoProtocolDetailPage'
 import EmoCycleDetailPage from '@/features/clinical-histories/emo-cycles/pages/EmoCycleDetailPage'
 import HealthcareCentersPage from '@/features/healthcare-centers/pages/HealthcareCentersPage'
+import CreateAccidentPage from '@/features/accidents/pages/CreateAccidentPage'
+import AccidentDetailPage from '@/features/accidents/pages/AccidentDetailPage'
 
 
 export const appRoutes: RouteObject = {
@@ -78,6 +80,14 @@ export const appRoutes: RouteObject = {
             {
               path: '/clinical-histories/:employeeId/attentions/:attentionId',
               element: <AttentionDetailPage />,
+            },
+            {
+              path: '/clinical-histories/:employeeId/accidents/:accidentId',
+              element: <AccidentDetailPage />,
+            },
+            {
+              path: '/clinical-histories/:employeeId/accidents/new',
+              element: <CreateAccidentPage />,
             },
             {
               path: '/clinical-histories/:employeeId/cycle/:cycleId',

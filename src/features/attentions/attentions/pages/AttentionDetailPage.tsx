@@ -6,7 +6,6 @@ import { useAttention } from '../hooks/useAttention'
 import { useDispensationByAttention } from '@/features/inventory/dispensations/hooks/useDispensationByAttention'
 import AttentionAttachmentsSection from '../../attachments/components/AttentionAttachmentsSection'
 import AttentionSignaturesSection from '../../signatures/components/AttentionSignaturesSection'
-import { AttentionFollowUpsSection } from '../../follow-ups/components/AttentionFollowUpsSection'
 import { TRIAGE_LEVEL_CLASSNAME, TRIAGE_LEVEL_LABEL } from '../types/triage.enum'
 
 const AttentionDetailPage = () => {
@@ -245,8 +244,6 @@ const AttentionDetailPage = () => {
         </div>
 
         <AttentionAttachmentsSection attentionId={numericAttentionId} />
-
-        <AttentionFollowUpsSection followUps={attention.followUps} />
 
         <AttentionSignaturesSection attentionId={numericAttentionId} />
 

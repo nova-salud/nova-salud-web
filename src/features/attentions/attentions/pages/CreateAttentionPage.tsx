@@ -15,8 +15,8 @@ import type { FindInventoryStocksDto } from '@/features/inventory/stocks/types/f
 import DispensationSection from '../components/DispensationSection'
 import { useCreateAttentionWithDispensation } from '../hooks/useCreateAttentionWithDispensation'
 import { FollowUpSection } from '../components/FollowUpSection'
-import { usePendingFollowUps } from '../../follow-ups/hooks/usePendingFollowUps'
-import { FollowUpSelectionSection } from '../../follow-ups/components/FollowUpSelectionSection'
+import { usePendingFollowUps } from '../../../follow-ups/hooks/usePendingFollowUps'
+import { FollowUpSelectionSection } from '../../../follow-ups/components/FollowUpSelectionSection'
 import { TRIAGE_LEVEL_OPTIONS, TriageLevelEnum } from '../types/triage.enum'
 
 const CreateAttentionPage = () => {

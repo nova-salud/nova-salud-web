@@ -5,19 +5,35 @@ import type { ClinicalHistoryAttentionResponseDto } from '../types/clinical-hist
 type Props = {
   attentions: ClinicalHistoryAttentionResponseDto[]
   onViewDetail?: (id: number) => void
+  onCreateAttention?: () => void
 }
 
 const ClinicalHistoryAttentionsTable = ({
   attentions,
   onViewDetail,
+  onCreateAttention
 }: Props) => {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="mb-4">
-        <h2 className="text-lg font-semibold text-slate-900">Atenciones</h2>
-        <p className="text-sm text-slate-500">
-          Registro de atenciones médicas realizadas
-        </p>
+    <div className="px-5">
+      <div className="mb-4 flex items-start justify-between">
+        <div>
+          <h2 className="text-lg font-semibold text-slate-900">
+            Atenciones
+          </h2>
+          <p className="text-sm text-slate-500">
+            Registro de atenciones médicas realizadas
+          </p>
+        </div>
+
+        {onCreateAttention && (
+          <Button
+            type="button"
+            className="w-auto"
+            onClick={onCreateAttention}
+          >
+            Registrar atención
+          </Button>
+        )}
       </div>
 
       {attentions.length === 0 ? (

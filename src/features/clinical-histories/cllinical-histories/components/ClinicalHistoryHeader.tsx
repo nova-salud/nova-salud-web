@@ -1,11 +1,9 @@
-import { Button } from '@/shared/components/ui/form'
 import { cn } from '@/shared/utils'
 import type { ClinicalHistoryFullResponseDto } from '../types'
 
 type Props = {
   data: ClinicalHistoryFullResponseDto
   onEdit?: () => void
-  onCreateAttention?: () => void
 }
 
 type InfoItemProps = {
@@ -25,8 +23,7 @@ const InfoItem = ({ label, value }: InfoItemProps) => (
 )
 
 const ClinicalHistoryHeader = ({
-  data,
-  onCreateAttention
+  data
 }: Props) => {
   const { employee } = data
 
@@ -67,10 +64,6 @@ const ClinicalHistoryHeader = ({
           {/* <Button variant="outline" className="w-auto" onClick={onEdit}>
             Editar
           </Button> */}
-
-          <Button className="w-auto" onClick={onCreateAttention}>
-            Nueva atención
-          </Button>
         </div>
       </div>
 

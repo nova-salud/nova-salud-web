@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router'
 import AppSidebar from '@/shared/components/navigation/AppSidebar'
 import MobileHeader from '@/shared/components/navigation/MobileHeader'
+import { ScrollToTop } from '@/shared/components/navigation/ScrollToTop'
 
 const PrivateLayout = () => {
   return (
@@ -13,7 +14,8 @@ const PrivateLayout = () => {
         <AppSidebar />
 
         <div className="flex min-w-0 flex-1 flex-col lg:h-full">
-          <main className="flex-1 overflow-y-auto p-5 lg:p-6">
+          <main id="main-scroll" className="flex-1 overflow-y-auto p-5 lg:p-6">
+            <ScrollToTop />
             <Outlet />
           </main>
         </div>

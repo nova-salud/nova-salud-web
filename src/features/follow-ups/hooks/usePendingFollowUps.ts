@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 import { followUpService } from '../services/follow-up.service'
-import type { AttentionFollowUpResponseDto } from '../types/attention-follow-up-response.dto'
+import type { FollowUpResponseDto } from '../types/follow-up-response.dto'
 import { parseBackendError } from '@/core/utils/parse-backend-error'
 
 export const usePendingFollowUps = (employeeId: number = 0) => {
-  const [data, setData] = useState<AttentionFollowUpResponseDto[]>([])
+  const [data, setData] = useState<FollowUpResponseDto[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 

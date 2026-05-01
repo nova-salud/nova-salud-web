@@ -1,8 +1,8 @@
 import { format } from 'date-fns'
-import type { AttentionFollowUpResponseDto } from '../types/attention-follow-up-response.dto'
+import type { FollowUpResponseDto } from '../types/follow-up-response.dto'
 
 type Props = {
-  followUps: AttentionFollowUpResponseDto[]
+  followUps: FollowUpResponseDto[]
   selectedId?: number
   onChange: (id?: number) => void
   isLoading?: boolean
