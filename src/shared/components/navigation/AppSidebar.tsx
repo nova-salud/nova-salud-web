@@ -77,7 +77,7 @@ const AppSidebar = () => {
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-3 py-5">
+        <div className="sidebar flex-1 overflow-y-auto px-3 py-5">
           <div className="space-y-7">
             {filteredSections.map((section) => (
               <div key={section.label}>

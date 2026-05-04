@@ -38,6 +38,7 @@ import AccidentDetailPage from '@/features/accidents/accidents/pages/AccidentDet
 import { AccidentsPage } from '@/features/accidents/accidents/pages/AccidentsPage'
 import CreateAccidentFromClinicaHistoryPage from '@/features/accidents/accidents/pages/CreateAccidentFromClinicalHistoryPage'
 import { CreateAccidentPage } from '@/features/accidents/accidents/pages/CreateAccidentPage'
+import AlertsPage from '@/features/communications/alerts/pages/AlertPage'
 
 
 export const appRoutes: RouteObject = {
@@ -246,6 +247,10 @@ export const appRoutes: RouteObject = {
               path: '/accidents/:accidentId',
               element: <AccidentDetailPage />,
             },
+            {
+              path: '/alerts',
+              element: <AlertsPage />
+            }
           ],
         },
         {

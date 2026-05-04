@@ -1,5 +1,5 @@
 import { RoleEnum } from '@/core/enums/role.enum'
-import { Ambulance, ArrowLeftRight, ClipboardList, LayoutDashboard, Pill, Settings, ShieldAlert, Truck, Users, type LucideIcon } from 'lucide-react'
+import { Ambulance, ArrowLeftRight, ClipboardList, LayoutDashboard, MessageCircleWarning, Pill, Settings, ShieldAlert, Truck, Users, type LucideIcon } from 'lucide-react'
 
 export type NavigationItem = {
   label: string
@@ -32,6 +32,14 @@ export const navigationConfig: NavigationSection[] = [
           RoleEnum.MANAGEMENT,
         ],
       },
+      {
+        label: 'Alertas',
+        path: '/alerts',
+        icon: MessageCircleWarning,
+        roles: [
+          RoleEnum.ADMIN
+        ]
+      }
     ],
   },
   {
