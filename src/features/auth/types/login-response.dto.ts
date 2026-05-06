@@ -7,6 +7,7 @@ export type LoginResponseDto = {
   authenticatedUser: {
     id: number
     username: string
+    fullName: string
     active: boolean
     role: RoleEnum
   }

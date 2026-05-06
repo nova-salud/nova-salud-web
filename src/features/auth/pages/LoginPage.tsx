@@ -1,6 +1,5 @@
 import { useState, type FormEvent } from 'react'
 import { Navigate } from 'react-router'
-import { LockKeyhole, ShieldUser } from 'lucide-react'
 import { Button, Input } from '@/shared/components/ui/form'
 import { useAuth } from '@/shared/hooks/useAuth'
 import { useLogin } from '../hooks/useLogin'
@@ -28,47 +27,44 @@ const LoginPage = () => {
 
   return (
     <div className="flex min-h-screen bg-slate-100">
-      <div className="hidden flex-1 bg-[#0B1739] lg:flex lg:flex-col lg:justify-between lg:p-10">
-        <div>
-          <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-white/10 text-white">
-            <ShieldUser size={26} />
+      <div className="hidden flex-1 overflow-hidden bg-[#0F172A] lg:flex">
+        <div className="flex w-full flex-col justify-center p-14">
+          <div className="max-w-xl">
+            <div className="flex justify-center rounded-[2.5rem] border border-white/10 bg-white/3 px-10 py-12 backdrop-blur-sm">
+              <img
+                src="/logos/logo-login.png"
+                alt="Nova SST"
+                className="h-40 w-auto object-contain"
+              />
+            </div>
+
+            <div className="mt-14">
+              <p className="text-sm font-medium uppercase tracking-[0.3em] text-slate-500">
+                Nova Perú SST
+              </p>
+
+              <h1 className="mt-5 text-4xl font-medium leading-tight text-white">
+                Sistema médico ocupacional
+              </h1>
+
+              <p className="mt-6 text-base leading-8 text-slate-400">
+                Gestiona medicamentos, requerimientos, dispensaciones,
+                accidentes, EMOs y movimientos de inventario desde una sola
+                plataforma.
+              </p>
+            </div>
           </div>
-
-          <div className="mt-8 max-w-md">
-            <p className="text-sm font-medium uppercase tracking-[0.2em] text-slate-300">
-              Nova Perú SST
-            </p>
-
-            <h1 className="mt-4 text-4xl font-semibold leading-tight text-white">
-              Sistema médico ocupacional
-            </h1>
-
-            <p className="mt-4 text-base leading-7 text-slate-300">
-              Gestiona medicamentos, requerimientos, dispensaciones y movimientos
-              de inventario desde una sola plataforma.
-            </p>
-          </div>
-        </div>
-
-        <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
-          <p className="text-sm text-slate-300">
-            Acceso exclusivo para personal autorizado.
-          </p>
         </div>
       </div>
 
       <div className="flex flex-1 items-center justify-center px-4 py-10 sm:px-6 lg:px-10">
-        <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+        <div className="w-full max-w-md rounded-4xl border border-slate-200 bg-white p-8 shadow-sm">
           <div className="mb-8 text-center">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-3xl bg-[#0B1739] text-white shadow-sm">
-              <LockKeyhole size={24} />
-            </div>
-
-            <h2 className="mt-4 text-2xl font-semibold text-slate-900">
+            <h2 className="text-3xl font-semibold text-slate-900">
               Iniciar sesión
             </h2>
 
-            <p className="mt-2 text-sm text-slate-500">
+            <p className="mt-3 text-sm text-slate-500">
               Ingresa tus credenciales para continuar.
             </p>
           </div>
@@ -95,6 +91,7 @@ const LoginPage = () => {
               type="submit"
               isLoading={isLoading}
               loadingText="Ingresando..."
+              className="w-full"
             >
               Ingresar
             </Button>

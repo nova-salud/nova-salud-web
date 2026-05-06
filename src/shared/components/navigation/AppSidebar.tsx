@@ -1,11 +1,11 @@
-import { LogOut, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
+import { PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import NavItem from './NavItem'
 import { useSidebar } from '@/shared/hooks/useSidebar'
 import { useAuth } from '@/shared/hooks/useAuth'
 import { navigationConfig } from '@/app/router/navigation.config'
 import { cn } from '@/shared/utils'
-import { USER_ROLE_LABEL_MAP } from '@/features/users/types'
 import { RoleEnum } from '@/core/enums/role.enum'
+import SidebarUserMenu from './SidebarUserMenu'
 
 const AppSidebar = () => {
   const {
@@ -51,9 +51,11 @@ const AppSidebar = () => {
           <div className="relative flex items-center justify-center">
             {!sidebarCollapsed ? (
               <>
-                <h1 className="text-lg font-semibold text-slate-900">
-                  Nova Peru SST
-                </h1>
+                <img
+                  src="/logos/logo.png"
+                  alt="Grupo Nueva Pescanova"
+                  className="h-8 w-auto object-contain"
+                />
 
                 <button
                   type="button"
@@ -105,49 +107,11 @@ const AppSidebar = () => {
           </div>
         </div>
 
-        <div className="border-t border-slate-200 px-3 py-4 space-y-3">
-          {!sidebarCollapsed ? (
-            <div className="flex items-center gap-3 rounded-2xl bg-white px-3 py-3 shadow-sm">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-xs font-semibold text-emerald-700">
-                DR
-              </div>
-
-              <div className="min-w-0">
-                <p className="truncate text-sm font-medium text-slate-900">
-                  {user?.username ?? 'Usuario'}
-                </p>
-                <p className="text-xs text-slate-400">
-                  {USER_ROLE_LABEL_MAP[user?.role ?? RoleEnum.EMPLOYEE]}
-                </p>
-              </div>
-            </div>
-          ) : (
-            <div className="flex justify-center">
-              <div
-                title={user?.username ?? 'Usuario'}
-                className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-xs font-semibold text-emerald-700"
-              >
-                DR
-              </div>
-            </div>
-          )}
-
-          {!sidebarCollapsed ? (
-            <button
-              onClick={clearSession}
-              className="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-600 hover:bg-slate-100"
-            >
-              Cerrar sesión
-            </button>
-          ) : (
-            <button
-              onClick={clearSession}
-              className="flex justify-center"
-            >
-              <LogOut className="h-5 w-5 text-slate-600" />
-            </button>
-          )}
-        </div>
+        {user && <SidebarUserMenu
+          user={user}
+          sidebarCollapsed={sidebarCollapsed}
+          onLogout={clearSession}
+        />}
       </aside>
     </>
   )

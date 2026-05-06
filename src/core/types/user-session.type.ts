@@ -5,7 +5,8 @@ export type UserSession = {
   user: {
     id: number
     username: string
+    fullname: string
     active: boolean
-    role?: RoleEnum
+    role: RoleEnum
   }
 }
