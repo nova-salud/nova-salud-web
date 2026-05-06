@@ -84,7 +84,7 @@ export const useAlerts = (query?: FindAlertsDto) => {
       setError(null)
 
       const response = await alertService.findAll(query)
-      setData(mockAlerts)
+      setData(response.data)
     } catch (error) {
       setData([])
       setError(parseBackendError(error))
