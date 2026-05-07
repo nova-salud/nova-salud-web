@@ -58,13 +58,13 @@ const LoginPage = () => {
         </div>
       </div>
 
-      <div className="flex flex-1 items-center justify-center overflow-hidden bg-white px-6 py-8 lg:px-12">
+      <div className="flex flex-1 items-start md:items-center justify-center overflow-hidden bg-white px-6 py-8 lg:px-12">
         <div className="flex w-full max-w-xl flex-col items-center">
           <div className="mb-8 flex justify-center">
             <img
               src="/logos/logo-login-2.png"
               alt="Grupo Nueva Pescanova"
-              className="h-32 w-auto object-contain"
+              className="h-52 md:h-32 w-auto object-contain"
             />
           </div>
 
