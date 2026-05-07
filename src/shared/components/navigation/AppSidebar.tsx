@@ -48,13 +48,13 @@ const AppSidebar = () => {
         ])}
       >
         <div className="border-b border-slate-200 px-3 py-4">
-          <div className="relative flex items-center justify-center">
+          <div className="relative flex items-center justify-start">
             {!sidebarCollapsed ? (
               <>
                 <img
                   src="/logos/logo.png"
                   alt="Grupo Nueva Pescanova"
-                  className="h-8 w-auto object-contain"
+                  className="h-11 w-auto object-contain"
                 />
 
                 <button
