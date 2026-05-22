@@ -1,4 +1,5 @@
-import type { AccidentStatusEnum, AccidentTypeEnum } from '@/features/accidents/accidents/types'
+import type { AccidentTypeEnum } from '@/features/accidents/accidents/types'
+import { TriageLevelEnum } from '@/features/attentions/attentions/types/triage.enum'
 
 export interface MedicalDashboardResponse {
   summary: {
@@ -69,11 +70,12 @@ export interface MedicalDashboardResponse {
 
   recentConsultations: {
     id: number
+    employeeId: number
     employeeName: string
-    date: string
-    type: AccidentTypeEnum
-    status: AccidentStatusEnum
-    hasRestrictions: boolean
+    attendedAt: string
+    triageLevel: TriageLevelEnum
+    diagnosisCode: string | null
+    followUpCount: number
   }[]
 }
 
@@ -186,36 +188,40 @@ export const mockMedicalDashboard: MedicalDashboardResponse = {
 
   recentConsultations: [
     {
-      id: 201,
+      id: 29,
+      employeeId: 13,
       employeeName: 'Juan Pérez',
-      date: '2026-05-06T10:30:00Z',
-      type: 'ACCIDENT',
-      status: 'OPEN',
-      hasRestrictions: true,
+      attendedAt: '2026-05-06T10:30:00Z',
+      triageLevel: TriageLevelEnum.MEDIUM,
+      diagnosisCode: 'J06.9',
+      followUpCount: 2,
     },
     {
       id: 202,
+      employeeId: 17,
       employeeName: 'María López',
-      date: '2026-05-06T11:10:00Z',
-      type: 'INCIDENT',
-      status: 'CLOSED',
-      hasRestrictions: false,
+      attendedAt: '2026-05-06T11:10:00Z',
+      triageLevel: TriageLevelEnum.LOW,
+      diagnosisCode: 'M54.5',
+      followUpCount: 0,
     },
     {
       id: 203,
+      employeeId: 34,
       employeeName: 'Carlos Ramos',
-      date: '2026-05-05T15:20:00Z',
-      type: 'ACCIDENT',
-      status: 'OPEN',
-      hasRestrictions: true,
+      attendedAt: '2026-05-05T15:20:00Z',
+      triageLevel: TriageLevelEnum.HIGH,
+      diagnosisCode: 'S93.4',
+      followUpCount: 3,
     },
     {
       id: 204,
+      employeeId: 11,
       employeeName: 'Ana Torres',
-      date: '2026-05-05T09:40:00Z',
-      type: 'ACCIDENT',
-      status: 'CLOSED',
-      hasRestrictions: false,
+      attendedAt: '2026-05-05T09:40:00Z',
+      triageLevel: TriageLevelEnum.LOW,
+      diagnosisCode: null,
+      followUpCount: 1,
     },
-  ],
+  ]
 }

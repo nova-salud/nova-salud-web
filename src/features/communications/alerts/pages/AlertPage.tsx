@@ -4,6 +4,12 @@ import { cn } from '@/shared/utils'
 import { useAlerts } from '../hooks/useAlerts'
 import { AlertPriority } from '../types/alert-priority.enum'
 import { ALERT_LABELS } from '../types/alert-type.enum'
+import { resolveAlertNavigation } from '../../utils/resolve-alert-navigation'
+import { useNavigate } from 'react-router'
+import Modal from '@/shared/components/ui/modal/Modal'
+import { useCreateAlert } from '../hooks/useResolveAlert'
+import { useState } from 'react'
+import type { AlertResponseDto } from '../types/alert-response.dto'
 
 const styles = {
   [AlertPriority.HIGH]: {
@@ -27,16 +33,30 @@ const priorityOrder = {
 }
 
 const AlertsPage = () => {
-  const { data, isLoading } = useAlerts()
+  const { data, isLoading, refetch } = useAlerts()
+  const { resolveAlert, isLoading: isResolving } = useCreateAlert()
+  const navigate = useNavigate()
 
-  const sorted = [...data].sort(
+  const [selectedAlert, setSelectedAlert] = useState<AlertResponseDto | null>(null)
+
+  const activeAlerts = data.filter(a => !a.isResolved)
+
+  const sorted = [...activeAlerts].sort(
     (a, b) => priorityOrder[a.priority] - priorityOrder[b.priority],
   )
 
   const summary = {
-    high: data.filter(a => a.priority === 'HIGH').length,
-    medium: data.filter(a => a.priority === 'MEDIUM').length,
-    low: data.filter(a => a.priority === 'LOW').length,
+    high: activeAlerts.filter(a => a.priority === 'HIGH').length,
+    medium: activeAlerts.filter(a => a.priority === 'MEDIUM').length,
+    low: activeAlerts.filter(a => a.priority === 'LOW').length,
+  }
+
+  const handleResolve = async () => {
+    if (!selectedAlert) return
+
+    await resolveAlert(selectedAlert.id)
+    setSelectedAlert(null)
+    await refetch()
   }
 
   return (
@@ -45,7 +65,6 @@ const AlertsPage = () => {
       description="Monitoreo operativo del sistema"
     >
       <div className="space-y-6">
-
         <div className="grid grid-cols-3 gap-4">
           <div className="rounded-2xl bg-red-50 p-4">
             <p className="text-xs text-red-500">Críticas</p>
@@ -69,13 +88,13 @@ const AlertsPage = () => {
           </div>
         </div>
 
-        <div className="">
+        <div>
           {isLoading ? (
             <div className="p-6 text-sm text-slate-400">
               Cargando alertas...
             </div>
           ) : sorted.length === 0 ? (
-            <div className="p-6 text-sm text-slate-400">
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-400 shadow-sm">
               No hay alertas activas
             </div>
           ) : (
@@ -95,7 +114,7 @@ const AlertsPage = () => {
                       <div className="flex items-center gap-2">
                         <span
                           className={cn(
-                            'text-xs px-2 py-1 rounded-full font-medium',
+                            'rounded-full px-2 py-1 text-xs font-medium',
                             style.priority,
                           )}
                         >
@@ -117,11 +136,17 @@ const AlertsPage = () => {
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <Button variant="ghost">
+                      <Button
+                        variant="ghost"
+                        onClick={() => navigate(resolveAlertNavigation(alert))}
+                      >
                         Ver
                       </Button>
 
-                      <Button variant="secondary">
+                      <Button
+                        variant="secondary"
+                        onClick={() => setSelectedAlert(alert)}
+                      >
                         Resolver
                       </Button>
                     </div>
@@ -132,6 +157,47 @@ const AlertsPage = () => {
           )}
         </div>
 
+        <Modal
+          isOpen={!!selectedAlert}
+          onClose={() => {
+            if (!isResolving) setSelectedAlert(null)
+          }}
+          title="Resolver alerta"
+          description="La alerta dejará de mostrarse como activa."
+          size="sm"
+        >
+          <div className="space-y-6">
+            {selectedAlert && (
+              <div className="rounded-xl bg-slate-50 p-4">
+                <p className="text-sm font-semibold text-slate-900">
+                  {ALERT_LABELS[selectedAlert.type]}
+                </p>
+
+                <p className="mt-1 text-sm text-slate-600">
+                  {selectedAlert.message}
+                </p>
+              </div>
+            )}
+
+            <div className="flex justify-end gap-3">
+              <Button
+                variant="ghost"
+                onClick={() => setSelectedAlert(null)}
+                disabled={isResolving}
+              >
+                Cancelar
+              </Button>
+
+              <Button
+                variant="secondary"
+                onClick={handleResolve}
+                isLoading={isResolving}
+              >
+                Confirmar
+              </Button>
+            </div>
+          </div>
+        </Modal>
       </div>
     </PageContainer>
   )

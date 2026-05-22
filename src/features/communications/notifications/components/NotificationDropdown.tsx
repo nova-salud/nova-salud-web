@@ -2,13 +2,14 @@ import { useRef, useState } from 'react'
 import { Bell } from 'lucide-react'
 import { useClickOutside } from '@/shared/hooks/useClickOutside'
 import { cn } from '@/shared/utils'
-import { MOCK_NOTIFICATIONS } from '../types/notification-response.dto'
 import { useNavigate } from 'react-router'
+import { resolveAlertNavigation } from '@/features/communications/utils/resolve-alert-navigation'
 import { formatDistanceToNow } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { useNotifications } from '../hooks/useNotifications'
 
 const NotificationDropdown = () => {
-  const notifications = MOCK_NOTIFICATIONS
+  const { data: notifications } = useNotifications()
   const navigate = useNavigate()
 
   const dropdownRef = useRef(null)
@@ -63,6 +64,10 @@ const NotificationDropdown = () => {
             {visible.map(n => (
               <div
                 key={n.id}
+                onClick={() => {
+                  setOpen(false)
+                  navigate(resolveAlertNavigation(n))
+                }}
                 className={cn(
                   'cursor-pointer px-4 py-3 hover:bg-slate-50',
                   !n.isRead && 'bg-blue-50 border-l-2 border-blue-500'

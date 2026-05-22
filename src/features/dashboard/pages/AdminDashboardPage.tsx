@@ -7,8 +7,10 @@ import {
   AlertTriangle,
   TrendingUp,
 } from 'lucide-react'
+import { useNavigate } from 'react-router'
 
 export const AdminDashboardPage = () => {
+  const navigate = useNavigate()
   const data = mockAdminDashboard
 
   const mainCards = [
@@ -17,6 +19,7 @@ export const AdminDashboardPage = () => {
       value: data.summary.totalEmployees,
       icon: <Users className="h-5 w-5 text-slate-600" />,
       bg: 'bg-slate-100',
+      onClick: () => navigate('/employees'),
     },
     {
       label: 'Casos activos',
@@ -24,6 +27,7 @@ export const AdminDashboardPage = () => {
       icon: <Activity className="h-5 w-5 text-red-600" />,
       bg: 'bg-red-50',
       valueClassName: 'text-red-600',
+      onClick: () => navigate('/clinical-attention'),
     },
     {
       label: 'Accidentes',
@@ -31,6 +35,7 @@ export const AdminDashboardPage = () => {
       icon: <AlertTriangle className="h-5 w-5 text-amber-600" />,
       bg: 'bg-amber-50',
       valueClassName: 'text-amber-600',
+      onClick: () => navigate('/accidents'),
     },
     {
       label: 'Atenciones hoy',
@@ -38,6 +43,7 @@ export const AdminDashboardPage = () => {
       icon: <TrendingUp className="h-5 w-5 text-indigo-600" />,
       bg: 'bg-indigo-50',
       valueClassName: 'text-indigo-600',
+      onClick: () => navigate('/clinical-attention'),
     },
   ]
 
@@ -46,11 +52,13 @@ export const AdminDashboardPage = () => {
       label: 'Follow-ups vencidos',
       value: data.alerts.overdueFollowUps,
       valueClassName: 'text-red-600',
+      onClick: () => navigate('/clinical-attention'),
     },
     {
       label: 'Casos prolongados',
       value: data.alerts.longOpenCases,
       valueClassName: 'text-red-600',
+      onClick: () => navigate('/clinical-attention'),
     },
     {
       label: 'Con restricciones',
@@ -61,6 +69,7 @@ export const AdminDashboardPage = () => {
       label: 'Medicamentos críticos',
       value: data.alerts.criticalMedications,
       valueClassName: 'text-red-600',
+      onClick: () => navigate('/medications'),
     },
   ]
 
@@ -87,15 +96,25 @@ export const AdminDashboardPage = () => {
               valueClassName={a.valueClassName}
               icon={<AlertTriangle className="h-5 w-5 text-slate-500" />}
               bg="bg-slate-100"
+              onClick={a.onClick}
             />
           ))}
         </div>
 
         <div className="grid gap-6 xl:grid-cols-2">
           <div className="rounded-3xl bg-white p-5 shadow-sm">
-            <h2 className="text-base font-semibold text-slate-900">
-              Accidentes por área
-            </h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-base font-semibold text-slate-900">
+                Accidentes por área
+              </h2>
+
+              <button
+                onClick={() => navigate('/accidents')}
+                className="text-sm font-medium text-blue-600 hover:text-blue-700"
+              >
+                Ver accidentes
+              </button>
+            </div>
 
             <div className="mt-4 space-y-4">
               {data.distribution.accidentsByArea.map((area) => {
@@ -108,9 +127,9 @@ export const AdminDashboardPage = () => {
                       <span className="text-slate-500">{area.count}</span>
                     </div>
 
-                    <div className="mt-2 h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
                       <div
-                        className="h-full bg-indigo-500 rounded-full"
+                        className="h-full rounded-full bg-indigo-500"
                         style={{ width: `${percentage}%` }}
                       />
                     </div>
@@ -119,16 +138,27 @@ export const AdminDashboardPage = () => {
               })}
             </div>
           </div>
+
           <div className="rounded-3xl bg-white p-5 shadow-sm">
-            <h2 className="text-base font-semibold text-slate-900">
-              Indicadores SST
-            </h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-base font-semibold text-slate-900">
+                Indicadores SST
+              </h2>
+
+              <button
+                onClick={() => navigate('/accidents')}
+                className="text-sm font-medium text-blue-600 hover:text-blue-700"
+              >
+                Ver detalle
+              </button>
+            </div>
 
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               <div className="rounded-xl bg-slate-50 p-4">
                 <p className="text-xs text-slate-400">
                   Tasa por 100 empleados
                 </p>
+
                 <p className="text-lg font-semibold text-slate-900">
                   {data.sst.accidentRatePer100Employees}
                 </p>
@@ -138,6 +168,7 @@ export const AdminDashboardPage = () => {
                 <p className="text-xs text-slate-400">
                   Reincidencia
                 </p>
+
                 <p className="text-lg font-semibold text-slate-900">
                   {data.sst.recurrenceRate}%
                 </p>
@@ -147,38 +178,51 @@ export const AdminDashboardPage = () => {
                 <p className="text-xs text-slate-400">
                   Casos prolongados
                 </p>
+
                 <p className="text-lg font-semibold text-red-600">
                   {data.sst.casesOverThresholdDays}
                 </p>
               </div>
             </div>
           </div>
-
         </div>
-        <div className="grid gap-6 xl:grid-cols-2">
 
+        <div className="grid gap-6 xl:grid-cols-2">
           <div className="rounded-3xl bg-white p-5 shadow-sm">
-            <h2 className="text-base font-semibold text-slate-900">
-              Sistema
-            </h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-base font-semibold text-slate-900">
+                Sistema
+              </h2>
+
+              <button
+                onClick={() => navigate('/system-settings/employee-sync')}
+                className="text-sm font-medium text-blue-600 hover:text-blue-700"
+              >
+                Ir a sync
+              </button>
+            </div>
 
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
-              <div className="rounded-xl bg-slate-50 p-4">
-                <p className="text-xs text-slate-400">Usuarios activos</p>
-                <p className="text-lg font-semibold text-slate-900">
-                  {data.system.activeUsers}
-                </p>
-              </div>
+              <MetricCard
+                label="Usuarios activos"
+                value={data.system.activeUsers}
+                icon={<Users className="h-5 w-5 text-slate-600" />}
+                bg="bg-slate-100"
+                onClick={() => navigate('/users')}
+              />
 
-              <div className="rounded-xl bg-slate-50 p-4">
-                <p className="text-xs text-slate-400">Bloqueados</p>
-                <p className="text-lg font-semibold text-red-600">
-                  {data.system.blockedUsers}
-                </p>
-              </div>
+              <MetricCard
+                label="Bloqueados"
+                value={data.system.blockedUsers}
+                valueClassName="text-red-600"
+                icon={<AlertTriangle className="h-5 w-5 text-red-600" />}
+                bg="bg-red-50"
+                onClick={() => navigate('/users')}
+              />
 
-              <div className="rounded-xl bg-slate-50 p-4 col-span-2">
+              <div className="col-span-2 rounded-xl bg-slate-50 p-4">
                 <p className="text-xs text-slate-400">Última sincronización</p>
+
                 <p className="text-sm font-medium text-slate-700">
                   {data.system.lastSyncAt
                     ? new Date(data.system.lastSyncAt).toLocaleString()
@@ -189,22 +233,32 @@ export const AdminDashboardPage = () => {
           </div>
 
           <div className="rounded-3xl bg-white p-5 shadow-sm">
-            <h2 className="text-base font-semibold text-slate-900">
-              Indicadores médicos
-            </h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-base font-semibold text-slate-900">
+                Indicadores médicos
+              </h2>
+
+              <button
+                onClick={() => navigate('/medications')}
+                className="text-sm font-medium text-blue-600 hover:text-blue-700"
+              >
+                Gestionar farmacia
+              </button>
+            </div>
 
             <div className="mt-4 space-y-4">
               <div>
                 <p className="text-xs text-slate-400">
                   Días promedio recuperación
                 </p>
+
                 <p className="text-lg font-semibold text-slate-900">
                   {data.medical.averageRecoveryDays}
                 </p>
               </div>
 
               <div>
-                <p className="text-xs text-slate-400 mb-2">
+                <p className="mb-2 text-xs text-slate-400">
                   Medicamentos más usados
                 </p>
 
@@ -219,23 +273,33 @@ export const AdminDashboardPage = () => {
               </div>
             </div>
           </div>
-
         </div>
 
         <div className="rounded-3xl bg-white shadow-sm">
-          <div className="px-6 py-5 border-b border-slate-100">
+          <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
             <h2 className="text-base font-semibold text-slate-900">
               Actividad reciente
             </h2>
+
+            <button
+              onClick={() => navigate('/alerts')}
+              className="text-sm font-medium text-blue-600 hover:text-blue-700"
+            >
+              Ver alertas
+            </button>
           </div>
 
           <div className="divide-y">
             {data.recentActivity.map((item) => (
-              <div key={item.id} className="px-6 py-4 flex justify-between border-b-slate-200">
+              <div
+                key={item.id}
+                className="flex justify-between border-b-slate-200 px-6 py-4"
+              >
                 <div>
                   <p className="text-sm font-medium text-slate-900">
                     {item.description}
                   </p>
+
                   <p className="text-xs text-slate-400">
                     {item.type}
                   </p>
@@ -248,7 +312,6 @@ export const AdminDashboardPage = () => {
             ))}
           </div>
         </div>
-
       </div>
     </PageContainer>
   )

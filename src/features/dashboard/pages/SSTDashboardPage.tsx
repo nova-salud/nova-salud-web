@@ -16,9 +16,10 @@ import { AccidentTrendChart } from '../components/sst/AccidentTrendChart'
 import { useSSTDashboard } from '../hooks/useSSTDashboard'
 import { SSTDashboardSkeleton } from '../components/sst/SSTDashboardSkeleton'
 import PageContainer from '@/shared/components/ui/PageContainer'
+import { useNavigate } from 'react-router'
 
 export const SSTDashboardPage = () => {
-
+  const navigate = useNavigate()
   const { data, isLoading } = useSSTDashboard()
 
   const filteredTrend = useMemo(() => {
@@ -31,13 +32,13 @@ export const SSTDashboardPage = () => {
         ...t,
         date: isNaN(date.getTime())
           ? ''
-          : format(date, 'yyyy-MM-dd')
+          : format(date, 'yyyy-MM-dd'),
       }
     })
   }, [data])
 
   if (isLoading) return <SSTDashboardSkeleton />
-  if (!data) return
+  if (!data) return null
 
   const monthlyDiff =
     data.coreMetrics.accidentsThisMonth -
@@ -51,6 +52,7 @@ export const SSTDashboardPage = () => {
       value: data.summary.totalAccidents,
       icon: <ShieldAlert className="h-5 w-5 text-slate-600" />,
       bg: 'bg-slate-100',
+      onClick: () => navigate('/accidents'),
     },
     {
       label: 'Abiertos',
@@ -58,6 +60,7 @@ export const SSTDashboardPage = () => {
       icon: <AlertTriangle className="h-5 w-5 text-amber-600" />,
       bg: 'bg-amber-50',
       valueClass: 'text-amber-600',
+      onClick: () => navigate('/accidents'),
     },
     {
       label: 'Con restricciones',
@@ -72,6 +75,7 @@ export const SSTDashboardPage = () => {
       icon: <CheckCircle2 className="h-5 w-5 text-emerald-600" />,
       bg: 'bg-emerald-50',
       valueClass: 'text-emerald-600',
+      onClick: () => navigate('/accidents'),
     },
   ]
 
@@ -89,6 +93,7 @@ export const SSTDashboardPage = () => {
       icon: <AlertTriangle className="h-5 w-5 text-orange-600" />,
       bg: 'bg-orange-50',
       valueClass: 'text-orange-600',
+      onClick: () => navigate('/accidents'),
     },
     {
       label: 'Follow-ups vencidos',
@@ -96,6 +101,7 @@ export const SSTDashboardPage = () => {
       icon: <AlertTriangle className="h-5 w-5 text-red-600" />,
       bg: 'bg-red-50',
       valueClass: 'text-red-600',
+      onClick: () => navigate('/accidents'),
     },
     {
       label: 'Variación mensual',
@@ -106,10 +112,8 @@ export const SSTDashboardPage = () => {
     },
   ]
 
-  const monthlyTrend = data?.executiveMetrics.monthlyTrendPercentage ?? 0
-
+  const monthlyTrend = data.executiveMetrics.monthlyTrendPercentage ?? 0
   const isGood = monthlyTrend < 0
-
   const percentage = Math.abs(monthlyTrend).toFixed(1)
 
   const trendLabel =
@@ -132,6 +136,7 @@ export const SSTDashboardPage = () => {
               label={c.label}
               value={c.value}
               valueClassName={c.valueClass}
+              onClick={c.onClick}
               icon={
                 <div className={cn('rounded-2xl p-3', c.bg)}>
                   {c.icon}
@@ -148,6 +153,7 @@ export const SSTDashboardPage = () => {
               label={c.label}
               value={c.value}
               valueClassName={c.valueClass}
+              onClick={c.onClick}
               icon={
                 <div className={cn('rounded-2xl p-3', c.bg)}>
                   {c.icon}
@@ -158,24 +164,33 @@ export const SSTDashboardPage = () => {
         </div>
 
         <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
+          <div className="mb-4 flex items-center justify-between">
             <h2 className="text-base font-semibold text-slate-900">
               Tendencia de accidentes
             </h2>
 
-            <span
-              className={cn(
-                'text-xs font-medium',
-                isGrowing ? 'text-red-600' : 'text-emerald-600'
-              )}
-            >
-              {isGrowing ? '↑ incremento' : '↓ descenso'}
-            </span>
+            <div className="flex items-center gap-4">
+              <span
+                className={cn(
+                  'text-xs font-medium',
+                  isGrowing ? 'text-red-600' : 'text-emerald-600'
+                )}
+              >
+                {isGrowing ? '↑ incremento' : '↓ descenso'}
+              </span>
+
+              <button
+                onClick={() => navigate('/accidents')}
+                className="text-sm font-medium text-blue-600 hover:text-blue-700"
+              >
+                Ver accidentes
+              </button>
+            </div>
           </div>
 
           <AccidentTrendChart data={filteredTrend} />
 
-          <div className="flex gap-6 mt-4 text-sm">
+          <div className="mt-4 flex gap-6 text-sm">
             <div className="flex items-center gap-2">
               <div className="h-3 w-3 rounded-full bg-blue-600" />
               <span className="text-slate-600">Accidentes</span>
@@ -189,13 +204,22 @@ export const SSTDashboardPage = () => {
         </div>
 
         <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h2 className="text-base font-semibold text-slate-900 mb-4">
-            Métricas avanzadas
-          </h2>
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-base font-semibold text-slate-900">
+              Métricas avanzadas
+            </h2>
+
+            <button
+              onClick={() => navigate('/accidents')}
+              className="text-sm font-medium text-blue-600 hover:text-blue-700"
+            >
+              Ver detalle
+            </button>
+          </div>
 
           <div className="grid gap-6 md:grid-cols-2">
             <div>
-              <h3 className="text-sm font-medium text-slate-700 mb-3">
+              <h3 className="mb-3 text-sm font-medium text-slate-700">
                 Áreas con mayor incidencia
               </h3>
 
@@ -209,7 +233,7 @@ export const SSTDashboardPage = () => {
                       key={i}
                       className="rounded-xl border border-slate-100 bg-slate-50 p-3"
                     >
-                      <div className="flex items-center justify-between mb-1">
+                      <div className="mb-1 flex items-center justify-between">
                         <span className="text-sm font-medium text-slate-700">
                           {area.area}
                         </span>
@@ -264,10 +288,17 @@ export const SSTDashboardPage = () => {
         </div>
 
         <div className="rounded-3xl border border-slate-200 bg-white shadow-sm">
-          <div className="px-6 py-5 border-b border-slate-100">
+          <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
             <h2 className="text-base font-semibold text-slate-900">
               Últimos accidentes
             </h2>
+
+            <button
+              onClick={() => navigate('/accidents')}
+              className="text-sm font-medium text-blue-600 hover:text-blue-700"
+            >
+              Ver todos
+            </button>
           </div>
 
           <table className="w-full text-sm">
@@ -282,7 +313,11 @@ export const SSTDashboardPage = () => {
 
             <tbody>
               {data.recentAccidents.map((item) => (
-                <tr key={item.id} className="border-t border-slate-100">
+                <tr
+                  key={item.id}
+                  onClick={() => navigate(`/accidents/${item.id}`)}
+                  className="cursor-pointer border-t border-slate-100 transition hover:bg-slate-50"
+                >
                   <td className="px-6 py-4 font-medium text-slate-900">
                     {item.employeeName}
                   </td>
