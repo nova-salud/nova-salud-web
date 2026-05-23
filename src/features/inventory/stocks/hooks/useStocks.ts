@@ -59,7 +59,8 @@ export const useStocks = (query: FindInventoryStocksDto): UseStocksReturn => {
     query.genericName,
     query.therapeuticCategoryId,
     query.isOtc,
-    query.isActive
+    query.isActive,
+    query.lowStock,
   ])
 
   return {

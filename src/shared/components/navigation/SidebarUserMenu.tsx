@@ -23,9 +23,12 @@ const SidebarUserMenu = ({ user, sidebarCollapsed, onLogout }: Props) => {
 
         <button
           onClick={() => setOpen(prev => !prev)}
-          className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left hover:bg-slate-100"
+          className={cn(
+            'flex w-full items-center rounded-lg py-2 text-left hover:bg-slate-100',
+            sidebarCollapsed ? 'justify-center px-0' : 'gap-2 px-2'
+          )}
         >
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-slate-200 text-xs font-semibold text-slate-700">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-slate-200 text-xs font-semibold text-slate-700">
             {user?.username?.charAt(0).toUpperCase() ?? 'U'}
           </div>
 

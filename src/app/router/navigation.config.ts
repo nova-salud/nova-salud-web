@@ -1,5 +1,26 @@
 import { RoleEnum } from '@/core/enums/role.enum'
-import { Ambulance, ArrowLeftRight, ClipboardList, LayoutDashboard, MessageCircleWarning, Pill, Settings, ShieldAlert, Truck, Users, type LucideIcon } from 'lucide-react'
+import {
+  Activity,
+  ArrowLeftRight,
+  BellDot,
+  BookOpen,
+  Building2,
+  ClipboardPlus,
+  FileBadge,
+  FileText,
+  FlaskConical,
+  Layers,
+  LayoutDashboard,
+  Pill,
+  RefreshCw,
+  ShieldAlert,
+  ShoppingCart,
+  Stethoscope,
+  Truck,
+  UserCog,
+  Users,
+  type LucideIcon,
+} from 'lucide-react'
 
 export type NavigationItem = {
   label: string
@@ -35,20 +56,30 @@ export const navigationConfig: NavigationSection[] = [
       {
         label: 'Alertas',
         path: '/alerts',
-        icon: MessageCircleWarning,
+        icon: BellDot,
         roles: [
-          RoleEnum.ADMIN
-        ]
-      }
+          RoleEnum.ADMIN,
+        ],
+      },
     ],
   },
   {
     label: 'ATENCIONES',
     items: [
       {
+        label: 'Historias Clínicas',
+        path: '/clinical-histories',
+        icon: BookOpen,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.NURSE,
+        ],
+      },
+      {
         label: 'Atención clínica',
         path: '/clinical-attention',
-        icon: ClipboardList,
+        icon: Stethoscope,
         roles: [
           RoleEnum.ADMIN,
           RoleEnum.OCCUPATIONAL_DOCTOR,
@@ -58,7 +89,7 @@ export const navigationConfig: NavigationSection[] = [
       {
         label: 'Enfermedades',
         path: '/diseases',
-        icon: ClipboardList,
+        icon: Activity,
         roles: [
           RoleEnum.ADMIN,
           RoleEnum.OCCUPATIONAL_DOCTOR,
@@ -68,7 +99,7 @@ export const navigationConfig: NavigationSection[] = [
       {
         label: 'Exámenes',
         path: '/exams',
-        icon: ClipboardList,
+        icon: FlaskConical,
         roles: [
           RoleEnum.ADMIN,
           RoleEnum.OCCUPATIONAL_DOCTOR,
@@ -86,13 +117,13 @@ export const navigationConfig: NavigationSection[] = [
         icon: ShieldAlert,
         roles: [
           RoleEnum.SST,
-          RoleEnum.ADMIN
+          RoleEnum.ADMIN,
         ],
       },
       {
         label: 'Establecimientos de salud',
         path: '/healthcare-centers',
-        icon: Ambulance,
+        icon: Building2,
         roles: [
           RoleEnum.ADMIN,
           RoleEnum.OCCUPATIONAL_DOCTOR,
@@ -118,7 +149,7 @@ export const navigationConfig: NavigationSection[] = [
       {
         label: 'Requerimientos',
         path: '/requirements',
-        icon: Truck,
+        icon: ShoppingCart,
         roles: [
           RoleEnum.ADMIN,
           RoleEnum.OCCUPATIONAL_DOCTOR,
@@ -128,7 +159,7 @@ export const navigationConfig: NavigationSection[] = [
       {
         label: 'Dispensaciones',
         path: '/dispensations',
-        icon: ClipboardList,
+        icon: ClipboardPlus,
         roles: [
           RoleEnum.ADMIN,
           RoleEnum.OCCUPATIONAL_DOCTOR,
@@ -164,7 +195,7 @@ export const navigationConfig: NavigationSection[] = [
       {
         label: 'Áreas',
         path: '/areas',
-        icon: ClipboardList,
+        icon: Layers,
         roles: [
           RoleEnum.ADMIN,
           RoleEnum.HR,
@@ -174,7 +205,7 @@ export const navigationConfig: NavigationSection[] = [
       {
         label: 'Protocolos EMO',
         path: '/emo-protocols',
-        icon: ClipboardList,
+        icon: FileBadge,
         roles: [
           RoleEnum.ADMIN,
           RoleEnum.OCCUPATIONAL_DOCTOR,
@@ -188,7 +219,15 @@ export const navigationConfig: NavigationSection[] = [
       {
         label: 'Sync RRHH',
         path: '/system-settings/employee-sync',
-        icon: Settings,
+        icon: RefreshCw,
+        roles: [
+          RoleEnum.ADMIN,
+        ],
+      },
+      {
+        label: 'Plantillas',
+        path: '/document-templates',
+        icon: FileText,
         roles: [
           RoleEnum.ADMIN,
         ],
@@ -201,7 +240,7 @@ export const navigationConfig: NavigationSection[] = [
       {
         label: 'Usuarios',
         path: '/users',
-        icon: Users,
+        icon: UserCog,
         roles: [
           RoleEnum.ADMIN,
         ],

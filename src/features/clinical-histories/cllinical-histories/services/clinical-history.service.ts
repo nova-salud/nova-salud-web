@@ -2,6 +2,7 @@ import { ApiService } from '@/core/api/api.service'
 import type { PaginatedResponse } from '@/core/types/paginated-response.type'
 import type {
   ClinicalHistoryFullResponseDto,
+  ClinicalHistoryListItemDto,
   ClinicalHistoryResponseDto,
   CreateClinicalHistoryDto,
   FindClinicalHistoriesDto,
@@ -11,8 +12,8 @@ import type {
 class ClinicalHistoryService extends ApiService {
   async findAll(
     query: FindClinicalHistoriesDto,
-  ): Promise<PaginatedResponse<ClinicalHistoryResponseDto>> {
-    return await this.getPaginated<ClinicalHistoryResponseDto>(
+  ): Promise<PaginatedResponse<ClinicalHistoryListItemDto>> {
+    return await this.getPaginated<ClinicalHistoryListItemDto>(
       '/attentions/clinical-histories',
       { params: query },
     )

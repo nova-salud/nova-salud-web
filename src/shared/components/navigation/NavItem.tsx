@@ -26,8 +26,8 @@ const NavItem = ({
       title={collapsed ? label : undefined}
       className={({ isActive }) => cn(
         [
-          'flex items-center rounded-2xl text-[13px] px-4 py-3 transition-all',
-          collapsed ? 'justify-center' : 'justify-between',
+          'flex w-full items-center rounded-2xl text-[13px] py-3 transition-all',
+          collapsed ? 'justify-center px-0' : 'justify-between px-4',
           isActive
             ? 'bg-slate-100 text-[#2447F9] font-medium'
             : 'text-slate-700 hover:bg-slate-50',

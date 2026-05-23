@@ -1,21 +1,28 @@
 import { useMemo, useState } from 'react'
+import { NavLink, useSearchParams } from 'react-router'
 import PageContainer from '@/shared/components/ui/PageContainer'
 import MedicationTable from '../components/MedicationTable'
 import { useStocks } from '@/features/inventory/stocks/hooks/useStocks'
-import { NavLink } from 'react-router'
+
+const STOCK_FILTER_OPTIONS = [
+  { label: 'Todos los medicamentos', value: '' },
+  { label: 'Stock bajo o agotado', value: 'true' },
+]
 
 const MedicationsPage = () => {
-  const [search, setSearch] = useState('')
+  const [searchParams] = useSearchParams()
 
-  const query = useMemo(() => {
-    return {
-      page: 1,
-      pageSize: 10,
-      sortBy: 'commercialName',
-      sortOrder: 'ASC' as const,
-      commercialName: search.trim() || undefined,
-    }
-  }, [search])
+  const [search, setSearch] = useState(searchParams.get('search') ?? '')
+  const [lowStock, setLowStock] = useState(searchParams.get('lowStock') ?? '')
+
+  const query = useMemo(() => ({
+    page: 1,
+    pageSize: 10,
+    sortBy: 'commercialName',
+    sortOrder: 'ASC' as const,
+    commercialName: search.trim() || undefined,
+    lowStock: lowStock === 'true' ? true : undefined,
+  }), [search, lowStock])
 
   const { data, isLoading, error } = useStocks(query)
 
@@ -36,23 +43,31 @@ const MedicationsPage = () => {
     >
       <div className="space-y-5">
         <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="text-sm font-medium text-slate-800">
-                Catálogo operativo
-              </p>
+              <p className="text-sm font-medium text-slate-800">Catálogo operativo</p>
               <p className="text-sm text-slate-500">
                 Visualiza medicamentos con su stock actual, categoría y estado.
               </p>
             </div>
 
-            <div className="w-full md:w-[320px]">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+              <select
+                value={lowStock}
+                onChange={e => setLowStock(e.target.value)}
+                className="rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-500"
+              >
+                {STOCK_FILTER_OPTIONS.map(o => (
+                  <option key={o.value} value={o.value}>{o.label}</option>
+                ))}
+              </select>
+
               <input
                 type="text"
                 placeholder="Buscar medicamento..."
                 value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-500"
+                onChange={e => setSearch(e.target.value)}
+                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-500 sm:w-70"
               />
             </div>
           </div>

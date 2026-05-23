@@ -19,6 +19,14 @@ class ClinicalHistoryEmoCycleService extends ApiService {
     )
   }
 
+  async findByClinicalHistoryId(
+    clinicalHistoryId: number,
+  ): Promise<ClinicalHistoryEmoCycleResponseDto[]> {
+    return await this.get<ClinicalHistoryEmoCycleResponseDto[]>(
+      `/clinical-history-emo-cycles/clinical-history/${clinicalHistoryId}`,
+    )
+  }
+
   async findActiveByClinicalHistoryId(
     clinicalHistoryId: number,
   ): Promise<ClinicalHistoryEmoCycleResponseDto | null> {

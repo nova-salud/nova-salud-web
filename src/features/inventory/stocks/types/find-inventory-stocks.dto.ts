@@ -6,4 +6,5 @@ export type FindInventoryStocksDto = QueryParams & {
   therapeuticCategoryId?: number
   isOtc?: boolean
   isActive?: boolean
+  lowStock?: boolean
 }

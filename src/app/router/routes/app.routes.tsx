@@ -33,12 +33,15 @@ import ExamsPage from '@/features/exams/pages/ExamsPage'
 import EmoProtocolsPage from '@/features/emo-protocols/pages/EmoProtocolsPage'
 import EmoProtocolDetailPage from '@/features/emo-protocols/pages/EmoProtocolDetailPage'
 import EmoCycleDetailPage from '@/features/clinical-histories/emo-cycles/pages/EmoCycleDetailPage'
+import EmoCycleHistoryPage from '@/features/clinical-histories/emo-cycles/pages/EmoCycleHistoryPage'
+import ClinicalHistoriesPage from '@/features/clinical-histories/cllinical-histories/pages/ClinicalHistoriesPage'
 import HealthcareCentersPage from '@/features/healthcare-centers/pages/HealthcareCentersPage'
 import AccidentDetailPage from '@/features/accidents/accidents/pages/AccidentDetailPage'
 import { AccidentsPage } from '@/features/accidents/accidents/pages/AccidentsPage'
 import CreateAccidentFromClinicaHistoryPage from '@/features/accidents/accidents/pages/CreateAccidentFromClinicalHistoryPage'
 import { CreateAccidentPage } from '@/features/accidents/accidents/pages/CreateAccidentPage'
 import AlertsPage from '@/features/communications/alerts/pages/AlertPage'
+import DocumentTemplatesPage from '@/features/document-templates/pages/DocumentTemplatesPage'
 
 
 export const appRoutes: RouteObject = {
@@ -64,6 +67,10 @@ export const appRoutes: RouteObject = {
             />
           ),
           children: [
+            {
+              path: '/clinical-histories',
+              element: <ClinicalHistoriesPage />,
+            },
             {
               path: '/clinical-attention',
               element: <ClinicalAttentionEntryPage />,
@@ -95,6 +102,10 @@ export const appRoutes: RouteObject = {
             {
               path: '/clinical-histories/:employeeId/cycle/:cycleId',
               element: <EmoCycleDetailPage />
+            },
+            {
+              path: '/clinical-histories/:employeeId/emo-cycles',
+              element: <EmoCycleHistoryPage />,
             },
             {
               path: '/diseases',
@@ -226,6 +237,10 @@ export const appRoutes: RouteObject = {
             {
               path: '/users',
               element: <UsersPage />,
+            },
+            {
+              path: '/document-templates',
+              element: <DocumentTemplatesPage />,
             },
           ],
         },

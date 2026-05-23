@@ -48,7 +48,7 @@ const AppSidebar = () => {
         ])}
       >
         <div className="border-b border-slate-200 px-3 py-4">
-          <div className="relative flex items-center justify-start">
+          <div className="flex w-full items-center justify-between">
             {!sidebarCollapsed ? (
               <>
                 <img
@@ -61,7 +61,7 @@ const AppSidebar = () => {
                   type="button"
                   onClick={toggleSidebarCollapsed}
                   aria-label="Colapsar menú lateral"
-                  className="absolute right-0 hidden h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 lg:inline-flex"
+                  className="hidden h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 lg:inline-flex"
                 >
                   <PanelLeftClose size={18} />
                 </button>
@@ -71,7 +71,7 @@ const AppSidebar = () => {
                 type="button"
                 onClick={toggleSidebarCollapsed}
                 aria-label="Expandir menú lateral"
-                className="hidden h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 lg:inline-flex"
+                className="hidden w-full items-center justify-center rounded-2xl border border-slate-200 bg-white py-2 text-slate-600 hover:bg-slate-50 lg:inline-flex"
               >
                 <PanelLeftOpen size={18} />
               </button>
