@@ -9,4 +9,5 @@ export type CreateMedicationDto = {
   isOtc: boolean
   requiresPrescription: boolean
   notes?: string
+  contraindications?: string
 }

@@ -14,5 +14,6 @@ export type MedicationResponseDto = AuditResponseDto & {
   requiresPrescription: boolean
   isActive: boolean
   notes: string | null
+  contraindications: string | null
   therapeuticCategory: TherapeuticCategoryResponseDto
 }

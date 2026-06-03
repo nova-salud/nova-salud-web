@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import PageContainer from '@/shared/components/ui/PageContainer'
 import { useMedication } from '../hooks/useMedication'
@@ -6,24 +6,36 @@ import { useMedicationLots } from '@/features/inventory/lots/hooks/useMedication
 import { useMedicationMovements } from '@/features/inventory/movements/hooks/useMedicationMovements'
 import MedicationLotsTable from '@/features/inventory/lots/components/MedicationLotsTable'
 import MedicationMovementsTable from '@/features/inventory/movements/components/MedicationMovementsTable'
+import RegisterLotModal from '@/features/inventory/lots/components/RegisterLotModal'
 import { cn } from '@/shared/utils'
+import { Button } from '@/shared/components'
+import { useAuth } from '@/shared/hooks/useAuth'
+import { RoleEnum } from '@/core/enums/role.enum'
 
 const MedicationDetailPage = () => {
   const navigate = useNavigate()
   const params = useParams()
+  const { user } = useAuth()
 
   const medicationId = Number(params.id)
+
+  const [isRegisterLotOpen, setIsRegisterLotOpen] = useState(false)
+
+  const canRegisterLot =
+    user?.role === RoleEnum.ADMIN || user?.role === RoleEnum.OCCUPATIONAL_DOCTOR
 
   const { data: medication, isLoading, error } = useMedication(medicationId)
   const {
     data: lots,
     isLoading: isLotsLoading,
     error: lotsError,
+    refetch: refetchLots,
   } = useMedicationLots(medicationId)
   const {
     data: movements,
     isLoading: isMovementsLoading,
     error: movementsError,
+    refetch: refetchMovements,
   } = useMedicationMovements(medicationId)
 
   const currentStock = useMemo(() => {
@@ -111,28 +123,28 @@ const MedicationDetailPage = () => {
               </div>
 
               <div className="flex gap-2">
-                <button
-                  type="button"
+                <Button
+                  variant='outline'
                   onClick={() => navigate('/medications')}
-                  className="rounded-2xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
                 >
                   Volver
-                </button>
+                </Button>
 
-                <button
-                  type="button"
+                <Button
+                  variant='info'
                   onClick={() => navigate(`/medications/${medication.id}/edit`)}
-                  className="rounded-2xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
                 >
                   Editar
-                </button>
+                </Button>
 
-                {/* <button
-                  type="button"
-                  className="rounded-2xl bg-[#0B1739] px-4 py-2 text-sm font-medium text-white"
-                >
-                  Registrar lote
-                </button> */}
+                {canRegisterLot && (
+                  <Button
+                    variant='primary'
+                    onClick={() => setIsRegisterLotOpen(true)}
+                  >
+                    Registrar lote
+                  </Button>
+                )}
               </div>
             </div>
 
@@ -224,6 +236,15 @@ const MedicationDetailPage = () => {
                     {medication.notes ?? 'Sin observaciones.'}
                   </p>
                 </div>
+
+                <div className="md:col-span-2">
+                  <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
+                    Contraindicaciones
+                  </p>
+                  <p className="mt-1 text-sm text-slate-600">
+                    {medication.contraindications ?? 'Sin contraindicaciones.'}
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -246,6 +267,16 @@ const MedicationDetailPage = () => {
             <MedicationMovementsTable
               items={movements}
               isLoading={isMovementsLoading}
+            />
+
+            <RegisterLotModal
+              medicationId={medicationId}
+              isOpen={isRegisterLotOpen}
+              onClose={() => setIsRegisterLotOpen(false)}
+              onSuccess={() => {
+                refetchLots()
+                refetchMovements()
+              }}
             />
           </>
         )}

@@ -69,6 +69,7 @@ const EditMedicationPage = () => {
               isOtc: medication.isOtc,
               requiresPrescription: medication.requiresPrescription,
               notes: medication.notes ?? '',
+              contraindications: medication.contraindications ?? ''
             }}
             onSubmit={handleUpdate}
             isLoading={saving}

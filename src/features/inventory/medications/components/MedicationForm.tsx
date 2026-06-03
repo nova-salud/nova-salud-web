@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { cn } from '@/shared/utils'
 import type { CreateMedicationDto } from '../types/create-medication.dto'
-import { Checkbox, Input, Select, Textarea } from '@/shared/components/ui/form'
+import { Button, Checkbox, Input, Select, Textarea } from '@/shared/components/ui/form'
+import { useNavigate } from 'react-router'
 
 type Category = {
   id: number
@@ -21,13 +22,15 @@ const MedicationForm = ({
   onSubmit,
   isLoading = false,
 }: Props) => {
+  const navigate = useNavigate()
   const [isOtc, setIsOtc] = useState(initialValues.isOtc ?? false)
   const [requiresPrescription, setRequiresPrescription] = useState(initialValues.requiresPrescription ?? false)
 
   const handleSubmit = (e: { preventDefault(): void; currentTarget: HTMLFormElement }) => {
     e.preventDefault()
     const data = new FormData(e.currentTarget)
-    onSubmit({
+
+    const dto: CreateMedicationDto = {
       commercialName: data.get('commercialName') as string,
       genericName: data.get('genericName') as string,
       chemicalComposition: data.get('chemicalComposition') as string,
@@ -38,7 +41,10 @@ const MedicationForm = ({
       isOtc,
       requiresPrescription,
       notes: data.get('notes') as string,
-    })
+      contraindications: data.get('contraindications') as string,
+    }
+
+    onSubmit(dto)
   }
 
   return (
@@ -53,28 +59,33 @@ const MedicationForm = ({
             label="Nombre comercial"
             name="commercialName"
             type="text"
-            defaultValue={initialValues.commercialName ?? ''}
+            value={initialValues.commercialName ?? ''}
+            placeholder="Ej. Paracetamol Genfar"
+            required
           />
 
           <Input
             label="Nombre genérico"
             name="genericName"
             type="text"
-            defaultValue={initialValues.genericName ?? ''}
+            value={initialValues.genericName ?? ''}
+            placeholder="Ej. Acetaminofén"
           />
 
           <Input
             label="Composición"
             name="chemicalComposition"
             type="text"
-            defaultValue={initialValues.chemicalComposition ?? ''}
+            value={initialValues.chemicalComposition ?? ''}
             className="md:col-span-2"
+            placeholder="Ej. Acetaminofén 500mg, almidón de maíz, celulosa microcristalina"
+            required
           />
 
           <Select
             name="medication"
             label="Categoría"
-            defaultValue={initialValues.therapeuticCategoryId}
+            value={initialValues.therapeuticCategoryId}
             options={categories.map((c) => ({
               label: c.name,
               value: c.id,
@@ -93,21 +104,26 @@ const MedicationForm = ({
             label="Presentación"
             name="presentation"
             type="text"
-            defaultValue={initialValues.presentation ?? ''}
+            value={initialValues.presentation ?? ''}
+            placeholder="Ej. Tabletas, jarabe, cápsulas"
           />
 
           <Input
             label="Unidad de medida"
             name="unitOfMeasure"
             type="text"
-            defaultValue={initialValues.unitOfMeasure ?? ''}
+            value={initialValues.unitOfMeasure ?? ''}
+            placeholder="Ej. mg, ml, UI"
+            required
           />
 
           <Input
             label="Stock mínimo"
             name="minimumStock"
             type="number"
-            defaultValue={initialValues.minimumStock ?? 0}
+            value={initialValues.minimumStock ?? 0}
+            placeholder="Ej. 50"
+            required
           />
         </div>
       </div>
@@ -139,23 +155,47 @@ const MedicationForm = ({
 
         <Textarea
           name="notes"
-          defaultValue={initialValues.notes ?? ''}
-          placeholder="Observaciones del medicamento"
+          value={initialValues.notes ?? ''}
+          placeholder="Ej. Conservar en lugar fresco y seco, evitar la exposición directa al sol"
         />
       </div>
 
-      <div className="flex justify-end">
-        <button
+      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">
+        <h3 className="text-sm font-semibold text-slate-900">
+          Contraindicaciones
+        </h3>
+
+        <Textarea
+          name="contraindications"
+          value={initialValues.contraindications ?? ''}
+          placeholder="Ej. Hipersensibilidad al principio activo, insuficiencia hepática grave"
+        />
+      </div>
+
+      <div className="flex justify-end gap-4">
+        <Button
+          variant='error'
+          onClick={() => { navigate(-1)}}
+          disabled={isLoading}
+          className={cn(
+            'rounded-lg px-6 py-2 text-sm font-medium text-white transition',
+            isLoading && 'opacity-50 cursor-not-allowed',
+          )}
+        >
+          Atrás
+        </Button>
+
+        <Button
           type="submit"
           disabled={isLoading}
           className={cn(
-            'rounded-2xl px-6 py-2 text-sm font-medium text-white transition',
+            'rounded-lg px-6 py-2 text-sm font-medium text-white transition',
             'bg-[#0B1739] hover:opacity-90',
             isLoading && 'opacity-50 cursor-not-allowed',
           )}
         >
           {isLoading ? 'Guardando...' : 'Guardar'}
-        </button>
+        </Button>
       </div>
     </form>
   )

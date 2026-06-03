@@ -18,7 +18,7 @@ const SIZE_CLASS_MAP = {
   xl: 'max-w-4xl',
 }
 
-const Modal = ({
+export const Modal = ({
   isOpen,
   onClose,
   title,
