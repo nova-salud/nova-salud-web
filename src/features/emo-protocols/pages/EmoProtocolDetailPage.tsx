@@ -4,10 +4,13 @@ import PageContainer from '@/shared/components/ui/PageContainer'
 import Modal from '@/shared/components/ui/modal/Modal'
 import { Button } from '@/shared/components/ui/form'
 import AssignAreaToEmoProtocolModal from '../components/AssignAreaToEmoProtocolModal'
+import AssignPositionToEmoProtocolModal from '../components/AssignPositionToEmoProtocolModal'
 import EmoProtocolAreasSection from '../components/EmoProtocolAreasSection'
+import EmoProtocolPositionsSection from '../components/EmoProtocolPositionsSection'
 import EmoProtocolExamsSection from '../components/emo-protocol-exams/EmoProtocolExamsSection'
 import {
   useAssignOrUnassignEmoProtocolArea,
+  useAssignOrUnassignEmoProtocolPosition,
   useDeleteEmoProtocol,
   useEmoProtocol,
   useEmoProtocolExams,
@@ -19,6 +22,7 @@ const EmoProtocolDetailPage = () => {
   const emoProtocolId = Number(id)
 
   const [isAssignAreaModalOpen, setIsAssignAreaModalOpen] = useState(false)
+  const [isAssignPositionModalOpen, setIsAssignPositionModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
   const { data, isLoading, error, refetch } = useEmoProtocol(emoProtocolId)
@@ -34,11 +38,22 @@ const EmoProtocolDetailPage = () => {
     successMessage: 'Área desasignada correctamente',
   })
 
+  const { assignOrUnassignPosition } = useAssignOrUnassignEmoProtocolPosition({
+    successMessage: 'Puesto desasignado correctamente',
+  })
+
   const { deleteEmoProtocol, isLoading: isDeleting } = useDeleteEmoProtocol()
 
   const handleUnassignArea = async (areaId: number) => {
     if (!data) return
     const result = await assignOrUnassignArea(data.id, areaId)
+    if (!result) return
+    await refetch()
+  }
+
+  const handleUnassignPosition = async (positionId: number) => {
+    if (!data) return
+    const result = await assignOrUnassignPosition(data.id, positionId)
     if (!result) return
     await refetch()
   }
@@ -109,6 +124,12 @@ const EmoProtocolDetailPage = () => {
             onUnassignArea={handleUnassignArea}
           />
 
+          <EmoProtocolPositionsSection
+            positions={data.positions}
+            onAssignPosition={() => setIsAssignPositionModalOpen(true)}
+            onUnassignPosition={handleUnassignPosition}
+          />
+
           {protocolExamsError ? (
             <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
               {protocolExamsError}
@@ -128,6 +149,13 @@ const EmoProtocolDetailPage = () => {
         isOpen={isAssignAreaModalOpen}
         emoProtocol={data}
         onClose={() => setIsAssignAreaModalOpen(false)}
+        onSuccess={() => void refetch()}
+      />
+
+      <AssignPositionToEmoProtocolModal
+        isOpen={isAssignPositionModalOpen}
+        emoProtocol={data}
+        onClose={() => setIsAssignPositionModalOpen(false)}
         onSuccess={() => void refetch()}
       />
 

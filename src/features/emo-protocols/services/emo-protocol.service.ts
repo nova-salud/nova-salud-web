@@ -38,6 +38,16 @@ class EmoProtocolService extends ApiService {
     )
   }
 
+  async assignOrUnassignPosition(
+    id: number,
+    positionId: number,
+  ): Promise<EmoProtocolResponseDto> {
+    return await this.patch<EmoProtocolResponseDto>(
+      `/emo-protocols/${id}/positions`,
+      { positionId },
+    )
+  }
+
   async remove(id: number): Promise<void> {
     await this.delete(`/emo-protocols/${id}`)
   }

@@ -4,6 +4,7 @@ export * from './emo-protocols/useDeleteEmoProtocol'
 export * from './emo-protocols/useEmoProtocol'
 export * from './emo-protocols/useEmoProtocols'
 export * from './emo-protocols/useAssignOrUnassignEmoProtocolArea'
+export * from './emo-protocols/useAssignOrUnassignEmoProtocolPosition'
 
 export * from './emo-protocol-exams/useCreateEmoProtocolExam'
 export * from './emo-protocol-exams/useEmoProtocolExams'
