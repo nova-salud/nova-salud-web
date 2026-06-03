@@ -93,7 +93,7 @@ const UserPasswordSidebarContent = ({
             {user.username}
           </p>
           <p className="mt-1 text-sm text-slate-600">
-            {user.fullName}
+            {user.employee?.fullName ?? '—'}
           </p>
         </div>
       ) : null}

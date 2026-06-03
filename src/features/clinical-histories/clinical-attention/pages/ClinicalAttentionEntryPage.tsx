@@ -120,7 +120,7 @@ const ClinicalAttentionEntryPage = () => {
 
                   <div>
                     <p className="text-xs text-slate-400">Puesto</p>
-                    <p className="text-slate-700">{employee.position ?? '—'}</p>
+                    <p className="text-slate-700">{employee.position?.name ?? '—'}</p>
                   </div>
 
                   <div>

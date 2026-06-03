@@ -15,7 +15,7 @@ class AuthService extends ApiService {
         username: authenticatedUser.username,
         role: authenticatedUser.role,
         fullname: authenticatedUser.employee?.fullName ?? authenticatedUser.username,
-        active: authenticatedUser.employee?.isActive ?? true,
+        active: authenticatedUser.isActive,
       },
     }
   }

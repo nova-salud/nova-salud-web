@@ -39,7 +39,7 @@ const EmployeeTable = ({ items, isLoading = false }: Props) => {
                 {item.fullName}
               </span>
               <span className="text-xs text-slate-500">
-                {item.position ?? '—'}
+                {item.position?.name ?? '—'}
               </span>
             </div>
           </td>
@@ -64,7 +64,7 @@ const EmployeeTable = ({ items, isLoading = false }: Props) => {
           </td>
 
           <td className="px-6 py-5 text-slate-500">
-            {item.position ?? '—'}
+            {item.position?.name ?? '—'}
           </td>
 
           <td className="px-6 py-5">

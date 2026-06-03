@@ -191,7 +191,7 @@ export const UserDetailSidebar = ({
                   Cargo
                 </p>
                 <p className="mt-1 text-sm text-slate-700">
-                  {user.employee?.position ?? '—'}
+                  {user.employee?.position?.name ?? '—'}
                 </p>
               </div>
             </div>

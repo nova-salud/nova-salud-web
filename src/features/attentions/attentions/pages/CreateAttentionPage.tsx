@@ -245,7 +245,7 @@ const CreateAttentionPage = () => {
                   Puesto
                 </p>
                 <p className="mt-1 text-sm text-slate-700">
-                  {employee.position ?? '—'}
+                  {employee.position?.name ?? '—'}
                 </p>
               </div>
 

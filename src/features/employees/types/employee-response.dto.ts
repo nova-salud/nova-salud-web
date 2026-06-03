@@ -16,6 +16,7 @@ export type EmployeeResponseDto = AuditResponseDto & {
   position: EmployeePositionResponseDto | null
   immediateBoss: string | null
   employmentStatus: string
+  isActive: boolean
   isVetoed: boolean
   isBlocked: boolean
   lastSyncedAt: string | null
