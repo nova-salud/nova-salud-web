@@ -138,17 +138,6 @@ export const UserDetailSidebar = ({
               >
                 {user.isBlocked ? 'Vetado' : 'Habilitado'}
               </span>
-
-              <span
-                className={cn(
-                  'inline-flex rounded-xl border px-3 py-1 text-xs font-medium',
-                  user.isExternal
-                    ? 'border-sky-100 bg-sky-50 text-sky-700'
-                    : 'border-amber-100 bg-amber-50 text-amber-700',
-                )}
-              >
-                {user.isExternal ? 'Externo' : 'Interno'}
-              </span>
             </div>
 
             <div className="mt-5 grid gap-4 md:grid-cols-2">
@@ -166,7 +155,7 @@ export const UserDetailSidebar = ({
                   Nombre completo
                 </p>
                 <p className="mt-1 text-sm font-medium text-slate-900">
-                  {user.fullName}
+                  {user.employee?.fullName ?? '—'}
                 </p>
               </div>
 
@@ -175,7 +164,7 @@ export const UserDetailSidebar = ({
                   DNI
                 </p>
                 <p className="mt-1 text-sm text-slate-700">
-                  {user.dni}
+                  {user.employee?.dni ?? '—'}
                 </p>
               </div>
 
@@ -184,7 +173,7 @@ export const UserDetailSidebar = ({
                   Empresa
                 </p>
                 <p className="mt-1 text-sm text-slate-700">
-                  {user.company}
+                  {user.employee?.company ?? '—'}
                 </p>
               </div>
 
@@ -193,7 +182,7 @@ export const UserDetailSidebar = ({
                   Área
                 </p>
                 <p className="mt-1 text-sm text-slate-700">
-                  {user.area ?? '—'}
+                  {user.employee?.area?.name ?? '—'}
                 </p>
               </div>
 
@@ -202,7 +191,7 @@ export const UserDetailSidebar = ({
                   Cargo
                 </p>
                 <p className="mt-1 text-sm text-slate-700">
-                  {user.position ?? '—'}
+                  {user.employee?.position ?? '—'}
                 </p>
               </div>
             </div>

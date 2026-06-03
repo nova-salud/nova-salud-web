@@ -18,6 +18,7 @@ import {
   Stethoscope,
   UserCog,
   Users,
+  Briefcase,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -192,9 +193,29 @@ export const navigationConfig: NavigationSection[] = [
         ],
       },
       {
+        label: 'Externos',
+        path: '/externos',
+        icon: Users,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.HR,
+          RoleEnum.MANAGEMENT,
+        ],
+      },
+      {
         label: 'Áreas',
         path: '/areas',
         icon: Layers,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.HR,
+          RoleEnum.MANAGEMENT,
+        ],
+      },
+      {
+        label: 'Posiciones',
+        path: '/positions',
+        icon: Briefcase,
         roles: [
           RoleEnum.ADMIN,
           RoleEnum.HR,

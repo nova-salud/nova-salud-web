@@ -1,0 +1,45 @@
+import { DataTable } from '@/shared/components/ui/table/DataTable'
+import { cn } from '@/shared/utils'
+import type { EmployeePositionResponseDto } from '../types/employee-position-response.dto'
+
+type Props = {
+  items: EmployeePositionResponseDto[]
+  isLoading?: boolean
+}
+
+const EmployeePositionTable = ({ items, isLoading = false }: Props) => {
+  return (
+    <DataTable
+      data={items}
+      isLoading={isLoading}
+      emptyMessage="No se encontraron posiciones."
+      columns={['ID', 'Nombre', 'Estado']}
+      renderRow={(item) => (
+        <>
+          <td className="px-6 py-5 font-medium text-slate-900">
+            #{item.id}
+          </td>
+
+          <td className="px-6 py-5 text-slate-700">
+            {item.name}
+          </td>
+
+          <td className="px-6 py-5">
+            <span
+              className={cn(
+                'inline-flex rounded-xl border px-3 py-1 text-xs font-medium',
+                item.isActive
+                  ? 'border-emerald-100 bg-emerald-50 text-emerald-700'
+                  : 'border-slate-200 bg-slate-50 text-slate-500',
+              )}
+            >
+              {item.isActive ? 'Activa' : 'Inactiva'}
+            </span>
+          </td>
+        </>
+      )}
+    />
+  )
+}
+
+export default EmployeePositionTable

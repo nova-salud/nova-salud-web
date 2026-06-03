@@ -6,17 +6,16 @@ import type { LoginResponseDto } from '../types/login-response.dto'
 class AuthService extends ApiService {
   async login(payload: LoginDto): Promise<UserSession> {
     const response = await this.post<LoginResponseDto, LoginDto>('/auth/login', payload)
-    const { tokens: { accessToken }, authenticatedUser: { id, username, active, role, fullName } } = response
-
+    const { tokens: { accessToken }, authenticatedUser } = response
 
     return {
       token: accessToken,
       user: {
-        id,
-        username,
-        fullname: fullName,
-        role,
-        active
+        id: authenticatedUser.id,
+        username: authenticatedUser.username,
+        role: authenticatedUser.role,
+        fullname: authenticatedUser.employee?.fullName ?? authenticatedUser.username,
+        active: authenticatedUser.employee?.isActive ?? true,
       },
     }
   }

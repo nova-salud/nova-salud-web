@@ -13,26 +13,13 @@ type Props = {
   onViewDetail: (user: UserResponseDto) => void
 }
 
-const UserTable = ({
-  items,
-  isLoading = false,
-  onViewDetail,
-}: Props) => {
+const UserSimpleTable = ({ items, isLoading = false, onViewDetail }: Props) => {
   return (
     <DataTable
       data={items}
       isLoading={isLoading}
-      emptyMessage="No se encontraron empleados."
-      columns={[
-        '#',
-        'Usuario',
-        'Nombre completo',
-        'Área',
-        'Cargo',
-        'Rol',
-        'Estado',
-        'Acciones',
-      ]}
+      emptyMessage="No se encontraron usuarios."
+      columns={['#', 'Usuario', 'Rol', 'Estado', 'Acciones']}
       renderRow={(item) => (
         <>
           <td className="px-6 py-5 font-medium text-slate-900">
@@ -41,18 +28,6 @@ const UserTable = ({
 
           <td className="px-6 py-5 text-slate-700">
             {item.username}
-          </td>
-
-          <td className="px-6 py-5 text-slate-700">
-            {item.employee?.fullName ?? '—'}
-          </td>
-
-          <td className="px-6 py-5 text-slate-700">
-            {item.employee?.area?.name ?? '—'}
-          </td>
-
-          <td className="px-6 py-5 text-slate-700">
-            {item.employee?.position?.name ?? '—'}
           </td>
 
           <td className="px-6 py-5">
@@ -95,4 +70,4 @@ const UserTable = ({
   )
 }
 
-export default UserTable
+export default UserSimpleTable

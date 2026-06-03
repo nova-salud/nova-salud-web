@@ -9,17 +9,10 @@ import type { RoleEnum } from '@/core/enums/role.enum'
 
 type UserFormMode = 'create' | 'edit'
 
-type UserFormValues = {
+type AuthValues = {
   username: string
-  fullName: string
   password: string
   role: string
-  isActive: boolean
-  dni: string
-  isExternal: boolean
-  area: string | null
-  position: string | null
-  company: string | null
   isBlocked: boolean
 }
 
@@ -33,18 +26,11 @@ type Props = {
   onUpdate?: (id: number, dto: UpdateUserDto) => Promise<void> | void
 }
 
-const INITIAL_VALUES: UserFormValues = {
+const INITIAL_AUTH: AuthValues = {
   username: '',
-  fullName: '',
   password: '',
   role: '',
-  isActive: true,
-  dni: '',
-  isExternal: false,
-  area: null,
-  position: null,
-  company: null,
-  isBlocked: false
+  isBlocked: false,
 }
 
 const UserFormSidebarContent = ({
@@ -55,118 +41,54 @@ const UserFormSidebarContent = ({
   onCreate,
   onUpdate,
 }: Omit<Props, 'isOpen'>) => {
-  const initialValues = useMemo<UserFormValues>(() => {
+  const initialAuth = useMemo<AuthValues>(() => {
     if (mode === 'edit' && user) {
       return {
         username: user.username ?? '',
-        fullName: user.fullName ?? '',
         password: '',
         role: user.role ?? '',
-        isActive: user.isActive,
-        dni: user.dni ?? '',
-        isExternal: user.isExternal,
-        area: user.area,
-        position: user.position,
-        company: user.company,
-        isBlocked: user.isBlocked
+        isBlocked: user.isBlocked,
       }
     }
-
-    return INITIAL_VALUES
+    return INITIAL_AUTH
   }, [mode, user])
 
-  const [values, setValues] = useState<UserFormValues>(initialValues)
+  const [auth, setAuth] = useState<AuthValues>(initialAuth)
 
-  const handleChange =
-    <K extends keyof UserFormValues>(key: K) =>
-      (value: UserFormValues[K]) => {
-        setValues((prev) => ({ ...prev, [key]: value }))
-      }
+  const setAuthField = <K extends keyof AuthValues>(key: K) => (value: AuthValues[K]) =>
+    setAuth((prev) => ({ ...prev, [key]: value }))
 
-  const isValid = useMemo<boolean>(() => {
-    if (!values.username.trim() || !values.fullName.trim() || !values.role) {
-      return false
-    }
-
-    if (mode === 'create' && !values.password.trim()) {
-      return false
-    }
-
+  const isValid = useMemo(() => {
+    if (!auth.username.trim() || !auth.role) return false
+    if (mode === 'create' && !auth.password.trim()) return false
     return true
-  }, [mode, values.fullName, values.password, values.role, values.username])
-
-  const buildCreateDto = (): CreateUserDto | null => {
-    if (!isValid) {
-      return null
-    }
-
-    return {
-      username: values.username.trim(),
-      fullName: values.fullName.trim(),
-      password: values.password,
-      role: values.role as RoleEnum,
-      dni: values.dni.trim(),
-      isExternal: values.isExternal,
-      area: values.area,
-      position: values.position,
-      company: values.company,
-    }
-  }
-
-  const buildUpdateDto = (): UpdateUserDto | null => {
-    if (!isValid) {
-      return null
-    }
-
-    return {
-      username: values.username.trim(),
-      fullName: values.fullName.trim(),
-      role: values.role as RoleEnum,
-      isActive: values.isActive,
-      dni: values.dni.trim(),
-      isExternal: values.isExternal,
-      area: values.area,
-      position: values.position,
-      company: values.company,
-    }
-  }
+  }, [auth, mode])
 
   const handleSubmit = async () => {
+    if (!isValid) return
+
     if (mode === 'create') {
-      const dto = buildCreateDto()
-
-      if (!dto || !onCreate) {
-        return
-      }
-
-      await onCreate(dto)
+      await onCreate?.({
+        username: auth.username.trim(),
+        password: auth.password,
+        role: auth.role as RoleEnum,
+        isBlocked: auth.isBlocked,
+      })
       return
     }
 
-    if (!user || !onUpdate) {
-      return
-    }
-
-    const dto = buildUpdateDto()
-
-    if (!dto) {
-      return
-    }
-
-    await onUpdate(user.id, dto)
+    await onUpdate?.(user!.id, {
+      username: auth.username.trim(),
+      role: auth.role as RoleEnum,
+      isBlocked: auth.isBlocked,
+    })
   }
 
   const footer = (
     <div className="flex flex-wrap justify-end gap-3">
-      <Button
-        type="button"
-        variant="outline"
-        onClick={onClose}
-        className="w-auto"
-      >
+      <Button type="button" variant="outline" onClick={onClose} className="w-auto">
         Cancelar
       </Button>
-
       <Button
         type="button"
         isLoading={isLoading}
@@ -181,86 +103,45 @@ const UserFormSidebarContent = ({
   )
 
   return (
-    <div className="space-y-4">
-      <Input
-        label="Usuario"
-        placeholder="jhondoe"
-        value={values.username}
-        onChange={handleChange('username')}
-      />
+    <div className="space-y-6">
+      <div className="space-y-4">
+        <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">
+          Acceso a la plataforma
+        </p>
 
-      <Input
-        label="Nombre completo"
-        placeholder="Jhon Doe"
-        value={values.fullName}
-        onChange={handleChange('fullName')}
-      />
-
-      <Input
-        label="DNI"
-        placeholder="12345678"
-        value={values.dni}
-        onChange={handleChange('dni')}
-      />
-
-      <Checkbox
-        label="Usuario externo"
-        checked={values.isExternal}
-        onChange={handleChange('isExternal')}
-      />
-
-      {mode === 'edit' &&
-        <Checkbox
-          label='Vetado'
-          checked={values.isBlocked}
-          onChange={handleChange('isBlocked')}
-        />
-      }
-
-      <Select
-        name='role'
-        label="Rol"
-        value={values.role}
-        onChange={handleChange('role')}
-        options={USER_ROLE_OPTIONS}
-      />
-
-      {
-        !values.isExternal ? (
-          <>
-            <Input
-              label="Área"
-              placeholder="Recursos Humanos"
-              value={values.area ?? ''}
-              onChange={handleChange('area')}
-            />
-
-            <Input
-              label="Cargo o posición"
-              placeholder="Gerente de RRHH"
-              value={values.position ?? ''}
-              onChange={handleChange('position')}
-            />
-          </>
-        ) : (
-          <Input
-            label="Empresa"
-            placeholder="Empresa XYZ"
-            value={values.company ?? ''}
-            onChange={handleChange('company')}
-          />
-        )
-      }
-
-      {mode === 'create' ? (
         <Input
-          type="password"
-          label="Contraseña"
-          placeholder="Ingresa la contraseña"
-          value={values.password}
-          onChange={handleChange('password')}
+          label="Usuario"
+          placeholder="jhondoe"
+          value={auth.username}
+          onChange={setAuthField('username')}
         />
-      ) : null}
+
+        <Select
+          name="role"
+          label="Rol"
+          value={auth.role}
+          onChange={setAuthField('role')}
+          options={USER_ROLE_OPTIONS}
+        />
+
+        {mode === 'create' && (
+          <Input
+            type="password"
+            label="Contraseña"
+            placeholder="Ingresa la contraseña"
+            value={auth.password}
+            onChange={setAuthField('password')}
+          />
+        )}
+
+        {mode === 'edit' && (
+          <Checkbox
+            label="Vetado"
+            checked={auth.isBlocked}
+            onChange={setAuthField('isBlocked')}
+          />
+        )}
+      </div>
 
       {footer}
     </div>
@@ -284,8 +165,8 @@ export const UserFormSidebar = ({
       title={mode === 'create' ? 'Nuevo usuario' : 'Editar usuario'}
       description={
         mode === 'create'
-          ? 'Completa la información para registrar un nuevo usuario.'
-          : 'Actualiza la información general del usuario.'
+          ? 'Completa la información de acceso del usuario.'
+          : 'Actualiza los datos de acceso del usuario.'
       }
       onClose={onClose}
       size="md"

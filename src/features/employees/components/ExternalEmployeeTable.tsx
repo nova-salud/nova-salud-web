@@ -4,8 +4,8 @@ import { cn } from '@/shared/utils'
 import {
   USER_ROLE_CLASS_MAP,
   USER_ROLE_LABEL_MAP,
-} from '../types/user-role.config'
-import type { UserResponseDto } from '../types/user-response.dto'
+} from '@/features/users/types/user-role.config'
+import type { UserResponseDto } from '@/features/users/types/user-response.dto'
 
 type Props = {
   items: UserResponseDto[]
@@ -13,24 +13,20 @@ type Props = {
   onViewDetail: (user: UserResponseDto) => void
 }
 
-const UserTable = ({
-  items,
-  isLoading = false,
-  onViewDetail,
-}: Props) => {
+const ExternalEmployeeTable = ({ items, isLoading = false, onViewDetail }: Props) => {
   return (
     <DataTable
       data={items}
       isLoading={isLoading}
-      emptyMessage="No se encontraron empleados."
+      emptyMessage="No se encontraron empleados externos."
       columns={[
         '#',
-        'Usuario',
         'Nombre completo',
+        'DNI',
         'Área',
-        'Cargo',
+        'Empresa',
+        'Estado laboral',
         'Rol',
-        'Estado',
         'Acciones',
       ]}
       renderRow={(item) => (
@@ -39,12 +35,12 @@ const UserTable = ({
             #{item.id}
           </td>
 
-          <td className="px-6 py-5 text-slate-700">
-            {item.username}
+          <td className="px-6 py-5 font-medium text-slate-900">
+            {item.employee?.fullName ?? '—'}
           </td>
 
           <td className="px-6 py-5 text-slate-700">
-            {item.employee?.fullName ?? '—'}
+            {item.employee?.dni ?? '—'}
           </td>
 
           <td className="px-6 py-5 text-slate-700">
@@ -52,7 +48,11 @@ const UserTable = ({
           </td>
 
           <td className="px-6 py-5 text-slate-700">
-            {item.employee?.position?.name ?? '—'}
+            {item.employee?.company ?? '—'}
+          </td>
+
+          <td className="px-6 py-5 text-slate-700">
+            {item.employee?.employmentStatus ?? '—'}
           </td>
 
           <td className="px-6 py-5">
@@ -63,19 +63,6 @@ const UserTable = ({
               )}
             >
               {USER_ROLE_LABEL_MAP[item.role]}
-            </span>
-          </td>
-
-          <td className="px-6 py-5">
-            <span
-              className={cn(
-                'inline-flex rounded-xl border px-3 py-1 text-xs font-medium',
-                item.isActive
-                  ? 'border-emerald-100 bg-emerald-50 text-emerald-700'
-                  : 'border-red-200 bg-red-500 text-white',
-              )}
-            >
-              {item.isActive ? 'Activo' : 'Inactivo'}
             </span>
           </td>
 
@@ -95,4 +82,4 @@ const UserTable = ({
   )
 }
 
-export default UserTable
+export default ExternalEmployeeTable

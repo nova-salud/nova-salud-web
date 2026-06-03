@@ -21,7 +21,9 @@ import DispensationDetailPage from '@/features/inventory/dispensations/pages/Dis
 import EmployeesPage from '@/features/employees/pages/EmployeesPage'
 import EmployeeDetailPage from '@/features/employees/pages/EmployeeDetailPage'
 import EmployeeAreasPage from '@/features/employees/pages/EmployeeAreasPage'
+import EmployeePositionsPage from '@/features/employees/pages/EmployeePositionsPage'
 import EmployeeSyncSettingsPage from '@/features/system-settings/pages/EmployeeSyncSettingsPage'
+import ExternalEmployeesPage from '@/features/employees/pages/ExternalEmployeesPage'
 import UsersPage from '@/features/users/pages/UsersPage'
 import DiseasesPage from '@/features/attentions/diseases/pages/DiseasesPage'
 import CreateAttentionPage from '@/features/attentions/attentions/pages/CreateAttentionPage'
@@ -224,6 +226,14 @@ export const appRoutes: RouteObject = {
             {
               path: '/areas',
               element: <EmployeeAreasPage />,
+            },
+            {
+              path: '/positions',
+              element: <EmployeePositionsPage />,
+            },
+            {
+              path: '/externos',
+              element: <ExternalEmployeesPage />,
             },
           ],
         },
