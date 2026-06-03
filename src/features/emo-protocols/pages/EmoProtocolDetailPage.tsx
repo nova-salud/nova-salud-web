@@ -1,23 +1,27 @@
 import { useState } from 'react'
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import PageContainer from '@/shared/components/ui/PageContainer'
+import Modal from '@/shared/components/ui/modal/Modal'
+import { Button } from '@/shared/components/ui/form'
 import AssignAreaToEmoProtocolModal from '../components/AssignAreaToEmoProtocolModal'
 import EmoProtocolAreasSection from '../components/EmoProtocolAreasSection'
 import EmoProtocolExamsSection from '../components/emo-protocol-exams/EmoProtocolExamsSection'
-import { useAssignOrUnassignEmoProtocolArea, useEmoProtocol, useEmoProtocolExams } from '../hooks'
+import {
+  useAssignOrUnassignEmoProtocolArea,
+  useDeleteEmoProtocol,
+  useEmoProtocol,
+  useEmoProtocolExams,
+} from '../hooks'
 
 const EmoProtocolDetailPage = () => {
+  const navigate = useNavigate()
   const { id } = useParams()
   const emoProtocolId = Number(id)
 
   const [isAssignAreaModalOpen, setIsAssignAreaModalOpen] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
 
-  const {
-    data,
-    isLoading,
-    error,
-    refetch,
-  } = useEmoProtocol(emoProtocolId)
+  const { data, isLoading, error, refetch } = useEmoProtocol(emoProtocolId)
 
   const {
     data: protocolExams,
@@ -26,20 +30,24 @@ const EmoProtocolDetailPage = () => {
     refetch: refetchProtocolExams,
   } = useEmoProtocolExams(emoProtocolId)
 
-  const {
-    assignOrUnassignArea
-  } = useAssignOrUnassignEmoProtocolArea({
-    successMessage: 'Área desasignada correctamente'
+  const { assignOrUnassignArea } = useAssignOrUnassignEmoProtocolArea({
+    successMessage: 'Área desasignada correctamente',
   })
+
+  const { deleteEmoProtocol, isLoading: isDeleting } = useDeleteEmoProtocol()
 
   const handleUnassignArea = async (areaId: number) => {
     if (!data) return
-
     const result = await assignOrUnassignArea(data.id, areaId)
-
     if (!result) return
-
     await refetch()
+  }
+
+  const handleDelete = async () => {
+    if (!data) return
+    const ok = await deleteEmoProtocol(data.id)
+    if (ok === null) return
+    void navigate('/emo-protocols')
   }
 
   if (isLoading) {
@@ -55,6 +63,16 @@ const EmoProtocolDetailPage = () => {
       <PageContainer
         title={`Protocolo EMO #${data.id}`}
         description="Gestiona la configuración del protocolo EMO."
+        action={
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setIsDeleteModalOpen(true)}
+            className="w-auto border-red-200 text-red-600 hover:bg-red-50"
+          >
+            Eliminar
+          </Button>
+        }
       >
         <div className="space-y-5">
           {error ? (
@@ -112,6 +130,41 @@ const EmoProtocolDetailPage = () => {
         onClose={() => setIsAssignAreaModalOpen(false)}
         onSuccess={() => void refetch()}
       />
+
+      <Modal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        title="Eliminar protocolo EMO"
+        description="Esta acción no se puede deshacer."
+        size="sm"
+      >
+        <p className="mb-6 text-sm text-slate-600">
+          ¿Estás seguro que deseas eliminar el protocolo{' '}
+          <span className="font-semibold text-slate-900">{data.name}</span>?
+          Las áreas que lo tenían asignado quedarán sin protocolo.
+        </p>
+
+        <div className="flex justify-end gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            className="w-auto"
+            onClick={() => setIsDeleteModalOpen(false)}
+          >
+            Cancelar
+          </Button>
+
+          <Button
+            type="button"
+            className="w-auto bg-red-600 hover:bg-red-700"
+            isLoading={isDeleting}
+            loadingText="Eliminando..."
+            onClick={() => void handleDelete()}
+          >
+            Eliminar
+          </Button>
+        </div>
+      </Modal>
     </>
   )
 }

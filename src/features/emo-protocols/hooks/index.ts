@@ -1,5 +1,6 @@
 export * from './emo-protocols/useCreateEmoProtocol'
 export * from './emo-protocols/useUpdateEmoProtocol'
+export * from './emo-protocols/useDeleteEmoProtocol'
 export * from './emo-protocols/useEmoProtocol'
 export * from './emo-protocols/useEmoProtocols'
 export * from './emo-protocols/useAssignOrUnassignEmoProtocolArea'
