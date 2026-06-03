@@ -106,11 +106,12 @@ const CreateRequirementPage = () => {
             />
 
             <Input
+              name="requestedQuantity"
               type="number"
               label="Cantidad"
               placeholder="Ej: 20"
               value={requestedQuantity}
-              onChange={setRequestedQuantity}
+              onChange={(e) => setRequestedQuantity(e.target.value)}
             />
 
             <div className="flex items-end">

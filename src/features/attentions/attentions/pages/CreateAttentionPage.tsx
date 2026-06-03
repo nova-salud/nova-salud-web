@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router'
 import PageContainer from '@/shared/components/ui/PageContainer'
 import { Button, Input, Select, Textarea } from '@/shared/components/ui/form'
@@ -34,12 +34,10 @@ const CreateAttentionPage = () => {
   const [employeeError, setEmployeeError] = useState<string | null>(null)
   const [isLoadingEmployee, setIsLoadingEmployee] = useState(false)
 
-  const [symptoms, setSymptoms] = useState('')
+  const formRef = useRef<HTMLFormElement>(null)
+
   const [hasDiagnosis, setHasDiagnosis] = useState(false)
   const [diagnosisCode, setDiagnosisCode] = useState('')
-  const [eva, setEva] = useState('')
-  const [treatment, setTreatment] = useState('')
-  const [notes, setNotes] = useState('')
   const [triageLevel, setTriageLevel] = useState<TriageLevelEnum>(TriageLevelEnum.LOW)
 
   const [requiresDispensation, setRequiresDispensation] = useState(false)
@@ -128,6 +126,12 @@ const CreateAttentionPage = () => {
       return
     }
 
+    const formData = formRef.current ? new FormData(formRef.current) : new FormData()
+    const symptoms = formData.get('symptoms') as string
+    const eva = formData.get('eva') as string
+    const treatment = formData.get('treatment') as string
+    const notes = formData.get('notes') as string
+
     const validItems = dispensationItems
       .filter((item) => item.medicationId && Number(item.quantity) > 0)
       .map((item) => ({
@@ -180,7 +184,7 @@ const CreateAttentionPage = () => {
         </Button>
       }
     >
-      <div className="space-y-6">
+      <form ref={formRef} className="space-y-6">
         {employeeError ? (
           <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
             {employeeError}
@@ -280,9 +284,8 @@ const CreateAttentionPage = () => {
             <div className="md:col-span-2">
               <Textarea
                 label="Síntomas"
+                name="symptoms"
                 placeholder="Describe los síntomas que presenta el trabajador"
-                value={symptoms}
-                onChange={setSymptoms}
                 rows={4}
               />
             </div>
@@ -323,18 +326,16 @@ const CreateAttentionPage = () => {
 
             <Input
               label="EVA (dolor)"
+              name="eva"
               type="number"
               placeholder="Escala de dolor del 0 al 10"
-              value={eva}
-              onChange={setEva}
             />
 
             <div className="md:col-span-2">
               <Textarea
                 label="Tratamiento"
+                name="treatment"
                 placeholder="Indica el tratamiento recomendado"
-                value={treatment}
-                onChange={setTreatment}
                 rows={4}
               />
             </div>
@@ -342,9 +343,8 @@ const CreateAttentionPage = () => {
             <div className="md:col-span-2">
               <Textarea
                 label="Observaciones"
+                name="notes"
                 placeholder="Agrega observaciones adicionales"
-                value={notes}
-                onChange={setNotes}
                 rows={4}
               />
             </div>
@@ -408,7 +408,7 @@ const CreateAttentionPage = () => {
             Guardar atención
           </Button>
         </div>
-      </div>
+      </form>
     </PageContainer>
   )
 }

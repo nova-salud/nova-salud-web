@@ -79,8 +79,10 @@ const SignClinicalHistoryConformitySidebar = ({
 
           <Input
             label="Nombre completo"
+            name="fullName"
+            type="text"
             value={fullName}
-            onChange={setFullName}
+            onChange={(e) => setFullName(e.target.value)}
             placeholder="Ingrese el nombre completo"
           />
 

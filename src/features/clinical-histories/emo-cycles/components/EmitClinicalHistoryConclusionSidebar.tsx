@@ -130,8 +130,10 @@ const EmitClinicalHistoryConclusionSidebar = ({
 
           <Input
             label="Nombre completo del doctor"
+            name="doctorFullName"
+            type="text"
             value={doctorFullName}
-            onChange={setDoctorFullName}
+            onChange={(e) => setDoctorFullName(e.target.value)}
             placeholder="Ej. Jhon Doe"
           />
 

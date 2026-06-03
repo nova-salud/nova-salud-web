@@ -1,5 +1,4 @@
 import { Input, Button } from '@/shared/components/ui/form'
-import { useState, useEffect } from 'react'
 import type { ExamResponseDto, CreateExamDto, UpdateExamDto } from '../types'
 import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
 
@@ -24,42 +23,21 @@ const ExamFormSidebar = ({
   onCreate,
   onUpdate,
 }: Props) => {
-  const [name, setName] = useState('')
-  const [isActive, setIsActive] = useState(true)
-
-  const updateExam = (exam?: ExamResponseDto | null) => {
-    setName(exam?.name ?? '')
-    setIsActive(exam?.isActive ?? true)
-  }
-
-  useEffect(() => {
-    if (!isOpen) {
-      return
-    }
-
-    updateExam(exam)
-  }, [isOpen, mode, exam])
-
-  const handleSubmit = async () => {
-    if (!name.trim()) {
-      return
-    }
+  const handleSubmit = async (e: { preventDefault(): void; currentTarget: HTMLFormElement }) => {
+    e.preventDefault()
+    const data = new FormData(e.currentTarget)
+    const name = (data.get('name') as string).replace(/[^a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s]/g, '').trim()
+    if (!name) return
 
     if (mode === 'create') {
-      await onCreate?.({
-        name: name.trim()
-      })
+      await onCreate?.({ name })
       return
     }
 
-    if (!exam) {
-      return
-    }
+    if (!exam) return
 
-    await onUpdate?.(exam.id, {
-      name: name.trim(),
-      isActive,
-    })
+    const isActive = data.get('isActive') === 'on'
+    await onUpdate?.(exam.id, { name, isActive })
   }
 
   return (
@@ -73,24 +51,26 @@ const ExamFormSidebar = ({
           : 'Actualiza la información del examen.'
       }
     >
-      <form onSubmit={handleSubmit}>
-
+      <form key={`${mode}-${exam?.id ?? 'new'}`} onSubmit={(e) => void handleSubmit(e)}>
         <div className="space-y-5">
           <Input
             label="Nombre"
+            name="name"
+            type="text"
             placeholder="Ej. Hemograma"
-            value={name}
-            onChange={(val) => setName(val.replace(/[^a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s]/g, ''))}
+            defaultValue={exam?.name}
           />
 
-          {mode === 'edit' && <label className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">
-            <input
-              type="checkbox"
-              checked={isActive}
-              onChange={(e) => setIsActive(e.target.checked)}
-            />
-            Activo
-          </label>}
+          {mode === 'edit' && (
+            <label className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">
+              <input
+                type="checkbox"
+                name="isActive"
+                defaultChecked={exam?.isActive ?? true}
+              />
+              Activo
+            </label>
+          )}
 
           <div className="flex justify-end gap-3 pt-2">
             <Button

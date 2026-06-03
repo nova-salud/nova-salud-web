@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Button, Checkbox, Input, Select } from '@/shared/components/ui/form'
 import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
 import { USER_ROLE_OPTIONS } from '../types/user-role.config'
@@ -8,13 +8,6 @@ import type { UserResponseDto } from '../types/user-response.dto'
 import type { RoleEnum } from '@/core/enums/role.enum'
 
 type UserFormMode = 'create' | 'edit'
-
-type AuthValues = {
-  username: string
-  password: string
-  role: string
-  isBlocked: boolean
-}
 
 type Props = {
   isOpen: boolean
@@ -26,13 +19,6 @@ type Props = {
   onUpdate?: (id: number, dto: UpdateUserDto) => Promise<void> | void
 }
 
-const INITIAL_AUTH: AuthValues = {
-  username: '',
-  password: '',
-  role: '',
-  isBlocked: false,
-}
-
 const UserFormSidebarContent = ({
   mode,
   user,
@@ -41,46 +27,26 @@ const UserFormSidebarContent = ({
   onCreate,
   onUpdate,
 }: Omit<Props, 'isOpen'>) => {
-  const initialAuth = useMemo<AuthValues>(() => {
-    if (mode === 'edit' && user) {
-      return {
-        username: user.username ?? '',
-        password: '',
-        role: user.role ?? '',
-        isBlocked: user.isBlocked,
-      }
-    }
-    return INITIAL_AUTH
-  }, [mode, user])
+  const [isBlocked, setIsBlocked] = useState(user?.isBlocked ?? false)
 
-  const [auth, setAuth] = useState<AuthValues>(initialAuth)
-
-  const setAuthField = <K extends keyof AuthValues>(key: K) => (value: AuthValues[K]) =>
-    setAuth((prev) => ({ ...prev, [key]: value }))
-
-  const isValid = useMemo(() => {
-    if (!auth.username.trim() || !auth.role) return false
-    if (mode === 'create' && !auth.password.trim()) return false
-    return true
-  }, [auth, mode])
-
-  const handleSubmit = async () => {
-    if (!isValid) return
+  const handleSubmit = async (e: { preventDefault(): void; currentTarget: HTMLFormElement }) => {
+    e.preventDefault()
+    const data = new FormData(e.currentTarget)
+    const username = (data.get('username') as string).trim()
+    const role = data.get('role') as string
+    if (!username || !role) return
 
     if (mode === 'create') {
-      await onCreate?.({
-        username: auth.username.trim(),
-        password: auth.password,
-        role: auth.role as RoleEnum,
-        isBlocked: auth.isBlocked,
-      })
+      const password = (data.get('password') as string).trim()
+      if (!password) return
+      await onCreate?.({ username, password, role: role as RoleEnum, isBlocked: false })
       return
     }
 
     await onUpdate?.(user!.id, {
-      username: auth.username.trim(),
-      role: auth.role as RoleEnum,
-      isBlocked: auth.isBlocked,
+      username,
+      role: role as RoleEnum,
+      isBlocked,
     })
   }
 
@@ -90,11 +56,9 @@ const UserFormSidebarContent = ({
         Cancelar
       </Button>
       <Button
-        type="button"
+        type="submit"
         isLoading={isLoading}
         loadingText={mode === 'create' ? 'Guardando...' : 'Actualizando...'}
-        disabled={!isValid}
-        onClick={() => void handleSubmit()}
         className="w-auto"
       >
         {mode === 'create' ? 'Guardar usuario' : 'Actualizar usuario'}
@@ -103,7 +67,7 @@ const UserFormSidebarContent = ({
   )
 
   return (
-    <div className="space-y-6">
+    <form className="space-y-6" onSubmit={(e) => void handleSubmit(e)}>
       <div className="space-y-4">
         <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">
           Acceso a la plataforma
@@ -111,40 +75,39 @@ const UserFormSidebarContent = ({
 
         <Input
           label="Usuario"
+          name="username"
+          type="text"
           placeholder="jhondoe"
-          value={auth.username}
-          onChange={setAuthField('username')}
+          defaultValue={user?.username ?? ''}
         />
 
         <Select
           name="role"
           label="Rol"
-          value={auth.role}
-          onChange={setAuthField('role')}
+          defaultValue={user?.role ?? ''}
           options={USER_ROLE_OPTIONS}
         />
 
         {mode === 'create' && (
           <Input
+            name="password"
             type="password"
             label="Contraseña"
             placeholder="Ingresa la contraseña"
-            value={auth.password}
-            onChange={setAuthField('password')}
           />
         )}
 
         {mode === 'edit' && (
           <Checkbox
             label="Vetado"
-            checked={auth.isBlocked}
-            onChange={setAuthField('isBlocked')}
+            checked={isBlocked}
+            onChange={setIsBlocked}
           />
         )}
       </div>
 
       {footer}
-    </div>
+    </form>
   )
 }
 

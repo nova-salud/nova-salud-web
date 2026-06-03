@@ -19,7 +19,6 @@ const CompleteClinicalHistoryExamSidebar = ({
   onClose,
   onSuccess,
 }: Props) => {
-  const [resultNote, setResultNote] = useState('')
   const [file, setFile] = useState<File | null>(null)
 
   const {
@@ -30,28 +29,25 @@ const CompleteClinicalHistoryExamSidebar = ({
 
   useEffect(() => {
     if (!isOpen) return
-
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setResultNote(exam?.resultNote ?? '')
     setFile(null)
   }, [isOpen, exam])
 
   const isCompleted = exam?.isCompleted ?? false
 
-  const handleSubmit = async () => {
-    if (!exam || !resultNote.trim() || !file) {
-      return
-    }
+  const handleSubmit = async (e: { preventDefault(): void; currentTarget: HTMLFormElement }) => {
+    e.preventDefault()
+    if (!exam || !file) return
+    const data = new FormData(e.currentTarget)
+    const resultNote = (data.get('resultNote') as string).trim()
+    if (!resultNote) return
 
     const result = await completeClinicalHistoryExam(
       exam.id,
-      { resultNote: resultNote.trim() },
+      { resultNote },
       file,
     )
 
-    if (!result) {
-      return
-    }
+    if (!result) return
 
     onSuccess()
     onClose()
@@ -69,7 +65,11 @@ const CompleteClinicalHistoryExamSidebar = ({
       }
     >
       {!exam ? null : (
-        <div className="space-y-5">
+        <form
+          key={`${exam.id}-${isOpen}`}
+          className="space-y-5"
+          onSubmit={(e) => void handleSubmit(e)}
+        >
           {error ? (
             <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
               {error}
@@ -87,8 +87,8 @@ const CompleteClinicalHistoryExamSidebar = ({
 
           <Textarea
             label="Resultado"
-            value={resultNote}
-            onChange={setResultNote}
+            name="resultNote"
+            defaultValue={exam?.resultNote ?? ''}
             placeholder="Describe el resultado del examen"
             rows={5}
             disabled={isCompleted}
@@ -136,18 +136,16 @@ const CompleteClinicalHistoryExamSidebar = ({
 
             {!isCompleted ? (
               <Button
-                type="button"
+                type="submit"
                 className="w-auto"
-                onClick={() => void handleSubmit()}
                 isLoading={isLoading}
                 loadingText="Guardando..."
-                disabled={!resultNote.trim() || !file}
               >
                 Completar examen
               </Button>
             ) : null}
           </div>
-        </div>
+        </form>
       )}
     </Sidebar>
   )

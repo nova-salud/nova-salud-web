@@ -1,5 +1,5 @@
 import type { EmployeeResponseDto } from '@/features/employees/types/employee-response.dto'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { useCreateClinicalHistory } from '../hooks'
 import { employeeService } from '@/features/employees/services/employee.service'
@@ -18,13 +18,7 @@ const CreateClinicalHistoryPage = () => {
   const [employeeError, setEmployeeError] = useState<string | null>(null)
   const [isLoadingEmployee, setIsLoadingEmployee] = useState(false)
 
-  const [bloodType, setBloodType] = useState('')
-  const [emergencyContactName, setEmergencyContactName] = useState('')
-  const [emergencyContactPhone, setEmergencyContactPhone] = useState('')
-  const [knownConditions, setKnownConditions] = useState('')
-  const [surgicalHistory, setSurgicalHistory] = useState('')
-  const [familyHistory, setFamilyHistory] = useState('')
-  const [observations, setObservations] = useState('')
+  const formRef = useRef<HTMLFormElement>(null)
 
   const {
     createClinicalHistory,
@@ -57,24 +51,21 @@ const CreateClinicalHistoryPage = () => {
   }, [employeeId])
 
   const handleSubmit = async () => {
-    if (!employee) {
-      return
-    }
+    if (!employee) return
+    const data = formRef.current ? new FormData(formRef.current) : new FormData()
 
     const result = await createClinicalHistory({
       employeeId: employee.id,
-      bloodType: bloodType.trim() || undefined,
-      emergencyContactName: emergencyContactName.trim() || undefined,
-      emergencyContactPhone: emergencyContactPhone.trim() || undefined,
-      knownConditions: knownConditions.trim() || undefined,
-      surgicalHistory: surgicalHistory.trim() || undefined,
-      familyHistory: familyHistory.trim() || undefined,
-      observations: observations.trim() || undefined,
+      bloodType: (data.get('bloodType') as string).trim() || undefined,
+      emergencyContactName: (data.get('emergencyContactName') as string).trim() || undefined,
+      emergencyContactPhone: (data.get('emergencyContactPhone') as string).trim() || undefined,
+      knownConditions: (data.get('knownConditions') as string).trim() || undefined,
+      surgicalHistory: (data.get('surgicalHistory') as string).trim() || undefined,
+      familyHistory: (data.get('familyHistory') as string).trim() || undefined,
+      observations: (data.get('observations') as string).trim() || undefined,
     })
 
-    if (!result) {
-      return
-    }
+    if (!result) return
 
     navigate(`/clinical-histories/${employee.id}`)
   }
@@ -94,7 +85,7 @@ const CreateClinicalHistoryPage = () => {
         </Button>
       }
     >
-      <div className="space-y-5">
+      <form ref={formRef} className="space-y-5">
         {employeeError ? (
           <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
             {employeeError}
@@ -183,31 +174,30 @@ const CreateClinicalHistoryPage = () => {
           <div className="mt-4 grid gap-4 md:grid-cols-2">
             <Input
               label="Grupo sanguíneo"
+              name="bloodType"
+              type="text"
               placeholder="Ej. O+, A-, AB+"
-              value={bloodType}
-              onChange={setBloodType}
             />
 
             <Input
               label="Nombre de contacto de emergencia"
+              name="emergencyContactName"
+              type="text"
               placeholder="Ingresa el nombre del contacto"
-              value={emergencyContactName}
-              onChange={setEmergencyContactName}
             />
 
             <Input
               label="Teléfono de contacto de emergencia"
+              name="emergencyContactPhone"
+              type="text"
               placeholder="Ingresa el teléfono"
-              value={emergencyContactPhone}
-              onChange={setEmergencyContactPhone}
             />
 
             <div className="md:col-span-2">
               <Textarea
                 label="Condiciones conocidas"
+                name="knownConditions"
                 placeholder="Describe condiciones conocidas del trabajador"
-                value={knownConditions}
-                onChange={setKnownConditions}
                 rows={4}
               />
             </div>
@@ -215,9 +205,8 @@ const CreateClinicalHistoryPage = () => {
             <div className="md:col-span-2">
               <Textarea
                 label="Antecedentes quirúrgicos"
+                name="surgicalHistory"
                 placeholder="Describe antecedentes quirúrgicos"
-                value={surgicalHistory}
-                onChange={setSurgicalHistory}
                 rows={4}
               />
             </div>
@@ -225,9 +214,8 @@ const CreateClinicalHistoryPage = () => {
             <div className="md:col-span-2">
               <Textarea
                 label="Antecedentes familiares"
+                name="familyHistory"
                 placeholder="Describe antecedentes familiares relevantes"
-                value={familyHistory}
-                onChange={setFamilyHistory}
                 rows={4}
               />
             </div>
@@ -235,9 +223,8 @@ const CreateClinicalHistoryPage = () => {
             <div className="md:col-span-2">
               <Textarea
                 label="Observaciones"
+                name="observations"
                 placeholder="Ingresa observaciones adicionales"
-                value={observations}
-                onChange={setObservations}
                 rows={4}
               />
             </div>
@@ -265,7 +252,7 @@ const CreateClinicalHistoryPage = () => {
             Guardar historia clínica
           </Button>
         </div>
-      </div>
+      </form>
     </PageContainer>
   )
 }

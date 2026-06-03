@@ -252,14 +252,15 @@ const RequirementDetailPage = () => {
                           </label>
 
                           <Input
+                            name="receivedQuantity"
                             type="number"
                             label="Cantidad recibida"
                             placeholder="Ej: 10"
                             value={current.receivedQuantity}
-                            onChange={(value) =>
+                            onChange={(e) =>
                               handleChangeItem(item.id, {
                                 itemId: item.id,
-                                receivedQuantity: Number(value),
+                                receivedQuantity: Number(e.target.value),
                               })
                             }
                           />
@@ -296,9 +297,11 @@ const RequirementDetailPage = () => {
                 <div className="grid gap-4">
                   <Input
                     label="URL de evidencia"
+                    name="evidenceUrl"
+                    type="text"
                     placeholder="https://..."
                     value={evidenceUrl}
-                    onChange={setEvidenceUrl}
+                    onChange={(e) => setEvidenceUrl(e.target.value)}
                   />
 
                   <Textarea

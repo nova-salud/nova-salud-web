@@ -66,9 +66,11 @@ const EmployeesPage = () => {
             <div className="grid gap-4 md:grid-cols-2">
               <Input
                 label="Usuario"
+                name="username"
+                type="text"
                 placeholder="Buscar por usuario"
                 value={username}
-                onChange={setUsername}
+                onChange={(e) => setUsername(e.target.value)}
               />
 
               <Select

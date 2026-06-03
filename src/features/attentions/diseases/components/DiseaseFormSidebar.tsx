@@ -1,4 +1,3 @@
-import { useMemo, useState } from 'react'
 import { Button, Input, Select } from '@/shared/components/ui/form'
 import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
 import type {
@@ -8,13 +7,6 @@ import type {
 } from '../types'
 
 type DiseaseFormMode = 'create' | 'edit'
-
-type DiseaseFormValues = {
-  code: string
-  name: string
-  category: string
-  isActive: boolean
-}
 
 type Props = {
   isOpen: boolean
@@ -26,13 +18,6 @@ type Props = {
   onUpdate?: (id: number, dto: UpdateDiseaseDto) => Promise<void> | void
 }
 
-const INITIAL_VALUES: DiseaseFormValues = {
-  code: '',
-  name: '',
-  category: '',
-  isActive: true,
-}
-
 const DiseaseFormSidebarContent = ({
   mode,
   disease,
@@ -41,135 +26,57 @@ const DiseaseFormSidebarContent = ({
   onCreate,
   onUpdate,
 }: Omit<Props, 'isOpen'>) => {
-  const initialValues = useMemo<DiseaseFormValues>(() => {
-    if (mode === 'edit' && disease) {
-      return {
-        code: disease.code,
-        name: disease.name,
-        category: disease.category ?? '',
-        isActive: disease.isActive,
-      }
-    }
+  const handleSubmit = async (e: { preventDefault(): void; currentTarget: HTMLFormElement }) => {
+    e.preventDefault()
+    const data = new FormData(e.currentTarget)
+    const code = (data.get('code') as string).trim().toUpperCase()
+    const name = (data.get('name') as string).trim()
+    if (!code || !name) return
 
-    return INITIAL_VALUES
-  }, [mode, disease])
+    const category = (data.get('category') as string).trim() || undefined
 
-  const [values, setValues] = useState<DiseaseFormValues>(initialValues)
-
-  const handleChange =
-    <K extends keyof DiseaseFormValues>(key: K) =>
-    (value: DiseaseFormValues[K]) => {
-      setValues((prev) => ({ ...prev, [key]: value }))
-    }
-
-  const isValid = useMemo<boolean>(() => {
-    return Boolean(values.code.trim() && values.name.trim())
-  }, [values.code, values.name])
-
-  const buildCreateDto = (): CreateDiseaseDto | null => {
-    if (!isValid) {
-      return null
-    }
-
-    return {
-      code: values.code.trim().toUpperCase(),
-      name: values.name.trim(),
-      category: values.category.trim() || undefined,
-      isActive: values.isActive,
-    }
-  }
-
-  const buildUpdateDto = (): UpdateDiseaseDto | null => {
-    if (!isValid) {
-      return null
-    }
-
-    return {
-      code: values.code.trim().toUpperCase(),
-      name: values.name.trim(),
-      category: values.category.trim() || undefined,
-      isActive: values.isActive,
-    }
-  }
-
-  const handleSubmit = async () => {
     if (mode === 'create') {
-      const dto = buildCreateDto()
-
-      if (!dto || !onCreate) {
-        return
-      }
-
-      await onCreate(dto)
+      await onCreate?.({ code, name, category, isActive: true })
       return
     }
 
-    if (!disease || !onUpdate) {
-      return
-    }
+    if (!disease || !onUpdate) return
 
-    const dto = buildUpdateDto()
-
-    if (!dto) {
-      return
-    }
-
-    await onUpdate(disease.id, dto)
+    const isActive = data.get('status') === 'true'
+    await onUpdate(disease.id, { code, name, category, isActive })
   }
-
-  const footer = (
-    <div className="flex flex-wrap justify-end gap-3">
-      <Button
-        type="button"
-        variant="outline"
-        onClick={onClose}
-        className="w-auto"
-      >
-        Cancelar
-      </Button>
-
-      <Button
-        type="button"
-        isLoading={isLoading}
-        loadingText={mode === 'create' ? 'Guardando...' : 'Actualizando...'}
-        disabled={!isValid}
-        onClick={() => void handleSubmit()}
-        className="w-auto"
-      >
-        {mode === 'create' ? 'Guardar enfermedad' : 'Actualizar enfermedad'}
-      </Button>
-    </div>
-  )
 
   return (
-    <div className="space-y-4">
+    <form className="space-y-4" onSubmit={(e) => void handleSubmit(e)}>
       <Input
         label="Código"
+        name="code"
+        type="text"
         placeholder="Ej. J06.9"
-        value={values.code}
-        onChange={handleChange('code')}
+        defaultValue={disease?.code}
       />
 
       <Input
         label="Nombre"
+        name="name"
+        type="text"
         placeholder="Ingresa el nombre de la enfermedad"
-        value={values.name}
-        onChange={handleChange('name')}
+        defaultValue={disease?.name}
       />
 
       <Input
         label="Categoría"
+        name="category"
+        type="text"
         placeholder="Ingresa la categoría"
-        value={values.category}
-        onChange={handleChange('category')}
+        defaultValue={disease?.category ?? ''}
       />
 
       {mode === 'edit' ? (
         <Select
-          name='status'
+          name="status"
           label="Estado"
-          value={values.isActive ? 'true' : 'false'}
-          onChange={(value) => handleChange('isActive')(value === 'true')}
+          defaultValue={disease?.isActive ? 'true' : 'false'}
           options={[
             { label: 'Activo', value: 'true' },
             { label: 'Inactivo', value: 'false' },
@@ -177,8 +84,26 @@ const DiseaseFormSidebarContent = ({
         />
       ) : null}
 
-      {footer}
-    </div>
+      <div className="flex flex-wrap justify-end gap-3">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onClose}
+          className="w-auto"
+        >
+          Cancelar
+        </Button>
+
+        <Button
+          type="submit"
+          isLoading={isLoading}
+          loadingText={mode === 'create' ? 'Guardando...' : 'Actualizando...'}
+          className="w-auto"
+        >
+          {mode === 'create' ? 'Guardar enfermedad' : 'Actualizar enfermedad'}
+        </Button>
+      </div>
+    </form>
   )
 }
 

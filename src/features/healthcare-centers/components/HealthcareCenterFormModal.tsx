@@ -1,5 +1,4 @@
 import { Input, Button } from '@/shared/components/ui/form'
-import { useState, useEffect } from 'react'
 import type { CreateHealthcareCenterDto, HealthcareCenterResponseDto, UpdateHealthcareCenterDto } from '../types'
 import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
 
@@ -24,36 +23,18 @@ const HealthcareCenterFormSidebar = ({
   onCreate,
   onUpdate,
 }: Props) => {
-  const [name, setName] = useState('')
-  const [ruc, setRuc] = useState('')
-  const [address, setAddress] = useState('')
-  const [phone, setPhone] = useState('')
-  const [isActive, setIsActive] = useState(true)
-
-  const updateState = (item?: HealthcareCenterResponseDto | null) => {
-    setName(item?.name ?? '')
-    setRuc(item?.ruc ?? '')
-    setAddress(item?.address ?? '')
-    setPhone(item?.phone ?? '')
-    setIsActive(item?.isActive ?? true)
-  }
-
-  useEffect(() => {
-    if (!isOpen) return
-    updateState(healthcareCenter)
-  }, [isOpen, mode, healthcareCenter])
-
-  const handleSubmit = async (e?: React.FormEvent) => {
-    e?.preventDefault()
-
-    if (!name.trim()) return
+  const handleSubmit = async (e: { preventDefault(): void; currentTarget: HTMLFormElement }) => {
+    e.preventDefault()
+    const data = new FormData(e.currentTarget)
+    const name = (data.get('name') as string).trim()
+    if (!name) return
 
     if (mode === 'create') {
       await onCreate?.({
-        name: name.trim(),
-        ruc: ruc.trim() || undefined,
-        address: address.trim() || undefined,
-        phone: phone.trim() || undefined,
+        name,
+        ruc: (data.get('ruc') as string).trim() || undefined,
+        address: (data.get('address') as string).trim() || undefined,
+        phone: (data.get('phone') as string).trim() || undefined,
       })
       return
     }
@@ -61,11 +42,11 @@ const HealthcareCenterFormSidebar = ({
     if (!healthcareCenter) return
 
     await onUpdate?.(healthcareCenter.id, {
-      name: name.trim(),
-      ruc: ruc.trim() || undefined,
-      address: address.trim() || undefined,
-      phone: phone.trim() || undefined,
-      isActive,
+      name,
+      ruc: (data.get('ruc') as string).trim() || undefined,
+      address: (data.get('address') as string).trim() || undefined,
+      phone: (data.get('phone') as string).trim() || undefined,
+      isActive: data.get('isActive') === 'on',
     })
   }
 
@@ -73,53 +54,56 @@ const HealthcareCenterFormSidebar = ({
     <Sidebar
       isOpen={isOpen}
       onClose={onClose}
-      title={
-        mode === 'create'
-          ? 'Nuevo establecimiento'
-          : 'Editar establecimiento'
-      }
+      title={mode === 'create' ? 'Nuevo establecimiento' : 'Editar establecimiento'}
       description={
         mode === 'create'
           ? 'Registra un nuevo establecimiento de salud.'
           : 'Actualiza la información del establecimiento.'
       }
     >
-      <form onSubmit={handleSubmit}>
+      <form
+        key={`${mode}-${healthcareCenter?.id ?? 'new'}`}
+        onSubmit={(e) => void handleSubmit(e)}
+      >
         <div className="space-y-5">
           <Input
             label="Nombre"
+            name="name"
+            type="text"
             placeholder="Ej. Clínica San Pablo"
-            value={name}
-            onChange={setName}
+            defaultValue={healthcareCenter?.name}
           />
 
           <Input
             label="RUC"
+            name="ruc"
+            type="text"
             placeholder="Opcional"
-            value={ruc}
-            onChange={setRuc}
+            defaultValue={healthcareCenter?.ruc ?? ''}
           />
 
           <Input
             label="Dirección"
+            name="address"
+            type="text"
             placeholder="Opcional"
-            value={address}
-            onChange={setAddress}
+            defaultValue={healthcareCenter?.address ?? ''}
           />
 
           <Input
             label="Teléfono"
+            name="phone"
+            type="text"
             placeholder="Opcional"
-            value={phone}
-            onChange={setPhone}
+            defaultValue={healthcareCenter?.phone ?? ''}
           />
 
           {mode === 'edit' && (
             <label className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">
               <input
                 type="checkbox"
-                checked={isActive}
-                onChange={(e) => setIsActive(e.target.checked)}
+                name="isActive"
+                defaultChecked={healthcareCenter?.isActive ?? true}
               />
               Activo
             </label>
@@ -139,15 +123,9 @@ const HealthcareCenterFormSidebar = ({
               type="submit"
               className="w-auto"
               isLoading={isLoading}
-              loadingText={
-                mode === 'create'
-                  ? 'Guardando...'
-                  : 'Actualizando...'
-              }
+              loadingText={mode === 'create' ? 'Guardando...' : 'Actualizando...'}
             >
-              {mode === 'create'
-                ? 'Crear establecimiento'
-                : 'Guardar cambios'}
+              {mode === 'create' ? 'Crear establecimiento' : 'Guardar cambios'}
             </Button>
           </div>
         </div>

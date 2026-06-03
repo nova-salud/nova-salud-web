@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useAttentionAttachments, useCreateAttentionAttachment, useRemoveAttentionAttachment } from '../hooks'
 import { Button, Input } from '@/shared/components/ui/form'
 import { getFileUrl } from '@/shared/utils'
@@ -16,8 +16,8 @@ const isValidFile = (file: File) => {
 }
 
 const AttentionAttachmentsSection = ({ attentionId }: Props) => {
-  const [description, setDescription] = useState('')
   const [file, setFile] = useState<File | null>(null)
+  const formRef = useRef<HTMLFormElement>(null)
 
   const {
     data: attachments,
@@ -38,26 +38,23 @@ const AttentionAttachmentsSection = ({ attentionId }: Props) => {
     error: removeError,
   } = useRemoveAttentionAttachment()
 
-
-  const handleUpload = async () => {
-    if (!file) {
-      return
-    }
+  const handleUpload = async (e: { preventDefault(): void; currentTarget: HTMLFormElement }) => {
+    e.preventDefault()
+    if (!file) return
+    const data = new FormData(e.currentTarget)
 
     const result = await createAttentionAttachment(
       {
         attentionId,
-        description: description.trim() || undefined,
+        description: (data.get('description') as string).trim() || undefined,
       },
       file,
     )
 
-    if (!result) {
-      return
-    }
+    if (!result) return
 
-    setDescription('')
     setFile(null)
+    formRef.current?.reset()
     await refetch()
   }
 
@@ -93,13 +90,17 @@ const AttentionAttachmentsSection = ({ attentionId }: Props) => {
         </div>
       ) : null}
 
-      <div className="grid gap-4 md:grid-cols-[1fr_auto]">
+      <form
+        ref={formRef}
+        className="grid gap-4 md:grid-cols-[1fr_auto]"
+        onSubmit={(e) => void handleUpload(e)}
+      >
         <div className="space-y-4">
           <Input
             label="Descripción"
+            name="description"
+            type="text"
             placeholder="Agrega una descripción del archivo"
-            value={description}
-            onChange={setDescription}
           />
 
           <input
@@ -118,17 +119,14 @@ const AttentionAttachmentsSection = ({ attentionId }: Props) => {
               setFile(selected)
             }}
             className="block w-full text-sm text-slate-700 file:mr-4 file:rounded-xl file:border-0 file:bg-slate-100 file:px-4 file:py-2 file:text-sm file:font-medium file:text-slate-700"
-            accept={
-              ALLOWED_EXTENSIONS.map(ext => `.${ext}`).join(',')
-            }
+            accept={ALLOWED_EXTENSIONS.map(ext => `.${ext}`).join(',')}
           />
         </div>
 
         <div className="flex items-end">
           <Button
-            type="button"
+            type="submit"
             className="w-auto"
-            onClick={() => void handleUpload()}
             disabled={!file}
             isLoading={isCreating}
             loadingText="Subiendo..."
@@ -136,7 +134,7 @@ const AttentionAttachmentsSection = ({ attentionId }: Props) => {
             Subir archivo
           </Button>
         </div>
-      </div>
+      </form>
 
       <div className="mt-6">
         {isLoading ? (

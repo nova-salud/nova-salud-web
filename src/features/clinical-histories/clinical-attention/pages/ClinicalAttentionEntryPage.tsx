@@ -56,10 +56,12 @@ const ClinicalAttentionEntryPage = () => {
               <div className="w-full md:max-w-sm">
                 <Input
                   label="DNI"
+                  name="dni"
+                  type="text"
                   placeholder="Ingresa el DNI del trabajador"
                   value={dni}
-                  onChange={(value) => {
-                    setDni(value)
+                  onChange={(e) => {
+                    setDni(e.target.value)
                     clearResult()
                   }}
                   maxLength={8}

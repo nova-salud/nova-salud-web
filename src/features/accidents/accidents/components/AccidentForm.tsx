@@ -1,7 +1,7 @@
 import { useHealthcareCenters } from '@/features/healthcare-centers/hooks'
 import { ACCIDENT_TYPE_OPTIONS, AccidentTypeEnum, type CreateAccidentDto } from '../types'
 import { Select, Input, Textarea, Button } from '@/shared/components/ui/form'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 
 export type CreateAccidentFormData = Omit<CreateAccidentDto, 'employeeId'>
 
@@ -14,11 +14,8 @@ export const AccidentForm = ({
   onSubmit,
   isLoading = false,
 }: Props) => {
-  const [type, setType] = useState<AccidentTypeEnum>(AccidentTypeEnum.ACCIDENT)
-  const [description, setDescription] = useState('')
-  const [occurredAt, setOccurredAt] = useState('')
   const [requiresExternalCare, setRequiresExternalCare] = useState(false)
-  const [healthcareCenterId, setHealthcareCenterId] = useState<string>('')
+  const formRef = useRef<HTMLFormElement>(null)
 
   const healthcareCentersQuery = useMemo(() => ({
     page: 1,
@@ -30,19 +27,22 @@ export const AccidentForm = ({
     useHealthcareCenters(healthcareCentersQuery)
 
   const handleSubmit = async () => {
+    const data = formRef.current ? new FormData(formRef.current) : new FormData()
+    const occurredAt = data.get('occurredAt') as string
+
     await onSubmit({
-      type,
-      description: description.trim(),
+      type: data.get('type') as AccidentTypeEnum,
+      description: (data.get('description') as string).trim(),
       occurredAt: occurredAt || new Date().toISOString(),
       requiresExternalReferral: requiresExternalCare,
       healthcareCenterId: requiresExternalCare
-        ? Number(healthcareCenterId)
+        ? Number(data.get('healthcareCenterId'))
         : undefined,
     })
   }
 
   return (
-    <div className="space-y-6">
+    <form ref={formRef} className="space-y-6">
       <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
         <h2 className="text-base font-semibold text-slate-900">
           Información del accidente
@@ -50,33 +50,29 @@ export const AccidentForm = ({
 
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           <Select
-            name='type'
+            name="type"
             label="Tipo"
-            value={type}
+            defaultValue={AccidentTypeEnum.ACCIDENT}
             options={ACCIDENT_TYPE_OPTIONS}
-            onChange={(value) =>
-              setType(value as AccidentTypeEnum)
-            }
           />
 
           <Input
             label="Fecha y hora"
+            name="occurredAt"
             type="datetime-local"
-            value={occurredAt}
-            onChange={setOccurredAt}
           />
 
           <div className="md:col-span-2">
             <Textarea
               label="Descripción"
+              name="description"
               placeholder="Describe lo ocurrido"
-              value={description}
-              onChange={setDescription}
               rows={4}
             />
           </div>
         </div>
       </div>
+
       <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
         <h2 className="text-base font-semibold text-slate-900">
           Derivación
@@ -87,9 +83,7 @@ export const AccidentForm = ({
             <input
               type="checkbox"
               checked={requiresExternalCare}
-              onChange={(e) =>
-                setRequiresExternalCare(e.target.checked)
-              }
+              onChange={(e) => setRequiresExternalCare(e.target.checked)}
             />
             <span className="text-sm text-slate-700">
               Requiere derivación externa
@@ -98,10 +92,9 @@ export const AccidentForm = ({
 
           {requiresExternalCare && (
             <Select
-              name='healthcareCenterId'
+              name="healthcareCenterId"
               label="Centro de salud"
-              value={healthcareCenterId}
-              onChange={setHealthcareCenterId}
+              defaultValue=""
               options={healthcareCenters.map((item) => ({
                 label: item.name,
                 value: item.id,
@@ -114,12 +107,13 @@ export const AccidentForm = ({
 
       <div className="flex justify-end">
         <Button
+          type="button"
           onClick={() => void handleSubmit()}
           isLoading={isLoading}
         >
           Registrar accidente
         </Button>
       </div>
-    </div>
+    </form>
   )
 }

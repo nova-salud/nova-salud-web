@@ -59,16 +59,20 @@ const CreateDispensationPage = () => {
 
             <Input
               label="Motivo"
+              name="reason"
+              type="text"
               placeholder="Ej: Dolor de cabeza, atención ambulatoria, entrega a tercero."
               value={values.reason}
-              onChange={handleChange('reason')}
+              onChange={(e) => handleChange('reason')(e.target.value)}
             />
 
             <Input
               label="DNI tercero"
+              name="thirdPartyDni"
+              type="text"
               placeholder="Ej: 87654321"
               value={values.thirdPartyDni}
-              onChange={handleChange('thirdPartyDni')}
+              onChange={(e) => handleChange('thirdPartyDni')(e.target.value)}
             />
           </div>
 
@@ -95,25 +99,30 @@ const CreateDispensationPage = () => {
             />
 
             <Input
+              name="quantity"
               type="number"
               label="Cantidad"
               placeholder="Ej: 3"
               value={values.quantity}
-              onChange={handleChange('quantity')}
+              onChange={(e) => handleChange('quantity')(e.target.value)}
             />
 
             <Input
               label="Dosis / indicación"
+              name="doseInstruction"
+              type="text"
               placeholder="Ej: 1 tableta cada 8 horas"
               value={values.doseInstruction}
-              onChange={handleChange('doseInstruction')}
+              onChange={(e) => handleChange('doseInstruction')(e.target.value)}
             />
 
             <Input
               label="Observación del ítem"
+              name="observation"
+              type="text"
               placeholder="Ej: Entrega para 3 días"
               value={values.observation}
-              onChange={handleChange('observation')}
+              onChange={(e) => handleChange('observation')(e.target.value)}
             />
           </div>
 

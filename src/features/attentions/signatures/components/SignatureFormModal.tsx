@@ -79,9 +79,11 @@ const SignatureFormModal = ({
 
         <Input
           label="Nombre completo"
+          name="fullName"
+          type="text"
           placeholder="Ingrese el nombre completo"
           value={fullName}
-          onChange={setFullName}
+          onChange={(e) => setFullName(e.target.value)}
         />
 
         <div className="rounded-xl border border-slate-200 bg-white p-2">

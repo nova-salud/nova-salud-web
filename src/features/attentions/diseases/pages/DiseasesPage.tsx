@@ -117,23 +117,29 @@ const DiseasesPage = () => {
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
               <Input
                 label="Código"
+                name="code"
+                type="text"
                 placeholder="Buscar por código"
                 value={code}
-                onChange={setCode}
+                onChange={(e) => setCode(e.target.value)}
               />
 
               <Input
                 label="Nombre"
+                name="name"
+                type="text"
                 placeholder="Buscar por nombre"
                 value={name}
-                onChange={setName}
+                onChange={(e) => setName(e.target.value)}
               />
 
               <Input
                 label="Categoría"
+                name="category"
+                type="text"
                 placeholder="Buscar por categoría"
                 value={category}
-                onChange={setCategory}
+                onChange={(e) => setCategory(e.target.value)}
               />
 
               <Select

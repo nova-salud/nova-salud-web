@@ -1,13 +1,8 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Button, Input } from '@/shared/components/ui/form'
 import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
 import type { UpdateUserPasswordDto } from '../types/update-user-password.dto'
 import type { UserResponseDto } from '../types/user-response.dto'
-
-type PasswordFormValues = {
-  newPassword: string
-  confirmPassword: string
-}
 
 type Props = {
   isOpen: boolean
@@ -17,73 +12,37 @@ type Props = {
   onSubmit?: (id: number, dto: UpdateUserPasswordDto) => Promise<void> | void
 }
 
-const INITIAL_VALUES: PasswordFormValues = {
-  newPassword: '',
-  confirmPassword: '',
-}
-
 const UserPasswordSidebarContent = ({
   user,
   isLoading = false,
   onClose,
   onSubmit,
 }: Omit<Props, 'isOpen'>) => {
-  const [values, setValues] = useState<PasswordFormValues>(INITIAL_VALUES)
+  const [formError, setFormError] = useState<string | null>(null)
 
-  const handleChange =
-    <K extends keyof PasswordFormValues>(key: K) =>
-    (value: PasswordFormValues[K]) => {
-      setValues((prev) => ({ ...prev, [key]: value }))
-    }
+  const handleSubmit = async (e: { preventDefault(): void; currentTarget: HTMLFormElement }) => {
+    e.preventDefault()
+    if (!user || !onSubmit) return
+    const data = new FormData(e.currentTarget)
+    const newPassword = data.get('newPassword') as string
+    const confirmPassword = data.get('confirmPassword') as string
 
-  const passwordsMatch = useMemo<boolean>(() => {
-    return values.newPassword === values.confirmPassword
-  }, [values.confirmPassword, values.newPassword])
-
-  const isValid = useMemo<boolean>(() => {
-    return (
-      values.newPassword.trim().length >= 8 &&
-      values.confirmPassword.trim().length >= 8 &&
-      passwordsMatch
-    )
-  }, [passwordsMatch, values.confirmPassword, values.newPassword])
-
-  const handleSubmit = async () => {
-    if (!user || !onSubmit || !isValid) {
+    if (newPassword.trim().length < 8 || confirmPassword.trim().length < 8) {
+      setFormError('La contraseña debe tener al menos 8 caracteres.')
       return
     }
 
-    await onSubmit(user.id, {
-      newPassword: values.newPassword,
-    })
+    if (newPassword !== confirmPassword) {
+      setFormError('Las contraseñas no coinciden.')
+      return
+    }
+
+    setFormError(null)
+    await onSubmit(user.id, { newPassword })
   }
 
-  const footer = (
-    <div className="flex flex-wrap justify-end gap-3">
-      <Button
-        type="button"
-        variant="outline"
-        onClick={onClose}
-        className="w-auto"
-      >
-        Cancelar
-      </Button>
-
-      <Button
-        type="button"
-        isLoading={isLoading}
-        loadingText="Actualizando..."
-        disabled={!isValid}
-        onClick={() => void handleSubmit()}
-        className="w-auto"
-      >
-        Actualizar contraseña
-      </Button>
-    </div>
-  )
-
   return (
-    <div className="space-y-4">
+    <form className="space-y-4" onSubmit={(e) => void handleSubmit(e)}>
       {user ? (
         <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
           <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
@@ -99,29 +58,45 @@ const UserPasswordSidebarContent = ({
       ) : null}
 
       <Input
+        name="newPassword"
         type="password"
         label="Nueva contraseña"
         placeholder="Ingresa la nueva contraseña"
-        value={values.newPassword}
-        onChange={handleChange('newPassword')}
       />
 
       <Input
+        name="confirmPassword"
         type="password"
         label="Confirmar contraseña"
         placeholder="Confirma la nueva contraseña"
-        value={values.confirmPassword}
-        onChange={handleChange('confirmPassword')}
       />
 
-      {!passwordsMatch && values.confirmPassword.trim().length > 0 ? (
+      {formError ? (
         <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-          Las contraseñas no coinciden.
+          {formError}
         </div>
       ) : null}
 
-      {footer}
-    </div>
+      <div className="flex flex-wrap justify-end gap-3">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onClose}
+          className="w-auto"
+        >
+          Cancelar
+        </Button>
+
+        <Button
+          type="submit"
+          isLoading={isLoading}
+          loadingText="Actualizando..."
+          className="w-auto"
+        >
+          Actualizar contraseña
+        </Button>
+      </div>
+    </form>
   )
 }
 

@@ -69,8 +69,10 @@ export const CloseWithConsentSidebar = ({
 
         <Input
           label="Nombre completo"
+          name="fullName"
+          type="text"
           value={fullName}
-          onChange={setFullName}
+          onChange={(e) => setFullName(e.target.value)}
         />
 
         <SignatureInput

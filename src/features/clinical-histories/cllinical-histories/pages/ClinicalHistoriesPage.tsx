@@ -75,9 +75,11 @@ const ClinicalHistoriesPage = () => {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <Input
               label="Nombre o DNI"
+              name="search"
+              type="text"
               placeholder="Buscar trabajador"
               value={search}
-              onChange={setSearch}
+              onChange={(e) => setSearch(e.target.value)}
             />
 
             <Select

@@ -134,39 +134,47 @@ const EmployeeSyncSettingsPage = () => {
               <div className="grid gap-4 md:grid-cols-2">
                 <Input
                   label="Host"
+                  name="host"
+                  type="text"
                   placeholder="Ej: nova-salud-server.database.windows.net"
                   value={values.host}
-                  onChange={handleChange('host')}
+                  onChange={(e) => handleChange('host')(e.target.value)}
                 />
 
                 <Input
+                  name="port"
                   type="number"
                   label="Puerto"
                   placeholder="Ej: 1433"
                   value={values.port}
-                  onChange={handleChange('port')}
+                  onChange={(e) => handleChange('port')(e.target.value)}
                 />
 
                 <Input
                   label="Usuario"
+                  name="username"
+                  type="text"
                   placeholder="Ej: nova-salud-admin"
                   value={values.username}
-                  onChange={handleChange('username')}
+                  onChange={(e) => handleChange('username')(e.target.value)}
                 />
 
                 <Input
+                  name="password"
                   type="password"
                   label="Contraseña"
                   placeholder="Ingresa la contraseña"
                   value={values.password}
-                  onChange={handleChange('password')}
+                  onChange={(e) => handleChange('password')(e.target.value)}
                 />
 
                 <Input
                   label="Base de datos"
+                  name="database"
+                  type="text"
                   placeholder="Ej: nova-salud-db"
                   value={values.database}
-                  onChange={handleChange('database')}
+                  onChange={(e) => handleChange('database')(e.target.value)}
                 />
 
                 <div className="grid gap-3 sm:grid-cols-2">
@@ -254,11 +262,12 @@ const EmployeeSyncSettingsPage = () => {
                 />
 
                 <Input
+                  name="intervalMinutes"
                   type="number"
                   label="Intervalo (minutos)"
                   placeholder="Ej: 60"
                   value={values.intervalMinutes}
-                  onChange={handleChange('intervalMinutes')}
+                  onChange={(e) => handleChange('intervalMinutes')(e.target.value)}
                 />
               </div>
 

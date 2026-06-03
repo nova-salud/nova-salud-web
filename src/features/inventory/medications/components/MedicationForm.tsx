@@ -21,27 +21,24 @@ const MedicationForm = ({
   onSubmit,
   isLoading = false,
 }: Props) => {
-  const [form, setForm] = useState<CreateMedicationDto>({
-    commercialName: '',
-    genericName: '',
-    chemicalComposition: '',
-    therapeuticCategoryId: 0,
-    presentation: '',
-    unitOfMeasure: '',
-    minimumStock: 0,
-    isOtc: false,
-    requiresPrescription: false,
-    notes: '',
-    ...initialValues,
-  })
+  const [isOtc, setIsOtc] = useState(initialValues.isOtc ?? false)
+  const [requiresPrescription, setRequiresPrescription] = useState(initialValues.requiresPrescription ?? false)
 
-  const handleChange = (key: keyof CreateMedicationDto) => (value: unknown) => {
-    setForm((prev) => ({ ...prev, [key]: value }))
-  }
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: { preventDefault(): void; currentTarget: HTMLFormElement }) => {
     e.preventDefault()
-    onSubmit(form)
+    const data = new FormData(e.currentTarget)
+    onSubmit({
+      commercialName: data.get('commercialName') as string,
+      genericName: data.get('genericName') as string,
+      chemicalComposition: data.get('chemicalComposition') as string,
+      therapeuticCategoryId: Number(data.get('medication')),
+      presentation: data.get('presentation') as string,
+      unitOfMeasure: data.get('unitOfMeasure') as string,
+      minimumStock: Number(data.get('minimumStock')),
+      isOtc,
+      requiresPrescription,
+      notes: data.get('notes') as string,
+    })
   }
 
   return (
@@ -54,30 +51,30 @@ const MedicationForm = ({
         <div className="grid gap-4 md:grid-cols-2">
           <Input
             label="Nombre comercial"
-            value={form.commercialName}
-            onChange={handleChange('commercialName')}
+            name="commercialName"
+            type="text"
+            defaultValue={initialValues.commercialName ?? ''}
           />
 
           <Input
             label="Nombre genérico"
-            value={form.genericName}
-            onChange={handleChange('genericName')}
+            name="genericName"
+            type="text"
+            defaultValue={initialValues.genericName ?? ''}
           />
 
           <Input
             label="Composición"
-            value={form.chemicalComposition}
-            onChange={handleChange('chemicalComposition')}
+            name="chemicalComposition"
+            type="text"
+            defaultValue={initialValues.chemicalComposition ?? ''}
             className="md:col-span-2"
           />
 
           <Select
-            name='medication'
+            name="medication"
             label="Categoría"
-            value={form.therapeuticCategoryId}
-            onChange={(value) =>
-              handleChange('therapeuticCategoryId')(Number(value))
-            }
+            defaultValue={initialValues.therapeuticCategoryId}
             options={categories.map((c) => ({
               label: c.name,
               value: c.id,
@@ -94,27 +91,26 @@ const MedicationForm = ({
         <div className="grid gap-4 md:grid-cols-3">
           <Input
             label="Presentación"
-            value={form.presentation}
-            onChange={handleChange('presentation')}
+            name="presentation"
+            type="text"
+            defaultValue={initialValues.presentation ?? ''}
           />
 
           <Input
             label="Unidad de medida"
-            value={form.unitOfMeasure}
-            onChange={handleChange('unitOfMeasure')}
+            name="unitOfMeasure"
+            type="text"
+            defaultValue={initialValues.unitOfMeasure ?? ''}
           />
 
           <Input
-            type="number"
             label="Stock mínimo"
-            value={form.minimumStock}
-            onChange={(value) =>
-              handleChange('minimumStock')(Number(value))
-            }
+            name="minimumStock"
+            type="number"
+            defaultValue={initialValues.minimumStock ?? 0}
           />
         </div>
       </div>
-
 
       <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">
         <h3 className="text-sm font-semibold text-slate-900">
@@ -124,16 +120,14 @@ const MedicationForm = ({
         <div className="flex gap-6">
           <Checkbox
             label="OTC"
-            checked={form.isOtc}
-            onChange={(value) => handleChange('isOtc')(value)}
+            checked={isOtc}
+            onChange={setIsOtc}
           />
 
           <Checkbox
             label="Requiere receta"
-            checked={form.requiresPrescription}
-            onChange={(value) =>
-              handleChange('requiresPrescription')(value)
-            }
+            checked={requiresPrescription}
+            onChange={setRequiresPrescription}
           />
         </div>
       </div>
@@ -144,8 +138,8 @@ const MedicationForm = ({
         </h3>
 
         <Textarea
-          value={form.notes}
-          onChange={handleChange('notes')}
+          name="notes"
+          defaultValue={initialValues.notes ?? ''}
           placeholder="Observaciones del medicamento"
         />
       </div>

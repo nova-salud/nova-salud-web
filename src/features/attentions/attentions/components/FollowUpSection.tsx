@@ -43,11 +43,12 @@ export const FollowUpSection = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
           <Input
             label="Fecha de seguimiento"
+            name="followUpScheduledAt"
             type="datetime-local"
             value={followUpScheduledAt ?? ''}
-            onChange={(value) =>
+            onChange={(e) =>
               onChange({
-                followUpScheduledAt: value || undefined,
+                followUpScheduledAt: e.target.value || undefined,
                 followUpReason,
               })
             }
@@ -55,12 +56,14 @@ export const FollowUpSection = ({
 
           <Input
             label="Motivo"
+            name="followUpReason"
+            type="text"
             placeholder="Ej: Control de evolución"
             value={followUpReason ?? ''}
-            onChange={(value) =>
+            onChange={(e) =>
               onChange({
                 followUpScheduledAt,
-                followUpReason: value || undefined,
+                followUpReason: e.target.value || undefined,
               })
             }
           />

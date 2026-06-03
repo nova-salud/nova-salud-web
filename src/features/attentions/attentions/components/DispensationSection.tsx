@@ -94,9 +94,11 @@ const DispensationSection = ({
             <div className="grid gap-4 md:grid-cols-2">
               <Input
                 label="Motivo de la dispensación"
+                name="reason"
+                type="text"
                 placeholder="Ej. Tratamiento sintomático"
                 value={reason}
-                onChange={onReasonChange}
+                onChange={(e) => onReasonChange(e.target.value)}
               />
 
               <Textarea
@@ -170,20 +172,23 @@ const DispensationSection = ({
 
                     <Input
                       label="Cantidad"
+                      name="quantity"
                       type="number"
                       placeholder="Ingresa la cantidad"
                       value={item.quantity}
-                      onChange={(value) =>
-                        handleChangeItem(index, 'quantity', value)
+                      onChange={(e) =>
+                        handleChangeItem(index, 'quantity', e.target.value)
                       }
                     />
 
                     <Input
                       label="Indicación de dosis"
+                      name="doseInstruction"
+                      type="text"
                       placeholder="Ej. 1 tableta cada 8 horas"
                       value={item.doseInstruction}
-                      onChange={(value) =>
-                        handleChangeItem(index, 'doseInstruction', value)
+                      onChange={(e) =>
+                        handleChangeItem(index, 'doseInstruction', e.target.value)
                       }
                     />
 

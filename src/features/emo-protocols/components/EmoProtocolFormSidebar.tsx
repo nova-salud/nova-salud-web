@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import { Button, Input } from '@/shared/components/ui/form'
 import type {
   CreateEmoProtocolDto,
@@ -28,53 +27,27 @@ const EmoProtocolFormSidebar = ({
   onCreate,
   onUpdate,
 }: Props) => {
-  const [name, setName] = useState('')
-  const [isActive, setIsActive] = useState(true)
-  const [nextEmoDaysFit, setNextEmoDaysFit] = useState(365)
-  const [nextEmoDaysFitWithRestrictions, setNextEmoDaysFitWithRestrictions] = useState(180)
+  const handleSubmit = async (e: { preventDefault(): void; currentTarget: HTMLFormElement }) => {
+    e.preventDefault()
+    const data = new FormData(e.currentTarget)
+    const name = (data.get('name') as string).trim()
+    if (!name) return
 
-  useEffect(() => {
-    if (!isOpen) {
-      return
-    }
-
-    if (mode === 'edit' && emoProtocol) {
-      setName(emoProtocol.name)
-      setIsActive(emoProtocol.isActive)
-      setNextEmoDaysFit(emoProtocol.nextEmoDaysFit)
-      setNextEmoDaysFitWithRestrictions(emoProtocol.nextEmoDaysFitWithRestrictions)
-      return
-    }
-
-    setName('')
-    setIsActive(true)
-    setNextEmoDaysFit(365)
-    setNextEmoDaysFitWithRestrictions(180)
-  }, [isOpen, mode, emoProtocol])
-
-  const handleSubmit = async () => {
-    if (!name.trim()) {
-      return
-    }
+    const nextEmoDaysFit = Number(data.get('nextEmoDaysFit'))
+    const nextEmoDaysFitWithRestrictions = Number(data.get('nextEmoDaysFitWithRestrictions'))
 
     if (mode === 'create') {
-      await onCreate?.({
-        name: name.trim(),
-        nextEmoDaysFit,
-        nextEmoDaysFitWithRestrictions
-      })
+      await onCreate?.({ name, nextEmoDaysFit, nextEmoDaysFitWithRestrictions })
       return
     }
 
-    if (!emoProtocol) {
-      return
-    }
+    if (!emoProtocol) return
 
     await onUpdate?.(emoProtocol.id, {
-      name: name.trim(),
-      isActive,
+      name,
+      isActive: data.get('isActive') === 'on',
       nextEmoDaysFit,
-      nextEmoDaysFitWithRestrictions
+      nextEmoDaysFitWithRestrictions,
     })
   }
 
@@ -83,64 +56,73 @@ const EmoProtocolFormSidebar = ({
       isOpen={isOpen}
       onClose={onClose}
       title={mode === 'create' ? 'Nuevo protocolo EMO' : 'Editar protocolo EMO'}
-      description={mode === 'create'
-        ? 'Registra un nuevo protocolo EMO.'
-        : 'Actualiza la información del protocolo EMO.'}
+      description={
+        mode === 'create'
+          ? 'Registra un nuevo protocolo EMO.'
+          : 'Actualiza la información del protocolo EMO.'
+      }
     >
-      <div className="space-y-5">
-        <Input
-          label="Nombre"
-          placeholder="Ej. Protocolo administrativo"
-          value={name}
-          onChange={(val) => setName(String(val))}
-        />
-
-        <Input
-          label="Días recurrentes - Personal Apto"
-          placeholder="Ej. 365"
-          value={nextEmoDaysFit}
-          onChange={(val) => setNextEmoDaysFit(+val)}
-          type='number'
-        />
-
-        <Input
-          label="Días recurrentes - Personal Apto con restricciones"
-          placeholder="Ej. 180"
-          value={nextEmoDaysFitWithRestrictions}
-          onChange={(val) => setNextEmoDaysFitWithRestrictions(+val)}
-          type='number'
-        />
-
-        {mode === 'edit' && <label className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">
-          <input
-            type="checkbox"
-            checked={isActive}
-            onChange={(e) => setIsActive(e.target.checked)}
+      <form
+        key={`${mode}-${emoProtocol?.id ?? 'new'}`}
+        onSubmit={(e) => void handleSubmit(e)}
+      >
+        <div className="space-y-5">
+          <Input
+            label="Nombre"
+            name="name"
+            type="text"
+            placeholder="Ej. Protocolo administrativo"
+            defaultValue={emoProtocol?.name}
           />
-          Activo
-        </label>}
 
-        <div className="flex justify-end gap-3 pt-2">
-          <Button
-            type="button"
-            variant="outline"
-            className="w-auto"
-            onClick={onClose}
-          >
-            Cancelar
-          </Button>
+          <Input
+            label="Días recurrentes - Personal Apto"
+            name="nextEmoDaysFit"
+            type="number"
+            placeholder="Ej. 365"
+            defaultValue={emoProtocol?.nextEmoDaysFit ?? 365}
+          />
 
-          <Button
-            type="button"
-            className="w-auto"
-            onClick={() => void handleSubmit()}
-            isLoading={isLoading}
-            loadingText={mode === 'create' ? 'Guardando...' : 'Actualizando...'}
-          >
-            {mode === 'create' ? 'Crear protocolo' : 'Guardar cambios'}
-          </Button>
+          <Input
+            label="Días recurrentes - Personal Apto con restricciones"
+            name="nextEmoDaysFitWithRestrictions"
+            type="number"
+            placeholder="Ej. 180"
+            defaultValue={emoProtocol?.nextEmoDaysFitWithRestrictions ?? 180}
+          />
+
+          {mode === 'edit' && (
+            <label className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">
+              <input
+                type="checkbox"
+                name="isActive"
+                defaultChecked={emoProtocol?.isActive ?? true}
+              />
+              Activo
+            </label>
+          )}
+
+          <div className="flex justify-end gap-3 pt-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-auto"
+              onClick={onClose}
+            >
+              Cancelar
+            </Button>
+
+            <Button
+              type="submit"
+              className="w-auto"
+              isLoading={isLoading}
+              loadingText={mode === 'create' ? 'Guardando...' : 'Actualizando...'}
+            >
+              {mode === 'create' ? 'Crear protocolo' : 'Guardar cambios'}
+            </Button>
+          </div>
         </div>
-      </div>
+      </form>
     </Sidebar>
   )
 }

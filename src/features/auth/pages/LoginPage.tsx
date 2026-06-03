@@ -1,4 +1,3 @@
-import { useState, type FormEvent } from 'react'
 import { Navigate } from 'react-router'
 import { Button, Input } from '@/shared/components/ui/form'
 import { useAuth } from '@/shared/hooks/useAuth'
@@ -8,20 +7,18 @@ const LoginPage = () => {
   const { isAuthenticated } = useAuth()
   const { login, isLoading, clearError } = useLogin()
 
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-
   if (isAuthenticated) {
     return <Navigate to="/" replace />
   }
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: { preventDefault(): void; currentTarget: HTMLFormElement }) => {
     event.preventDefault()
     clearError()
+    const data = new FormData(event.currentTarget)
 
     await login({
-      username: username.trim(),
-      password,
+      username: (data.get('username') as string).trim(),
+      password: data.get('password') as string,
     })
   }
 
@@ -82,18 +79,17 @@ const LoginPage = () => {
             <form onSubmit={handleSubmit} className="space-y-5">
               <Input
                 label="Usuario"
+                name="username"
+                type="text"
                 placeholder="Ingresa tu usuario"
-                value={username}
-                onChange={setUsername}
                 autoComplete="username"
               />
 
               <Input
                 label="Contraseña"
+                name="password"
                 type="password"
                 placeholder="Ingresa tu contraseña"
-                value={password}
-                onChange={setPassword}
                 autoComplete="current-password"
               />
 

@@ -102,9 +102,11 @@ const ExamsPage = () => {
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-2">
               <Input
                 label="Nombre"
+                name="search"
+                type="text"
                 placeholder="Buscar por nombre"
                 value={name}
-                onChange={setName}
+                onChange={(e) => setName(e.target.value)}
               />
 
               <Select

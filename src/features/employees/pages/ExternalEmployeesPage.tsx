@@ -37,9 +37,11 @@ const ExternalEmployeesPage = () => {
         <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
           <Input
             label="Buscar"
+            name="username"
+            type="text"
             placeholder="Buscar por usuario / nombre"
             value={username}
-            onChange={setUsername}
+            onChange={(e) => setUsername(e.target.value)}
           />
         </div>
 
