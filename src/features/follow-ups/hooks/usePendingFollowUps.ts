@@ -1,43 +1,14 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback } from 'react'
+import { useQuery } from '@/core/hooks/useQuery'
 import { followUpService } from '../services/follow-up.service'
-import type { FollowUpResponseDto } from '../types/follow-up-response.dto'
-import { parseBackendError } from '@/core/utils/parse-backend-error'
 
-export const usePendingFollowUps = (employeeId: number = 0) => {
-  const [data, setData] = useState<FollowUpResponseDto[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+export const usePendingFollowUps = (employeeId = 0) => {
+  const enabled = Boolean(employeeId && !Number.isNaN(employeeId))
 
-  const fetchFollowUps = useCallback(async () => {
-    if (!employeeId || Number.isNaN(employeeId)) {
-      setError('ID de historia clínica inválido')
-      return
-    }
+  const fetcher = useCallback(
+    () => followUpService.findPendingByClinicalHistory(employeeId),
+    [employeeId],
+  )
 
-    try {
-      setIsLoading(true)
-      setError(null)
-
-      const result =
-        await followUpService.findPendingByClinicalHistory(employeeId)
-
-      setData(result)
-    } catch (error) {
-      setData([])
-      setError(parseBackendError(error))
-    } finally {
-      setIsLoading(false)
-    }
-  }, [employeeId])
-
-  useEffect(() => {
-    void fetchFollowUps()
-  }, [fetchFollowUps])
-
-  return {
-    data,
-    isLoading,
-    error,
-    refetch: fetchFollowUps,
-  }
+  return useQuery(fetcher, [], enabled)
 }

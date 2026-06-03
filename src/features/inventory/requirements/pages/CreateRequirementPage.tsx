@@ -98,6 +98,7 @@ const CreateRequirementPage = () => {
 
           <div className="grid gap-4 md:grid-cols-[1fr_180px_auto]">
             <Select
+              name='medication'
               label="Medicamento"
               value={selectedMedicationId}
               onChange={setSelectedMedicationId}

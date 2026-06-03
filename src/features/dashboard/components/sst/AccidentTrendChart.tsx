@@ -33,6 +33,9 @@ export const AccidentTrendChart = ({
       rightPriceScale: {
         borderVisible: false,
       },
+      localization: {
+        priceFormatter: (price: number) => Math.round(price).toString(),
+      },
       timeScale: {
         borderVisible: false,
         timeVisible: true,
@@ -44,12 +47,14 @@ export const AccidentTrendChart = ({
       color: '#2563eb',
       lineWidth: 2,
       title: 'Accidentes',
+      priceFormat: { type: 'custom', formatter: (p: number) => Math.round(p).toString(), minMove: 1 },
     })
 
     const incidentSeries = chart.addSeries(LineSeries, {
       color: '#f59e0b',
       lineWidth: 2,
       title: 'Incidentes',
+      priceFormat: { type: 'custom', formatter: (p: number) => Math.round(p).toString(), minMove: 1 },
     })
 
     accidentSeries.setData(

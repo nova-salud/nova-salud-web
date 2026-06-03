@@ -42,7 +42,7 @@ export const SearchSelect = ({
     setQuery('')
   }, [])
 
-  useClickOutside(containerRef, handleClose)
+  useClickOutside([containerRef], handleClose)
 
   return (
     <div ref={containerRef} className="relative flex flex-col gap-1.5">

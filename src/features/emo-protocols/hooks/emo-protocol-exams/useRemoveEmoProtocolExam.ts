@@ -1,4 +1,4 @@
-import { useAsyncAction } from '@/core/hooks/use-async-action'
+import { useAsyncAction } from '@/core/hooks/useAsyncAction'
 import { emoProtocolExamService } from '../../services/emo-protocol-exam.service'
 
 export const useRemoveEmoProtocolExam = () => {

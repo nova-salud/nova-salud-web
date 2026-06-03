@@ -1,32 +1,15 @@
-import { useCallback, useEffect, useState } from 'react'
-import { parseBackendError } from '@/core/utils/parse-backend-error'
-import { toastService } from '@/core/services/toast.service'
+import { useCallback } from 'react'
+import { useQuery } from '@/core/hooks/useQuery'
 import { documentTemplateService } from '../services/document-template.service'
-import type { DocumentTemplateResponseDto } from '../types/document-template.types'
+import type { FindDocumentTemplatesDto } from '../types/document-template.types'
 
-export const useDocumentTemplates = () => {
-  const [templates, setTemplates] = useState<DocumentTemplateResponseDto[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+export const useDocumentTemplates = (query?: FindDocumentTemplatesDto) => {
+  const fetcher = useCallback(
+    () => documentTemplateService.findAll(query),
+    [query],
+  )
 
-  const fetchTemplates = useCallback(async (): Promise<void> => {
-    try {
-      setIsLoading(true)
-      setError(null)
-      const result = await documentTemplateService.findAll()
-      setTemplates(result)
-    } catch (err) {
-      const message = parseBackendError(err)
-      setError(message)
-      toastService.error(message)
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
+  const { data: templates, isLoading, error, refetch } = useQuery(fetcher, [])
 
-  useEffect(() => {
-    void fetchTemplates()
-  }, [fetchTemplates])
-
-  return { templates, isLoading, error, refetch: fetchTemplates }
+  return { templates, isLoading, error, refetch }
 }

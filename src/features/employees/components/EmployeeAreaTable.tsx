@@ -1,4 +1,4 @@
-import DataTable from '@/shared/components/ui/table/DataTable'
+import { DataTable } from '@/shared/components/ui/table/DataTable'
 import { cn } from '@/shared/utils'
 import type { EmployeeAreaResponseDto } from '../types/employee-area-response.dto'
 
@@ -15,7 +15,7 @@ const EmployeeAreaTable = ({ items, isLoading = false }: Props) => {
       emptyMessage="No se encontraron áreas."
       columns={['ID', 'Nombre', 'Estado']}
       renderRow={(item) => (
-        <tr key={item.id} className="border-t border-slate-100 text-sm text-slate-700">
+        <>
           <td className="px-6 py-5 font-medium text-slate-900">
             #{item.id}
           </td>
@@ -36,7 +36,7 @@ const EmployeeAreaTable = ({ items, isLoading = false }: Props) => {
               {item.isActive ? 'Activa' : 'Inactiva'}
             </span>
           </td>
-        </tr>
+        </>
       )}
     />
   )

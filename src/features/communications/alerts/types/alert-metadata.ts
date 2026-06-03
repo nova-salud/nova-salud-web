@@ -2,6 +2,8 @@ export type AlertMetadata =
   | {
     clinicalHistoryId: number
     attentionsCount: number
+    area: string | null
+    position: string | null
   }
   | {
     clinicalHistoryId: number
@@ -17,6 +19,7 @@ export type AlertMetadata =
     historyId: number
     band: string
     daysRemaining: number
+    emoExpirationDate: string | null
   }
   | {
     requirementId: number

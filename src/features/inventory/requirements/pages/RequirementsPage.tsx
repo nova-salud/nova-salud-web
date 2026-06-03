@@ -44,6 +44,7 @@ const RequirementsPage = () => {
 
             <div className="w-full md:w-65">
               <Select
+                name='status'
                 label="Estado"
                 value={status}
                 onChange={(value) => setStatus(value as InventoryRequirementStatusEnum | '')}

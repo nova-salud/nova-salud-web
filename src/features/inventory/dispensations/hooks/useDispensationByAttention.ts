@@ -1,39 +1,15 @@
-import { parseBackendError } from '@/core/utils/parse-backend-error'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback } from 'react'
+import { useQuery } from '@/core/hooks/useQuery'
 import { dispensationService } from '../services/dispensation.service'
 import type { DispensationResponseDto } from '../types/dispensation-response.dto'
 
 export const useDispensationByAttention = (attentionId: number) => {
-  const [data, setData] = useState<DispensationResponseDto | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const enabled = Boolean(attentionId && !Number.isNaN(attentionId))
 
-  const fetch = useCallback(async () => {
-    if (!attentionId || Number.isNaN(attentionId)) return
+  const fetcher = useCallback(
+    () => dispensationService.findByAttentionId(attentionId) as Promise<DispensationResponseDto | null>,
+    [attentionId],
+  )
 
-    try {
-      setIsLoading(true)
-      setError(null)
-
-      const result = await dispensationService.findByAttentionId(attentionId)
-
-      setData(result)
-    } catch (error) {
-      setError(parseBackendError(error))
-      setData(null)
-    } finally {
-      setIsLoading(false)
-    }
-  }, [attentionId])
-
-  useEffect(() => {
-    void fetch()
-  }, [fetch])
-
-  return {
-    data,
-    isLoading,
-    error,
-    refetch: fetch,
-  }
+  return useQuery<DispensationResponseDto | null>(fetcher, null, enabled)
 }

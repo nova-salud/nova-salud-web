@@ -1,6 +1,6 @@
 import { cn } from '@/shared/utils'
 import { Button } from '@/shared/components/ui/form'
-import DataTable from '@/shared/components/ui/table/DataTable'
+import { DataTable } from '@/shared/components/ui/table/DataTable'
 import type { ExamResponseDto } from '../types'
 
 type Props = {
@@ -26,10 +26,7 @@ const ExamTable = ({
         'Acciones',
       ]}
       renderRow={(item) => (
-        <tr
-          key={item.id}
-          className="border-t border-slate-100 text-sm text-slate-700"
-        >
+        <>
           <td className="px-6 py-5 font-medium text-slate-900">
             #{item.id}
           </td>
@@ -61,7 +58,7 @@ const ExamTable = ({
               Editar
             </Button>
           </td>
-        </tr>
+        </>
       )}
     />
   )

@@ -29,6 +29,7 @@ export const useNotifications = () => {
 
   return {
     data,
+    setData,
     isLoading,
     error,
     refetch: fetchNotifications,

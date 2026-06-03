@@ -1,33 +1,19 @@
-import { useCallback, useEffect, useState } from 'react'
-import { parseBackendError } from '@/core/utils/parse-backend-error'
-import { toastService } from '@/core/services/toast.service'
+import { useQuery } from '@tanstack/react-query'
 import { clinicalHistoryEmoCycleService } from '../services/clinical-history-emo-cycle.service'
 import type { ClinicalHistoryEmoCycleResponseDto } from '../types'
 
-export const useEmoCycleHistory = (clinicalHistoryId: number) => {
-  const [cycles, setCycles] = useState<ClinicalHistoryEmoCycleResponseDto[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+export const useEmoCycleHistory = (employeeId: number) => {
+  const { data, isFetching, error, refetch } = useQuery<ClinicalHistoryEmoCycleResponseDto[]>({
+    queryKey: ['emo-cycle-history', employeeId],
+    queryFn: () => clinicalHistoryEmoCycleService.findByEmployeeId(employeeId),
+    enabled: Boolean(employeeId),
+    retry: false,
+  })
 
-  const fetchCycles = useCallback(async (): Promise<void> => {
-    if (!clinicalHistoryId) return
-    try {
-      setIsLoading(true)
-      setError(null)
-      const result = await clinicalHistoryEmoCycleService.findByClinicalHistoryId(clinicalHistoryId)
-      setCycles(result)
-    } catch (err) {
-      const message = parseBackendError(err)
-      setError(message)
-      toastService.error(message)
-    } finally {
-      setIsLoading(false)
-    }
-  }, [clinicalHistoryId])
-
-  useEffect(() => {
-    void fetchCycles()
-  }, [fetchCycles])
-
-  return { cycles, isLoading, error, refetch: fetchCycles }
+  return {
+    cycles: data ?? [],
+    isLoading: isFetching || (Boolean(employeeId) && data === undefined),
+    error,
+    refetch: async () => { await refetch() },
+  }
 }

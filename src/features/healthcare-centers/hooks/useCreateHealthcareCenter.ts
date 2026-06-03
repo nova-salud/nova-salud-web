@@ -1,4 +1,4 @@
-import { useAsyncAction } from '@/core/hooks/use-async-action'
+import { useAsyncAction } from '@/core/hooks/useAsyncAction'
 import type { CreateHealthcareCenterDto, HealthcareCenterResponseDto } from '../types'
 import { healthcareCenterService } from '../services/healthcare-center.service'
 

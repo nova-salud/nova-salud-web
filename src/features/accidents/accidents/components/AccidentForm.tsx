@@ -50,6 +50,7 @@ export const AccidentForm = ({
 
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           <Select
+            name='type'
             label="Tipo"
             value={type}
             options={ACCIDENT_TYPE_OPTIONS}
@@ -97,6 +98,7 @@ export const AccidentForm = ({
 
           {requiresExternalCare && (
             <Select
+              name='healthcareCenterId'
               label="Centro de salud"
               value={healthcareCenterId}
               onChange={setHealthcareCenterId}

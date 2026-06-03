@@ -10,6 +10,7 @@ import Modal from '@/shared/components/ui/modal/Modal'
 import { useCreateAlert } from '../hooks/useResolveAlert'
 import { useState } from 'react'
 import type { AlertResponseDto } from '../types/alert-response.dto'
+import { useNotificationsContext } from '../../notifications/hooks/useNotificationsContext'
 
 const styles = {
   [AlertPriority.HIGH]: {
@@ -35,6 +36,7 @@ const priorityOrder = {
 const AlertsPage = () => {
   const { data, isLoading, refetch } = useAlerts()
   const { resolveAlert, isLoading: isResolving } = useCreateAlert()
+  const { refetch: refetchNotifications } = useNotificationsContext()
   const navigate = useNavigate()
 
   const [selectedAlert, setSelectedAlert] = useState<AlertResponseDto | null>(null)
@@ -56,7 +58,7 @@ const AlertsPage = () => {
 
     await resolveAlert(selectedAlert.id)
     setSelectedAlert(null)
-    await refetch()
+    await Promise.all([refetch(), refetchNotifications()])
   }
 
   return (

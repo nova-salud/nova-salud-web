@@ -351,6 +351,7 @@ const CreateAttentionPage = () => {
 
             <div className="md:col-span-2">
               <Select
+                name='triageLevel'
                 label='Clasificación triaje'
                 value={triageLevel}
                 options={TRIAGE_LEVEL_OPTIONS}

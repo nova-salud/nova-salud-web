@@ -51,11 +51,7 @@ const ClinicalHistoryHeader = ({
             </span>
 
             <span className="rounded-xl bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">
-              {data.allergies.length} alergias
-            </span>
-
-            <span className="rounded-xl bg-purple-100 px-3 py-1 text-xs font-medium text-purple-700">
-              {data.attentions.length} atenciones
+              {data.allergies?.length ?? 0} alergias
             </span>
           </div>
         </div>

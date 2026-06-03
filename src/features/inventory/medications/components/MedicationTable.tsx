@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router'
-import DataTable from '@/shared/components/ui/table/DataTable'
+import { DataTable } from '@/shared/components/ui/table/DataTable'
 import type { InventoryStockResponseDto } from '@/features/inventory/stocks/types/inventory-stock-response.dto'
 
 type Props = {
@@ -25,10 +25,7 @@ const MedicationTable = ({ items, isLoading = false }: Props) => {
         'Acciones',
       ]}
       renderRow={(item) => (
-        <tr
-          key={item.medicationId}
-          className="border-t border-slate-100 text-sm text-slate-700"
-        >
+        <>
           <td className="px-6 py-5 font-medium text-slate-900">
             {item.commercialName}
           </td>
@@ -89,7 +86,7 @@ const MedicationTable = ({ items, isLoading = false }: Props) => {
               Ver detalle
             </button>
           </td>
-        </tr>
+        </>
       )}
     />
   )

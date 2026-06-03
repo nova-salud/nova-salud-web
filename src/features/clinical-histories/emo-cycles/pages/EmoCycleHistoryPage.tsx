@@ -27,7 +27,7 @@ const EmoCycleHistoryPage = () => {
   const numericEmployeeId = Number(employeeId)
 
   const { data: clinicalHistory, isLoading: isLoadingHistory } = useClinicalHistory(numericEmployeeId)
-  const { cycles, isLoading: isLoadingCycles } = useEmoCycleHistory(clinicalHistory?.id ?? 0)
+  const { cycles, isLoading: isLoadingCycles } = useEmoCycleHistory(numericEmployeeId)
 
   const [generatingKey, setGeneratingKey] = useState<GeneratingKey | null>(null)
 
@@ -96,9 +96,9 @@ const EmoCycleHistoryPage = () => {
                   )}
 
                   <span className="text-xs text-slate-400">
-                    {format(new Date(cycle.startedAt), "d MMM yyyy", { locale: es })}
+                    {format(new Date(cycle.startedAt), 'd MMM yyyy', { locale: es })}
                     {cycle.completedAt && (
-                      <> — {format(new Date(cycle.completedAt), "d MMM yyyy", { locale: es })}</>
+                      <> — {format(new Date(cycle.completedAt), 'd MMM yyyy', { locale: es })}</>
                     )}
                   </span>
 

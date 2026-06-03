@@ -1,4 +1,4 @@
-import { useAsyncAction } from '@/core/hooks/use-async-action'
+import { useAsyncAction } from '@/core/hooks/useAsyncAction'
 import type { CreateEmployeeRestrictionDto } from '../types/create-employee-restriction.dto'
 import type { EmployeeRestrictionResponseDto } from '../types/employee-restriction-response.dto'
 import { employeeRestrictionService } from '../services/employee-restriction.service'

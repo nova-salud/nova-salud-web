@@ -137,6 +137,7 @@ const DiseasesPage = () => {
               />
 
               <Select
+                name='isActive'
                 label="Estado"
                 value={isActive}
                 onChange={setIsActive}

@@ -48,6 +48,7 @@ const CreateDispensationPage = () => {
 
           <div className="grid gap-4 md:grid-cols-2">
             <Select
+              name='dispenseType'
               label="Tipo de dispensación"
               value={values.dispenseType}
               onChange={(value) =>
@@ -86,6 +87,7 @@ const CreateDispensationPage = () => {
 
           <div className="grid gap-4 md:grid-cols-2">
             <Select
+              name='medication'
               label="Medicamento"
               value={values.selectedMedicationId}
               onChange={handleChange('selectedMedicationId')}

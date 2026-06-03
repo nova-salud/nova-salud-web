@@ -1,4 +1,4 @@
-import { useAsyncAction } from '@/core/hooks/use-async-action'
+import { useAsyncAction } from '@/core/hooks/useAsyncAction'
 import type { AttentionAttachmentResponseDto, CreateAttentionAttachmentDto } from '../types'
 import { attentionAttachmentService } from '../services/attention-attachment.service'
 

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router'
-import DataTable from '@/shared/components/ui/table/DataTable'
+import { DataTable } from '@/shared/components/ui/table/DataTable'
 import { cn } from '@/shared/utils'
 import { getStatusClassName, getStatusLabel, type InventoryRequirementResponseDto } from '../types/inventory-requirement-response.dto'
 
@@ -18,7 +18,7 @@ const RequirementTable = ({ items, isLoading = false }: Props) => {
       emptyMessage="No se encontraron requerimientos."
       columns={['ID','Código', 'Estado', 'Items', 'Solicitado', 'Entregado', 'Acciones']}
       renderRow={(item) => (
-        <tr key={item.id} className="border-t border-slate-100 text-sm text-slate-700">
+        <>
           <td className="px-6 py-5 font-medium text-slate-900">#{item.id}</td>
           <td className="px-6 py-5 font-medium text-slate-900">{item.code}</td>
 
@@ -52,7 +52,7 @@ const RequirementTable = ({ items, isLoading = false }: Props) => {
               Ver detalle
             </button>
           </td>
-        </tr>
+        </>
       )}
     />
   )

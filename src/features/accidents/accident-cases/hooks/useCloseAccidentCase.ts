@@ -1,4 +1,4 @@
-import { useAsyncAction } from '@/core/hooks/use-async-action'
+import { useAsyncAction } from '@/core/hooks/useAsyncAction'
 import { accidentCaseService } from '../services/accident-case.service'
 
 export const useCloseAccidentCase = () => {

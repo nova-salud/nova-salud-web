@@ -28,7 +28,7 @@ const Modal = ({
 }: Props) => {
   const containerRef = useRef<HTMLDivElement | null>(null)
 
-  useClickOutside(containerRef, () => {
+  useClickOutside([containerRef], () => {
     if (isOpen) onClose()
   })
 

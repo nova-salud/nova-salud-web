@@ -1,4 +1,4 @@
-import { useAsyncAction } from '@/core/hooks/use-async-action'
+import { useAsyncAction } from '@/core/hooks/useAsyncAction'
 import { examService } from '../services/exam.service'
 import type { UpdateExamDto, ExamResponseDto } from '../types'
 

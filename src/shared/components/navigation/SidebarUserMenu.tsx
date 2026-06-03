@@ -15,7 +15,7 @@ const SidebarUserMenu = ({ user, sidebarCollapsed, onLogout }: Props) => {
   const dropdownRef = useRef(null)
   const [open, setOpen] = useState(false)
 
-  useClickOutside(dropdownRef, () => setOpen(false))
+  useClickOutside([dropdownRef], () => setOpen(false))
 
   return (
     <div className="border-t border-slate-200 px-3 py-2">

@@ -1,4 +1,4 @@
-import { useAsyncAction } from '@/core/hooks/use-async-action'
+import { useAsyncAction } from '@/core/hooks/useAsyncAction'
 import type { CreateEmoProtocolExamDto, EmoProtocolExamResponseDto } from '../../types'
 import { emoProtocolExamService } from '../../services/emo-protocol-exam.service'
 

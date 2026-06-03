@@ -16,7 +16,6 @@ import {
   ShieldAlert,
   ShoppingCart,
   Stethoscope,
-  Truck,
   UserCog,
   Users,
   type LucideIcon,

@@ -1,36 +1,13 @@
-import { parseBackendError } from '@/core/utils/parse-backend-error'
-import { useState, useCallback, useEffect } from 'react'
+import { useCallback } from 'react'
+import { usePaginatedQuery } from '@/core/hooks/usePaginatedQuery'
 import { healthcareCenterService } from '../services/healthcare-center.service'
-import type { FindHealthcareCentersDto, HealthcareCenterResponseDto } from '../types'
+import type { FindHealthcareCentersDto } from '../types'
 
 export const useHealthcareCenters = (query: FindHealthcareCentersDto) => {
-  const [data, setData] = useState<HealthcareCenterResponseDto[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const fetcher = useCallback(
+    (page: number, pageSize: number) => healthcareCenterService.findAll({ ...query, page, pageSize }),
+    [query],
+  )
 
-  const fetchHealthcareCenters = useCallback(async () => {
-    try {
-      setIsLoading(true)
-      setError(null)
-
-      const response = await healthcareCenterService.findAll(query)
-      setData(response.data)
-    } catch (error) {
-      setData([])
-      setError(parseBackendError(error))
-    } finally {
-      setIsLoading(false)
-    }
-  }, [query])
-
-  useEffect(() => {
-    void fetchHealthcareCenters()
-  }, [fetchHealthcareCenters])
-
-  return {
-    data,
-    isLoading,
-    error,
-    refetch: fetchHealthcareCenters,
-  }
+  return usePaginatedQuery(fetcher, query.pageSize)
 }

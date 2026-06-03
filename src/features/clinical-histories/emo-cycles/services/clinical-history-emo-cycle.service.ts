@@ -19,6 +19,15 @@ class ClinicalHistoryEmoCycleService extends ApiService {
     )
   }
 
+  async findByEmployeeId(
+    employeeId: number,
+  ): Promise<ClinicalHistoryEmoCycleResponseDto[]> {
+    console.log('fetching')
+    return await this.get<ClinicalHistoryEmoCycleResponseDto[]>(
+      `/clinical-history-emo-cycles/employee/${employeeId}`,
+    )
+  }
+
   async findByClinicalHistoryId(
     clinicalHistoryId: number,
   ): Promise<ClinicalHistoryEmoCycleResponseDto[]> {

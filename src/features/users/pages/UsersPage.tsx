@@ -170,6 +170,7 @@ const UsersPage = () => {
               />
 
               <Select
+                name='rol'
                 label="Rol"
                 value={role}
                 onChange={setRole}
@@ -180,6 +181,7 @@ const UsersPage = () => {
               />
 
               <Select
+                name='status'
                 label="Estado"
                 value={isActive}
                 onChange={setIsActive}

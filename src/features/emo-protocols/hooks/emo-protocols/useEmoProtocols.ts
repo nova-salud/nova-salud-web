@@ -1,36 +1,13 @@
-import { useCallback, useEffect, useState } from 'react'
-import { parseBackendError } from '@/core/utils/parse-backend-error'
+import { useCallback } from 'react'
+import { usePaginatedQuery } from '@/core/hooks/usePaginatedQuery'
 import { emoProtocolService } from '../../services/emo-protocol.service'
-import type { EmoProtocolResponseDto, FindEmoProtocolsDto } from '../../types'
+import type { FindEmoProtocolsDto } from '../../types'
 
 export const useEmoProtocols = (query: FindEmoProtocolsDto) => {
-  const [data, setData] = useState<EmoProtocolResponseDto[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const fetcher = useCallback(
+    (page: number, pageSize: number) => emoProtocolService.findAll({ ...query, page, pageSize }),
+    [query],
+  )
 
-  const fetchEmoProtocols = useCallback(async () => {
-    try {
-      setIsLoading(true)
-      setError(null)
-
-      const response = await emoProtocolService.findAll(query)
-      setData(response.data)
-    } catch (error) {
-      setData([])
-      setError(parseBackendError(error))
-    } finally {
-      setIsLoading(false)
-    }
-  }, [query])
-
-  useEffect(() => {
-    void fetchEmoProtocols()
-  }, [fetchEmoProtocols])
-
-  return {
-    data,
-    isLoading,
-    error,
-    refetch: fetchEmoProtocols,
-  }
+  return usePaginatedQuery(fetcher, query.pageSize)
 }

@@ -129,6 +129,7 @@ const EmployeesPage = () => {
               />
 
               <Select
+                name='status'
                 label="Estado"
                 value={isActive}
                 onChange={setIsActive}

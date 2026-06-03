@@ -1,4 +1,4 @@
-import { useAsyncAction } from '@/core/hooks/use-async-action'
+import { useAsyncAction } from '@/core/hooks/useAsyncAction'
 import type { AttentionResponseDto, CreateAttentionWithDispensationDto } from '../types'
 import { attentionService } from '../services/attention.service'
 

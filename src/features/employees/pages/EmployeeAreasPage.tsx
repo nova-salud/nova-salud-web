@@ -38,6 +38,7 @@ const EmployeeAreasPage = () => {
 
             <div className="w-full md:w-60">
               <Select
+                name='status'
                 label="Estado"
                 value={isActive}
                 onChange={setIsActive}

@@ -1,4 +1,4 @@
-import { useAsyncAction } from '@/core/hooks/use-async-action'
+import { useAsyncAction } from '@/core/hooks/useAsyncAction'
 import type { RegisterMedicalDischargeDto } from '../types/register-medical-discharge.dto'
 import type { AccidentCaseResponseDto } from '../types/accident-case-response.dto'
 import { accidentCaseService } from '../services/accident-case.service'

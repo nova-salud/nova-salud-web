@@ -37,7 +37,6 @@ const ExamFormSidebar = ({
       return
     }
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     updateExam(exam)
   }, [isOpen, mode, exam])
 
@@ -81,7 +80,7 @@ const ExamFormSidebar = ({
             label="Nombre"
             placeholder="Ej. Hemograma"
             value={name}
-            onChange={setName}
+            onChange={(val) => setName(val.replace(/[^a-záéíóúüñA-ZÁÉÍÓÚÜÑ\s]/g, ''))}
           />
 
           {mode === 'edit' && <label className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">

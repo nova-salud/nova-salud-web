@@ -1,4 +1,4 @@
-import DataTable from '@/shared/components/ui/table/DataTable'
+import { DataTable } from '@/shared/components/ui/table/DataTable'
 import type { MedicationLotResponseDto } from '../types/medication-lot-response.dto'
 
 type Props = {
@@ -20,10 +20,7 @@ const MedicationLotsTable = ({ items, isLoading = false }: Props) => {
         'Recepción',
       ]}
       renderRow={(item) => (
-        <tr
-          key={item.id}
-          className="border-t border-slate-100 text-sm text-slate-700"
-        >
+        <>
           <td className="px-6 py-5 font-medium text-slate-900">
             {item.lotCode}
           </td>
@@ -45,7 +42,7 @@ const MedicationLotsTable = ({ items, isLoading = false }: Props) => {
           <td className="px-6 py-5 text-slate-500">
             {new Date(item.receivedAt).toLocaleDateString('es-PE')}
           </td>
-        </tr>
+        </>
       )}
     />
   )

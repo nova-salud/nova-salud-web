@@ -1,5 +1,5 @@
 import { Button } from '@/shared/components/ui/form'
-import DataTable from '@/shared/components/ui/table/DataTable'
+import { DataTable } from '@/shared/components/ui/table/DataTable'
 import { cn } from '@/shared/utils'
 import {
   USER_ROLE_CLASS_MAP,
@@ -35,7 +35,7 @@ const UserTable = ({
         'Acciones',
       ]}
       renderRow={(item) => (
-        <tr key={item.id} className="border-t border-slate-100 text-sm text-slate-700">
+        <>
           <td className="px-6 py-5 font-medium text-slate-900">
             #{item.id}
           </td>
@@ -103,7 +103,7 @@ const UserTable = ({
               Ver detalle
             </Button>
           </td>
-        </tr>
+        </>
       )}
     />
   )

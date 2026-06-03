@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router'
 import { cn } from '@/shared/utils'
 import { Button, Input, Select } from '@/shared/components/ui/form'
 import PageContainer from '@/shared/components/ui/PageContainer'
-import DataTable from '@/shared/components/ui/table/DataTable'
+import { DataTable } from '@/shared/components/ui/table/DataTable'
 import { useEmployeeAreas } from '@/features/employees/hooks/use-employee-areas'
 import { useClinicalHistories } from '../hooks/useClinicalHistories'
 
@@ -81,6 +81,7 @@ const ClinicalHistoriesPage = () => {
             />
 
             <Select
+              name='areaId'
               label="Área"
               value={areaId}
               onChange={setAreaId}
@@ -88,6 +89,7 @@ const ClinicalHistoriesPage = () => {
             />
 
             <Select
+              name='company'
               label="Empresa"
               value={company}
               onChange={setCompany}
@@ -95,6 +97,7 @@ const ClinicalHistoriesPage = () => {
             />
 
             <Select
+              name='isActive'
               label="Estado historia"
               value={isActive}
               onChange={setIsActive}
@@ -102,6 +105,7 @@ const ClinicalHistoriesPage = () => {
             />
 
             <Select
+              name='emoCycleStatus'
               label="Estado ciclo EMO"
               value={emoCycleStatus}
               onChange={setEmoCycleStatus}
@@ -109,6 +113,7 @@ const ClinicalHistoriesPage = () => {
             />
 
             <Select
+              name='conclusion'
               label="Conclusión EMO"
               value={conclusion}
               onChange={setConclusion}
@@ -129,7 +134,7 @@ const ClinicalHistoriesPage = () => {
           emptyMessage="No se encontraron historias clínicas."
           columns={['Trabajador', 'DNI', 'Empresa', 'Área', 'Estado', 'Acciones']}
           renderRow={(item) => (
-            <tr key={item.id} className="border-t border-slate-100 text-sm text-slate-700">
+            <>
               <td className="px-6 py-5 font-medium text-slate-900">
                 {item.employeeFullName}
               </td>
@@ -167,7 +172,7 @@ const ClinicalHistoriesPage = () => {
                   Ver detalle
                 </Button>
               </td>
-            </tr>
+            </>
           )}
         />
       </div>

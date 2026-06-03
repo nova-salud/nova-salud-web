@@ -1,98 +1,71 @@
 import { format } from 'date-fns'
 import { Button } from '@/shared/components/ui/form'
-import type { ClinicalHistoryAttentionResponseDto } from '../types/clinical-history-full-response.dto'
+import { DataTable } from '@/shared/components/ui/table/DataTable'
+import { useAttentionsByClinicalHistory } from '@/features/attentions/attentions/hooks/useAttentionsByClinicalHistory'
 
 type Props = {
-  attentions: ClinicalHistoryAttentionResponseDto[]
+  clinicalHistoryId: number
   onViewDetail?: (id: number) => void
   onCreateAttention?: () => void
 }
 
-const ClinicalHistoryAttentionsTable = ({
-  attentions,
-  onViewDetail,
-  onCreateAttention
-}: Props) => {
+const ClinicalHistoryAttentionsTable = ({ clinicalHistoryId, onViewDetail, onCreateAttention }: Props) => {
+  const { data, isLoading, total, page, pageSize, totalPages, goToPage } =
+    useAttentionsByClinicalHistory(clinicalHistoryId)
+
   return (
     <div className="px-5">
       <div className="mb-4 flex items-start justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-slate-900">
-            Atenciones
-          </h2>
-          <p className="text-sm text-slate-500">
-            Registro de atenciones médicas realizadas
-          </p>
+          <div className="flex items-center gap-3">
+            <h2 className="text-lg font-semibold text-slate-900">Atenciones</h2>
+            {!isLoading && (
+              <span className="rounded-xl bg-slate-100 px-3 py-1 text-xs text-slate-600">{total}</span>
+            )}
+          </div>
+          <p className="text-sm text-slate-500">Registro de atenciones médicas realizadas</p>
         </div>
 
         {onCreateAttention && (
-          <Button
-            type="button"
-            className="w-auto"
-            onClick={onCreateAttention}
-          >
+          <Button type="button" className="w-auto" onClick={onCreateAttention}>
             Registrar atención
           </Button>
         )}
       </div>
 
-      {attentions.length === 0 ? (
-        <div className="text-sm text-slate-500">
-          No hay atenciones registradas
-        </div>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-slate-200 text-left text-slate-500">
-                <th className="py-3 pr-4 font-medium">Fecha</th>
-                <th className="pr-4 font-medium">Diagnóstico</th>
-                <th className="pr-4 font-medium">EVA</th>
-                <th className="pr-4 font-medium">Tratamiento</th>
-                <th className="text-right font-medium">Acciones</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {attentions.map((att) => (
-                <tr
-                  key={att.id}
-                  className="border-b border-slate-100 last:border-b-0"
-                >
-                  <td className="py-3 pr-4 text-slate-700">
-                    {att.createdAt
-                      ? format(new Date(att.createdAt), 'dd/MM/yyyy HH:mm')
-                      : '-'}
-                  </td>
-
-                  <td className="pr-4 text-slate-700">
-                    {att.diagnosisCode || '-'}
-                  </td>
-
-                  <td className="pr-4 text-slate-700">
-                    {att.eva ?? '-'}
-                  </td>
-
-                  <td className="max-w-65 truncate pr-4 text-slate-700">
-                    {att.treatment || '-'}
-                  </td>
-
-                  <td className="py-3 text-right">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="w-auto"
-                      onClick={() => onViewDetail?.(att.id)}
-                    >
-                      Ver detalle
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <DataTable
+        data={data}
+        isLoading={isLoading}
+        emptyMessage="No hay atenciones registradas."
+        columns={['Fecha', 'Diagnóstico', 'EVA', 'Tratamiento', 'Acciones']}
+        renderRow={(att) => (
+          <>
+            <td className="px-6 py-5 text-slate-700">
+              {att.createdAt ? format(new Date(att.createdAt), 'dd/MM/yyyy HH:mm') : '-'}
+            </td>
+            <td className="px-6 py-5 text-slate-700">{att.diagnosisCode || '-'}</td>
+            <td className="px-6 py-5 text-slate-700">{att.eva ?? '-'}</td>
+            <td className="max-w-64 truncate px-6 py-5 text-slate-700">{att.treatment || '-'}</td>
+            <td className="px-6 py-5">
+              <Button
+                type="button"
+                variant="outline"
+                className="w-auto rounded-xl px-3 py-2 text-xs"
+                onClick={() => onViewDetail?.(att.id)}
+              >
+                Ver detalle
+              </Button>
+            </td>
+          </>
+        )}
+        pagination={{
+          page,
+          pageSize,
+          total,
+          totalPages,
+          onPaginationChange: (p) => goToPage(p),
+        }}
+      />
     </div>
   )
 }

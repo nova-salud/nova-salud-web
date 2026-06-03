@@ -104,6 +104,7 @@ const HealthcareCentersPage = () => {
               />
 
               <Select
+                name='status'
                 label="Estado"
                 value={isActive}
                 onChange={setIsActive}

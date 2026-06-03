@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router'
-import DataTable from '@/shared/components/ui/table/DataTable'
+import { DataTable } from '@/shared/components/ui/table/DataTable'
 import { cn } from '@/shared/utils'
 import {
   DISPENSE_TYPE_CLASS_MAP,
@@ -23,7 +23,7 @@ const DispensationTable = ({ items, isLoading = false }: Props) => {
       emptyMessage="No se encontraron dispensaciones."
       columns={['ID', 'Tipo', 'Motivo', 'Items', 'Fecha', 'Acciones']}
       renderRow={(item) => (
-        <tr key={item.id} className="border-t border-slate-100 text-sm text-slate-700">
+        <>
           <td className="px-6 py-5 font-medium text-slate-900">#{item.id}</td>
 
           <td className="px-6 py-5">
@@ -53,7 +53,7 @@ const DispensationTable = ({ items, isLoading = false }: Props) => {
               Ver detalle
             </Button>
           </td>
-        </tr>
+        </>
       )}
     />
   )

@@ -1,4 +1,4 @@
-import { useAsyncAction } from '@/core/hooks/use-async-action'
+import { useAsyncAction } from '@/core/hooks/useAsyncAction'
 import type { CreateSignatureDto, SignatureResponseDto } from '../types'
 import { signatureService } from '../services/signature.service'
 

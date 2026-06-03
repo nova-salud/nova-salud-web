@@ -39,6 +39,7 @@ const DispensationsPage = () => {
 
             <div className="w-full md:w-65">
               <Select
+                name='type'
                 label="Tipo"
                 value={dispenseType}
                 onChange={handleDispenseTypeChange}

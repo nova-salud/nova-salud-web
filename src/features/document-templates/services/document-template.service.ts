@@ -1,10 +1,10 @@
 import { ApiService } from '@/core/api/api.service'
 import { axiosInstance } from '@/core/api/axios.instance'
-import type { DocumentTemplateResponseDto, DocumentTemplateType } from '../types/document-template.types'
+import type { DocumentTemplateResponseDto, DocumentTemplateType, FindDocumentTemplatesDto } from '../types/document-template.types'
 
 class DocumentTemplateService extends ApiService {
-  async findAll(): Promise<DocumentTemplateResponseDto[]> {
-    return this.get<DocumentTemplateResponseDto[]>('/document-templates')
+  async findAll(query?: FindDocumentTemplatesDto): Promise<DocumentTemplateResponseDto[]> {
+    return this.get<DocumentTemplateResponseDto[]>('/document-templates', { params: query })
   }
 
   async upload(type: DocumentTemplateType, file: File): Promise<DocumentTemplateResponseDto> {

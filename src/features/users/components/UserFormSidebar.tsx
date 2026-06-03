@@ -218,6 +218,7 @@ const UserFormSidebarContent = ({
       }
 
       <Select
+        name='role'
         label="Rol"
         value={values.role}
         onChange={handleChange('role')}

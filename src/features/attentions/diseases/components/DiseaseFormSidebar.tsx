@@ -166,6 +166,7 @@ const DiseaseFormSidebarContent = ({
 
       {mode === 'edit' ? (
         <Select
+          name='status'
           label="Estado"
           value={values.isActive ? 'true' : 'false'}
           onChange={(value) => handleChange('isActive')(value === 'true')}

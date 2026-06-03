@@ -4,18 +4,19 @@ import { useClickOutside } from '@/shared/hooks/useClickOutside'
 import { cn } from '@/shared/utils'
 import { useNavigate } from 'react-router'
 import { resolveAlertNavigation } from '@/features/communications/utils/resolve-alert-navigation'
-import { formatDistanceToNow } from 'date-fns'
+import { format, formatDistanceToNow } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { useNotifications } from '../hooks/useNotifications'
+import { useNotificationsContext } from '../hooks/useNotificationsContext'
+import { AlertType } from '@/features/communications/alerts/types/alert-type.enum'
 
 const NotificationDropdown = () => {
-  const { data: notifications } = useNotifications()
+  const { data: notifications, markAsRead } = useNotificationsContext()
   const navigate = useNavigate()
 
   const dropdownRef = useRef(null)
   const [open, setOpen] = useState(false)
 
-  useClickOutside(dropdownRef, () => setOpen(false))
+  useClickOutside([dropdownRef], () => setOpen(false))
 
   const unreadCount = notifications.filter(n => !n.isRead).length
 
@@ -65,6 +66,7 @@ const NotificationDropdown = () => {
               <div
                 key={n.id}
                 onClick={() => {
+                  void markAsRead(n.id)
                   setOpen(false)
                   navigate(resolveAlertNavigation(n))
                 }}
@@ -84,6 +86,13 @@ const NotificationDropdown = () => {
                 {n.employeeName && (
                   <p className="text-[11px] text-slate-400 mt-1">
                     {n.employeeName}
+                  </p>
+                )}
+
+                {(n.alertType === AlertType.EMO_OVERDUE || n.alertType === AlertType.EMO_30_DAYS || n.alertType === AlertType.EMO_60_DAYS) &&
+                  n.metadata && 'emoExpirationDate' in n.metadata && n.metadata.emoExpirationDate && (
+                  <p className="text-[11px] text-slate-400 mt-1">
+                    Vence: {format(new Date(n.metadata.emoExpirationDate), 'dd/MM/yyyy')}
                   </p>
                 )}
 

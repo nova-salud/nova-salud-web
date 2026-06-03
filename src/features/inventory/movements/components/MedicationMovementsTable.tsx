@@ -1,4 +1,4 @@
-import DataTable from '@/shared/components/ui/table/DataTable'
+import { DataTable } from '@/shared/components/ui/table/DataTable'
 import type { InventoryMovementResponseDto } from '../types/inventory-movement-response.dto'
 
 type Props = {
@@ -38,10 +38,7 @@ const MedicationMovementsTable = ({ items, isLoading = false }: Props) => {
         'Fecha',
       ]}
       renderRow={(item) => (
-        <tr
-          key={item.id}
-          className="border-t border-slate-100 text-sm text-slate-700"
-        >
+        <>
           <td className="px-6 py-5">
             <span
               className={[
@@ -81,7 +78,7 @@ const MedicationMovementsTable = ({ items, isLoading = false }: Props) => {
           <td className="px-6 py-5 text-slate-500">
             {new Date(item.createdAt).toLocaleDateString('es-PE')}
           </td>
-        </tr>
+        </>
       )}
     />
   )

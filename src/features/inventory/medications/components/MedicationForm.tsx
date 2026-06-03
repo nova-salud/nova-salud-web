@@ -72,6 +72,7 @@ const MedicationForm = ({
           />
 
           <Select
+            name='medication'
             label="Categoría"
             value={form.therapeuticCategoryId}
             onChange={(value) =>

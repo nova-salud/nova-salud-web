@@ -1,36 +1,13 @@
-import { parseBackendError } from '@/core/utils/parse-backend-error'
-import { useState, useCallback, useEffect } from 'react'
+import { useCallback } from 'react'
+import { usePaginatedQuery } from '@/core/hooks/usePaginatedQuery'
 import { examService } from '../services/exam.service'
-import type { FindExamsDto, ExamResponseDto } from '../types'
+import type { FindExamsDto } from '../types'
 
 export const useExams = (query: FindExamsDto) => {
-  const [data, setData] = useState<ExamResponseDto[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const fetcher = useCallback(
+    (page: number, pageSize: number) => examService.findAll({ ...query, page, pageSize }),
+    [query],
+  )
 
-  const fetchExams = useCallback(async () => {
-    try {
-      setIsLoading(true)
-      setError(null)
-
-      const response = await examService.findAll(query)
-      setData(response.data)
-    } catch (error) {
-      setData([])
-      setError(parseBackendError(error))
-    } finally {
-      setIsLoading(false)
-    }
-  }, [query])
-
-  useEffect(() => {
-    void fetchExams()
-  }, [fetchExams])
-
-  return {
-    data,
-    isLoading,
-    error,
-    refetch: fetchExams,
-  }
+  return usePaginatedQuery(fetcher, query.pageSize)
 }

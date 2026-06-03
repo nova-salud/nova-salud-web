@@ -127,12 +127,12 @@ const MedicationDetailPage = () => {
                   Editar
                 </button>
 
-                <button
+                {/* <button
                   type="button"
                   className="rounded-2xl bg-[#0B1739] px-4 py-2 text-sm font-medium text-white"
                 >
                   Registrar lote
-                </button>
+                </button> */}
               </div>
             </div>
 

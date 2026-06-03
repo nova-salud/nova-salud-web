@@ -1,5 +1,5 @@
 import { Button } from '@/shared/components/ui/form'
-import DataTable from '@/shared/components/ui/table/DataTable'
+import { DataTable } from '@/shared/components/ui/table/DataTable'
 import { cn } from '@/shared/utils'
 import { format } from 'date-fns'
 import { ACCIDENT_STATUS_CLASSNAME, ACCIDENT_STATUS_LABEL, ACCIDENT_TYPE_LABEL, type AccidentResponseDto } from '../types'
@@ -37,10 +37,7 @@ export const AccidentTable = ({
         ).length
 
         return (
-          <tr
-            key={item.id}
-            className="border-t border-slate-100 text-sm text-slate-700"
-          >
+          <>
             <td className="px-6 py-5">
               <p className="font-medium text-slate-900">
                 {item.employeeFullName ?? '—'}
@@ -104,7 +101,7 @@ export const AccidentTable = ({
                 Ver
               </Button>
             </td>
-          </tr>
+          </>
         )
       }}
     />
