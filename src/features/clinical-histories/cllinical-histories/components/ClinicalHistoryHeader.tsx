@@ -1,31 +1,17 @@
 import { cn } from '@/shared/utils'
 import type { ClinicalHistoryFullResponseDto } from '../types'
+import { Button } from '@/shared/components'
+import { useNavigate } from 'react-router'
+import EmployeeInfoCard from '@/features/employees/components/EmployeeInfoCard'
 
 type Props = {
   data: ClinicalHistoryFullResponseDto
   onEdit?: () => void
 }
 
-type InfoItemProps = {
-  label: string
-  value: string | null
-}
-
-const InfoItem = ({ label, value }: InfoItemProps) => (
-  <div className="rounded-2xl bg-slate-50 px-4 py-3">
-    <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
-      {label}
-    </p>
-    <p className="mt-1 text-sm font-medium text-slate-700">
-      {value?.trim() ? value : '—'}
-    </p>
-  </div>
-)
-
-const ClinicalHistoryHeader = ({
-  data
-}: Props) => {
+const ClinicalHistoryHeader = ({ data }: Props) => {
   const { employee } = data
+  const navigate = useNavigate()
 
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
@@ -57,22 +43,13 @@ const ClinicalHistoryHeader = ({
         </div>
 
         <div className="flex gap-2">
-          {/* <Button variant="outline" className="w-auto" onClick={onEdit}>
-            Editar
-          </Button> */}
+          <Button variant="warning" className="w-auto" onClick={() => navigate(-1)}>
+            Volver
+          </Button>
         </div>
       </div>
 
-      {employee && (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <InfoItem label="Nombre" value={employee.fullName} />
-          <InfoItem label="DNI" value={employee.dni} />
-          <InfoItem
-            label="Empresa / Área / Puesto"
-            value={`${employee.company} · ${employee.area?.name ?? '—'} · ${employee.position ?? '—'}`}
-          />
-        </div>
-      )}
+      {employee && <EmployeeInfoCard employee={employee} />}
     </div>
   )
 }

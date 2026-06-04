@@ -1,6 +1,7 @@
 import { RoleEnum } from '@/core/enums/role.enum'
 import {
   Activity,
+  AlertCircle,
   ArrowLeftRight,
   BellDot,
   BookOpen,
@@ -100,6 +101,16 @@ export const navigationConfig: NavigationSection[] = [
         label: 'Exámenes',
         path: '/exams',
         icon: FlaskConical,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.NURSE,
+        ],
+      },
+      {
+        label: 'Tipos de alergia',
+        path: '/allergy-types',
+        icon: AlertCircle,
         roles: [
           RoleEnum.ADMIN,
           RoleEnum.OCCUPATIONAL_DOCTOR,

@@ -20,6 +20,7 @@ type Props<T> = {
   emptyMessage?: string
   skeletonRows?: number
   pagination?: Pagination
+  flat?: boolean
 }
 
 export const DataTable = <T,>({
@@ -32,13 +33,14 @@ export const DataTable = <T,>({
   emptyMessage = 'No se encontraron registros.',
   skeletonRows = 5,
   pagination,
+  flat = false,
 }: Props<T>) => {
   const totalColumns = renderActions
     ? columns.length + 1
     : columns.length
 
   return (
-    <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+    <div className={flat ? 'overflow-hidden' : 'overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm'}>
       <div className="overflow-x-auto">
         <table className="min-w-full border-collapse">
           <thead className="bg-slate-50">

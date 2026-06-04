@@ -37,9 +37,16 @@ const ClinicalHistoryAllergies = ({
               className="rounded-2xl bg-slate-50 px-4 py-3"
             >
               <div className="flex items-start justify-between gap-3">
-                <h3 className="font-semibold text-slate-700">
-                  {allergy.medication?.name || 'Medicamento no disponible'}
-                </h3>
+                <div>
+                  <h3 className="font-semibold text-slate-700">
+                    {allergy.medication?.name || 'Medicamento no disponible'}
+                  </h3>
+                  {allergy.allergyType && (
+                    <span className="mt-1 inline-flex rounded-lg bg-slate-100 px-2 py-0.5 text-xs text-slate-500">
+                      {allergy.allergyType.name}
+                    </span>
+                  )}
+                </div>
 
                 <span
                   className={`inline-flex rounded-xl px-3 py-1 text-xs ${allergy.isActive

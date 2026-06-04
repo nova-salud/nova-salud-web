@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react'
 import { SortOrder } from '@/core/types/query-params.type'
 import { useStocks } from '@/features/inventory/stocks/hooks/useStocks'
-import { Textarea, Button } from '@/shared/components/ui/form'
+import { useAllergyTypes } from '@/features/clinical-histories/allergy-types/hooks'
+import { Select, Textarea, Button } from '@/shared/components/ui/form'
 import { SearchSelect } from '@/shared/components/ui/form/SearchSelect'
 import { useCreateAllergy } from '../hooks'
 import type { FindInventoryStocksDto } from '@/features/inventory/stocks/types/find-inventory-stocks.dto'
@@ -14,57 +15,59 @@ type Props = {
   onSuccess: () => void
 }
 
-const AllergyFormSidebar = ({
-  isOpen,
-  clinicalHistoryId,
-  onClose,
-  onSuccess,
-}: Props) => {
+const STOCKS_QUERY: FindInventoryStocksDto = {
+  page: 1,
+  pageSize: 100,
+  sortBy: 'commercialName',
+  sortOrder: SortOrder.ASC,
+  isActive: true,
+}
+
+const ALLERGY_TYPES_QUERY = {
+  page: 1,
+  pageSize: 100,
+  sortBy: 'name',
+  sortOrder: SortOrder.ASC,
+  isActive: true,
+}
+
+const AllergyFormSidebar = ({ isOpen, clinicalHistoryId, onClose, onSuccess }: Props) => {
   const [medicationId, setMedicationId] = useState('')
+  const [allergyTypeId, setAllergyTypeId] = useState('')
   const [reaction, setReaction] = useState('')
 
-  const stocksQuery = useMemo<FindInventoryStocksDto>(() => ({
-    page: 1,
-    pageSize: 100,
-    sortBy: 'commercialName',
-    sortOrder: SortOrder.ASC,
-    isActive: true,
-  }), [])
-
-  const { data: stocks, isLoading: isLoadingStocks } = useStocks(stocksQuery)
+  const { data: stocks, isLoading: isLoadingStocks } = useStocks(STOCKS_QUERY)
+  const { data: allergyTypes, isLoading: isLoadingTypes } = useAllergyTypes(ALLERGY_TYPES_QUERY)
 
   const medicationOptions = useMemo(
-    () =>
-      stocks
-        .map((item) => ({
-          label: item.commercialName,
-          value: item.medicationId,
-        })),
+    () => stocks.map((item) => ({ label: item.commercialName, value: item.medicationId })),
     [stocks],
   )
 
-  const {
-    createAllergy,
-    isLoading,
-    error,
-  } = useCreateAllergy()
+  const allergyTypeOptions = useMemo(
+    () => [
+      { label: 'Sin tipo', value: '' },
+      ...allergyTypes.map((t) => ({ label: t.name, value: String(t.id) })),
+    ],
+    [allergyTypes],
+  )
+
+  const { createAllergy, isLoading, error } = useCreateAllergy()
 
   const handleSubmit = async () => {
-    if (!medicationId) {
-      return
-    }
+    if (!medicationId) return
 
     const result = await createAllergy({
       clinicalHistoryId,
       medicationId: Number(medicationId),
+      allergyTypeId: allergyTypeId ? Number(allergyTypeId) : undefined,
       reaction: reaction.trim() || undefined,
     })
 
-    if (!result) {
-      return
-    }
+    if (!result) return
 
     setMedicationId('')
+    setAllergyTypeId('')
     setReaction('')
     onSuccess()
     onClose()
@@ -83,6 +86,15 @@ const AllergyFormSidebar = ({
             {error}
           </div>
         ) : null}
+
+        <Select
+          label="Tipo de alergia"
+          name="allergyTypeId"
+          value={allergyTypeId}
+          onChange={setAllergyTypeId}
+          options={allergyTypeOptions}
+          disabled={isLoadingTypes}
+        />
 
         <SearchSelect
           label="Medicamento"
@@ -105,7 +117,6 @@ const AllergyFormSidebar = ({
           <Button type="button" variant="outline" onClick={onClose}>
             Cancelar
           </Button>
-
           <Button
             type="button"
             onClick={() => void handleSubmit()}

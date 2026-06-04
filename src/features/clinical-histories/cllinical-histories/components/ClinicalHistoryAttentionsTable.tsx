@@ -18,7 +18,7 @@ const ClinicalHistoryAttentionsTable = ({ clinicalHistoryId, onViewDetail, onCre
       <div className="mb-4 flex items-start justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <h2 className="text-lg font-semibold text-slate-900">Atenciones</h2>
+            <h2 className="text-2xl font-bold text-slate-900">Atenciones Médicas</h2>
             {!isLoading && (
               <span className="rounded-xl bg-slate-100 px-3 py-1 text-xs text-slate-600">{total}</span>
             )}
@@ -34,6 +34,7 @@ const ClinicalHistoryAttentionsTable = ({ clinicalHistoryId, onViewDetail, onCre
       </div>
 
       <DataTable
+        flat
         data={data}
         isLoading={isLoading}
         emptyMessage="No hay atenciones registradas."

@@ -39,6 +39,7 @@ import EmoCycleHistoryPage from '@/features/clinical-histories/emo-cycles/pages/
 import ClinicalHistoriesPage from '@/features/clinical-histories/cllinical-histories/pages/ClinicalHistoriesPage'
 import HealthcareCentersPage from '@/features/healthcare-centers/pages/HealthcareCentersPage'
 import HealthcareCenterDetailPage from '@/features/healthcare-centers/pages/HealthcareCenterDetailPage'
+import AllergyTypesPage from '@/features/clinical-histories/allergy-types/pages/AllergyTypesPage'
 import AccidentDetailPage from '@/features/accidents/accidents/pages/AccidentDetailPage'
 import { AccidentsPage } from '@/features/accidents/accidents/pages/AccidentsPage'
 import CreateAccidentFromClinicaHistoryPage from '@/features/accidents/accidents/pages/CreateAccidentFromClinicalHistoryPage'
@@ -70,6 +71,10 @@ export const appRoutes: RouteObject = {
             />
           ),
           children: [
+            {
+              path: '/allergy-types',
+              element: <AllergyTypesPage />,
+            },
             {
               path: '/clinical-histories',
               element: <ClinicalHistoriesPage />,
