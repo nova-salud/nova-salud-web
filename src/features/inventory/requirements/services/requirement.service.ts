@@ -4,7 +4,6 @@ import type { ConfirmInventoryRequirementDto } from '../types/confirm-inventory-
 import type { CreateInventoryRequirementDto } from '../types/create-inventory-requirement.dto'
 import type { FindInventoryRequirementsDto } from '../types/find-inventory-requirements.dto'
 import type { InventoryRequirementResponseDto } from '../types/inventory-requirement-response.dto'
-import type { MarkRequirementDeliveredDto } from '../types/mark-requirement-delivered.dto'
 
 class RequirementService extends ApiService {
   async findAll(
@@ -31,11 +30,19 @@ class RequirementService extends ApiService {
 
   async markDelivered(
     id: number,
-    dto: MarkRequirementDeliveredDto,
+    file: File,
+    deliveryNote?: string,
   ): Promise<InventoryRequirementResponseDto> {
-    return await this.patch<InventoryRequirementResponseDto, MarkRequirementDeliveredDto>(
+    const formData = new FormData()
+    formData.append('file', file)
+    if (deliveryNote) {
+      formData.append('deliveryNote', deliveryNote)
+    }
+
+    return await this.patch<InventoryRequirementResponseDto, FormData>(
       `/inventory/requirements/${id}/deliver`,
-      dto,
+      formData,
+      { headers: { 'Content-Type': 'multipart/form-data' } },
     )
   }
 

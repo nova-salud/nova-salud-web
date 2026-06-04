@@ -1,33 +1,28 @@
 import { useMemo, useState } from 'react'
 import PageContainer from '@/shared/components/ui/PageContainer'
-import { useStocks } from '@/features/inventory/stocks/hooks/useStocks'
+import { useRequestableStocks } from '@/features/inventory/stocks/hooks/useRequestableStocks'
 import { useCreateRequirement } from '../hooks/useCreateRequirement'
 import type { CreateInventoryRequirementItemDto } from '../types/create-inventory-requirement-item.dto'
-import { Input, Select, Textarea } from '@/shared/components/ui/form'
+import { Input, SearchSelect, Textarea } from '@/shared/components/ui/form'
 
 const CreateRequirementPage = () => {
   const { create, isLoading, error } = useCreateRequirement()
   const [requestNote, setRequestNote] = useState('')
   const [selectedMedicationId, setSelectedMedicationId] = useState('')
-  const [requestedQuantity, setRequestedQuantity] = useState('1')
+  const [requestedQuantity, setRequestedQuantity] = useState('')
   const [items, setItems] = useState<CreateInventoryRequirementItemDto[]>([])
 
-  const { data: stocks } = useStocks({
-    page: 1,
-    pageSize: 100,
-    sortBy: 'commercialName',
-    sortOrder: 'ASC',
-  })
+  const { data: stocks } = useRequestableStocks()
 
   const medicationOptions = useMemo(
     () =>
       stocks
-        .filter((item) => item.currentStock <= item.minimumStock)
+        .filter((item) => !items.some((added) => added.medicationId === item.medicationId))
         .map((item) => ({
           label: `${item.commercialName} (stock: ${item.currentStock})`,
           value: item.medicationId,
         })),
-    [stocks],
+    [stocks, items],
   )
 
   const handleAddItem = () => {
@@ -52,7 +47,7 @@ const CreateRequirementPage = () => {
     ])
 
     setSelectedMedicationId('')
-    setRequestedQuantity('1')
+    setRequestedQuantity('')
   }
 
   const handleRemoveItem = (medicationId: number) => {
@@ -97,12 +92,12 @@ const CreateRequirementPage = () => {
           <h3 className="text-sm font-semibold text-slate-900">Medicamentos solicitados</h3>
 
           <div className="grid gap-4 md:grid-cols-[1fr_180px_auto]">
-            <Select
-              name='medication'
+            <SearchSelect
               label="Medicamento"
               value={selectedMedicationId}
               onChange={setSelectedMedicationId}
               options={medicationOptions}
+              placeholder="Buscar medicamento..."
             />
 
             <Input

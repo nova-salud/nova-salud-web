@@ -9,6 +9,10 @@ class StockService extends ApiService {
       params: query,
     })
   }
+
+  async findRequestable(): Promise<InventoryStockResponseDto[]> {
+    return await this.get<InventoryStockResponseDto[]>('/inventory/stocks/requestable')
+  }
 }
 
 export const stockService = new StockService()

@@ -2,12 +2,12 @@ import { useState } from 'react'
 import type { BackendError } from '@/core/types/backend-error.type'
 import { requirementService } from '../services/requirement.service'
 import type { InventoryRequirementResponseDto } from '../types/inventory-requirement-response.dto'
-import type { MarkRequirementDeliveredDto } from '../types/mark-requirement-delivered.dto'
 
 type UseMarkRequirementDeliveredReturn = {
   markDelivered: (
     id: number,
-    dto: MarkRequirementDeliveredDto,
+    file: File,
+    deliveryNote?: string,
   ) => Promise<InventoryRequirementResponseDto | null>
   isLoading: boolean
   error: string | null
@@ -19,13 +19,14 @@ export const useMarkRequirementDelivered = (): UseMarkRequirementDeliveredReturn
 
   const markDelivered = async (
     id: number,
-    dto: MarkRequirementDeliveredDto,
+    file: File,
+    deliveryNote?: string,
   ): Promise<InventoryRequirementResponseDto | null> => {
     try {
       setIsLoading(true)
       setError(null)
 
-      return await requirementService.markDelivered(id, dto)
+      return await requirementService.markDelivered(id, file, deliveryNote)
     } catch (err) {
       const backendError = err as BackendError
 

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router'
 import { DataTable } from '@/shared/components/ui/table/DataTable'
 import { cn } from '@/shared/utils'
-import { getStatusClassName, getStatusLabel, type InventoryRequirementResponseDto } from '../types/inventory-requirement-response.dto'
+import { STATUS_CLASSES, STATUS_LABELS, type InventoryRequirementResponseDto } from '../types/inventory-requirement-response.dto'
 
 type Props = {
   items: InventoryRequirementResponseDto[]
@@ -16,7 +16,7 @@ const RequirementTable = ({ items, isLoading = false }: Props) => {
       data={items}
       isLoading={isLoading}
       emptyMessage="No se encontraron requerimientos."
-      columns={['ID','Código', 'Estado', 'Items', 'Solicitado', 'Entregado', 'Acciones']}
+      columns={['ID', 'Código', 'Estado', 'Items', 'Costo Total', 'Solicitado', 'Entregado', 'Acciones']}
       renderRow={(item) => (
         <>
           <td className="px-6 py-5 font-medium text-slate-900">#{item.id}</td>
@@ -26,14 +26,16 @@ const RequirementTable = ({ items, isLoading = false }: Props) => {
             <span
               className={cn(
                 'inline-flex rounded-xl border px-3 py-1 text-xs font-medium',
-                getStatusClassName(item.status),
+                STATUS_CLASSES[item.status],
               )}
             >
-              {getStatusLabel(item.status)}
+              {STATUS_LABELS[item.status]}
             </span>
           </td>
 
           <td className="px-6 py-5 text-slate-500">{item.items.length}</td>
+
+          <td className="px-6 py-5 text-slate-500">S/. {item.totalCost}</td>
 
           <td className="px-6 py-5 text-slate-500">
             {new Date(item.createdAt).toLocaleDateString('es-PE')}

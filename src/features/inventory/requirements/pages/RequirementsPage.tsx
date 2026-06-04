@@ -53,7 +53,6 @@ const RequirementsPage = () => {
                   { label: 'Entregado', value: InventoryRequirementStatusEnum.DELIVERED },
                   { label: 'Recepción parcial', value: InventoryRequirementStatusEnum.RECEIVED_PARTIAL },
                   { label: 'Recepción completa', value: InventoryRequirementStatusEnum.RECEIVED_COMPLETE },
-                  { label: 'Cancelado', value: InventoryRequirementStatusEnum.CANCELLED },
                 ]}
               />
             </div>

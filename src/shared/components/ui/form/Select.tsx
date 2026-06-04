@@ -154,9 +154,9 @@ export const Select = ({
 
   return (
     <>
-      <label className="flex flex-col space-y-1">
+      <label className="flex flex-col gap-1.5">
         {label && (
-          <span>
+          <span className="text-xs font-medium text-slate-500">
             {label}
             {required && (
               <span className="text-red-600"> *</span>

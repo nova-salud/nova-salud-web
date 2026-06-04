@@ -13,40 +13,22 @@ export type InventoryRequirementResponseDto = AuditResponseDto & {
   evidenceUrl: string | null
   deliveredAt: string | null
   receivedAt: string | null
+  totalCost: number | null
   items: InventoryRequirementItemResponseDto[]
 }
 
-//TODO: change to map
-export const getStatusLabel = (status: InventoryRequirementResponseDto['status']) => {
-  switch (status) {
-    case 'PENDING':
-      return 'Pendiente'
-    case 'DELIVERED':
-      return 'Entregado'
-    case 'RECEIVED_PARTIAL':
-      return 'Recepción parcial'
-    case 'RECEIVED_COMPLETE':
-      return 'Recepción completa'
-    case 'CANCELLED':
-      return 'Cancelado'
-    default:
-      return status
-  }
+export const STATUS_LABELS: Record<InventoryRequirementStatusEnum, string> = {
+  PENDING: 'Pendiente',
+  DELIVERED: 'Entregado',
+  RECEIVED_PARTIAL: 'Recepción parcial',
+  RECEIVED_COMPLETE: 'Recepción completa',
+  CANCELLED: 'Cancelado',
 }
 
-export const getStatusClassName = (status: InventoryRequirementResponseDto['status']) => {
-  switch (status) {
-    case 'PENDING':
-      return 'border-amber-100 bg-amber-50 text-amber-700'
-    case 'DELIVERED':
-      return 'border-sky-100 bg-sky-50 text-sky-700'
-    case 'RECEIVED_PARTIAL':
-      return 'border-orange-100 bg-orange-50 text-orange-700'
-    case 'RECEIVED_COMPLETE':
-      return 'border-emerald-100 bg-emerald-50 text-emerald-700'
-    case 'CANCELLED':
-      return 'border-red-100 bg-red-50 text-red-600'
-    default:
-      return 'border-slate-200 bg-slate-50 text-slate-500'
-  }
+export const STATUS_CLASSES: Record<InventoryRequirementStatusEnum, string> = {
+  PENDING: 'border-amber-100 bg-amber-50 text-amber-700',
+  DELIVERED: 'border-sky-100 bg-sky-50 text-sky-700',
+  RECEIVED_PARTIAL: 'border-orange-100 bg-orange-50 text-orange-700',
+  RECEIVED_COMPLETE: 'border-emerald-100 bg-emerald-50 text-emerald-700',
+  CANCELLED: 'border-red-100 bg-red-50 text-red-600',
 }

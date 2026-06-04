@@ -9,4 +9,5 @@ export type InventoryRequirementItemResponseDto = AuditResponseDto & {
   receivedQuantity: number | null
   isReceived: boolean
   notes: string | null
+  totalCost: number | null
 }

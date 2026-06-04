@@ -104,9 +104,9 @@ export const Input: React.FC<InputProps> = ({
   return (
     <label
       htmlFor={props.name}
-      className='flex flex-col space-y-1'
+      className={cn('flex flex-col gap-1.5', className)}
     >
-      <span>{label} {required && <span className='text-red-600'>*</span>} </span>
+      <span className="text-xs font-medium text-slate-500">{label} {required && <span className='text-red-600'>*</span>}</span>
 
       <div className='relative'>
         <input

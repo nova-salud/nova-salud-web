@@ -3,7 +3,7 @@ export type InventoryStockResponseDto = {
   commercialName: string
   genericName: string | null
   therapeuticCategoryId: number
-  therapeuticCategoryName: string
+  therapeuticCategoryName: string | null
   minimumStock: number
   currentStock: number
   isLowStock: boolean
