@@ -38,6 +38,7 @@ import EmoCycleDetailPage from '@/features/clinical-histories/emo-cycles/pages/E
 import EmoCycleHistoryPage from '@/features/clinical-histories/emo-cycles/pages/EmoCycleHistoryPage'
 import ClinicalHistoriesPage from '@/features/clinical-histories/cllinical-histories/pages/ClinicalHistoriesPage'
 import HealthcareCentersPage from '@/features/healthcare-centers/pages/HealthcareCentersPage'
+import HealthcareCenterDetailPage from '@/features/healthcare-centers/pages/HealthcareCenterDetailPage'
 import AccidentDetailPage from '@/features/accidents/accidents/pages/AccidentDetailPage'
 import { AccidentsPage } from '@/features/accidents/accidents/pages/AccidentsPage'
 import CreateAccidentFromClinicaHistoryPage from '@/features/accidents/accidents/pages/CreateAccidentFromClinicalHistoryPage'
@@ -174,6 +175,10 @@ export const appRoutes: RouteObject = {
             {
               path: '/healthcare-centers',
               element: <HealthcareCentersPage />,
+            },
+            {
+              path: '/healthcare-centers/:id',
+              element: <HealthcareCenterDetailPage />,
             },
           ]
         },

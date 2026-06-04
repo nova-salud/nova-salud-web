@@ -6,5 +6,9 @@ export type HealthcareCenterResponseDto = AuditResponseDto & {
   ruc: string | null
   address: string | null
   phone: string | null
+  convenio: string | null
+  contactName: string | null
+  contactPhone: string | null
+  contactEmail: string | null
   isActive: boolean
 }

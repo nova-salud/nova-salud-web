@@ -6,13 +6,13 @@ import type { HealthcareCenterResponseDto } from '../types'
 type Props = {
   items: HealthcareCenterResponseDto[]
   isLoading?: boolean
-  onEdit: (item: HealthcareCenterResponseDto) => void
+  onView: (item: HealthcareCenterResponseDto) => void
 }
 
 const HealthcareCenterTable = ({
   items,
   isLoading = false,
-  onEdit,
+  onView,
 }: Props) => {
   return (
     <DataTable
@@ -24,6 +24,7 @@ const HealthcareCenterTable = ({
         'Nombre',
         'RUC',
         'Teléfono',
+        'Convenio',
         'Estado',
         'Acciones',
       ]}
@@ -45,6 +46,10 @@ const HealthcareCenterTable = ({
             {item.phone ?? 'N/A'}
           </td>
 
+          <td className="px-6 py-5 text-slate-700">
+            {item.convenio ?? 'N/A'}
+          </td>
+
           <td className="px-6 py-5">
             <span
               className={cn(
@@ -62,10 +67,10 @@ const HealthcareCenterTable = ({
             <Button
               type="button"
               variant="outline"
-              onClick={() => onEdit(item)}
+              onClick={() => onView(item)}
               className="w-auto rounded-xl px-3 py-2 text-xs"
             >
-              Editar
+              Ver
             </Button>
           </td>
         </>

@@ -2,12 +2,11 @@ import { SortOrder } from '@/core/types/query-params.type'
 import { Button, Input, Select } from '@/shared/components/ui/form'
 import PageContainer from '@/shared/components/ui/PageContainer'
 import { useState, useMemo } from 'react'
-import { useHealthcareCenters, useCreateHealthcareCenter, useUpdateHealthcareCenter } from '../hooks'
-import type { HealthcareCenterResponseDto, FindHealthcareCentersDto, CreateHealthcareCenterDto, UpdateHealthcareCenterDto } from '../types'
+import { useNavigate } from 'react-router'
+import { useHealthcareCenters, useCreateHealthcareCenter } from '../hooks'
+import type { FindHealthcareCentersDto, CreateHealthcareCenterDto, HealthcareCenterResponseDto } from '../types'
 import HealthcareCenterTable from '../components/HealthcareCenterTable'
-import HealthcareCenterFormSidebar from '../components/HealthcareCenterFormModal'
-
-type HealthcareCenterSidebarMode = 'create' | 'edit' | null
+import HealthcareCenterFormSidebar from '../components/HealthcareCenterFormSidebar'
 
 const HEALTHCARE_CENTER_STATUS_OPTIONS = [
   { label: 'Todos', value: '' },
@@ -16,10 +15,10 @@ const HEALTHCARE_CENTER_STATUS_OPTIONS = [
 ]
 
 const HealthcareCentersPage = () => {
+  const navigate = useNavigate()
   const [name, setName] = useState('')
   const [isActive, setIsActive] = useState('')
-  const [selectedCenter, setSelectedCenter] = useState<HealthcareCenterResponseDto | null>(null)
-  const [sidebarMode, setSidebarMode] = useState<HealthcareCenterSidebarMode>(null)
+  const [isCreateOpen, setIsCreateOpen] = useState(false)
 
   const query = useMemo<FindHealthcareCentersDto>(() => ({
     page: 1,
@@ -31,51 +30,17 @@ const HealthcareCentersPage = () => {
   }), [name, isActive])
 
   const { data, isLoading, error, refetch } = useHealthcareCenters(query)
+  const { isLoading: isCreating, createHealthcareCenter } = useCreateHealthcareCenter()
 
-  const {
-    isLoading: isCreating,
-    createHealthcareCenter,
-  } = useCreateHealthcareCenter()
-
-  const {
-    isLoading: isUpdating,
-    updateHealthcareCenter,
-  } = useUpdateHealthcareCenter()
-
-  const handleCloseSidebars = () => {
-    setSidebarMode(null)
-  }
-
-  const handleOpenCreateSidebar = () => {
-    setSelectedCenter(null)
-    setSidebarMode('create')
-  }
-
-  const handleOpenEditSidebar = (center: HealthcareCenterResponseDto) => {
-    setSelectedCenter(center)
-    setSidebarMode('edit')
+  const handleView = (center: HealthcareCenterResponseDto) => {
+    navigate(`/healthcare-centers/${center.id}`)
   }
 
   const handleCreate = async (dto: CreateHealthcareCenterDto) => {
     const result = await createHealthcareCenter(dto)
-
     if (!result) return
-
     await refetch()
-    handleCloseSidebars()
-  }
-
-  const handleUpdate = async (
-    id: number,
-    dto: UpdateHealthcareCenterDto,
-  ) => {
-    const result = await updateHealthcareCenter(id, dto)
-
-    if (!result) return
-
-    setSelectedCenter(result)
-    await refetch()
-    handleCloseSidebars()
+    setIsCreateOpen(false)
   }
 
   return (
@@ -87,7 +52,7 @@ const HealthcareCentersPage = () => {
           <Button
             type="button"
             className="w-auto"
-            onClick={handleOpenCreateSidebar}
+            onClick={() => setIsCreateOpen(true)}
           >
             Nuevo establecimiento
           </Button>
@@ -124,26 +89,17 @@ const HealthcareCentersPage = () => {
           <HealthcareCenterTable
             items={data}
             isLoading={isLoading}
-            onEdit={handleOpenEditSidebar}
+            onView={handleView}
           />
         </div>
       </PageContainer>
 
       <HealthcareCenterFormSidebar
-        isOpen={sidebarMode === 'create'}
+        isOpen={isCreateOpen}
         mode="create"
         isLoading={isCreating}
-        onClose={handleCloseSidebars}
+        onClose={() => setIsCreateOpen(false)}
         onCreate={handleCreate}
-      />
-
-      <HealthcareCenterFormSidebar
-        isOpen={sidebarMode === 'edit'}
-        mode="edit"
-        healthcareCenter={selectedCenter}
-        isLoading={isUpdating}
-        onClose={handleCloseSidebars}
-        onUpdate={handleUpdate}
       />
     </>
   )

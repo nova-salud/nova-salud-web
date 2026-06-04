@@ -1,5 +1,8 @@
-import { Input, Button } from '@/shared/components/ui/form'
+import { useState, useEffect } from 'react'
+import { Input, Button, Select } from '@/shared/components/ui/form'
+import type { InputValidation } from '@/shared/components/ui/form/Input'
 import type { CreateHealthcareCenterDto, HealthcareCenterResponseDto, UpdateHealthcareCenterDto } from '../types'
+import { CONVENIO_OPTIONS } from '../types/convenio.constants'
 import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
 
 type HealthcareCenterFormSidebarMode = 'create' | 'edit'
@@ -14,6 +17,16 @@ type Props = {
   onUpdate?: (id: number, dto: UpdateHealthcareCenterDto) => void | Promise<void>
 }
 
+const CONVENIO_SELECT_OPTIONS = [
+  { label: 'Sin convenio', value: '' },
+  ...CONVENIO_OPTIONS,
+]
+
+const NUMERIC_VALIDATION: InputValidation[] = [
+  { regex: /^\d+$/, message: 'Solo se permiten números' },
+  { regex: /^.{11}$/, message: 'Debe tener exactamente 11 caracteres' }
+]
+
 const HealthcareCenterFormSidebar = ({
   isOpen,
   mode,
@@ -23,6 +36,12 @@ const HealthcareCenterFormSidebar = ({
   onCreate,
   onUpdate,
 }: Props) => {
+  const [convenio, setConvenio] = useState(healthcareCenter?.convenio ?? '')
+
+  useEffect(() => {
+    setConvenio(healthcareCenter?.convenio ?? '')
+  }, [healthcareCenter])
+
   const handleSubmit = async (e: { preventDefault(): void; currentTarget: HTMLFormElement }) => {
     e.preventDefault()
     const data = new FormData(e.currentTarget)
@@ -33,8 +52,12 @@ const HealthcareCenterFormSidebar = ({
       await onCreate?.({
         name,
         ruc: (data.get('ruc') as string).trim() || undefined,
-        address: (data.get('address') as string).trim() || undefined,
+        address: (data.get('address') as string).trim(),
         phone: (data.get('phone') as string).trim() || undefined,
+        convenio: convenio || undefined,
+        contactName: (data.get('contactName') as string).trim() || undefined,
+        contactPhone: (data.get('contactPhone') as string).trim() || undefined,
+        contactEmail: (data.get('contactEmail') as string).trim() || undefined,
       })
       return
     }
@@ -46,6 +69,10 @@ const HealthcareCenterFormSidebar = ({
       ruc: (data.get('ruc') as string).trim() || undefined,
       address: (data.get('address') as string).trim() || undefined,
       phone: (data.get('phone') as string).trim() || undefined,
+      convenio: convenio || undefined,
+      contactName: (data.get('contactName') as string).trim() || undefined,
+      contactPhone: (data.get('contactPhone') as string).trim() || undefined,
+      contactEmail: (data.get('contactEmail') as string).trim() || undefined,
       isActive: data.get('isActive') === 'on',
     })
   }
@@ -70,6 +97,7 @@ const HealthcareCenterFormSidebar = ({
             label="Nombre"
             name="name"
             type="text"
+            required
             placeholder="Ej. Clínica San Pablo"
             defaultValue={healthcareCenter?.name}
           />
@@ -78,15 +106,18 @@ const HealthcareCenterFormSidebar = ({
             label="RUC"
             name="ruc"
             type="text"
-            placeholder="Opcional"
+            inputMode="numeric"
+            placeholder="Ej. 20123456789"
             defaultValue={healthcareCenter?.ruc ?? ''}
+            validations={NUMERIC_VALIDATION}
           />
 
           <Input
             label="Dirección"
             name="address"
             type="text"
-            placeholder="Opcional"
+            required
+            placeholder="Ej. Av. Arequipa 1234, Lima"
             defaultValue={healthcareCenter?.address ?? ''}
           />
 
@@ -94,9 +125,50 @@ const HealthcareCenterFormSidebar = ({
             label="Teléfono"
             name="phone"
             type="text"
-            placeholder="Opcional"
+            inputMode="numeric"
+            placeholder="Ej. 014567890"
             defaultValue={healthcareCenter?.phone ?? ''}
+            validations={NUMERIC_VALIDATION}
           />
+
+          <Select
+            label="Convenio"
+            name="convenio"
+            value={convenio}
+            options={CONVENIO_SELECT_OPTIONS}
+            onChange={setConvenio}
+          />
+
+          <div>
+            <p className="mb-3 text-sm font-medium text-slate-800">Datos de contacto</p>
+            <div className="space-y-3">
+              <Input
+                label="Nombre del contacto"
+                name="contactName"
+                type="text"
+                placeholder="Ej. Juan Pérez"
+                defaultValue={healthcareCenter?.contactName ?? ''}
+              />
+
+              <Input
+                label="Celular del contacto"
+                name="contactPhone"
+                type="text"
+                inputMode="numeric"
+                placeholder="Ej. 987654321"
+                defaultValue={healthcareCenter?.contactPhone ?? ''}
+                validations={NUMERIC_VALIDATION}
+              />
+
+              <Input
+                label="Correo del contacto"
+                name="contactEmail"
+                type="email"
+                placeholder="Ej. contacto@clinica.com"
+                defaultValue={healthcareCenter?.contactEmail ?? ''}
+              />
+            </div>
+          </div>
 
           {mode === 'edit' && (
             <label className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">
