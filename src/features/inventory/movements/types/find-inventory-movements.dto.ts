@@ -5,4 +5,5 @@ export type FindInventoryMovementsDto = QueryParams &{
   medicationLotId?: number
   movementType?: string
   performedByUserId?: number
+  performedByUserName?: string
 }

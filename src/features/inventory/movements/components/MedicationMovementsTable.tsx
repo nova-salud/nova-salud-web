@@ -1,26 +1,10 @@
 import { DataTable } from '@/shared/components/ui/table/DataTable'
+import { getMovementTypeMeta } from '../types/movement-type.constants'
 import type { InventoryMovementResponseDto } from '../types/inventory-movement-response.dto'
 
 type Props = {
   items: InventoryMovementResponseDto[]
   isLoading?: boolean
-}
-
-const getMovementTypeClasses = (movementType: string): string => {
-  switch (movementType) {
-    case 'IN':
-      return 'border border-emerald-100 bg-emerald-50 text-emerald-700'
-    case 'OUT':
-      return 'border border-red-100 bg-red-50 text-red-600'
-    case 'ADJUSTMENT':
-      return 'border border-amber-100 bg-amber-50 text-amber-700'
-    case 'ADJUSTMENT_IN':
-      return 'border border-sky-100 bg-sky-50 text-sky-700'
-    case 'ADJUSTMENT_OUT':
-      return 'border border-orange-100 bg-orange-50 text-orange-700'
-    default:
-      return 'border border-slate-200 bg-slate-50 text-slate-500'
-  }
 }
 
 const MedicationMovementsTable = ({ items, isLoading = false }: Props) => {
@@ -43,10 +27,10 @@ const MedicationMovementsTable = ({ items, isLoading = false }: Props) => {
             <span
               className={[
                 'inline-flex rounded-xl px-3 py-1 text-xs font-medium',
-                getMovementTypeClasses(item.movementType),
+                getMovementTypeMeta(item.movementType).classes,
               ].join(' ')}
             >
-              {item.movementType}
+              {getMovementTypeMeta(item.movementType).label}
             </span>
           </td>
 

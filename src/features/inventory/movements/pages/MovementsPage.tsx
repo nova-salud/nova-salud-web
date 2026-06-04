@@ -1,22 +1,58 @@
 import { useMemo, useState } from 'react'
+import { SortOrder } from '@/core/types/query-params.type'
+import { useDebounce } from '@/core/hooks/useDebounce'
+import { useStocks } from '@/features/inventory/stocks/hooks/useStocks'
 import PageContainer from '@/shared/components/ui/PageContainer'
+import { Input, SearchSelect, Select } from '@/shared/components/ui/form'
+import { MOVEMENT_TYPE_OPTIONS } from '../types/movement-type.constants'
+import { DataTablePagination } from '@/shared/components/ui/table/DataTablePagination'
 import MovementTable from '../components/MovementTable'
 import { useMovements } from '../hooks/useMovements'
 
+const STOCKS_QUERY = {
+  page: 1,
+  pageSize: 200,
+  sortBy: 'commercialName',
+  sortOrder: SortOrder.ASC,
+  isActive: true,
+}
+
 const MovementsPage = () => {
+  const [medicationId, setMedicationId] = useState<string>('')
   const [movementType, setMovementType] = useState('')
+  const [performedByUserName, setPerformedByUserName] = useState('')
+  const debouncedUserName = useDebounce(performedByUserName, 500)
+  const [pageSize, setPageSize] = useState(10)
 
-  const query = useMemo(() => {
-    return {
-      page: 1,
-      pageSize: 10,
-      sortBy: 'createdAt',
-      sortOrder: 'DESC' as const,
-      movementType: movementType || undefined,
+  const { data: stocks } = useStocks(STOCKS_QUERY)
+
+  const medicationOptions = useMemo(
+    () => [
+      { label: 'Todos los medicamentos', value: '' },
+      ...stocks.map((s) => ({ label: s.commercialName, value: s.medicationId })),
+    ],
+    [stocks],
+  )
+
+  const query = useMemo(() => ({
+    pageSize,
+    sortBy: 'createdAt',
+    sortOrder: 'DESC' as const,
+    medicationId: medicationId ? Number(medicationId) : undefined,
+    movementType: movementType || undefined,
+    performedByUserName: debouncedUserName.trim() || undefined,
+  }), [medicationId, movementType, debouncedUserName, pageSize])
+
+  const { data, isLoading, error, page, total, totalPages, goToPage } = useMovements(query)
+
+  const handlePaginationChange = (newPage: number, newPageSize: number) => {
+    if (newPageSize !== pageSize) {
+      setPageSize(newPageSize)
+      goToPage(1)
+    } else {
+      goToPage(newPage)
     }
-  }, [movementType])
-
-  const { data, isLoading, error } = useMovements(query)
+  }
 
   return (
     <PageContainer
@@ -25,30 +61,36 @@ const MovementsPage = () => {
     >
       <div className="space-y-5">
         <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div>
-              <p className="text-sm font-medium text-slate-800">
-                Historial operativo
-              </p>
-              <p className="text-sm text-slate-500">
-                Consulta el historial completo de movimientos del inventario.
-              </p>
-            </div>
+          <div className="mb-3">
+            <p className="text-sm font-medium text-slate-800">Historial operativo</p>
+            <p className="text-sm text-slate-500">Consulta el historial completo de movimientos del inventario.</p>
+          </div>
 
-            <div className="w-full md:w-60">
-              <select
-                value={movementType}
-                onChange={(event) => setMovementType(event.target.value)}
-                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-500"
-              >
-                <option value="">Todos los tipos</option>
-                <option value="IN">Ingreso</option>
-                <option value="OUT">Salida</option>
-                <option value="ADJUSTMENT">Ajuste</option>
-                <option value="ADJUSTMENT_IN">Ajuste entrada</option>
-                <option value="ADJUSTMENT_OUT">Ajuste salida</option>
-              </select>
-            </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <SearchSelect
+              label="Medicamento"
+              value={medicationId}
+              options={medicationOptions}
+              placeholder="Todos los medicamentos"
+              onChange={setMedicationId}
+            />
+
+            <Select
+              label="Tipo"
+              name="movementType"
+              value={movementType}
+              options={MOVEMENT_TYPE_OPTIONS}
+              onChange={setMovementType}
+            />
+
+            <Input
+              label="Registrado por"
+              name="performedByUserName"
+              type="text"
+              placeholder="Buscar por nombre..."
+              value={performedByUserName}
+              onChange={(e) => setPerformedByUserName(e.target.value)}
+            />
           </div>
         </div>
 
@@ -58,7 +100,16 @@ const MovementsPage = () => {
           </div>
         ) : null}
 
-        <MovementTable items={data} isLoading={isLoading} />
+        <div className="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+          <MovementTable items={data} isLoading={isLoading} />
+          <DataTablePagination
+            page={page}
+            pageSize={pageSize}
+            total={total}
+            totalPages={totalPages}
+            onPaginationChange={handlePaginationChange}
+          />
+        </div>
       </div>
     </PageContainer>
   )

@@ -7,6 +7,8 @@ import { useMedicationMovements } from '@/features/inventory/movements/hooks/use
 import MedicationLotsTable from '@/features/inventory/lots/components/MedicationLotsTable'
 import MedicationMovementsTable from '@/features/inventory/movements/components/MedicationMovementsTable'
 import RegisterLotModal from '@/features/inventory/lots/components/RegisterLotModal'
+import AdjustLotModal from '@/features/inventory/lots/components/AdjustLotModal'
+import type { MedicationLotResponseDto } from '@/features/inventory/lots/types/medication-lot-response.dto'
 import { cn } from '@/shared/utils'
 import { Button } from '@/shared/components'
 import { useAuth } from '@/shared/hooks/useAuth'
@@ -20,6 +22,7 @@ const MedicationDetailPage = () => {
   const medicationId = Number(params.id)
 
   const [isRegisterLotOpen, setIsRegisterLotOpen] = useState(false)
+  const [lotToAdjust, setLotToAdjust] = useState<MedicationLotResponseDto | null>(null)
 
   const canRegisterLot =
     user?.role === RoleEnum.ADMIN || user?.role === RoleEnum.OCCUPATIONAL_DOCTOR
@@ -255,7 +258,11 @@ const MedicationDetailPage = () => {
               </div>
             )}
 
-            <MedicationLotsTable items={lots} isLoading={isLotsLoading} />
+            <MedicationLotsTable
+              items={lots}
+              isLoading={isLotsLoading}
+              onAdjust={canRegisterLot ? setLotToAdjust : undefined}
+            />
 
             {/* MOVIMIENTOS */}
             {movementsError && (
@@ -274,6 +281,16 @@ const MedicationDetailPage = () => {
               isOpen={isRegisterLotOpen}
               onClose={() => setIsRegisterLotOpen(false)}
               onSuccess={() => {
+                refetchLots()
+                refetchMovements()
+              }}
+            />
+
+            <AdjustLotModal
+              lot={lotToAdjust}
+              onClose={() => setLotToAdjust(null)}
+              onSuccess={() => {
+                setLotToAdjust(null)
                 refetchLots()
                 refetchMovements()
               }}

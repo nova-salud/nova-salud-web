@@ -1,4 +1,6 @@
+import { useNavigate } from 'react-router'
 import { DataTable } from '@/shared/components/ui/table/DataTable'
+import { getMovementTypeMeta } from '../types/movement-type.constants'
 import type { InventoryMovementResponseDto } from '../types/inventory-movement-response.dto'
 
 type Props = {
@@ -6,24 +8,9 @@ type Props = {
   isLoading?: boolean
 }
 
-const getMovementTypeClasses = (movementType: string): string => {
-  switch (movementType) {
-    case 'IN':
-      return 'border border-emerald-100 bg-emerald-50 text-emerald-700'
-    case 'OUT':
-      return 'border border-red-100 bg-red-50 text-red-600'
-    case 'ADJUSTMENT':
-      return 'border border-amber-100 bg-amber-50 text-amber-700'
-    case 'ADJUSTMENT_IN':
-      return 'border border-sky-100 bg-sky-50 text-sky-700'
-    case 'ADJUSTMENT_OUT':
-      return 'border border-orange-100 bg-orange-50 text-orange-700'
-    default:
-      return 'border border-slate-200 bg-slate-50 text-slate-500'
-  }
-}
-
 const MovementTable = ({ items, isLoading = false }: Props) => {
+  const navigate = useNavigate()
+
   return (
     <DataTable
       data={items}
@@ -35,8 +22,9 @@ const MovementTable = ({ items, isLoading = false }: Props) => {
         'Tipo',
         'Cantidad',
         'Motivo',
-        'Usuario',
+        'Registrado por',
         'Fecha',
+        'Acciones',
       ]}
       renderRow={(item) => (
         <>
@@ -52,10 +40,10 @@ const MovementTable = ({ items, isLoading = false }: Props) => {
             <span
               className={[
                 'inline-flex rounded-xl px-3 py-1 text-xs font-medium',
-                getMovementTypeClasses(item.movementType),
+                getMovementTypeMeta(item.movementType).classes,
               ].join(' ')}
             >
-              {item.movementType}
+              {getMovementTypeMeta(item.movementType).label}
             </span>
           </td>
 
@@ -82,6 +70,16 @@ const MovementTable = ({ items, isLoading = false }: Props) => {
 
           <td className="px-6 py-5 text-slate-500">
             {new Date(item.createdAt).toLocaleDateString('es-PE')}
+          </td>
+
+          <td className="px-6 py-5">
+            <button
+              type="button"
+              onClick={() => navigate(`/medications/${item.medicationId}`)}
+              className="rounded-xl border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50"
+            >
+              Ver medicamento
+            </button>
           </td>
         </>
       )}

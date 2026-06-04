@@ -4,9 +4,10 @@ import type { MedicationLotResponseDto } from '../types/medication-lot-response.
 type Props = {
   items: MedicationLotResponseDto[]
   isLoading?: boolean
+  onAdjust?: (lot: MedicationLotResponseDto) => void
 }
 
-const MedicationLotsTable = ({ items, isLoading = false }: Props) => {
+const MedicationLotsTable = ({ items, isLoading = false, onAdjust }: Props) => {
   return (
     <DataTable
       data={items}
@@ -18,6 +19,7 @@ const MedicationLotsTable = ({ items, isLoading = false }: Props) => {
         'Cantidad inicial',
         'Stock actual',
         'Recepción',
+        ...(onAdjust ? ['Acciones'] : []),
       ]}
       renderRow={(item) => (
         <>
@@ -42,6 +44,18 @@ const MedicationLotsTable = ({ items, isLoading = false }: Props) => {
           <td className="px-6 py-5 text-slate-500">
             {new Date(item.receivedAt).toLocaleDateString('es-PE')}
           </td>
+
+          {onAdjust && (
+            <td className="px-6 py-5">
+              <button
+                type="button"
+                onClick={() => onAdjust(item)}
+                className="rounded-xl border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50"
+              >
+                Ajustar
+              </button>
+            </td>
+          )}
         </>
       )}
     />

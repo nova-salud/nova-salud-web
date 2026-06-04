@@ -11,6 +11,7 @@ export const useMovements = (query: FindInventoryMovementsDto) => {
       query.medicationLotId,
       query.movementType,
       query.performedByUserId,
+      query.performedByUserName,
       query.sortBy,
       query.sortOrder,
     ],
