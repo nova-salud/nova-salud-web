@@ -1,32 +1,65 @@
+import { useState } from 'react'
+import { employeeService } from '@/features/employees/services/employee.service'
+import type { EmployeeAllergyResponseDto } from '@/features/employees/types/employee-allergy-response.dto'
+import type { EmployeeResponseDto } from '@/features/employees/types/employee-response.dto'
+import { MedicationDispenserSection } from '@/shared/components/dispensation/MedicationDispenserSection'
+import { EmployeeSearchSelector } from '@/shared/components/employee/EmployeeSearchSelector'
 import PageContainer from '@/shared/components/ui/PageContainer'
 import { Button, Input, Select, Textarea } from '@/shared/components/ui/form'
 import { useCreateDispensation } from '../hooks/useCreateDispensation'
-import {
-  useCreateDispensationForm,
-} from '../hooks/useCreateDispensationForm'
+import { useCreateDispensationForm } from '../hooks/useCreateDispensationForm'
 import { DISPENSE_TYPE_OPTIONS } from '../types/dispense-type.enum'
 
 const CreateDispensationPage = () => {
   const { create, isLoading, error } = useCreateDispensation()
   const {
     values,
-    medicationOptions,
     canSubmit,
     handleChange,
     handleAddItem,
     handleRemoveItem,
     buildDto,
-    getMedicationName,
   } = useCreateDispensationForm()
 
+  const [selectedEmployee, setSelectedEmployee] = useState<EmployeeResponseDto | null>(null)
+  const [allergies, setAllergies] = useState<EmployeeAllergyResponseDto[]>([])
+
+  const handleSelectEmployee = async (employee: EmployeeResponseDto) => {
+    setSelectedEmployee(employee)
+    try {
+      const result = await employeeService.findAllergies(employee.id)
+      setAllergies(result)
+    } catch {
+      setAllergies([])
+    }
+  }
+
+  const handleClearEmployee = () => {
+    setSelectedEmployee(null)
+    setAllergies([])
+  }
+
   const handleSubmit = async () => {
-    const dto = buildDto()
+    if (!selectedEmployee) return
+
+    const dto = buildDto(selectedEmployee.id)
 
     if (!dto) {
       return
     }
 
     await create(dto)
+  }
+
+  if (!selectedEmployee) {
+    return (
+      <PageContainer
+        title="Nueva dispensación"
+        description="Selecciona el trabajador para continuar"
+      >
+        <EmployeeSearchSelector onSelect={(emp) => void handleSelectEmployee(emp)} />
+      </PageContainer>
+    )
   }
 
   return (
@@ -40,6 +73,42 @@ const CreateDispensationPage = () => {
             {error}
           </div>
         ) : null}
+
+        <div className="flex items-start justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="space-y-0.5">
+            <p className="text-sm font-semibold text-slate-900">{selectedEmployee.fullName}</p>
+            <p className="text-xs text-slate-500">DNI: {selectedEmployee.dni}</p>
+            {selectedEmployee.position && (
+              <p className="text-xs text-slate-500">{selectedEmployee.position.name}</p>
+            )}
+          </div>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={handleClearEmployee}
+            className="w-auto px-3 py-1.5 text-xs"
+          >
+            Cambiar trabajador
+          </Button>
+        </div>
+
+        {allergies.length > 0 && (
+          <div className="space-y-2">
+            {allergies.map((allergy) => (
+              <div
+                key={allergy.medicationId}
+                className="rounded-3xl border border-amber-200 bg-amber-50 px-4 py-3"
+              >
+                <p className="text-sm font-semibold text-amber-800">
+                  Alergia: {allergy.medicationName}
+                </p>
+                {allergy.reaction && (
+                  <p className="text-xs text-amber-700">{allergy.reaction}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
 
         <div className="space-y-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
           <h3 className="text-sm font-semibold text-slate-900">
@@ -65,111 +134,22 @@ const CreateDispensationPage = () => {
               value={values.reason}
               onChange={(e) => handleChange('reason')(e.target.value)}
             />
-
-            <Input
-              label="DNI tercero"
-              name="thirdPartyDni"
-              type="text"
-              placeholder="Ej: 87654321"
-              value={values.thirdPartyDni}
-              onChange={(e) => handleChange('thirdPartyDni')(e.target.value)}
-            />
           </div>
 
           <Textarea
-            label="Observaciones"
-            placeholder="Observaciones generales de la dispensación"
+            label="Dosis / Indicaciones / Observaciones"
+            placeholder="Ej: Paracetamol 1 tab c/8h. Ibuprofeno 400mg c/12h con comida."
             value={values.notes}
             onChange={handleChange('notes')}
           />
         </div>
 
-        <div className="space-y-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h3 className="text-sm font-semibold text-slate-900">
-            Medicamentos
-          </h3>
-
-          <div className="grid gap-4 md:grid-cols-2">
-            <Select
-              name='medication'
-              label="Medicamento"
-              value={values.selectedMedicationId}
-              onChange={handleChange('selectedMedicationId')}
-              options={medicationOptions}
-            />
-
-            <Input
-              name="quantity"
-              type="number"
-              label="Cantidad"
-              placeholder="Ej: 3"
-              value={values.quantity}
-              onChange={(e) => handleChange('quantity')(e.target.value)}
-            />
-
-            <Input
-              label="Dosis / indicación"
-              name="doseInstruction"
-              type="text"
-              placeholder="Ej: 1 tableta cada 8 horas"
-              value={values.doseInstruction}
-              onChange={(e) => handleChange('doseInstruction')(e.target.value)}
-            />
-
-            <Input
-              label="Observación del ítem"
-              name="observation"
-              type="text"
-              placeholder="Ej: Entrega para 3 días"
-              value={values.observation}
-              onChange={(e) => handleChange('observation')(e.target.value)}
-            />
-          </div>
-
-          <div>
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={handleAddItem}
-              className="w-auto px-4 py-2"
-            >
-              Agregar medicamento
-            </Button>
-          </div>
-
-          <div className="space-y-2">
-            {values.items.length === 0 ? (
-              <p className="text-sm text-slate-500">
-                No has agregado medicamentos.
-              </p>
-            ) : (
-              values.items.map((item) => (
-                <div
-                  key={item.medicationId}
-                  className="flex items-center justify-between rounded-2xl border border-slate-200 px-4 py-3"
-                >
-                  <div>
-                    <p className="text-sm font-medium text-slate-900">
-                      {getMedicationName(item.medicationId)}
-                    </p>
-                    <p className="text-xs text-slate-500">
-                      Cantidad: {item.quantity}
-                    </p>
-                  </div>
-
-                  <Button
-                    type="button"
-                    variant="error"
-                    onClick={() => handleRemoveItem(item.medicationId)}
-                    className="w-auto px-3 py-2"
-                  >
-                    Quitar
-                  </Button>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
+        <MedicationDispenserSection
+          allergies={allergies}
+          items={values.items}
+          onAdd={handleAddItem}
+          onRemove={handleRemoveItem}
+        />
 
         <div className="flex justify-end">
           <Button

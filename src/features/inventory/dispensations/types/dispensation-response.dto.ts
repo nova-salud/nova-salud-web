@@ -5,8 +5,14 @@ import type { AuditResponseDto } from '@/core/types/audit-response.dto'
 export type DispensationResponseDto = AuditResponseDto & {
   id: number
   dispenseType: DispenseTypeEnum
-  collaboratorDni: string | null
-  thirdPartyDni: string | null
+  employeeId: number | null
+  employeeFullName: string | null
+  employeeFirstName: string | null
+  employeeLastName: string | null
+  employeeDni: string | null
+  employeePosition: string | null
+  employeeArea: string | null
+  employeeIsThirdParty: boolean | null
   attentionId: number | null
   diagnosisCode: string | null
   reason: string

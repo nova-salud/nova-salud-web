@@ -25,6 +25,7 @@ export const Input: React.FC<InputProps> = ({
   validations = [],
   className,
   onChange,
+  step = 0.01,
   ...props
 }) => {
   const inputRef = useRef<HTMLInputElement>(null)
@@ -125,7 +126,7 @@ export const Input: React.FC<InputProps> = ({
           disabled={disabled}
           required={required}
           onChange={handleChange}
-          step={0.01}
+          step={step}
         />
         {
           type === 'password' && (

@@ -4,14 +4,14 @@ import PageContainer from '@/shared/components/ui/PageContainer'
 import { Button, Input, Select, Textarea } from '@/shared/components/ui/form'
 import { SortOrder } from '@/core/types/query-params.type'
 import { parseBackendError } from '@/core/utils/parse-backend-error'
+import { toastService } from '@/core/services/toast.service'
 import { employeeService } from '@/features/employees/services/employee.service'
 import { useDiseases } from '@/features/attentions/diseases/hooks'
 import type { EmployeeResponseDto } from '@/features/employees/types/employee-response.dto'
+import type { EmployeeAllergyResponseDto } from '@/features/employees/types/employee-allergy-response.dto'
 import type { FindDiseasesDto } from '@/features/attentions/diseases/types'
 import { SearchSelect } from '@/shared/components/ui/form/SearchSelect'
-import type { DispensationFormItem } from '../types'
-import { useStocks } from '@/features/inventory/stocks/hooks/useStocks'
-import type { FindInventoryStocksDto } from '@/features/inventory/stocks/types/find-inventory-stocks.dto'
+import type { CreateDispensationItemDto } from '@/features/inventory/dispensations/types/create-dispensation-item.dto'
 import DispensationSection from '../components/DispensationSection'
 import { useCreateAttentionWithDispensation } from '../hooks/useCreateAttentionWithDispensation'
 import { FollowUpSection } from '../components/FollowUpSection'
@@ -29,10 +29,10 @@ const CreateAttentionPage = () => {
   const followUpIdParam = searchParams.get('followUpId')
   const accidentIdParam = searchParams.get('accidentId')
 
-
   const [employee, setEmployee] = useState<EmployeeResponseDto | null>(null)
   const [employeeError, setEmployeeError] = useState<string | null>(null)
   const [isLoadingEmployee, setIsLoadingEmployee] = useState(false)
+  const [allergies, setAllergies] = useState<EmployeeAllergyResponseDto[]>([])
 
   const formRef = useRef<HTMLFormElement>(null)
 
@@ -43,8 +43,9 @@ const CreateAttentionPage = () => {
   const [requiresDispensation, setRequiresDispensation] = useState(false)
   const [dispensationReason, setDispensationReason] = useState('')
   const [dispensationNotes, setDispensationNotes] = useState('')
-  const [dispensationItems, setDispensationItems] = useState<DispensationFormItem[]>([])
+  const [dispensationItems, setDispensationItems] = useState<CreateDispensationItemDto[]>([])
   const [originFollowUpId, setOriginFollowUpId] = useState<number | undefined>()
+  const [followUpEnabled, setFollowUpEnabled] = useState(false)
 
   const [followUp, setFollowUp] = useState<{
     followUpScheduledAt?: string
@@ -63,27 +64,6 @@ const CreateAttentionPage = () => {
   }), [])
 
   const { data: diseases, isLoading: isLoadingDiseases } = useDiseases(diseasesQuery)
-
-  const stocksQuery = useMemo<FindInventoryStocksDto>(() => ({
-    page: 1,
-    pageSize: 100,
-    sortBy: 'commercialName',
-    sortOrder: SortOrder.ASC,
-    isActive: true,
-  }), [])
-
-  const { data: stocks, isLoading: isLoadingStocks } = useStocks(stocksQuery)
-
-  const medicationOptions = useMemo(
-    () =>
-      stocks
-        .filter((item) => item.currentStock > 0)
-        .map((item) => ({
-          label: `${item.commercialName} (stock: ${item.currentStock})`,
-          value: item.medicationId,
-        })),
-    [stocks],
-  )
 
   const {
     createAttentionWithDispensation,
@@ -104,6 +84,9 @@ const CreateAttentionPage = () => {
 
         const result = await employeeService.findById(numericEmployeeId)
         setEmployee(result)
+
+        const allergyResult = await employeeService.findAllergies(numericEmployeeId)
+        setAllergies(allergyResult)
       } catch (error) {
         setEmployee(null)
         setEmployeeError(parseBackendError(error))
@@ -121,40 +104,80 @@ const CreateAttentionPage = () => {
     }
   }, [followUpIdParam])
 
+  const handleAddDispensationItem = (medicationId: number, quantity: number) => {
+    setDispensationItems((prev) => {
+      if (prev.some((i) => i.medicationId === medicationId)) return prev
+      return [...prev, { medicationId, quantity }]
+    })
+  }
+
+  const handleRemoveDispensationItem = (medicationId: number) => {
+    setDispensationItems((prev) => prev.filter((i) => i.medicationId !== medicationId))
+  }
+
+  const validate = (symptoms: string, treatment: string): boolean => {
+    if (!symptoms.trim()) {
+      toastService.error('Debes ingresar los síntomas del trabajador')
+      return false
+    }
+    if (!treatment.trim()) {
+      toastService.error('Debes ingresar el tratamiento indicado')
+      return false
+    }
+    if (hasDiagnosis && !diagnosisCode) {
+      toastService.error('Debes seleccionar una enfermedad para el diagnóstico')
+      return false
+    }
+    if (requiresDispensation && !dispensationReason.trim()) {
+      toastService.error('Debes ingresar el motivo de la dispensación')
+      return false
+    }
+    if (requiresDispensation && dispensationItems.length === 0) {
+      toastService.error('Debes agregar al menos un medicamento a la dispensación')
+      return false
+    }
+    if (followUpEnabled) {
+      if (!followUp.followUpScheduledAt) {
+        toastService.error('Debes ingresar la fecha del seguimiento')
+        return false
+      }
+      const scheduledDate = new Date(followUp.followUpScheduledAt)
+      const today = new Date()
+      const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+      const scheduledMidnight = new Date(scheduledDate.getFullYear(), scheduledDate.getMonth(), scheduledDate.getDate())
+      if (scheduledMidnight <= todayMidnight) {
+        toastService.error('La fecha de seguimiento debe ser al menos el día siguiente al de hoy')
+        return false
+      }
+    }
+    return true
+  }
+
   const handleSubmit = async () => {
     if (!employee) {
       return
     }
 
     const formData = formRef.current ? new FormData(formRef.current) : new FormData()
-    const symptoms = formData.get('symptoms') as string
-    const eva = formData.get('eva') as string
-    const treatment = formData.get('treatment') as string
-    const notes = formData.get('notes') as string
+    const symptoms = (formData.get('symptoms') as string) ?? ''
+    const eva = (formData.get('eva') as string) ?? ''
+    const treatment = (formData.get('treatment') as string) ?? ''
+    const notes = (formData.get('notes') as string) ?? ''
 
-    const validItems = dispensationItems
-      .filter((item) => item.medicationId && Number(item.quantity) > 0)
-      .map((item) => ({
-        medicationId: Number(item.medicationId),
-        quantity: Number(item.quantity),
-        doseInstruction: item.doseInstruction.trim() || undefined,
-        observation: item.observation.trim() || undefined,
-      }))
+    if (!validate(symptoms, treatment)) return
+
+    const validItems = dispensationItems.filter((item) => item.quantity > 0)
 
     const result = await createAttentionWithDispensation({
       employeeId: employee.id,
-      symptoms: symptoms.trim() || undefined,
+      symptoms: symptoms.trim(),
       diagnosisCode: hasDiagnosis ? diagnosisCode || undefined : undefined,
       eva: eva.trim() ? Number(eva) : undefined,
-      treatment: treatment.trim() || undefined,
+      treatment: treatment.trim(),
       notes: notes.trim() || undefined,
       requiresDispensation,
-      dispensationReason: requiresDispensation
-        ? dispensationReason.trim() || undefined
-        : undefined,
-      dispensationNotes: requiresDispensation
-        ? dispensationNotes.trim() || undefined
-        : undefined,
+      dispensationReason: requiresDispensation ? dispensationReason.trim() || undefined : undefined,
+      dispensationNotes: requiresDispensation ? dispensationNotes.trim() || undefined : undefined,
       dispensationItems: requiresDispensation ? validItems : undefined,
       ...followUp,
       originFollowUpId,
@@ -198,9 +221,7 @@ const CreateAttentionPage = () => {
         ) : null}
 
         <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h2 className="text-base font-semibold text-slate-900">
-            Trabajador
-          </h2>
+          <h2 className="text-base font-semibold text-slate-900">Trabajador</h2>
 
           {isLoadingEmployee ? (
             <p className="mt-3 text-sm text-slate-500">Cargando trabajador...</p>
@@ -209,57 +230,33 @@ const CreateAttentionPage = () => {
           {!isLoadingEmployee && employee ? (
             <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
               <div>
-                <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
-                  Nombre completo
-                </p>
-                <p className="mt-1 text-sm font-medium text-slate-900">
-                  {employee.fullName}
-                </p>
+                <p className="text-xs uppercase tracking-[0.14em] text-slate-400">Nombre completo</p>
+                <p className="mt-1 text-sm font-medium text-slate-900">{employee.fullName}</p>
               </div>
 
               <div>
-                <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
-                  DNI
-                </p>
-                <p className="mt-1 text-sm text-slate-700">
-                  {employee.dni}
-                </p>
+                <p className="text-xs uppercase tracking-[0.14em] text-slate-400">DNI</p>
+                <p className="mt-1 text-sm text-slate-700">{employee.dni}</p>
               </div>
 
               <div>
-                <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
-                  Empresa
-                </p>
-                <p className="mt-1 text-sm text-slate-700">
-                  {employee.company}
-                </p>
+                <p className="text-xs uppercase tracking-[0.14em] text-slate-400">Empresa</p>
+                <p className="mt-1 text-sm text-slate-700">{employee.company}</p>
               </div>
 
               <div>
-                <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
-                  Área
-                </p>
-                <p className="mt-1 text-sm text-slate-700">
-                  {employee.area?.name ?? '—'}
-                </p>
+                <p className="text-xs uppercase tracking-[0.14em] text-slate-400">Área</p>
+                <p className="mt-1 text-sm text-slate-700">{employee.area?.name ?? '—'}</p>
               </div>
 
               <div>
-                <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
-                  Puesto
-                </p>
-                <p className="mt-1 text-sm text-slate-700">
-                  {employee.position?.name ?? '—'}
-                </p>
+                <p className="text-xs uppercase tracking-[0.14em] text-slate-400">Puesto</p>
+                <p className="mt-1 text-sm text-slate-700">{employee.position?.name ?? '—'}</p>
               </div>
 
               <div>
-                <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
-                  Estado
-                </p>
-                <p className="mt-1 text-sm text-slate-700">
-                  {employee.isActive ? 'Activo' : 'Inactivo'}
-                </p>
+                <p className="text-xs uppercase tracking-[0.14em] text-slate-400">Estado</p>
+                <p className="mt-1 text-sm text-slate-700">{employee.isActive ? 'Activo' : 'Inactivo'}</p>
               </div>
             </div>
           ) : null}
@@ -274,11 +271,8 @@ const CreateAttentionPage = () => {
           isLocked={!!followUpIdParam}
         />
 
-
         <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h2 className="text-base font-semibold text-slate-900">
-            Información de la atención
-          </h2>
+          <h2 className="text-base font-semibold text-slate-900">Información de la atención</h2>
 
           <div className="mt-4 grid gap-4 md:grid-cols-2">
             <div className="md:col-span-2">
@@ -297,15 +291,12 @@ const CreateAttentionPage = () => {
                   checked={hasDiagnosis}
                   onChange={(e) => {
                     setHasDiagnosis(e.target.checked)
-
                     if (!e.target.checked) {
                       setDiagnosisCode('')
                     }
                   }}
                 />
-                <span className="text-sm text-slate-700">
-                  Se identificó un diagnóstico
-                </span>
+                <span className="text-sm text-slate-700">Se identificó un diagnóstico</span>
               </label>
             </div>
 
@@ -356,11 +347,10 @@ const CreateAttentionPage = () => {
                 value={triageLevel}
                 options={TRIAGE_LEVEL_OPTIONS}
                 onChange={(value) => setTriageLevel(value as TriageLevelEnum)}
-              ></Select>
+              />
             </div>
           </div>
         </div>
-
 
         <DispensationSection
           requiresDispensation={requiresDispensation}
@@ -370,22 +360,18 @@ const CreateAttentionPage = () => {
           notes={dispensationNotes}
           onNotesChange={setDispensationNotes}
           items={dispensationItems}
-          onItemsChange={setDispensationItems}
-          medicationOptions={medicationOptions}
-          isLoadingMedications={isLoadingStocks}
+          onAdd={handleAddDispensationItem}
+          onRemove={handleRemoveDispensationItem}
+          allergies={allergies}
         />
 
         <FollowUpSection
           followUpScheduledAt={followUp.followUpScheduledAt}
           followUpReason={followUp.followUpReason}
           onChange={setFollowUp}
+          enabled={followUpEnabled}
+          onEnabledChange={setFollowUpEnabled}
         />
-
-        {createError ? (
-          <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-            {createError}
-          </div>
-        ) : null}
 
         <div className="flex flex-wrap justify-end gap-3">
           <Button

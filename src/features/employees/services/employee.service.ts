@@ -1,5 +1,6 @@
 import { ApiService } from '@/core/api/api.service'
 import type { PaginatedResponse } from '@/core/types/paginated-response.type'
+import type { EmployeeAllergyResponseDto } from '../types/employee-allergy-response.dto'
 import type { FindEmployeesDto } from '../types/find-employees.dto'
 import type { EmployeeResponseDto } from '../types/employee-response.dto'
 import type { ImportEmployeesResultDto } from '../types/import-employees-result.dto'
@@ -20,6 +21,12 @@ class EmployeeService extends ApiService {
 
   async findByDni(dni: string): Promise<EmployeeResponseDto> {
     return await this.get<EmployeeResponseDto>(`/employees/dni/${dni}`)
+  }
+
+  async findAllergies(employeeId: number): Promise<EmployeeAllergyResponseDto[]> {
+    return await this.get<EmployeeAllergyResponseDto[]>(
+      `/attentions/allergies/employee/${employeeId}`,
+    )
   }
 
   async importCsv(file: File): Promise<ImportEmployeesResultDto> {

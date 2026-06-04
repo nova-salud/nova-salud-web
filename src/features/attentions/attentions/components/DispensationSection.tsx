@@ -1,41 +1,20 @@
-import { Button, Input, Textarea } from '@/shared/components/ui/form'
-import { SearchSelect } from '@/shared/components/ui/form/SearchSelect'
-
-type DispensationFormItem = {
-  medicationId: number | null
-  quantity: string
-  doseInstruction: string
-  observation: string
-}
-
-type MedicationOption = {
-  label: string
-  value: string | number
-}
+import type { EmployeeAllergyResponseDto } from '@/features/employees/types/employee-allergy-response.dto'
+import type { CreateDispensationItemDto } from '@/features/inventory/dispensations/types/create-dispensation-item.dto'
+import { MedicationDispenserSection } from '@/shared/components/dispensation/MedicationDispenserSection'
+import { Input, Textarea } from '@/shared/components/ui/form'
 
 type Props = {
   requiresDispensation: boolean
   onRequiresDispensationChange: (value: boolean) => void
-
   reason: string
   onReasonChange: (value: string) => void
-
   notes: string
   onNotesChange: (value: string) => void
-
-  items: DispensationFormItem[]
-  onItemsChange: (items: DispensationFormItem[]) => void
-
-  medicationOptions: MedicationOption[]
-  isLoadingMedications?: boolean
+  items: CreateDispensationItemDto[]
+  onAdd: (medicationId: number, quantity: number) => void
+  onRemove: (medicationId: number) => void
+  allergies?: EmployeeAllergyResponseDto[]
 }
-
-const createEmptyItem = (): DispensationFormItem => ({
-  medicationId: null,
-  quantity: '',
-  doseInstruction: '',
-  observation: '',
-})
 
 const DispensationSection = ({
   requiresDispensation,
@@ -45,167 +24,51 @@ const DispensationSection = ({
   notes,
   onNotesChange,
   items,
-  onItemsChange,
-  medicationOptions,
-  isLoadingMedications = false,
+  onAdd,
+  onRemove,
+  allergies = [],
 }: Props) => {
-  const handleAddItem = () => {
-    onItemsChange([...items, createEmptyItem()])
-  }
-
-  const handleRemoveItem = (index: number) => {
-    onItemsChange(items.filter((_, itemIndex) => itemIndex !== index))
-  }
-
-  const handleChangeItem = <K extends keyof DispensationFormItem>(
-    index: number,
-    key: K,
-    value: DispensationFormItem[K],
-  ) => {
-    const updatedItems = [...items]
-    updatedItems[index] = {
-      ...updatedItems[index],
-      [key]: value,
-    }
-
-    onItemsChange(updatedItems)
-  }
-
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-      <h2 className="text-base font-semibold text-slate-900">
-        Dispensación
-      </h2>
+      <h2 className="text-base font-semibold text-slate-900">Dispensación</h2>
 
       <div className="mt-4 space-y-4">
-        <label className="flex items-center gap-3 rounded-2xl border border-slate-200 px-4 py-3">
+        <label className="flex cursor-pointer items-center gap-3 rounded-2xl border border-slate-200 px-4 py-3">
           <input
             type="checkbox"
             checked={requiresDispensation}
             onChange={(e) => onRequiresDispensationChange(e.target.checked)}
           />
-          <span className="text-sm text-slate-700">
-            Esta atención requiere dispensación
-          </span>
+          <span className="text-sm text-slate-700">Esta atención requiere dispensación</span>
         </label>
 
         {requiresDispensation ? (
           <div className="space-y-5">
-            <div className="grid gap-4 md:grid-cols-2">
-              <Input
-                label="Motivo de la dispensación"
-                name="reason"
-                type="text"
-                placeholder="Ej. Tratamiento sintomático"
-                value={reason}
-                onChange={(e) => onReasonChange(e.target.value)}
+            <Input
+              label="Motivo de la dispensación"
+              name="dispensationReason"
+              type="text"
+              placeholder="Ej. Tratamiento sintomático"
+              value={reason}
+              onChange={(e) => onReasonChange(e.target.value)}
+            />
+
+            <Textarea
+              label="Dosis / Indicaciones / Observaciones"
+              placeholder="Ej: Paracetamol 1 tab c/8h. Ibuprofeno 400mg c/12h con comida."
+              value={notes}
+              onChange={onNotesChange}
+              rows={3}
+            />
+
+            <div className="border-t border-slate-100 pt-5">
+              <MedicationDispenserSection
+                allergies={allergies}
+                items={items}
+                onAdd={onAdd}
+                onRemove={onRemove}
+                noCard
               />
-
-              <Textarea
-                label="Notas de dispensación"
-                placeholder="Agrega notas adicionales"
-                value={notes}
-                onChange={onNotesChange}
-                rows={3}
-              />
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-slate-900">
-                  Medicamentos
-                </h3>
-
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-auto"
-                  onClick={handleAddItem}
-                >
-                  Agregar medicamento
-                </Button>
-              </div>
-
-              {items.length === 0 ? (
-                <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-5 text-sm text-slate-500">
-                  Aún no has agregado medicamentos.
-                </div>
-              ) : null}
-
-              {items.map((item, index) => (
-                <div
-                  key={index}
-                  className="rounded-2xl border border-slate-200 p-4"
-                >
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium text-slate-900">
-                      Medicamento #{index + 1}
-                    </p>
-
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="w-auto"
-                      onClick={() => handleRemoveItem(index)}
-                    >
-                      Quitar
-                    </Button>
-                  </div>
-
-                  <div className="mt-4 grid gap-4 md:grid-cols-2">
-                    <div className="md:col-span-2">
-                      <SearchSelect
-                        label="Medicamento"
-                        value={item.medicationId ?? ''}
-                        onChange={(value) =>
-                          handleChangeItem(
-                            index,
-                            'medicationId',
-                            value ? Number(value) : null,
-                          )
-                        }
-                        options={medicationOptions}
-                        disabled={isLoadingMedications}
-                        placeholder="Buscar medicamento..."
-                      />
-                    </div>
-
-                    <Input
-                      label="Cantidad"
-                      name="quantity"
-                      type="number"
-                      placeholder="Ingresa la cantidad"
-                      value={item.quantity}
-                      onChange={(e) =>
-                        handleChangeItem(index, 'quantity', e.target.value)
-                      }
-                    />
-
-                    <Input
-                      label="Indicación de dosis"
-                      name="doseInstruction"
-                      type="text"
-                      placeholder="Ej. 1 tableta cada 8 horas"
-                      value={item.doseInstruction}
-                      onChange={(e) =>
-                        handleChangeItem(index, 'doseInstruction', e.target.value)
-                      }
-                    />
-
-                    <div className="md:col-span-2">
-                      <Textarea
-                        label="Observación"
-                        placeholder="Agrega observaciones del medicamento"
-                        value={item.observation}
-                        onChange={(value) =>
-                          handleChangeItem(index, 'observation', value)
-                        }
-                        rows={3}
-                      />
-                    </div>
-                  </div>
-                </div>
-              ))}
             </div>
           </div>
         ) : null}

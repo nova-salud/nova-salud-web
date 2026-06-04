@@ -3,16 +3,14 @@ import type { TriageLevelEnum } from './triage.enum'
 export type CreateAttentionWithDispensationItemDto = {
   medicationId: number
   quantity: number
-  doseInstruction?: string
-  observation?: string
 }
 
 export type CreateAttentionWithDispensationDto = {
   employeeId: number
-  symptoms?: string
+  symptoms: string
   diagnosisCode?: string
   eva?: number
-  treatment?: string
+  treatment: string
   notes?: string
   requiresDispensation: boolean
   dispensationReason?: string

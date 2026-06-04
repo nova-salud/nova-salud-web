@@ -3,8 +3,7 @@ import type { CreateDispensationItemDto } from './create-dispensation-item.dto'
 
 export type CreateDispensationDto = {
   dispenseType: DispenseTypeEnum
-  collaboratorDni?: string
-  thirdPartyDni?: string
+  employeeId?: number
   attentionId?: number
   diagnosisCode?: string
   reason: string

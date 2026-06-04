@@ -4,6 +4,7 @@ export type FindEmployeesDto = QueryParams & {
   dni?: string
   fullName?: string
   areaId?: number
+  positionId?: number
   isActive?: boolean
   company?: string
 }

@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from 'react'
 import { cn } from '@/shared/utils'
 import { Label } from './Label'
 import { useClickOutside } from '@/shared/hooks/useClickOutside'
+import { ChevronDown } from 'lucide-react'
 
 type Option = {
   label: string
@@ -69,7 +70,10 @@ export const SearchSelect = ({
         </span>
 
         <span className="text-slate-400 text-xs">
-          {isOpen ? '▲' : '▼'}
+          <ChevronDown size={15} className={cn(
+            'transition-transform duration-200',
+            isOpen && 'rotate-180'
+          )}/>
         </span>
       </button>
 

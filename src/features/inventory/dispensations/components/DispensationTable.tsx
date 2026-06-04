@@ -21,7 +21,7 @@ const DispensationTable = ({ items, isLoading = false }: Props) => {
       data={items}
       isLoading={isLoading}
       emptyMessage="No se encontraron dispensaciones."
-      columns={['ID', 'Tipo', 'Motivo', 'Items', 'Fecha', 'Acciones']}
+      columns={['ID', 'Tipo', 'Trabajador', 'Motivo', 'Items', 'Fecha', 'Acciones']}
       renderRow={(item) => (
         <>
           <td className="px-6 py-5 font-medium text-slate-900">#{item.id}</td>
@@ -35,6 +35,21 @@ const DispensationTable = ({ items, isLoading = false }: Props) => {
             >
               {DISPENSE_TYPE_LABEL_MAP[item.dispenseType] ?? item.dispenseType}
             </span>
+          </td>
+
+          <td className="px-6 py-5">
+            {item.employeeFullName ? (
+              <div>
+                <p className="text-sm text-slate-700">{item.employeeFullName}</p>
+                {item.employeeIsThirdParty && (
+                  <span className="inline-flex rounded-lg border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">
+                    Externo
+                  </span>
+                )}
+              </div>
+            ) : (
+              <span className="text-slate-400">-</span>
+            )}
           </td>
 
           <td className="px-6 py-5 text-slate-500">{item.reason}</td>

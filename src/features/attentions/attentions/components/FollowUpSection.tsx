@@ -8,17 +8,26 @@ type Props = {
     followUpScheduledAt?: string
     followUpReason?: string
   }) => void
+  enabled?: boolean
+  onEnabledChange?: (value: boolean) => void
 }
 
 export const FollowUpSection = ({
   followUpScheduledAt,
   followUpReason,
   onChange,
+  enabled: enabledProp,
+  onEnabledChange,
 }: Props) => {
-  const [enabled, setEnabled] = useState<boolean>(!!followUpScheduledAt)
+  const [enabledInternal, setEnabledInternal] = useState<boolean>(!!followUpScheduledAt)
+  const enabled = enabledProp !== undefined ? enabledProp : enabledInternal
 
   const handleToggle = (value: boolean) => {
-    setEnabled(value)
+    if (onEnabledChange) {
+      onEnabledChange(value)
+    } else {
+      setEnabledInternal(value)
+    }
 
     if (!value) {
       onChange({
