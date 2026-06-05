@@ -24,6 +24,7 @@ const EmoProtocolTable = ({
       columns={[
         'ID',
         'Nombre',
+        'Plazo de completación',
         'Recurrencia - Apto',
         'Recurrencia - Apto Restric.',
         'Estado',
@@ -40,11 +41,15 @@ const EmoProtocolTable = ({
           </td>
 
           <td className="px-6 py-5 text-slate-700">
-            {item.nextEmoDaysFit} { ' '} días
+            {item.daysToExpire} días
           </td>
 
           <td className="px-6 py-5 text-slate-700">
-            {item.nextEmoDaysFitWithRestrictions} { ' '} días
+            {item.nextEmoDaysFit} días
+          </td>
+
+          <td className="px-6 py-5 text-slate-700">
+            {item.nextEmoDaysFitWithRestrictions} días
           </td>
 
           <td className="px-6 py-5">

@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useParams } from 'react-router'
+import { Button } from '@/shared/components/ui/form'
+import { useConfirmEmoCycleExamReview } from '../hooks'
 import { Download } from 'lucide-react'
 import { cn } from '@/shared/utils'
 import PageContainer from '@/shared/components/ui/PageContainer'
@@ -22,6 +24,7 @@ const EmoCycleDetailPage = () => {
   const numericCycleId = Number(cycleId)
 
   const { data: emoCycle, isLoading, error, refetch } = useEmoCycle(numericCycleId)
+  const { confirmExamReview, isLoading: isConfirming } = useConfirmEmoCycleExamReview()
   const [isEmitConclusionSidebarOpen, setIsEmitConclusionSidebarOpen] = useState(false)
   const [isSignConformitySidebarOpen, setIsSignConformitySidebarOpen] = useState(false)
   const [previewSignatureData, setPreviewSignatureData] = useState<string | null>(null)
@@ -54,6 +57,26 @@ const EmoCycleDetailPage = () => {
   return (
     <PageContainer>
       <div className="space-y-6">
+        {emoCycle.status === 'PENDING_EXAM_REVIEW' && (
+          <div className="flex items-center justify-between rounded-3xl border border-amber-200 bg-amber-50 px-5 py-4">
+            <p className="text-sm text-amber-700">
+              Revisa los exámenes asignados al ciclo y confirma para iniciar el proceso.
+            </p>
+            <Button
+              type="button"
+              className="w-auto"
+              isLoading={isConfirming}
+              loadingText="Confirmando..."
+              onClick={async () => {
+                await confirmExamReview(emoCycle.id)
+                await refetch()
+              }}
+            >
+              Confirmar exámenes
+            </Button>
+          </div>
+        )}
+
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>

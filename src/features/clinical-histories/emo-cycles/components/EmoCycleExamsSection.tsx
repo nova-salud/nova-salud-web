@@ -12,8 +12,10 @@ type Props = {
 
 const EmoCycleExamsSection = ({
   exams,
+  cycle,
   onRefresh,
 }: Props) => {
+  const isReadOnly = cycle.status === 'PENDING_EXAM_REVIEW'
   const [selectedExam, setSelectedExam] = useState<ClinicalHistoryExamResponseDto | null>(null)
   const [isCompleteSidebarOpen, setIsCompleteSidebarOpen] = useState(false)
   const completedCount = exams.filter((e) => e.isCompleted).length
@@ -77,16 +79,18 @@ const EmoCycleExamsSection = ({
               {exam.resultNote?.trim() || 'Sin resultado registrado'}
             </div>
 
-            <div className="mt-4 flex justify-end gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                className="w-auto text-xs"
-                onClick={() => handleOpenCompleteSidebar(exam)}
-              >
-                {exam.isCompleted ? 'Ver detalle' : 'Completar'}
-              </Button>
-            </div>
+            {!isReadOnly && (
+              <div className="mt-4 flex justify-end gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-auto text-xs"
+                  onClick={() => handleOpenCompleteSidebar(exam)}
+                >
+                  {exam.isCompleted ? 'Ver detalle' : 'Completar'}
+                </Button>
+              </div>
+            )}
           </div>
         ))}
       </div>

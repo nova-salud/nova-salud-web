@@ -5,10 +5,11 @@ import type { EmployeePositionResponseDto } from '@/features/employees/types/emp
 export type EmoProtocolResponseDto = AuditResponseDto & {
   id: number
   name: string
+  emoType: string | null
   isActive: boolean
-  nextEmoDaysFit: number,
-  nextEmoDaysFitWithRestrictions: number,
-
+  daysToExpire: number
+  nextEmoDaysFit: number
+  nextEmoDaysFitWithRestrictions: number
   areas: EmployeeAreaResponseDto[]
   positions: EmployeePositionResponseDto[]
 }

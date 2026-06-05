@@ -1,9 +1,7 @@
-import { Button, Input } from '@/shared/components/ui/form'
-import type {
-  CreateEmoProtocolDto,
-  EmoProtocolResponseDto,
-  UpdateEmoProtocolDto,
-} from '../types'
+import { useState, useEffect } from 'react'
+import { Button, Input, Select } from '@/shared/components/ui/form'
+import type { CreateEmoProtocolDto, EmoProtocolResponseDto, UpdateEmoProtocolDto } from '../types'
+import { EMO_CYCLE_TYPE_OPTIONS } from '@/features/clinical-histories/emo-cycles/types/emo-cycle-type.constants'
 import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
 
 type EmoProtocolFormSidebarMode = 'create' | 'edit'
@@ -18,6 +16,11 @@ type Props = {
   onUpdate?: (id: number, dto: UpdateEmoProtocolDto) => void | Promise<void>
 }
 
+const EMO_TYPE_SELECT_OPTIONS = [
+  { label: 'Sin tipo', value: '' },
+  ...EMO_CYCLE_TYPE_OPTIONS,
+]
+
 const EmoProtocolFormSidebar = ({
   isOpen,
   mode,
@@ -27,17 +30,24 @@ const EmoProtocolFormSidebar = ({
   onCreate,
   onUpdate,
 }: Props) => {
+  const [emoType, setEmoType] = useState(emoProtocol?.emoType ?? '')
+
+  useEffect(() => {
+    setEmoType(emoProtocol?.emoType ?? '')
+  }, [emoProtocol])
+
   const handleSubmit = async (e: { preventDefault(): void; currentTarget: HTMLFormElement }) => {
     e.preventDefault()
     const data = new FormData(e.currentTarget)
     const name = (data.get('name') as string).trim()
     if (!name) return
 
+    const daysToExpire = Number(data.get('daysToExpire'))
     const nextEmoDaysFit = Number(data.get('nextEmoDaysFit'))
     const nextEmoDaysFitWithRestrictions = Number(data.get('nextEmoDaysFitWithRestrictions'))
 
     if (mode === 'create') {
-      await onCreate?.({ name, nextEmoDaysFit, nextEmoDaysFitWithRestrictions })
+      await onCreate?.({ name, emoType: emoType || undefined, daysToExpire, nextEmoDaysFit, nextEmoDaysFitWithRestrictions })
       return
     }
 
@@ -45,6 +55,8 @@ const EmoProtocolFormSidebar = ({
 
     await onUpdate?.(emoProtocol.id, {
       name,
+      emoType: emoType || undefined,
+      daysToExpire,
       isActive: data.get('isActive') === 'on',
       nextEmoDaysFit,
       nextEmoDaysFitWithRestrictions,
@@ -71,8 +83,25 @@ const EmoProtocolFormSidebar = ({
             label="Nombre"
             name="name"
             type="text"
+            required
             placeholder="Ej. Protocolo administrativo"
             defaultValue={emoProtocol?.name}
+          />
+
+          <Select
+            label="Tipo de EMO"
+            name="emoType"
+            value={emoType}
+            onChange={setEmoType}
+            options={EMO_TYPE_SELECT_OPTIONS}
+          />
+
+          <Input
+            label="Días para completar el EMO"
+            name="daysToExpire"
+            type="number"
+            placeholder="Ej. 365"
+            defaultValue={emoProtocol?.daysToExpire ?? 365}
           />
 
           <Input
@@ -103,12 +132,7 @@ const EmoProtocolFormSidebar = ({
           )}
 
           <div className="flex justify-end gap-3 pt-2">
-            <Button
-              type="button"
-              variant="outline"
-              className="w-auto"
-              onClick={onClose}
-            >
+            <Button type="button" variant="outline" className="w-auto" onClick={onClose}>
               Cancelar
             </Button>
 
