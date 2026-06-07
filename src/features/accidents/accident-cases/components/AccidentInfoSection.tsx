@@ -1,16 +1,38 @@
 import { format } from 'date-fns'
-import { ACCIDENT_STATUS_LABEL, ACCIDENT_TYPE_LABEL, type AccidentResponseDto } from '../../accidents/types'
+import { useState } from 'react'
+import { Button } from '@/shared/components/ui/form'
+import {
+  ACCIDENT_STATUS_LABEL,
+  ACCIDENT_TYPE_LABEL,
+  ACCIDENT_SEVERITY_LABEL,
+  ACCIDENT_FORM_LABEL,
+  ACCIDENT_LABOR_RELATION_LABEL,
+  type AccidentResponseDto,
+} from '../../accidents/types'
+import { AccidentClassificationSidebar } from './AccidentClassificationSidebar'
 
 type Props = {
   accident: AccidentResponseDto
+  isReadOnly?: boolean
+  onRefresh?: () => void
 }
 
-const AccidentInfoSection: React.FC<Props> = ({ accident }) => {
+const AccidentInfoSection: React.FC<Props> = ({ accident, isReadOnly = false, onRefresh }) => {
+  const [isEditOpen, setIsEditOpen] = useState(false)
+
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-      <h2 className="text-lg font-semibold text-slate-900">
-        Información del accidente
-      </h2>
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-slate-900">
+          Información del accidente
+        </h2>
+
+        {!isReadOnly && (
+          <Button variant="outline" onClick={() => setIsEditOpen(true)}>
+            Editar clasificaciones
+          </Button>
+        )}
+      </div>
 
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         <div className="md:col-span-2">
@@ -56,9 +78,7 @@ const AccidentInfoSection: React.FC<Props> = ({ accident }) => {
             Derivación
           </p>
           <div className="mt-1 text-sm text-slate-700">
-            {accident.requiresExternalReferral
-              ? 'Sí'
-              : 'No'}
+            {accident.requiresExternalReferral ? 'Sí' : 'No'}
           </div>
         </div>
 
@@ -72,7 +92,55 @@ const AccidentInfoSection: React.FC<Props> = ({ accident }) => {
             </div>
           </div>
         )}
+
+        <div className="md:col-span-2 border-t border-slate-100 pt-4">
+          <p className="text-sm font-medium text-slate-700 mb-3">Clasificaciones</p>
+          <div className="grid gap-4 md:grid-cols-3">
+            <div>
+              <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
+                Gravedad
+              </p>
+              <div className="mt-1 text-sm text-slate-700">
+                {accident.severityClassification
+                  ? ACCIDENT_SEVERITY_LABEL[accident.severityClassification]
+                  : 'No registrado'}
+              </div>
+            </div>
+
+            <div>
+              <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
+                Forma
+              </p>
+              <div className="mt-1 text-sm text-slate-700">
+                {accident.formClassification
+                  ? ACCIDENT_FORM_LABEL[accident.formClassification]
+                  : 'No registrado'}
+              </div>
+            </div>
+
+            <div>
+              <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
+                Relación laboral
+              </p>
+              <div className="mt-1 text-sm text-slate-700">
+                {accident.laborRelationClassification
+                  ? ACCIDENT_LABOR_RELATION_LABEL[accident.laborRelationClassification]
+                  : 'No registrado'}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <AccidentClassificationSidebar
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        accident={accident}
+        onSuccess={() => {
+          setIsEditOpen(false)
+          onRefresh?.()
+        }}
+      />
     </div>
   )
 }

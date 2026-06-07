@@ -1,5 +1,15 @@
 import { useHealthcareCenters } from '@/features/healthcare-centers/hooks'
-import { ACCIDENT_TYPE_OPTIONS, AccidentTypeEnum, type CreateAccidentDto } from '../types'
+import {
+  ACCIDENT_TYPE_OPTIONS,
+  AccidentTypeEnum,
+  ACCIDENT_SEVERITY_OPTIONS,
+  ACCIDENT_FORM_OPTIONS,
+  ACCIDENT_LABOR_RELATION_OPTIONS,
+  type CreateAccidentDto,
+  type AccidentSeverityEnum,
+  type AccidentFormEnum,
+  type AccidentLaborRelationEnum,
+} from '../types'
 import { Select, Input, Textarea, Button } from '@/shared/components/ui/form'
 import { useState, useMemo, useRef } from 'react'
 
@@ -29,6 +39,9 @@ export const AccidentForm = ({
   const handleSubmit = async () => {
     const data = formRef.current ? new FormData(formRef.current) : new FormData()
     const occurredAt = data.get('occurredAt') as string
+    const severity = data.get('severityClassification') as string
+    const form = data.get('formClassification') as string
+    const laborRelation = data.get('laborRelationClassification') as string
 
     await onSubmit({
       type: data.get('type') as AccidentTypeEnum,
@@ -38,6 +51,9 @@ export const AccidentForm = ({
       healthcareCenterId: requiresExternalCare
         ? Number(data.get('healthcareCenterId'))
         : undefined,
+      severityClassification: severity ? (severity as AccidentSeverityEnum) : undefined,
+      formClassification: form ? (form as AccidentFormEnum) : undefined,
+      laborRelationClassification: laborRelation ? (laborRelation as AccidentLaborRelationEnum) : undefined,
     })
   }
 
@@ -70,6 +86,35 @@ export const AccidentForm = ({
               rows={4}
             />
           </div>
+        </div>
+      </div>
+
+      <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+        <h2 className="text-base font-semibold text-slate-900">
+          Clasificaciones
+        </h2>
+
+        <div className="mt-4 grid gap-4 md:grid-cols-3">
+          <Select
+            name="severityClassification"
+            label="Gravedad"
+            defaultValue=""
+            options={[{ label: 'Sin especificar', value: '' }, ...ACCIDENT_SEVERITY_OPTIONS]}
+          />
+
+          <Select
+            name="formClassification"
+            label="Forma"
+            defaultValue=""
+            options={[{ label: 'Sin especificar', value: '' }, ...ACCIDENT_FORM_OPTIONS]}
+          />
+
+          <Select
+            name="laborRelationClassification"
+            label="Relación laboral"
+            defaultValue=""
+            options={[{ label: 'Sin especificar', value: '' }, ...ACCIDENT_LABOR_RELATION_OPTIONS]}
+          />
         </div>
       </div>
 

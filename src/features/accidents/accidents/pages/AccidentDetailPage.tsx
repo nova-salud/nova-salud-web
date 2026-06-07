@@ -9,6 +9,7 @@ import { AccidentCaseSection } from '../../accident-cases/components/AccidentCas
 import { AccidentFollowUpsSection } from '../../accident-cases/components/AccidentFollowUpsSection'
 import { AccidentDetailSkeleton } from '../components/AccidentDetailSkeleton'
 import AccidentInfoSection from '../../accident-cases/components/AccidentInfoSection'
+import { AccidentInvestigationSection } from '../../accident-cases/components/AccidentInvestigationSection'
 import { useAuth } from '@/shared/hooks/useAuth'
 import { RoleEnum } from '@/core/enums/role.enum'
 
@@ -25,6 +26,7 @@ const AccidentDetailPage = () => {
   if (!accident) return <div>No encontrado</div>
 
   const isMedical = user?.role === RoleEnum.OCCUPATIONAL_DOCTOR
+  const canEdit = isMedical || isAdmin
 
   return (
     <PageContainer
@@ -85,26 +87,38 @@ const AccidentDetailPage = () => {
           </div>
         </div>
 
-        <AccidentInfoSection accident={accident} />
+        <AccidentInfoSection
+          accident={accident}
+          isReadOnly={!canEdit}
+          onRefresh={refetch}
+        />
 
-        {(isMedical || isAdmin) && <AccidentFollowUpsSection
-          followUps={accident.followUps}
-          onCreateAttention={(followUpId) =>
-            navigate(
-              `/clinical-histories/${employeeId}/attentions/new?followUpId=${followUpId}&accidentId=${accident.id}`
-            )
-          }
-          onViewAttention={(attentionId) =>
-            navigate(
-              `/clinical-histories/${employeeId}/attentions/${attentionId}`
-            )
-          }
-        />}
+        {canEdit && (
+          <AccidentFollowUpsSection
+            followUps={accident.followUps}
+            onCreateAttention={(followUpId) =>
+              navigate(
+                `/clinical-histories/${employeeId}/attentions/new?followUpId=${followUpId}&accidentId=${accident.id}`
+              )
+            }
+            onViewAttention={(attentionId) =>
+              navigate(
+                `/clinical-histories/${employeeId}/attentions/${attentionId}`
+              )
+            }
+          />
+        )}
+
+        <AccidentInvestigationSection
+          accident={accident}
+          isReadOnly={!canEdit}
+          onRefresh={refetch}
+        />
 
         <AccidentCaseSection
           accident={accident}
           onRefresh={refetch}
-          isReadOnly={!isMedical && !isAdmin}
+          isReadOnly={!canEdit}
         />
       </div>
     </PageContainer>
