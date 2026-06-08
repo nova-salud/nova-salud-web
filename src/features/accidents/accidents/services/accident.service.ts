@@ -19,6 +19,10 @@ class AccidentService extends ApiService {
   async update(id: number, dto: UpdateAccidentDto) {
     return await this.patch<AccidentResponseDto>(`/accidents/${id}`, dto)
   }
+
+  async sendSummary(id: number): Promise<void> {
+    await this.post(`/accidents/${id}/send-summary`, {})
+  }
 }
 
 export const accidentService = new AccidentService()

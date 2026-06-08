@@ -3,6 +3,7 @@ import type { AuditResponseDto } from '@/core/types/audit-response.dto'
 export type MedicalRestResponseDto = AuditResponseDto & {
   id: number
   clinicalHistoryId: number
+  accidentId: number | null
   startDate: string
   endDate: string
   notes: string | null
@@ -13,6 +14,7 @@ export type MedicalRestResponseDto = AuditResponseDto & {
 
 export type CreateMedicalRestDto = {
   clinicalHistoryId: number
+  accidentId?: number
   startDate: string
   endDate: string
   notes?: string

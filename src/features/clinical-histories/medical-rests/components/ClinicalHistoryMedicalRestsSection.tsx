@@ -8,13 +8,15 @@ import MedicalRestFormSidebar from './MedicalRestFormSidebar'
 
 type Props = {
   clinicalHistoryId: number
+  accidentId?: number
+  isReadOnly?: boolean
 }
 
-export const ClinicalHistoryMedicalRestsSection = ({ clinicalHistoryId }: Props) => {
+export const ClinicalHistoryMedicalRestsSection = ({ clinicalHistoryId, accidentId, isReadOnly = false }: Props) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const { data, isLoading, total, page, pageSize, totalPages, goToPage, refetch } =
-    useMedicalRests(clinicalHistoryId)
+    useMedicalRests({ clinicalHistoryId, accidentId })
 
   return (
     <div className="px-5">
@@ -26,9 +28,11 @@ export const ClinicalHistoryMedicalRestsSection = ({ clinicalHistoryId }: Props)
           )}
         </div>
 
-        <Button type="button" className="w-auto" onClick={() => setIsSidebarOpen(true)}>
-          Registrar DM
-        </Button>
+        {!isReadOnly && (
+          <Button type="button" className="w-auto" onClick={() => setIsSidebarOpen(true)}>
+            Registrar DM
+          </Button>
+        )}
       </div>
 
       <p className="mb-4 text-sm text-slate-500">Descansos médicos emitidos al trabajador.</p>
@@ -78,6 +82,7 @@ export const ClinicalHistoryMedicalRestsSection = ({ clinicalHistoryId }: Props)
       <MedicalRestFormSidebar
         isOpen={isSidebarOpen}
         clinicalHistoryId={clinicalHistoryId}
+        accidentId={accidentId}
         onClose={() => setIsSidebarOpen(false)}
         onSuccess={() => {
           setIsSidebarOpen(false)

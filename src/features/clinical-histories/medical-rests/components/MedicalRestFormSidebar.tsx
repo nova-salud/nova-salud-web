@@ -9,11 +9,12 @@ import { useCreateMedicalRest } from '../hooks/useCreateMedicalRest'
 type Props = {
   isOpen: boolean
   clinicalHistoryId: number
+  accidentId?: number
   onClose: () => void
   onSuccess: () => void
 }
 
-const MedicalRestFormSidebar = ({ isOpen, clinicalHistoryId, onClose, onSuccess }: Props) => {
+const MedicalRestFormSidebar = ({ isOpen, clinicalHistoryId, accidentId, onClose, onSuccess }: Props) => {
   const [startDate, setStartDate] = useState('')
   const [file, setFile] = useState<File | null>(null)
 
@@ -36,6 +37,7 @@ const MedicalRestFormSidebar = ({ isOpen, clinicalHistoryId, onClose, onSuccess 
     const result = await createMedicalRest(
       {
         clinicalHistoryId,
+        accidentId,
         startDate: start,
         endDate: end,
         notes: (data.get('notes') as string).trim() || undefined,

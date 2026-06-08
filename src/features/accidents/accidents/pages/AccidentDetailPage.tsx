@@ -4,14 +4,16 @@ import { cn } from '@/shared/utils'
 import { format } from 'date-fns'
 import { useNavigate, useParams } from 'react-router'
 import { useAccident } from '../hooks/useAccident'
-import { ACCIDENT_TYPE_CLASSNAME, ACCIDENT_TYPE_LABEL, ACCIDENT_STATUS_CLASSNAME, ACCIDENT_STATUS_LABEL } from '../types'
+import { ACCIDENT_TYPE_CLASSNAME, ACCIDENT_TYPE_LABEL, ACCIDENT_STATUS_CLASSNAME, ACCIDENT_STATUS_LABEL, AccidentStatusEnum } from '../types'
 import { AccidentCaseSection } from '../../accident-cases/components/AccidentCaseSection'
 import { AccidentFollowUpsSection } from '../../accident-cases/components/AccidentFollowUpsSection'
 import { AccidentDetailSkeleton } from '../components/AccidentDetailSkeleton'
 import AccidentInfoSection from '../../accident-cases/components/AccidentInfoSection'
 import { AccidentInvestigationSection } from '../../accident-cases/components/AccidentInvestigationSection'
+import { ClinicalHistoryMedicalRestsSection } from '@/features/clinical-histories/medical-rests/components/ClinicalHistoryMedicalRestsSection'
 import { useAuth } from '@/shared/hooks/useAuth'
 import { RoleEnum } from '@/core/enums/role.enum'
+import { useSendAccidentSummary } from '../hooks/useSendAccidentSummary'
 
 const AccidentDetailPage = () => {
   const { user, isAdmin } = useAuth()
@@ -21,28 +23,43 @@ const AccidentDetailPage = () => {
   const numericId = Number(id)
 
   const { data: accident, isLoading, error, refetch } = useAccident(numericId)
+  const { sendSummary, isLoading: isSending } = useSendAccidentSummary()
 
   if (isLoading) return <AccidentDetailSkeleton />
   if (!accident) return <div>No encontrado</div>
 
   const isMedical = user?.role === RoleEnum.OCCUPATIONAL_DOCTOR
+  const isHR = user?.role === RoleEnum.HR
   const canEdit = isMedical || isAdmin
+  const canSendSummary = isAdmin || isHR
 
   return (
     <PageContainer
       title={`Accidente #${accident.id}`}
       description="Detalle del accidente registrado."
       action={
-        <Button
-          type="button"
-          variant="outline"
-          className="w-auto"
-          onClick={() =>
-            navigate(-1)
-          }
-        >
-          Volver
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          {canSendSummary && (
+            <Button
+              type="button"
+              variant="outline"
+              className="w-auto"
+              isLoading={isSending}
+              loadingText="Enviando..."
+              onClick={() => void sendSummary(accident.id)}
+            >
+              Enviar resumen por correo
+            </Button>
+          )}
+          <Button
+            type="button"
+            variant="outline"
+            className="w-auto"
+            onClick={() => navigate(-1)}
+          >
+            Volver
+          </Button>
+        </div>
       }
     >
       <div className="space-y-6">
@@ -120,6 +137,14 @@ const AccidentDetailPage = () => {
           onRefresh={refetch}
           isReadOnly={!canEdit}
         />
+
+        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm py-5">
+          <ClinicalHistoryMedicalRestsSection
+            clinicalHistoryId={accident.clinicalHistoryId}
+            accidentId={accident.id}
+            isReadOnly={accident.status === AccidentStatusEnum.CLOSED}
+          />
+        </div>
       </div>
     </PageContainer>
   )
