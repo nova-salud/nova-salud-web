@@ -21,4 +21,42 @@ export type EmployeeResponseDto = AuditResponseDto & {
   isVetoed: boolean
   isBlocked: boolean
   lastSyncedAt: string | null
+
+  // Personal
+  paternalLastName: string | null
+  maternalLastName: string | null
+  sex: string | null
+  maritalStatus: string | null
+  docTypeId: number | null
+  phone: string | null
+  personalEmail: string | null
+  bloodGroup: string | null
+
+  // Laboral
+  admissionDate: string | null
+  dismissalDate: string | null
+  contractStartDate: string | null
+  contractEndDate: string | null
+  contractTypeId: number | null
+  workerTypeId: number | null
+  educationLevelId: number | null
+  childrenCount: number | null
+
+  // Salud / Seguro
+  medicalInsurance: string | null
+  eps: string | null
+  epsPlan: string | null
+  sctrHealth: string | null
+
+  // IDs externos (trazabilidad interna)
+  extPositionId: number | null
+  extAreaId: number | null
+  extBossId: number | null
+  extEpsId: number | null
+  extEpsPlanId: number | null
+  extSctrId: number | null
+  extInsuranceId: number | null
+  extSexId: number | null
+  extMaritalStatusId: number | null
+  extBloodGroupId: number | null
 }

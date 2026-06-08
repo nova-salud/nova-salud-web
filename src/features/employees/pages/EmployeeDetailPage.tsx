@@ -3,15 +3,13 @@ import { useNavigate, useParams } from 'react-router'
 import { Button } from '@/shared/components/ui/form'
 import { useAuth } from '@/shared/hooks/useAuth'
 import { RoleEnum } from '@/core/enums/role.enum'
-import PageContainer from '@/shared/components/ui/PageContainer'
 import { useUser } from '@/features/users/hooks/useUser'
 import { useUpdateUser } from '@/features/users/hooks/useUpdateUser'
 import { useUpdateUserStatus } from '@/features/users/hooks/useUpdateUserStatus'
 import { useUpdateUserPassword } from '@/features/users/hooks/useUpdateUserPassword'
-import UserFormSidebar from '@/features/users/components/UserFormSidebar'
+import PageContainer from '@/shared/components/ui/PageContainer'
 import UserPasswordSidebar from '@/features/users/components/UserPasswordSidebar'
 import { USER_ROLE_LABEL_MAP } from '@/features/users/types/user-role.config'
-import type { UpdateUserDto } from '@/features/users/types/update-user.dto'
 import type { UpdateUserPasswordDto } from '@/features/users/types/update-user-password.dto'
 
 type SidebarMode = 'edit' | 'password' | null
@@ -22,6 +20,9 @@ const Field = ({ label, value }: { label: string; value: React.ReactNode }) => (
     <p className="mt-1 text-sm text-slate-700">{value ?? '—'}</p>
   </div>
 )
+
+const formatDate = (value: string | null | undefined) =>
+  value ? new Date(value).toLocaleDateString('es-PE') : null
 
 const EmployeeDetailPage = () => {
   const navigate = useNavigate()
@@ -57,13 +58,6 @@ const EmployeeDetailPage = () => {
     const success = await updateStatus(data.id, !data.isActive)
     if (!success) return
     await refetch()
-  }
-
-  const handleUpdate = async (userId: number, dto: UpdateUserDto) => {
-    const result = await update(userId, dto)
-    if (!result) return
-    await refetch()
-    setSidebarMode(null)
   }
 
   const handleUpdatePassword = async (userId: number, dto: UpdateUserPasswordDto) => {
@@ -115,14 +109,6 @@ const EmployeeDetailPage = () => {
                 >
                   Cambiar contraseña
                 </Button>
-
-                <Button
-                  type="button"
-                  onClick={() => setSidebarMode('edit')}
-                  className="w-auto"
-                >
-                  Editar
-                </Button>
               </>
             ) : null}
 
@@ -152,7 +138,6 @@ const EmployeeDetailPage = () => {
 
           {data ? (
             <>
-              {/* Perfil */}
               <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                 <h3 className="mb-4 text-sm font-semibold text-slate-900">
                   Datos del usuario
@@ -169,7 +154,6 @@ const EmployeeDetailPage = () => {
                 </div>
               </div>
 
-              {/* Datos del empleado */}
               {data.employee ? (
                 <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                   <h3 className="mb-4 text-sm font-semibold text-slate-900">
@@ -201,7 +185,53 @@ const EmployeeDetailPage = () => {
                 </div>
               ) : null}
 
-              {/* Trazabilidad */}
+              {data.employee ? (
+                <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                  <h3 className="mb-4 text-sm font-semibold text-slate-900">
+                    Datos personales
+                  </h3>
+
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    <Field label="Sexo" value={data.employee.sex} />
+                    <Field label="Estado civil" value={data.employee.maritalStatus} />
+                    <Field label="Grupo sanguíneo" value={data.employee.bloodGroup} />
+                    <Field label="Teléfono" value={data.employee.phone} />
+                    <Field label="Correo personal" value={data.employee.personalEmail} />
+                  </div>
+                </div>
+              ) : null}
+
+              {data.employee ? (
+                <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                  <h3 className="mb-4 text-sm font-semibold text-slate-900">
+                    Información laboral
+                  </h3>
+
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    <Field label="Fecha de ingreso" value={formatDate(data.employee.admissionDate)} />
+                    <Field label="Fecha de cese" value={formatDate(data.employee.dismissalDate)} />
+                    <Field label="Inicio de contrato" value={formatDate(data.employee.contractStartDate)} />
+                    <Field label="Fin de contrato" value={formatDate(data.employee.contractEndDate)} />
+                    <Field label="N.° de hijos" value={data.employee.childrenCount} />
+                  </div>
+                </div>
+              ) : null}
+
+              {data.employee ? (
+                <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+                  <h3 className="mb-4 text-sm font-semibold text-slate-900">
+                    Información de salud
+                  </h3>
+
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    <Field label="Seguro médico" value={data.employee.medicalInsurance} />
+                    <Field label="EPS" value={data.employee.eps} />
+                    <Field label="Plan EPS" value={data.employee.epsPlan} />
+                    <Field label="SCTR Salud" value={data.employee.sctrHealth} />
+                  </div>
+                </div>
+              ) : null}
+
               <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                 <h3 className="mb-4 text-sm font-semibold text-slate-900">
                   Trazabilidad
@@ -227,24 +257,13 @@ const EmployeeDetailPage = () => {
       </PageContainer>
 
       {isAdmin ? (
-        <>
-          <UserFormSidebar
-            isOpen={sidebarMode === 'edit'}
-            mode="edit"
-            user={data}
-            isLoading={isUpdating}
-            onClose={() => setSidebarMode(null)}
-            onUpdate={handleUpdate}
-          />
-
-          <UserPasswordSidebar
-            isOpen={sidebarMode === 'password'}
-            user={data}
-            isLoading={isUpdatingPassword}
-            onClose={() => setSidebarMode(null)}
-            onSubmit={handleUpdatePassword}
-          />
-        </>
+        <UserPasswordSidebar
+          isOpen={sidebarMode === 'password'}
+          user={data}
+          isLoading={isUpdatingPassword}
+          onClose={() => setSidebarMode(null)}
+          onSubmit={handleUpdatePassword}
+        />
       ) : null}
     </>
   )

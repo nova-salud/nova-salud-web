@@ -12,6 +12,7 @@ import type {
   FindEmoProtocolsDto,
   UpdateEmoProtocolDto,
 } from '../types'
+import { useDebounce } from '@/core/hooks/useDebounce'
 
 type EmoProtocolSidebarMode = 'create' | 'edit' | null
 
@@ -29,14 +30,16 @@ const EmoProtocolsPage = () => {
   const [selectedEmoProtocol, setSelectedEmoProtocol] = useState<EmoProtocolResponseDto | null>(null)
   const [sidebarMode, setSidebarMode] = useState<EmoProtocolSidebarMode>(null)
 
+  const debouncedName = useDebounce(name)
+
   const query = useMemo<FindEmoProtocolsDto>(() => ({
     page: 1,
     pageSize: 10,
     sortBy: 'name',
     sortOrder: SortOrder.ASC,
-    search: name.trim() || undefined,
+    name: debouncedName.trim() || undefined,
     isActive: isActive === '' ? undefined : isActive === 'true',
-  }), [name, isActive])
+  }), [debouncedName, isActive])
 
   const { data, isLoading, error, refetch } = useEmoProtocols(query)
 

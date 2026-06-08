@@ -37,6 +37,9 @@ const EmployeeInfoCard = ({ employee, className }: Props) => {
       <InfoItem label="Jefe inmediato" value={employee.immediateBoss} />
       <InfoItem label="Estado laboral" value={employee.employmentStatus} />
       <InfoItem label="Fecha de nacimiento" value={birthDate} />
+      <InfoItem label="Teléfono" value={employee.phone} />
+      <InfoItem label="Correo personal" value={employee.personalEmail} />
+      <InfoItem label="Sexo" value={employee.sex} />
     </div>
   )
 }
