@@ -1,8 +1,11 @@
+import { useState } from 'react'
 import { Activity, AlertTriangle, CheckCircle2, ClipboardList, Package, Users } from 'lucide-react'
-import { useNavigate } from 'react-router'
+import { useNavigate, useSearchParams } from 'react-router'
 import { cn } from '@/shared/utils'
 import PageContainer from '@/shared/components/ui/PageContainer'
 import { MetricCard } from '@/shared/components/dashboard/MetricCard'
+import { DateRangeFilter, toISODate } from '@/shared/components/dashboard/DateRangeFilter'
+import type { DateRange } from '@/shared/components/dashboard/DateRangeFilter'
 import { useMedicalDashboard } from '../hooks/useMedicalDashboard'
 import { ConsultationsTrendChart } from '../components/medical/ConsultationsTrendChart'
 import { MedicalDashboardSkeleton } from '../components/medical/MedicalDashboardSkeleton'
@@ -21,7 +24,27 @@ const TRIAGE_CLASS: Record<string, string> = {
 
 export const MedicalDashboardPage = () => {
   const navigate = useNavigate()
-  const { data, isLoading, error } = useMedicalDashboard()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [defaults] = useState<DateRange>(() => ({
+    startDate: toISODate(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)),
+    endDate: toISODate(new Date()),
+  }))
+
+  const dateRange: DateRange = {
+    startDate: searchParams.get('startDate') ?? defaults.startDate,
+    endDate: searchParams.get('endDate') ?? defaults.endDate,
+  }
+
+  const handleDateChange = (range: DateRange) => {
+    setSearchParams(prev => {
+      const next = new URLSearchParams(prev)
+      next.set('startDate', range.startDate)
+      next.set('endDate', range.endDate)
+      return next
+    })
+  }
+
+  const { data, isLoading, error } = useMedicalDashboard(dateRange)
 
   if (isLoading) {
     return (
@@ -43,8 +66,8 @@ export const MedicalDashboardPage = () => {
 
   const mainCards = [
     {
-      label: 'Atenciones hoy',
-      value: data.summary.consultationsToday,
+      label: 'Atenciones en rango',
+      value: data.summary.consultationsInRange,
       icon: <Users className="h-5 w-5 text-slate-600" />,
       bg: 'bg-slate-100',
       onClick: () => navigate('/clinical-attention'),
@@ -108,6 +131,8 @@ export const MedicalDashboardPage = () => {
       description="Resumen clínico y operativo"
     >
       <div className="space-y-6">
+        <DateRangeFilter value={dateRange} onChange={handleDateChange} />
+
         {/* Métricas principales */}
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {mainCards.map((card, i) => (

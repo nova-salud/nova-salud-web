@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   Activity,
   AlertTriangle,
@@ -7,10 +8,12 @@ import {
   TrendingUp,
   Users,
 } from 'lucide-react'
-import { useNavigate } from 'react-router'
+import { useNavigate, useSearchParams } from 'react-router'
 import { cn } from '@/shared/utils'
 import PageContainer from '@/shared/components/ui/PageContainer'
 import { MetricCard } from '@/shared/components/dashboard/MetricCard'
+import { DateRangeFilter, toISODate } from '@/shared/components/dashboard/DateRangeFilter'
+import type { DateRange } from '@/shared/components/dashboard/DateRangeFilter'
 import { useManagementDashboard } from '../hooks/useManagementDashboard'
 import { ManagementDashboardSkeleton } from '../components/management/ManagementDashboardSkeleton'
 
@@ -34,7 +37,27 @@ const REQ_STATUS_CLASS: Record<string, string> = {
 
 export const ManagementDashboardPage = () => {
   const navigate = useNavigate()
-  const { data, isLoading, error } = useManagementDashboard()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [defaults] = useState<DateRange>(() => ({
+    startDate: toISODate(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)),
+    endDate: toISODate(new Date()),
+  }))
+
+  const dateRange: DateRange = {
+    startDate: searchParams.get('startDate') ?? defaults.startDate,
+    endDate: searchParams.get('endDate') ?? defaults.endDate,
+  }
+
+  const handleDateChange = (range: DateRange) => {
+    setSearchParams(prev => {
+      const next = new URLSearchParams(prev)
+      next.set('startDate', range.startDate)
+      next.set('endDate', range.endDate)
+      return next
+    })
+  }
+
+  const { data, isLoading, error } = useManagementDashboard(dateRange)
 
   if (isLoading) {
     return (
@@ -79,8 +102,8 @@ export const ManagementDashboardPage = () => {
       onClick: () => navigate('/accidents'),
     },
     {
-      label: 'Atenciones este mes',
-      value: data.summary.attentionsThisMonth,
+      label: 'Atenciones en rango',
+      value: data.summary.attentionsInRange,
       icon: <TrendingUp className="h-5 w-5 text-emerald-600" />,
       bg: 'bg-emerald-50',
       valueClassName: 'text-emerald-600',
@@ -122,11 +145,39 @@ export const ManagementDashboardPage = () => {
       description="Visión operativa de personal y requerimientos"
     >
       <div className="space-y-6">
+        <DateRangeFilter value={dateRange} onChange={handleDateChange} />
+
         {/* Cards principales */}
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {mainCards.map((card, i) => (
             <MetricCard key={i} {...card} />
           ))}
+        </div>
+
+        {/* Desglose de empleados + follow-ups en rango */}
+        <div className="grid gap-4 sm:grid-cols-3">
+          <MetricCard
+            label="Empleados internos"
+            value={data.summary.internalEmployees}
+            icon={<Users className="h-5 w-5 text-slate-600" />}
+            bg="bg-slate-100"
+            onClick={() => navigate('/employees')}
+          />
+          <MetricCard
+            label="Empleados externos"
+            value={data.summary.externalEmployees}
+            icon={<Users className="h-5 w-5 text-indigo-600" />}
+            bg="bg-indigo-50"
+            onClick={() => navigate('/employees')}
+          />
+          <MetricCard
+            label="Follow-ups en rango"
+            value={data.summary.followUpsInRange}
+            icon={<ClipboardList className="h-5 w-5 text-blue-600" />}
+            bg="bg-blue-50"
+            valueClassName="text-blue-600"
+            onClick={() => navigate('/clinical-attention')}
+          />
         </div>
 
         {/* Alertas */}

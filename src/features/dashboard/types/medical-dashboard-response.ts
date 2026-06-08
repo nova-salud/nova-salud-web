@@ -1,6 +1,6 @@
 export type MedicalDashboardResponse = {
   summary: {
-    consultationsToday: number
+    consultationsInRange: number
     activeCycles: number
     pendingConclusion: number
     overdueFollowUps: number

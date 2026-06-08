@@ -3,7 +3,10 @@ export interface AdminDashboardResponse {
     totalEmployees: number
     activeCases: number
     totalAccidents: number
-    consultationsToday: number
+    consultationsInRange: number
+    internalEmployees: number
+    externalEmployees: number
+    followUpsInRange: number
   }
 
   alerts: {
@@ -11,6 +14,8 @@ export interface AdminDashboardResponse {
     longOpenCases: number
     employeesWithRestrictions: number
     criticalMedications: number
+    workersWithOver21DmDays: number
+    dmDaysExpiringSoon: number
   }
 
   accidentsByArea: {
@@ -33,4 +38,9 @@ export interface AdminDashboardResponse {
     blockedUsers: number
     lastSyncAt: string | null
   }
+
+  accidentsByClassification: {
+    classification: string
+    count: number
+  }[]
 }

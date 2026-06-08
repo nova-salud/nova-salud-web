@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { format } from 'date-fns'
 import {
   ShieldAlert,
@@ -16,11 +16,44 @@ import { AccidentTrendChart } from '../components/sst/AccidentTrendChart'
 import { useSSTDashboard } from '../hooks/useSSTDashboard'
 import { SSTDashboardSkeleton } from '../components/sst/SSTDashboardSkeleton'
 import PageContainer from '@/shared/components/ui/PageContainer'
-import { useNavigate } from 'react-router'
+import { useNavigate, useSearchParams } from 'react-router'
+import { DateRangeFilter, toISODate } from '@/shared/components/dashboard/DateRangeFilter'
+import type { DateRange } from '@/shared/components/dashboard/DateRangeFilter'
 
 export const SSTDashboardPage = () => {
   const navigate = useNavigate()
-  const { data, isLoading } = useSSTDashboard()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [defaults] = useState<DateRange>(() => ({
+    startDate: toISODate(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)),
+    endDate: toISODate(new Date()),
+  }))
+
+  const dateRange: DateRange = {
+    startDate: searchParams.get('startDate') ?? defaults.startDate,
+    endDate: searchParams.get('endDate') ?? defaults.endDate,
+  }
+
+  const eventType = searchParams.get('eventType') ?? undefined
+
+  const handleDateChange = (range: DateRange) => {
+    setSearchParams(prev => {
+      const next = new URLSearchParams(prev)
+      next.set('startDate', range.startDate)
+      next.set('endDate', range.endDate)
+      return next
+    })
+  }
+
+  const handleEventTypeChange = (value: string) => {
+    setSearchParams(prev => {
+      const next = new URLSearchParams(prev)
+      if (value) next.set('eventType', value)
+      else next.delete('eventType')
+      return next
+    })
+  }
+
+  const { data, isLoading } = useSSTDashboard(dateRange, eventType)
 
   const filteredTrend = useMemo(() => {
     const trend = data?.trend ?? []
@@ -123,12 +156,28 @@ export const SSTDashboardPage = () => {
         ? `↓ ${percentage}% menos accidentes`
         : `↑ ${percentage}% más accidentes`
 
+  const maxForm = Math.max(...(data.accidentsByForm?.map(f => f.count) ?? []), 1)
+
   return (
     <PageContainer
       title="Dashboard SST"
       description="Indicadores de seguridad y salud ocupacional"
     >
       <div className="space-y-6">
+        {/* Filtros */}
+        <div className="flex flex-wrap items-center gap-3">
+          <DateRangeFilter value={dateRange} onChange={handleDateChange} />
+          <select
+            value={eventType ?? ''}
+            onChange={e => handleEventTypeChange(e.target.value)}
+            className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
+          >
+            <option value="">Todos los eventos</option>
+            <option value="ACCIDENT">Solo accidentes</option>
+            <option value="INCIDENT">Solo incidentes</option>
+          </select>
+        </div>
+
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {mainCards.map((c, i) => (
             <DashboardCard
@@ -202,6 +251,37 @@ export const SSTDashboardPage = () => {
             </div>
           </div>
         </div>
+
+        {/* Formas de accidente */}
+        {data.accidentsByForm?.length > 0 && (
+          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-base font-semibold text-slate-900">Formas de accidente</h2>
+              <button
+                onClick={() => navigate('/accidents')}
+                className="text-sm font-medium text-blue-600 hover:text-blue-700"
+              >
+                Ver accidentes
+              </button>
+            </div>
+            <div className="space-y-3">
+              {data.accidentsByForm.map(item => (
+                <div key={item.form} className="rounded-xl border border-slate-100 bg-slate-50 p-3">
+                  <div className="mb-1 flex justify-between">
+                    <span className="text-sm font-medium text-slate-700">{item.form}</span>
+                    <span className="text-sm font-semibold text-slate-900">{item.count}</span>
+                  </div>
+                  <div className="h-2 rounded-full bg-slate-200">
+                    <div
+                      className="h-2 rounded-full bg-amber-500 transition-all"
+                      style={{ width: `${(item.count / maxForm) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
           <div className="mb-4 flex items-center justify-between">
@@ -282,6 +362,12 @@ export const SSTDashboardPage = () => {
               <MetricBox
                 label="Días recuperación"
                 value={data.executiveMetrics.averageRecoveryDays}
+              />
+
+              <MetricBox
+                label="Días sin accidente"
+                value={data.daysSinceLastAccident != null ? data.daysSinceLastAccident : '—'}
+                valueClassName="text-emerald-600"
               />
             </div>
           </div>

@@ -4,11 +4,13 @@ import { useAuth } from '@/shared/hooks/useAuth'
 import { SSTDashboardPage } from './SSTDashboardPage'
 import { MedicalDashboardPage } from './MedicalDashboardPage'
 import { AdminDashboardPage } from './AdminDashboardPage'
-import { useState } from 'react'
 import { cn } from '@/shared/utils'
 import { ManagementDashboardPage } from './ManagmentDashboardPage'
+import { useSearchParams } from 'react-router'
 
 type DashboardType = 'MEDICAL' | 'SST' | 'MANAGEMENT' | 'EMPLOYEE' | 'ADMIN'
+
+const ADMIN_TABS: DashboardType[] = ['ADMIN', 'SST', 'MEDICAL', 'MANAGEMENT']
 
 function getDashboardType(role: RoleEnum): DashboardType {
   if (role === RoleEnum.ADMIN) return 'ADMIN'
@@ -41,19 +43,33 @@ const dashboardMap: Record<DashboardType, React.ComponentType> = {
 
 const DashboardPage = () => {
   const { user, isAdmin } = useAuth()
-  const [override, setOverride] = useState<DashboardType | null>(null)
+  const [searchParams, setSearchParams] = useSearchParams()
 
-  const type = override ?? getDashboardType(user?.role ?? RoleEnum.EMPLOYEE)
+  const urlTab = searchParams.get('tab') as DashboardType | null
+  const validUrlTab = urlTab && (ADMIN_TABS as string[]).includes(urlTab) ? urlTab : null
+
+  const type: DashboardType = isAdmin
+    ? (validUrlTab ?? 'ADMIN')
+    : getDashboardType(user?.role ?? RoleEnum.EMPLOYEE)
+
   const Dashboard = dashboardMap[type]
+
+  const handleTabChange = (t: DashboardType) => {
+    setSearchParams(prev => {
+      const next = new URLSearchParams(prev)
+      next.set('tab', t)
+      return next
+    })
+  }
 
   return (
     <PageContainer>
       {isAdmin && (
         <div className="flex gap-2 mb-4">
-          {(['ADMIN', 'SST', 'MEDICAL', 'MANAGEMENT'] as DashboardType[]).map((t) => (
+          {ADMIN_TABS.map((t) => (
             <button
               key={t}
-              onClick={() => setOverride(t)}
+              onClick={() => handleTabChange(t)}
               className={cn(
                 'px-3 py-2 text-sm rounded-xl border cursor-pointer',
                 type === t

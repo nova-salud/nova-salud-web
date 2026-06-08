@@ -51,4 +51,11 @@ export type SSTDashboardResponse = {
     status: AccidentStatusEnum
     hasRestrictions: boolean
   }[]
+
+  daysSinceLastAccident: number | null
+
+  accidentsByForm: {
+    form: string
+    count: number
+  }[]
 }

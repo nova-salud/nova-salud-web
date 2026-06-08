@@ -1,20 +1,63 @@
 import {
   Activity,
   AlertTriangle,
+  ClipboardList,
   Package,
   ShieldAlert,
   TrendingUp,
   Users,
 } from 'lucide-react'
-import { useNavigate } from 'react-router'
+import { useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router'
 import PageContainer from '@/shared/components/ui/PageContainer'
 import { MetricCard } from '@/shared/components/dashboard/MetricCard'
+import { DateRangeFilter, toISODate } from '@/shared/components/dashboard/DateRangeFilter'
+import type { DateRange } from '@/shared/components/dashboard/DateRangeFilter'
+import { Select } from '@/shared/components/ui/form/Select'
 import { useAdminDashboard } from '../hooks/useAdminDashboard'
 import { AdminDashboardSkeleton } from '../components/admin/AdminDashboardSkeleton'
+import { MetricPanel } from '@/shared/components/dashboard/MetricPanel'
+import { PERSONAL_PANEL, ACCIDENTAL_PANEL, ALERTAS_PANEL, SISTEMA_PANEL } from '../constants/admin-dashboard.constants'
+
+const EVENT_TYPE_OPTIONS = [
+  { label: 'Solo accidentes', value: 'ACCIDENT' },
+  { label: 'Solo incidentes', value: 'INCIDENT' },
+]
 
 export const AdminDashboardPage = () => {
   const navigate = useNavigate()
-  const { data, isLoading, error } = useAdminDashboard()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [defaults] = useState<DateRange>(() => ({
+    startDate: toISODate(new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)),
+    endDate: toISODate(new Date()),
+  }))
+
+  const dateRange: DateRange = {
+    startDate: searchParams.get('startDate') ?? defaults.startDate,
+    endDate: searchParams.get('endDate') ?? defaults.endDate,
+  }
+
+  const eventType = searchParams.get('eventType') ?? undefined
+
+  const handleDateChange = (range: DateRange) => {
+    setSearchParams(prev => {
+      const next = new URLSearchParams(prev)
+      next.set('startDate', range.startDate)
+      next.set('endDate', range.endDate)
+      return next
+    })
+  }
+
+  const handleEventTypeChange = (value: string) => {
+    setSearchParams(prev => {
+      const next = new URLSearchParams(prev)
+      if (value) next.set('eventType', value)
+      else next.delete('eventType')
+      return next
+    })
+  }
+
+  const { data, isLoading, error } = useAdminDashboard(dateRange, eventType)
 
   if (isLoading) {
     return (
@@ -34,97 +77,90 @@ export const AdminDashboardPage = () => {
     )
   }
 
-  const mainCards = [
-    {
-      label: 'Trabajadores activos',
-      value: data.summary.totalEmployees,
-      icon: <Users className="h-5 w-5 text-slate-600" />,
-      bg: 'bg-slate-100',
-      onClick: () => navigate('/employees'),
-    },
-    {
-      label: 'Casos activos',
-      value: data.summary.activeCases,
-      icon: <Activity className="h-5 w-5 text-red-600" />,
-      bg: 'bg-red-50',
-      valueClassName: 'text-red-600',
-      onClick: () => navigate('/accidents'),
-    },
-    {
-      label: 'Accidentes totales',
-      value: data.summary.totalAccidents,
-      icon: <ShieldAlert className="h-5 w-5 text-amber-600" />,
-      bg: 'bg-amber-50',
-      valueClassName: 'text-amber-600',
-      onClick: () => navigate('/accidents'),
-    },
-    {
-      label: 'Atenciones hoy',
-      value: data.summary.consultationsToday,
-      icon: <TrendingUp className="h-5 w-5 text-indigo-600" />,
-      bg: 'bg-indigo-50',
-      valueClassName: 'text-indigo-600',
-      onClick: () => navigate('/clinical-attention'),
-    },
-  ]
-
-  const alertCards = [
-    {
-      label: 'Follow-ups vencidos',
-      value: data.alerts.overdueFollowUps,
-      icon: <AlertTriangle className="h-5 w-5 text-red-500" />,
-      bg: 'bg-red-50',
-      valueClassName: data.alerts.overdueFollowUps > 0 ? 'text-red-600' : undefined,
-      onClick: () => navigate('/clinical-attention'),
-    },
-    {
-      label: 'Casos prolongados',
-      value: data.alerts.longOpenCases,
-      icon: <AlertTriangle className="h-5 w-5 text-orange-500" />,
-      bg: 'bg-orange-50',
-      valueClassName: data.alerts.longOpenCases > 0 ? 'text-orange-600' : undefined,
-      onClick: () => navigate('/accidents'),
-    },
-    {
-      label: 'Con restricciones',
-      value: data.alerts.employeesWithRestrictions,
-      icon: <AlertTriangle className="h-5 w-5 text-amber-500" />,
-      bg: 'bg-amber-50',
-      valueClassName: data.alerts.employeesWithRestrictions > 0 ? 'text-amber-600' : undefined,
-      onClick: () => navigate('/clinical-histories'),
-    },
-    {
-      label: 'Medicamentos críticos',
-      value: data.alerts.criticalMedications,
-      icon: <Package className="h-5 w-5 text-rose-500" />,
-      bg: 'bg-rose-50',
-      valueClassName: data.alerts.criticalMedications > 0 ? 'text-rose-600' : undefined,
-      onClick: () => navigate('/medications'),
-    },
-  ]
-
   const maxArea = Math.max(...data.accidentsByArea.map(a => a.count), 1)
+  const maxClassification = Math.max(...(data.accidentsByClassification?.map(a => a.count) ?? []), 1)
+  const maxMeds = Math.max(...data.mostUsedMedications.map(m => m.count), 1)
+  const hasClassification = (data.accidentsByClassification?.length ?? 0) > 0
+
+  const principalMetrics = [
+    {
+      info: PERSONAL_PANEL,
+      rows: [
+        { label: 'Trabajadores activos', value: data.summary.totalEmployees, icon: <Users className="h-4 w-4 text-slate-600" /> },
+        { label: 'Empleados internos', value: data.summary.internalEmployees, icon: <Users className="h-4 w-4 text-indigo-500" /> },
+        { label: 'Empleados externos', value: data.summary.externalEmployees, icon: <Users className="h-4 w-4 text-slate-400" /> },
+      ]
+    },
+    {
+      info: ACCIDENTAL_PANEL,
+      rows: [
+        { label: 'Casos activos', value: data.summary.activeCases, icon: <Activity className="h-4 w-4 text-red-500" />, valueClassName: data.summary.activeCases > 0 ? 'text-red-600' : undefined },
+        { label: 'Accidentes totales', value: data.summary.totalAccidents, icon: <ShieldAlert className="h-4 w-4 text-amber-500" />, valueClassName: 'text-amber-600' },
+        { label: 'Casos prolongados +30d', value: data.sst.casesOverThresholdDays, icon: <AlertTriangle className="h-4 w-4 text-orange-500" />, valueClassName: data.sst.casesOverThresholdDays > 0 ? 'text-orange-600' : undefined },
+        { label: 'Tasa por 100 emp.', value: data.sst.accidentRatePer100Employees, icon: <TrendingUp className="h-4 w-4 text-slate-400" /> },
+      ]
+    },
+    {
+      info: ALERTAS_PANEL,
+      rows: [
+        { label: 'Follow-ups vencidos', value: data.alerts.overdueFollowUps, icon: <AlertTriangle className="h-4 w-4 text-red-500" />, valueClassName: data.alerts.overdueFollowUps > 0 ? 'text-red-600' : undefined },
+        { label: 'Con restricciones', value: data.alerts.employeesWithRestrictions, icon: <AlertTriangle className="h-4 w-4 text-amber-500" />, valueClassName: data.alerts.employeesWithRestrictions > 0 ? 'text-amber-600' : undefined },
+        { label: 'Medicamentos críticos', value: data.alerts.criticalMedications, icon: <Package className="h-4 w-4 text-rose-500" />, valueClassName: data.alerts.criticalMedications > 0 ? 'text-rose-600' : undefined },
+        { label: 'Más de 21 días DM', value: data.alerts.workersWithOver21DmDays, icon: <AlertTriangle className="h-4 w-4 text-red-400" />, valueClassName: data.alerts.workersWithOver21DmDays > 0 ? 'text-red-600' : undefined },
+        { label: 'DM por vencer', value: data.alerts.dmDaysExpiringSoon, icon: <AlertTriangle className="h-4 w-4 text-amber-400" />, valueClassName: data.alerts.dmDaysExpiringSoon > 0 ? 'text-amber-600' : undefined },
+      ]
+    }
+  ]
+
+  const secondaryMetrics = [
+    {
+      info: SISTEMA_PANEL,
+      rows: [
+        { label: 'Usuarios activos', value: data.system.activeUsers, icon: <Users className="h-4 w-4 text-slate-600" /> },
+        { label: 'Bloqueados', value: data.system.blockedUsers, icon: <AlertTriangle className="h-4 w-4 text-red-500" />, iconBg: 'bg-red-50', valueClassName: data.system.blockedUsers > 0 ? 'text-red-600' : undefined },
+        { label: 'Última sync', value: data.system.lastSyncAt ? new Date(data.system.lastSyncAt).toLocaleString('es-PE') : '—', icon: <TrendingUp className="h-4 w-4 text-slate-400" /> },
+      ]
+    }
+  ]
 
   return (
     <PageContainer title="Dashboard Administrador" description="Visión global del sistema">
       <div className="space-y-6">
-        {/* Main cards */}
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {mainCards.map((card, i) => (
-            <MetricCard key={i} {...card} />
-          ))}
+
+        <div className="flex flex-wrap items-end gap-3">
+          <DateRangeFilter value={dateRange} onChange={handleDateChange} />
+          <Select
+            name="eventType"
+            placeholder="Todos los eventos"
+            showDefaultOption
+            value={eventType ?? ''}
+            options={EVENT_TYPE_OPTIONS}
+            onChange={handleEventTypeChange}
+            className="w-52"
+          />
         </div>
 
-        {/* Alert cards */}
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {alertCards.map((card, i) => (
-            <MetricCard key={i} {...card} />
-          ))}
-        </div>
+        <div className="grid gap-6 xl:grid-cols-3">
+          <div className="flex flex-col gap-4">
+            <MetricCard
+              label="Atenciones en rango"
+              value={data.summary.consultationsInRange}
+              icon={<TrendingUp className="h-5 w-5 text-indigo-600" />}
+              bg="bg-indigo-50"
+              valueClassName="text-indigo-600"
+              onClick={() => navigate('/clinical-attention')}
+            />
+            <MetricCard
+              label="Follow-ups en rango"
+              value={data.summary.followUpsInRange}
+              icon={<ClipboardList className="h-5 w-5 text-blue-600" />}
+              bg="bg-blue-50"
+              valueClassName="text-blue-600"
+              onClick={() => navigate('/clinical-attention')}
+            />
+          </div>
 
-        {/* Accidents by area + SST */}
-        <div className="grid gap-6 xl:grid-cols-2">
-          <div className="rounded-3xl bg-white p-5 shadow-sm">
+          <div className="rounded-3xl bg-white p-5 shadow-sm xl:col-span-2">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-base font-semibold text-slate-900">Accidentes por área</h2>
               <button
@@ -136,7 +172,7 @@ export const AdminDashboardPage = () => {
             </div>
 
             {data.accidentsByArea.length === 0 ? (
-              <p className="py-6 text-center text-sm text-slate-400">Sin accidentes registrados</p>
+              <p className="py-6 text-center text-sm text-slate-400">Sin accidentes en el rango</p>
             ) : (
               <div className="space-y-4">
                 {data.accidentsByArea.map(item => (
@@ -156,74 +192,38 @@ export const AdminDashboardPage = () => {
               </div>
             )}
           </div>
-
-          <div className="rounded-3xl bg-white p-5 shadow-sm">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-base font-semibold text-slate-900">Indicadores SST</h2>
-              <button
-                onClick={() => navigate('/accidents')}
-                className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
-              >
-                Ver detalle
-              </button>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-xl bg-slate-50 p-4">
-                <p className="text-xs text-slate-400">Tasa por 100 empleados</p>
-                <p className="mt-1 text-lg font-semibold text-slate-900">
-                  {data.sst.accidentRatePer100Employees}
-                </p>
-              </div>
-              <div className="rounded-xl bg-slate-50 p-4">
-                <p className="text-xs text-slate-400">Casos prolongados (+30 días)</p>
-                <p className={`mt-1 text-lg font-semibold ${data.sst.casesOverThresholdDays > 0 ? 'text-red-600' : 'text-slate-900'}`}>
-                  {data.sst.casesOverThresholdDays}
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
 
-        {/* System + Medical */}
-        <div className="grid gap-6 xl:grid-cols-2">
-          <div className="rounded-3xl bg-white p-5 shadow-sm">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-base font-semibold text-slate-900">Sistema</h2>
-              <button
-                onClick={() => navigate('/system-settings/employee-sync')}
-                className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
-              >
-                Ir a sync
-              </button>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              <MetricCard
-                label="Usuarios activos"
-                value={data.system.activeUsers}
-                icon={<Users className="h-5 w-5 text-slate-600" />}
-                bg="bg-slate-100"
-                onClick={() => navigate('/users')}
-              />
-              <MetricCard
-                label="Bloqueados"
-                value={data.system.blockedUsers}
-                valueClassName={data.system.blockedUsers > 0 ? 'text-red-600' : undefined}
-                icon={<AlertTriangle className="h-5 w-5 text-red-500" />}
-                bg="bg-red-50"
-                onClick={() => navigate('/users')}
-              />
-              <div className="col-span-2 rounded-xl bg-slate-50 p-4">
-                <p className="text-xs text-slate-400">Última sincronización</p>
-                <p className="mt-0.5 text-sm font-medium text-slate-700">
-                  {data.system.lastSyncAt
-                    ? new Date(data.system.lastSyncAt).toLocaleString('es-PE')
-                    : '—'}
-                </p>
+        <div className={`grid gap-6 ${hasClassification ? 'xl:grid-cols-2' : ''}`}>
+          {hasClassification && (
+            <div className="rounded-3xl bg-white p-5 shadow-sm">
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="text-base font-semibold text-slate-900">Accidentes por clasificación</h2>
+                <button
+                  onClick={() => navigate('/accidents')}
+                  className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
+                >
+                  Ver accidentes
+                </button>
+              </div>
+              <div className="space-y-4">
+                {data.accidentsByClassification.map(item => (
+                  <div key={item.classification}>
+                    <div className="flex justify-between text-sm font-medium text-slate-700">
+                      <span className="truncate pr-2">{item.classification}</span>
+                      <span className="shrink-0 text-slate-500">{item.count}</span>
+                    </div>
+                    <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-slate-100">
+                      <div
+                        className="h-full rounded-full bg-red-500"
+                        style={{ width: `${(item.count / maxClassification) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
+          )}
 
           <div className="rounded-3xl bg-white p-5 shadow-sm">
             <div className="mb-4 flex items-center justify-between">
@@ -237,19 +237,50 @@ export const AdminDashboardPage = () => {
             </div>
 
             {data.mostUsedMedications.length === 0 ? (
-              <p className="py-6 text-center text-sm text-slate-400">Sin dispensaciones registradas</p>
+              <p className="py-6 text-center text-sm text-slate-400">Sin dispensaciones en el rango</p>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {data.mostUsedMedications.map(m => (
-                  <div key={m.name} className="flex items-center justify-between text-sm">
-                    <span className="truncate pr-4 text-slate-700">{m.name}</span>
-                    <span className="shrink-0 font-medium text-slate-500">{m.count} uds</span>
+                  <div key={m.name}>
+                    <div className="flex justify-between text-sm font-medium text-slate-700">
+                      <span className="truncate pr-2">{m.name}</span>
+                      <span className="shrink-0 text-slate-500">{m.count} uds</span>
+                    </div>
+                    <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-slate-100">
+                      <div
+                        className="h-full rounded-full bg-indigo-400"
+                        style={{ width: `${(m.count / maxMeds) * 100}%` }}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
             )}
           </div>
         </div>
+
+        <div className="grid gap-6 xl:grid-cols-3">
+          {
+            principalMetrics.map(({ info, rows }) => (
+              <MetricPanel
+                {...info}
+                onAction={() => info.path ? navigate(info.path) : null}
+                rows={rows}
+                panelHeight="300px" />
+            ))
+          }
+        </div>
+
+        {
+          secondaryMetrics.map(({ info, rows }) => (
+            <MetricPanel
+              {...info}
+              onAction={() => info.path ? navigate(info.path) : null}
+              rows={rows}
+              panelHeight="280px" />
+          ))
+        }
+
       </div>
     </PageContainer>
   )

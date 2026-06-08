@@ -3,7 +3,10 @@ export type ManagementDashboardResponse = {
     totalEmployees: number
     activeCycles: number
     totalAccidents: number
-    attentionsThisMonth: number
+    attentionsInRange: number
+    internalEmployees: number
+    externalEmployees: number
+    followUpsInRange: number
   }
 
   alerts: {
