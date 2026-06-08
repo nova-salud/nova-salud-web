@@ -41,6 +41,21 @@ export const useEmployeeClinicalLookup = () => {
     }
   }, [])
 
+  const selectEmployee = useCallback(async (emp: EmployeeResponseDto) => {
+    try {
+      setIsLoading(true)
+      setError(null)
+      setEmployee(emp)
+      const history = await clinicalAttentionService.findClinicalHistoryByEmployeeId(emp.id)
+      setClinicalHistory(history)
+    } catch (error) {
+      setClinicalHistory(null)
+      setError(parseBackendError(error))
+    } finally {
+      setIsLoading(false)
+    }
+  }, [])
+
   return {
     employee,
     clinicalHistory,
@@ -48,5 +63,6 @@ export const useEmployeeClinicalLookup = () => {
     error,
     search,
     clearResult,
+    selectEmployee,
   }
 }

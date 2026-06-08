@@ -55,6 +55,19 @@ class ClinicalAttentionService extends ApiService {
       throw error
     }
   }
+
+  async findClinicalHistoryByEmployeeId(
+    employeeId: number,
+  ): Promise<ClinicalHistoryResponseDto | null> {
+    try {
+      return await this.get<ClinicalHistoryResponseDto>(
+        `/attentions/clinical-histories/employee/${employeeId}`,
+      )
+    } catch (error) {
+      if ((error as { statusCode: number })?.statusCode === 404) return null
+      throw error
+    }
+  }
 }
 
 export const clinicalAttentionService = new ClinicalAttentionService()

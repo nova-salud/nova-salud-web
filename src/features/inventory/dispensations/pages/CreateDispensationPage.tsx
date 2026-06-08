@@ -4,6 +4,7 @@ import type { EmployeeAllergyResponseDto } from '@/features/employees/types/empl
 import type { EmployeeResponseDto } from '@/features/employees/types/employee-response.dto'
 import { MedicationDispenserSection } from '@/shared/components/dispensation/MedicationDispenserSection'
 import { EmployeeSearchSelector } from '@/shared/components/employee/EmployeeSearchSelector'
+import SelectedEmployeeCard from '@/shared/components/employee/SelectedEmployeeCard'
 import PageContainer from '@/shared/components/ui/PageContainer'
 import { Button, Input, Select, Textarea } from '@/shared/components/ui/form'
 import { useCreateDispensation } from '../hooks/useCreateDispensation'
@@ -74,23 +75,7 @@ const CreateDispensationPage = () => {
           </div>
         ) : null}
 
-        <div className="flex items-start justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-          <div className="space-y-0.5">
-            <p className="text-sm font-semibold text-slate-900">{selectedEmployee.fullName}</p>
-            <p className="text-xs text-slate-500">DNI: {selectedEmployee.dni}</p>
-            {selectedEmployee.position && (
-              <p className="text-xs text-slate-500">{selectedEmployee.position.name}</p>
-            )}
-          </div>
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={handleClearEmployee}
-            className="w-auto px-3 py-1.5 text-xs"
-          >
-            Cambiar trabajador
-          </Button>
-        </div>
+        <SelectedEmployeeCard employee={selectedEmployee} onClear={handleClearEmployee} />
 
         {allergies.length > 0 && (
           <div className="space-y-2">
