@@ -82,6 +82,23 @@ class ClinicalHistoryEmoCycleService extends ApiService {
       dto,
     )
   }
+
+  async sendIncompleteNotification(id: number): Promise<void> {
+    await this.post<void>(
+      `/clinical-history-emo-cycles/${id}/send-incomplete-notification`,
+    )
+  }
+
+  async attachFinalReport(id: number, file: File): Promise<ClinicalHistoryEmoCycleResponseDto> {
+    const formData = new FormData()
+    formData.append('file', file)
+
+    return await this.patch<ClinicalHistoryEmoCycleResponseDto>(
+      `/clinical-history-emo-cycles/${id}/attach-final-report`,
+      formData,
+      { headers: { 'Content-Type': 'multipart/form-data' } },
+    )
+  }
 }
 
 export const clinicalHistoryEmoCycleService = new ClinicalHistoryEmoCycleService()

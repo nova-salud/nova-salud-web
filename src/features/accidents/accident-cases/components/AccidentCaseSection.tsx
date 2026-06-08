@@ -1,4 +1,4 @@
-import { Button } from '@/shared/components/ui/form'
+import { Button, Textarea } from '@/shared/components/ui/form'
 import { cn } from '@/shared/utils'
 import type { AccidentResponseDto } from '../../accidents/types'
 import { useCreateEmployeeRestriction, useLiftRestriction } from '../../employee-restrinctions/hooks'
@@ -27,6 +27,8 @@ export const AccidentCaseSection = ({
 
   const [isDischargeModalOpen, setIsDischargeModalOpen] = useState(false)
   const [isConsentOpen, setIsConsentOpen] = useState(false)
+  const [liftingRestrictionId, setLiftingRestrictionId] = useState<number | null>(null)
+  const [liftingNotes, setLiftingNotes] = useState('')
 
   const {
     registerDischarge,
@@ -186,29 +188,67 @@ export const AccidentCaseSection = ({
         {restrictions.map((r) => (
           <div
             key={r.id}
-            className="flex items-center justify-between rounded-xl border border-slate-200 px-4 py-3"
+            className="rounded-xl border border-slate-200 px-4 py-3 space-y-3"
           >
-            <div>
-              <p className="text-sm font-medium text-slate-900">
-                {r.description}
-              </p>
-              <p className="text-xs text-slate-500">
-                {r.isActive ? 'Activa' : 'Levantada'}
-              </p>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-slate-900">
+                  {r.description}
+                </p>
+                <p className="text-xs text-slate-500">
+                  {r.isActive ? 'Activa' : 'Levantada'}
+                </p>
+                {!r.isActive && r.liftingNotes && (
+                  <p className="text-xs text-slate-500 mt-0.5 italic">
+                    Nota: {r.liftingNotes}
+                  </p>
+                )}
+              </div>
+
+              {r.isActive && !isReadOnly && liftingRestrictionId !== r.id && (
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setLiftingRestrictionId(r.id)
+                    setLiftingNotes('')
+                  }}
+                >
+                  Levantar
+                </Button>
+              )}
             </div>
 
-            {r.isActive && !isReadOnly && (
-              <Button
-                variant="outline"
-                onClick={async () => {
-                  const result = await liftRestriction(r.id)
-                  if (result === undefined) return
-                  onRefresh()
-                }}
-                isLoading={isLifting}
-              >
-                Levantar
-              </Button>
+            {liftingRestrictionId === r.id && (
+              <div className="space-y-3 pt-1 border-t border-slate-100">
+                <Textarea
+                  label="Notas de levantamiento (opcional)"
+                  placeholder="Ej: Recuperación completa verificada clínicamente."
+                  value={liftingNotes}
+                  onChange={setLiftingNotes}
+                  rows={3}
+                />
+                <div className="flex justify-end gap-2">
+                  <Button
+                    variant="outline"
+                    className="w-auto"
+                    onClick={() => setLiftingRestrictionId(null)}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    className="w-auto"
+                    isLoading={isLifting}
+                    onClick={async () => {
+                      const result = await liftRestriction(r.id, liftingNotes.trim() || undefined)
+                      if (result === undefined) return
+                      setLiftingRestrictionId(null)
+                      onRefresh()
+                    }}
+                  >
+                    Confirmar levantamiento
+                  </Button>
+                </div>
+              </div>
             )}
           </div>
         ))}

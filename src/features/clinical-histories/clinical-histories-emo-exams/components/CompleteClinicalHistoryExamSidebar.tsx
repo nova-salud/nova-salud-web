@@ -1,10 +1,12 @@
 import { Textarea, Button, InputFile } from '@/shared/components/ui/form'
+import { SearchSelect } from '@/shared/components/ui/form/SearchSelect'
 import { getFileUrl } from '@/shared/utils'
 import { useState, useEffect } from 'react'
 import type { ClinicalHistoryExamResponseDto } from '../../emo-cycles/types'
 import { useCompleteClinicalHistoryExam } from '../hooks'
 import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
-
+import { healthcareCenterService } from '@/features/healthcare-centers/services/healthcare-center.service'
+import type { HealthcareCenterResponseDto } from '@/features/healthcare-centers/types'
 
 type Props = {
   isOpen: boolean
@@ -20,6 +22,8 @@ const CompleteClinicalHistoryExamSidebar = ({
   onSuccess,
 }: Props) => {
   const [file, setFile] = useState<File | null>(null)
+  const [healthcareCenterId, setHealthcareCenterId] = useState<string>('')
+  const [healthcareCenters, setHealthcareCenters] = useState<HealthcareCenterResponseDto[]>([])
 
   const {
     isLoading,
@@ -28,8 +32,15 @@ const CompleteClinicalHistoryExamSidebar = ({
   } = useCompleteClinicalHistoryExam()
 
   useEffect(() => {
+    healthcareCenterService.findAll({ pageSize: 200, page: 1, isActive: true })
+      .then((res) => setHealthcareCenters(res.data))
+      .catch(() => {})
+  }, [])
+
+  useEffect(() => {
     if (!isOpen) return
     setFile(null)
+    setHealthcareCenterId(exam?.healthcareCenterId ? String(exam.healthcareCenterId) : '')
   }, [isOpen, exam])
 
   const isCompleted = exam?.isCompleted ?? false
@@ -43,7 +54,10 @@ const CompleteClinicalHistoryExamSidebar = ({
 
     const result = await completeClinicalHistoryExam(
       exam.id,
-      { resultNote },
+      {
+        resultNote,
+        healthcareCenterId: healthcareCenterId ? Number(healthcareCenterId) : undefined,
+      },
       file,
     )
 
@@ -93,6 +107,28 @@ const CompleteClinicalHistoryExamSidebar = ({
             rows={5}
             disabled={isCompleted}
           />
+
+          {isCompleted ? (
+            <div className="rounded-2xl bg-slate-50 px-4 py-3">
+              <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
+                Proveedor / Clínica
+              </p>
+              <p className="mt-2 text-sm text-slate-700">
+                {exam.healthcareCenterName ?? 'No registrado'}
+              </p>
+            </div>
+          ) : (
+            <SearchSelect
+              label="Proveedor / Clínica (opcional)"
+              value={healthcareCenterId}
+              options={[
+                { label: 'Sin proveedor', value: '' },
+                ...healthcareCenters.map((hc) => ({ label: hc.name, value: String(hc.id) })),
+              ]}
+              onChange={setHealthcareCenterId}
+              placeholder="Buscar proveedor..."
+            />
+          )}
 
           {isCompleted ? (
             <div className="rounded-2xl bg-slate-50 px-4 py-3">

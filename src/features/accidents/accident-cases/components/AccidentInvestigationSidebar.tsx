@@ -79,7 +79,7 @@ export const AccidentInvestigationSidebar = ({
         <Textarea
           label="Responsable de la investigación"
           value={responsible}
-          onChange={(e) => setResponsible(e.target.value)}
+          onChange={setResponsible}
           placeholder="Nombre del responsable"
           rows={2}
         />
@@ -87,7 +87,7 @@ export const AccidentInvestigationSidebar = ({
         <Textarea
           label="Constatación / Hallazgos"
           value={findings}
-          onChange={(e) => setFindings(e.target.value)}
+          onChange={setFindings}
           placeholder="Describe los hallazgos de la investigación"
           rows={3}
         />
@@ -95,7 +95,7 @@ export const AccidentInvestigationSidebar = ({
         <Textarea
           label="Causa origen"
           value={rootCause}
-          onChange={(e) => setRootCause(e.target.value)}
+          onChange={setRootCause}
           placeholder="Indica la causa raíz del accidente"
           rows={3}
         />
@@ -103,7 +103,7 @@ export const AccidentInvestigationSidebar = ({
         <Textarea
           label="Medidas correctivas"
           value={correctiveMeasures}
-          onChange={(e) => setCorrectiveMeasures(e.target.value)}
+          onChange={setCorrectiveMeasures}
           placeholder="Describe las medidas correctivas a implementar"
           rows={3}
         />

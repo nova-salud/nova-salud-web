@@ -8,4 +8,5 @@ export interface EmployeeRestrictionResponseDto extends AuditResponseDto {
   startDate: Date
   endDate: Date | null
   isActive: boolean
+  liftingNotes: string | null
 }

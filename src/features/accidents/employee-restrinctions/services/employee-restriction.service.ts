@@ -10,9 +10,10 @@ class EmployeeRestrictionService extends ApiService {
     )
   }
 
-  async lift(id: number) {
+  async lift(id: number, liftingNotes?: string) {
     return await this.patch<void>(
       `/employee-restrictions/${id}/lift`,
+      liftingNotes ? { liftingNotes } : undefined,
     )
   }
 }

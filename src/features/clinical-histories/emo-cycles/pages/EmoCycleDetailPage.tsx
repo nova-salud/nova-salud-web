@@ -2,8 +2,9 @@ import { useState } from 'react'
 import { useParams } from 'react-router'
 import { Button } from '@/shared/components/ui/form'
 import { useConfirmEmoCycleExamReview } from '../hooks'
-import { Download } from 'lucide-react'
+import { Download, Paperclip, FileText } from 'lucide-react'
 import { cn } from '@/shared/utils'
+import { getFileUrl } from '@/shared/utils'
 import PageContainer from '@/shared/components/ui/PageContainer'
 import EmoCycleExamsSection from '../components/EmoCycleExamsSection'
 import { useEmoCycle } from '../hooks/useEmoCycle'
@@ -14,6 +15,7 @@ import { getEmoCycleViewState } from '../helpers/getEmoCycleViewState'
 import EmitClinicalHistoryConclusionSidebar from '../components/EmitClinicalHistoryConclusionSidebar'
 import SignClinicalHistoryConformitySidebar from '../components/SignClinicalHistoryConformitySidebar'
 import SignaturePreviewModal from '../components/SignaturePreviewModal'
+import AttachEmoCycleFinalReportSidebar from '../components/AttachEmoCycleFinalReportSidebar'
 import { documentTemplateService } from '@/features/document-templates/services/document-template.service'
 import { DocumentTemplateType } from '@/features/document-templates/types/document-template.types'
 import { parseBackendError } from '@/core/utils/parse-backend-error'
@@ -30,6 +32,7 @@ const EmoCycleDetailPage = () => {
   const [previewSignatureData, setPreviewSignatureData] = useState<string | null>(null)
   const [previewSignatureTitle, setPreviewSignatureTitle] = useState('Vista previa de firma')
   const [generatingType, setGeneratingType] = useState<DocumentTemplateType | null>(null)
+  const [isAttachReportSidebarOpen, setIsAttachReportSidebarOpen] = useState(false)
 
   const handleGenerate = async (type: DocumentTemplateType) => {
     if (!emoCycle) return
@@ -96,26 +99,73 @@ const EmoCycleDetailPage = () => {
             </div>
 
             {emoCycle.conclusion && (
-              <div className="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  disabled={generatingType === DocumentTemplateType.EMO_DELIVERY}
-                  onClick={() => handleGenerate(DocumentTemplateType.EMO_DELIVERY)}
-                  className="flex items-center gap-1.5 rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700 hover:bg-blue-100 disabled:opacity-60"
-                >
-                  <Download className="h-3.5 w-3.5" />
-                  {generatingType === DocumentTemplateType.EMO_DELIVERY ? 'Generando...' : 'Entrega de resultados'}
-                </button>
+              <div className="flex flex-col items-end gap-2">
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    disabled={generatingType === DocumentTemplateType.EMO_DELIVERY}
+                    onClick={() => handleGenerate(DocumentTemplateType.EMO_DELIVERY)}
+                    className="flex items-center gap-1.5 rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700 hover:bg-blue-100 disabled:opacity-60"
+                  >
+                    <Download className="h-3.5 w-3.5" />
+                    {generatingType === DocumentTemplateType.EMO_DELIVERY ? 'Generando...' : 'Entrega de resultados'}
+                  </button>
 
-                <button
-                  type="button"
-                  disabled={generatingType === DocumentTemplateType.EMO_CERTIFICATE}
-                  onClick={() => handleGenerate(DocumentTemplateType.EMO_CERTIFICATE)}
-                  className="flex items-center gap-1.5 rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-60"
-                >
-                  <Download className="h-3.5 w-3.5" />
-                  {generatingType === DocumentTemplateType.EMO_CERTIFICATE ? 'Generando...' : 'Certificado de aptitud'}
-                </button>
+                  <button
+                    type="button"
+                    disabled={generatingType === DocumentTemplateType.EMO_CERTIFICATE}
+                    onClick={() => handleGenerate(DocumentTemplateType.EMO_CERTIFICATE)}
+                    className="flex items-center gap-1.5 rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 hover:bg-emerald-100 disabled:opacity-60"
+                  >
+                    <Download className="h-3.5 w-3.5" />
+                    {generatingType === DocumentTemplateType.EMO_CERTIFICATE ? 'Generando...' : 'Certificado de aptitud'}
+                  </button>
+
+                  {emoCycle.conclusion === 'APTO_CON_RESTRICCIONES' && (
+                    <>
+                      <button
+                        type="button"
+                        disabled={generatingType === DocumentTemplateType.EMO_CONFORMITY_RESTRICTIONS}
+                        onClick={() => handleGenerate(DocumentTemplateType.EMO_CONFORMITY_RESTRICTIONS)}
+                        className="flex items-center gap-1.5 rounded-lg bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-700 hover:bg-amber-100 disabled:opacity-60"
+                      >
+                        <Download className="h-3.5 w-3.5" />
+                        {generatingType === DocumentTemplateType.EMO_CONFORMITY_RESTRICTIONS ? 'Generando...' : 'Conformidad con restricciones'}
+                      </button>
+
+                      <button
+                        type="button"
+                        disabled={generatingType === DocumentTemplateType.EMO_CONFORMITY_DOCTOR}
+                        onClick={() => handleGenerate(DocumentTemplateType.EMO_CONFORMITY_DOCTOR)}
+                        className="flex items-center gap-1.5 rounded-lg bg-violet-50 px-3 py-1.5 text-xs font-medium text-violet-700 hover:bg-violet-100 disabled:opacity-60"
+                      >
+                        <Download className="h-3.5 w-3.5" />
+                        {generatingType === DocumentTemplateType.EMO_CONFORMITY_DOCTOR ? 'Generando...' : 'Conformidad médico ocupacional'}
+                      </button>
+                    </>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => setIsAttachReportSidebarOpen(true)}
+                    className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-200"
+                  >
+                    <Paperclip className="h-3.5 w-3.5" />
+                    Adjuntar informe final
+                  </button>
+                </div>
+
+                {emoCycle.finalReportFileUrl && (
+                  <a
+                    href={getFileUrl(emoCycle.finalReportFileUrl)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-700"
+                  >
+                    <FileText className="h-3.5 w-3.5" />
+                    Ver informe médico adjunto
+                  </a>
+                )}
               </div>
             )}
           </div>
@@ -167,6 +217,13 @@ const EmoCycleDetailPage = () => {
           setPreviewSignatureData(null)
           setPreviewSignatureTitle('Vista previa de firma')
         }}
+      />
+
+      <AttachEmoCycleFinalReportSidebar
+        isOpen={isAttachReportSidebarOpen}
+        cycleId={emoCycle.id}
+        onClose={() => setIsAttachReportSidebarOpen(false)}
+        onSuccess={refetch}
       />
     </PageContainer>
   )

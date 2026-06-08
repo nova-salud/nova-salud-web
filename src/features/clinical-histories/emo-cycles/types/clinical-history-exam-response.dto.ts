@@ -12,4 +12,6 @@ export type ClinicalHistoryExamResponseDto = AuditResponseDto & {
   fileName: string | null
   fileUrl: string | null
   fileType: string | null
+  healthcareCenterId: number | null
+  healthcareCenterName: string | null
 }

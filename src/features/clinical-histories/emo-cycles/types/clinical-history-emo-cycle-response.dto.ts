@@ -32,6 +32,9 @@ export type ClinicalHistoryEmoCycleResponseDto = AuditResponseDto & {
   cancellationNotes: string | null
   cancelledAt: Date | null
   isActive: boolean
+  finalReportFileName: string | null
+  finalReportFileUrl: string | null
+  finalReportFileType: string | null
   exams: ClinicalHistoryExamResponseDto[]
   conformities: ClinicalHistoryConformityResponseDto[]
 }

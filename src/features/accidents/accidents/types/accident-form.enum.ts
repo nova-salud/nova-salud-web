@@ -1,9 +1,11 @@
-export enum AccidentFormEnum {
-  FALLS_TRIPS = 'FALLS_TRIPS',
-  IMPACTS_BLOWS = 'IMPACTS_BLOWS',
-  ENTRAPMENTS = 'ENTRAPMENTS',
-  HAZARDOUS_SUBSTANCES_EXPOSURE = 'HAZARDOUS_SUBSTANCES_EXPOSURE',
-}
+export const AccidentFormEnum = {
+  FALLS_TRIPS: 'FALLS_TRIPS',
+  IMPACTS_BLOWS: 'IMPACTS_BLOWS',
+  ENTRAPMENTS: 'ENTRAPMENTS',
+  HAZARDOUS_SUBSTANCES_EXPOSURE: 'HAZARDOUS_SUBSTANCES_EXPOSURE',
+} as const
+
+export type AccidentFormEnum = typeof AccidentFormEnum[keyof typeof AccidentFormEnum]
 
 export const ACCIDENT_FORM_LABEL: Record<AccidentFormEnum, string> = {
   [AccidentFormEnum.FALLS_TRIPS]: 'Caídas / Tropiezos',

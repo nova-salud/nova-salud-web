@@ -76,23 +76,26 @@ export const AccidentClassificationSidebar = ({
         )}
 
         <Select
+          name="severity"
           label="Gravedad"
           value={severity}
-          onChange={(e) => setSeverity(e.target.value as AccidentSeverityEnum | '')}
+          onChange={(value) => setSeverity(value as AccidentSeverityEnum | '')}
           options={[{ label: 'Sin especificar', value: '' }, ...ACCIDENT_SEVERITY_OPTIONS]}
         />
 
         <Select
+          name="form"
           label="Forma"
           value={form}
-          onChange={(e) => setForm(e.target.value as AccidentFormEnum | '')}
+          onChange={(value) => setForm(value as AccidentFormEnum | '')}
           options={[{ label: 'Sin especificar', value: '' }, ...ACCIDENT_FORM_OPTIONS]}
         />
 
         <Select
+          name="laborRelation"
           label="Relación laboral"
           value={laborRelation}
-          onChange={(e) => setLaborRelation(e.target.value as AccidentLaborRelationEnum | '')}
+          onChange={(value) => setLaborRelation(value as AccidentLaborRelationEnum | '')}
           options={[{ label: 'Sin especificar', value: '' }, ...ACCIDENT_LABOR_RELATION_OPTIONS]}
         />
       </div>

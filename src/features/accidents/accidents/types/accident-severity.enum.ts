@@ -1,9 +1,11 @@
-export enum AccidentSeverityEnum {
-  INCIDENT = 'INCIDENT',
-  MINOR_ACCIDENT = 'MINOR_ACCIDENT',
-  DISABLING_ACCIDENT = 'DISABLING_ACCIDENT',
-  FATAL_ACCIDENT = 'FATAL_ACCIDENT',
-}
+export const AccidentSeverityEnum = {
+  INCIDENT: 'INCIDENT',
+  MINOR_ACCIDENT: 'MINOR_ACCIDENT',
+  DISABLING_ACCIDENT: 'DISABLING_ACCIDENT',
+  FATAL_ACCIDENT: 'FATAL_ACCIDENT',
+} as const
+
+export type AccidentSeverityEnum = typeof AccidentSeverityEnum[keyof typeof AccidentSeverityEnum]
 
 export const ACCIDENT_SEVERITY_LABEL: Record<AccidentSeverityEnum, string> = {
   [AccidentSeverityEnum.INCIDENT]: 'Incidente',

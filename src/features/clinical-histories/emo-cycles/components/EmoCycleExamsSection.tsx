@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Button } from '@/shared/components/ui/form'
 import { cn } from '@/shared/utils'
 import type { ClinicalHistoryEmoCycleResponseDto, ClinicalHistoryExamResponseDto } from '../types'
+import { useSendIncompleteEmoCycleNotification } from '../hooks'
 import CompleteClinicalHistoryExamSidebar from '../../clinical-histories-emo-exams/components/CompleteClinicalHistoryExamSidebar'
 
 type Props = {
@@ -19,6 +20,10 @@ const EmoCycleExamsSection = ({
   const [selectedExam, setSelectedExam] = useState<ClinicalHistoryExamResponseDto | null>(null)
   const [isCompleteSidebarOpen, setIsCompleteSidebarOpen] = useState(false)
   const completedCount = exams.filter((e) => e.isCompleted).length
+  const hasPendingRequired = exams.some((e) => e.isRequired && !e.isCompleted)
+  const canNotify = hasPendingRequired && (cycle.status === 'IN_PROGRESS' || cycle.status === 'PENDING_EXAM_REVIEW')
+
+  const { sendNotification, isLoading: isSendingNotification } = useSendIncompleteEmoCycleNotification()
 
   const handleOpenCompleteSidebar = (exam: ClinicalHistoryExamResponseDto) => {
     setSelectedExam(exam)
@@ -33,13 +38,28 @@ const EmoCycleExamsSection = ({
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
 
-      <div className="mb-5">
-        <h2 className="text-lg font-semibold text-slate-900">
-          Exámenes del ciclo
-        </h2>
-        <p className="mt-1 text-sm text-slate-500">
-          Completa los exámenes requeridos para continuar el proceso.
-        </p>
+      <div className="mb-5 flex items-start justify-between gap-4">
+        <div>
+          <h2 className="text-lg font-semibold text-slate-900">
+            Exámenes del ciclo
+          </h2>
+          <p className="mt-1 text-sm text-slate-500">
+            Completa los exámenes requeridos para continuar el proceso.
+          </p>
+        </div>
+        {canNotify && (
+          <Button
+            type="button"
+            variant="outline"
+            className="shrink-0 text-xs"
+            onClick={() => sendNotification(cycle.id)}
+            disabled={isSendingNotification}
+            loadingText="Enviando..."
+            isLoading={isSendingNotification}
+          >
+            Notificar EMO incompleto
+          </Button>
+        )}
       </div>
 
       <div className="mb-5 flex flex-wrap gap-2">
@@ -78,6 +98,12 @@ const EmoCycleExamsSection = ({
             <div className="mt-2 text-sm text-slate-700">
               {exam.resultNote?.trim() || 'Sin resultado registrado'}
             </div>
+
+            {exam.healthcareCenterName && (
+              <div className="mt-1 text-xs text-slate-500">
+                Proveedor: {exam.healthcareCenterName}
+              </div>
+            )}
 
             {!isReadOnly && (
               <div className="mt-4 flex justify-end gap-2">

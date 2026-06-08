@@ -6,6 +6,8 @@ export type FindDocumentTemplatesDto = {
 export const DocumentTemplateType = {
   EMO_DELIVERY: 'EMO_DELIVERY',
   EMO_CERTIFICATE: 'EMO_CERTIFICATE',
+  EMO_CONFORMITY_RESTRICTIONS: 'EMO_CONFORMITY_RESTRICTIONS',
+  EMO_CONFORMITY_DOCTOR: 'EMO_CONFORMITY_DOCTOR',
 } as const
 
 export type DocumentTemplateType = typeof DocumentTemplateType[keyof typeof DocumentTemplateType];

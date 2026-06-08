@@ -19,9 +19,22 @@ const TEMPLATE_META: Record<DocumentTemplateType, { label: string; description: 
     label: 'Certificado de Aptitud',
     description: 'Formato de aptitud médico ocupacional con resultado y recomendaciones.',
   },
+  [DocumentTemplateType.EMO_CONFORMITY_RESTRICTIONS]: {
+    label: 'Conformidad con Restricciones',
+    description: 'Formato de conformidad para el trabajador que realizará sus labores con restricciones médicas.',
+  },
+  [DocumentTemplateType.EMO_CONFORMITY_DOCTOR]: {
+    label: 'Conformidad Médico Ocupacional',
+    description: 'Formato de conformidad del médico ocupacional sobre el resultado del EMO.',
+  },
 }
 
-const ALL_TYPES = [DocumentTemplateType.EMO_DELIVERY, DocumentTemplateType.EMO_CERTIFICATE]
+const ALL_TYPES = [
+  DocumentTemplateType.EMO_DELIVERY,
+  DocumentTemplateType.EMO_CERTIFICATE,
+  DocumentTemplateType.EMO_CONFORMITY_RESTRICTIONS,
+  DocumentTemplateType.EMO_CONFORMITY_DOCTOR,
+]
 
 const DocumentTemplatesPage = () => {
   const { templates, isLoading, refetch } = useDocumentTemplates()
@@ -31,6 +44,8 @@ const DocumentTemplatesPage = () => {
   const fileInputRefs = useRef<Record<DocumentTemplateType, HTMLInputElement | null>>({
     [DocumentTemplateType.EMO_DELIVERY]: null,
     [DocumentTemplateType.EMO_CERTIFICATE]: null,
+    [DocumentTemplateType.EMO_CONFORMITY_RESTRICTIONS]: null,
+    [DocumentTemplateType.EMO_CONFORMITY_DOCTOR]: null,
   })
 
   const getTemplate = (type: DocumentTemplateType): DocumentTemplateResponseDto | undefined =>

@@ -14,6 +14,7 @@ export type EmployeeResponseDto = AuditResponseDto & {
   areaId: number
   area: EmployeeAreaResponseDto
   position: EmployeePositionResponseDto | null
+  email: string | null
   immediateBoss: string | null
   employmentStatus: string
   isActive: boolean

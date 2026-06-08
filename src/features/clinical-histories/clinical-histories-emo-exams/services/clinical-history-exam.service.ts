@@ -3,6 +3,7 @@ import type { ClinicalHistoryExamResponseDto } from '../../emo-cycles/types'
 
 export type CompleteClinicalHistoryExamDto = {
   resultNote: string
+  healthcareCenterId?: number
 }
 
 class ClinicalHistoryExamService extends ApiService {
@@ -14,6 +15,9 @@ class ClinicalHistoryExamService extends ApiService {
     const formData = new FormData()
     formData.append('resultNote', dto.resultNote)
     formData.append('file', file)
+    if (dto.healthcareCenterId) {
+      formData.append('healthcareCenterId', String(dto.healthcareCenterId))
+    }
 
     return await this.patch<ClinicalHistoryExamResponseDto>(
       `/clinical-histories/exams/${id}/complete`,

@@ -3,7 +3,7 @@ import { employeeRestrictionService } from '../services/employee-restriction.ser
 
 export const useLiftRestriction = () => {
   const { execute, isLoading, error } = useAsyncAction<
-    [number],
+    [number, string?],
     void
   >(
     employeeRestrictionService.lift.bind(employeeRestrictionService),
