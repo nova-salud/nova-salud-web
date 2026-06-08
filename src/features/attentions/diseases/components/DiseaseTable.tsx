@@ -2,6 +2,7 @@ import { Button } from '@/shared/components/ui/form'
 import { DataTable } from '@/shared/components/ui/table/DataTable'
 import { cn } from '@/shared/utils'
 import type { DiseaseResponseDto } from '../types'
+import { DISEASE_TYPE_LABEL } from '../types/disease-type.enum'
 
 type Props = {
   items: DiseaseResponseDto[]
@@ -24,6 +25,7 @@ const DiseaseTable = ({
         'Código',
         'Nombre',
         'Categoría',
+        'Tipo',
         'Estado',
         'Acciones',
       ]}
@@ -45,6 +47,10 @@ const DiseaseTable = ({
 
           <td className="px-6 py-5 text-slate-500">
             {item.category ?? '—'}
+          </td>
+
+          <td className="px-6 py-5 text-slate-500">
+            {item.diseaseType ? DISEASE_TYPE_LABEL[item.diseaseType] : '—'}
           </td>
 
           <td className="px-6 py-5">

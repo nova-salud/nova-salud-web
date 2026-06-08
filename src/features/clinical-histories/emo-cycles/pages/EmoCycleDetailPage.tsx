@@ -38,7 +38,7 @@ const EmoCycleDetailPage = () => {
     if (!emoCycle) return
     setGeneratingType(type)
     try {
-      await documentTemplateService.generate(type, emoCycle.id)
+      await documentTemplateService.generate(type, { emoCycleId: emoCycle.id })
     } catch (err) {
       toastService.error(parseBackendError(err))
     } finally {

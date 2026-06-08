@@ -6,6 +6,7 @@ import type { CreateMedicalRestDto, MedicalRestResponseDto } from '../types'
 export type FindMedicalRestsParams = QueryParams & {
   clinicalHistoryId?: number
   accidentId?: number
+  attentionId?: number
 }
 
 class MedicalRestService extends ApiService {
@@ -15,6 +16,7 @@ class MedicalRestService extends ApiService {
     formData.append('startDate', dto.startDate)
     formData.append('endDate', dto.endDate)
     if (dto.accidentId) formData.append('accidentId', String(dto.accidentId))
+    if (dto.attentionId) formData.append('attentionId', String(dto.attentionId))
     if (dto.notes) formData.append('notes', dto.notes)
     if (file) formData.append('file', file)
 

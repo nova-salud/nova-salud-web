@@ -9,14 +9,15 @@ import MedicalRestFormSidebar from './MedicalRestFormSidebar'
 type Props = {
   clinicalHistoryId: number
   accidentId?: number
+  attentionId?: number
   isReadOnly?: boolean
 }
 
-export const ClinicalHistoryMedicalRestsSection = ({ clinicalHistoryId, accidentId, isReadOnly = false }: Props) => {
+export const ClinicalHistoryMedicalRestsSection = ({ clinicalHistoryId, accidentId, attentionId, isReadOnly = false }: Props) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const { data, isLoading, total, page, pageSize, totalPages, goToPage, refetch } =
-    useMedicalRests({ clinicalHistoryId, accidentId })
+    useMedicalRests({ clinicalHistoryId, accidentId, attentionId })
 
   return (
     <div className="px-5">
@@ -83,6 +84,7 @@ export const ClinicalHistoryMedicalRestsSection = ({ clinicalHistoryId, accident
         isOpen={isSidebarOpen}
         clinicalHistoryId={clinicalHistoryId}
         accidentId={accidentId}
+        attentionId={attentionId}
         onClose={() => setIsSidebarOpen(false)}
         onSuccess={() => {
           setIsSidebarOpen(false)

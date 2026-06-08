@@ -5,13 +5,14 @@ import { medicalRestService } from '../services/medical-rest.service'
 type Params = {
   clinicalHistoryId: number
   accidentId?: number
+  attentionId?: number
 }
 
-export const useMedicalRests = ({ clinicalHistoryId, accidentId }: Params) => {
+export const useMedicalRests = ({ clinicalHistoryId, accidentId, attentionId }: Params) => {
   const fetcher = useCallback(
     (page: number, pageSize: number) =>
-      medicalRestService.findAll({ clinicalHistoryId, accidentId, page, pageSize }),
-    [clinicalHistoryId, accidentId],
+      medicalRestService.findAll({ clinicalHistoryId, accidentId, attentionId, page, pageSize }),
+    [clinicalHistoryId, accidentId, attentionId],
   )
 
   return usePaginatedQuery(fetcher)

@@ -29,7 +29,7 @@ axiosInstance.interceptors.request.use((config) => {
 
 axiosInstance.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
     if (!error.response) {
       return Promise.reject<BackendError>({
         message: NETWORK_ERROR_MESSAGE,
@@ -38,22 +38,31 @@ axiosInstance.interceptors.response.use(
       })
     }
 
-    const backendError = error.response.data as BackendError
+    let data = error.response.data as BackendError
 
-    if (backendError?.statusCode === 401) {
+    // When responseType is 'blob', error bodies arrive as Blob — parse them as JSON
+    if (data instanceof Blob) {
+      try {
+        data = JSON.parse(await data.text()) as BackendError
+      } catch {
+        data = {} as BackendError
+      }
+    }
+
+    if (data?.statusCode === 401) {
       useAuthStore.getState().clearSession()
 
       return Promise.reject<BackendError>({
-        message: backendError.message || UNAUTHORIZED_MESSAGE,
-        error: backendError.error || 'Unauthorized',
+        message: data.message || UNAUTHORIZED_MESSAGE,
+        error: data.error || 'Unauthorized',
         statusCode: 401,
       })
     }
 
     return Promise.reject<BackendError>({
-      message: backendError?.message || INTERNAL_SERVER_ERROR_MESSAGE,
-      error: backendError?.error || 'Internal Server Error',
-      statusCode: backendError?.statusCode || 500,
+      message: data?.message || INTERNAL_SERVER_ERROR_MESSAGE,
+      error: data?.error || 'Internal Server Error',
+      statusCode: data?.statusCode || 500,
     })
   },
 )

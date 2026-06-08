@@ -10,11 +10,12 @@ type Props = {
   isOpen: boolean
   clinicalHistoryId: number
   accidentId?: number
+  attentionId?: number
   onClose: () => void
   onSuccess: () => void
 }
 
-const MedicalRestFormSidebar = ({ isOpen, clinicalHistoryId, accidentId, onClose, onSuccess }: Props) => {
+const MedicalRestFormSidebar = ({ isOpen, clinicalHistoryId, accidentId, attentionId, onClose, onSuccess }: Props) => {
   const [startDate, setStartDate] = useState('')
   const [file, setFile] = useState<File | null>(null)
 
@@ -38,6 +39,7 @@ const MedicalRestFormSidebar = ({ isOpen, clinicalHistoryId, accidentId, onClose
       {
         clinicalHistoryId,
         accidentId,
+        attentionId,
         startDate: start,
         endDate: end,
         notes: (data.get('notes') as string).trim() || undefined,

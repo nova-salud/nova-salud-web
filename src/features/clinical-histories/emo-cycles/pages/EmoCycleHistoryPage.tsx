@@ -39,7 +39,7 @@ const EmoCycleHistoryPage = () => {
     const key: GeneratingKey = `${type}-${cycleId}`
     setGeneratingKey(key)
     try {
-      await documentTemplateService.generate(type, cycleId)
+      await documentTemplateService.generate(type, { emoCycleId: cycleId })
     } catch (err) {
       toastService.error(parseBackendError(err))
     } finally {

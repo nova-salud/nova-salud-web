@@ -5,6 +5,7 @@ import type {
   DiseaseResponseDto,
   UpdateDiseaseDto,
 } from '../types'
+import { DISEASE_TYPE_OPTIONS, DiseaseType } from '../types/disease-type.enum'
 
 type DiseaseFormMode = 'create' | 'edit'
 
@@ -34,16 +35,18 @@ const DiseaseFormSidebarContent = ({
     if (!code || !name) return
 
     const category = (data.get('category') as string).trim() || undefined
+    const diseaseTypeValue = data.get('diseaseType') as string
+    const diseaseType = diseaseTypeValue ? (diseaseTypeValue as DiseaseType) : undefined
 
     if (mode === 'create') {
-      await onCreate?.({ code, name, category, isActive: true })
+      await onCreate?.({ code, name, category, diseaseType, isActive: true })
       return
     }
 
     if (!disease || !onUpdate) return
 
     const isActive = data.get('status') === 'true'
-    await onUpdate(disease.id, { code, name, category, isActive })
+    await onUpdate(disease.id, { code, name, category, diseaseType, isActive })
   }
 
   return (
@@ -53,7 +56,7 @@ const DiseaseFormSidebarContent = ({
         name="code"
         type="text"
         placeholder="Ej. J06.9"
-        defaultValue={disease?.code}
+        value={disease?.code}
       />
 
       <Input
@@ -61,7 +64,7 @@ const DiseaseFormSidebarContent = ({
         name="name"
         type="text"
         placeholder="Ingresa el nombre de la enfermedad"
-        defaultValue={disease?.name}
+        value={disease?.name}
       />
 
       <Input
@@ -69,14 +72,24 @@ const DiseaseFormSidebarContent = ({
         name="category"
         type="text"
         placeholder="Ingresa la categoría"
-        defaultValue={disease?.category ?? ''}
+        value={disease?.category ?? ''}
+      />
+
+      <Select
+        name="diseaseType"
+        label="Tipo de enfermedad"
+        defaultValue={disease?.diseaseType ?? ''}
+        options={[
+          { label: 'Sin especificar', value: '' },
+          ...DISEASE_TYPE_OPTIONS,
+        ]}
       />
 
       {mode === 'edit' ? (
         <Select
           name="status"
           label="Estado"
-          defaultValue={disease?.isActive ? 'true' : 'false'}
+          value={disease?.isActive ? 'true' : 'false'}
           options={[
             { label: 'Activo', value: 'true' },
             { label: 'Inactivo', value: 'false' },

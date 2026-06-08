@@ -11,14 +11,20 @@ type Props = Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'onChange'> & {
 }
 
 export const Textarea = forwardRef<HTMLTextAreaElement, Props>(
-  ({ label, error, className, onChange, ...props }, ref) => {
+  ({ label, error, className, onChange, required, ...props }, ref) => {
     return (
       <div className="flex flex-col gap-1.5">
-        {label && <Label>{label}</Label>}
+        {label && (
+          <Label>
+            {label}
+            {required && <span className="text-red-600"> *</span>}
+          </Label>
+        )}
 
         <textarea
           {...props}
           ref={ref}
+          required={required}
           className={cn(
             'w-full rounded-xl border px-3 py-2 text-sm outline-none transition',
             'border-slate-200 bg-white text-slate-900',

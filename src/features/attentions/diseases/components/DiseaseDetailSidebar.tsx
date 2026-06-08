@@ -2,6 +2,7 @@ import { Button } from '@/shared/components/ui/form'
 import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
 import { cn } from '@/shared/utils'
 import type { DiseaseResponseDto } from '../types'
+import { DISEASE_TYPE_LABEL } from '../types/disease-type.enum'
 
 type Props = {
   disease: DiseaseResponseDto | null
@@ -96,6 +97,15 @@ export const DiseaseDetailSidebar = ({
                 </p>
                 <p className="mt-1 text-sm font-medium text-slate-900">
                   {disease.name}
+                </p>
+              </div>
+
+              <div className="md:col-span-2">
+                <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
+                  Tipo de enfermedad
+                </p>
+                <p className="mt-1 text-sm text-slate-700">
+                  {disease.diseaseType ? DISEASE_TYPE_LABEL[disease.diseaseType] : '—'}
                 </p>
               </div>
             </div>

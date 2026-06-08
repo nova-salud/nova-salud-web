@@ -6,6 +6,4 @@ export type DispensationLotItemResponseDto = {
   medicationLotId: number
   medicationLotCode: string
   quantity: number
-  doseInstruction?: string | null
-  observation?: string | null
 }

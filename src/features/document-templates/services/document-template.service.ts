@@ -23,13 +23,14 @@ class DocumentTemplateService extends ApiService {
     this.triggerDownload(response.data as Blob, `${type.toLowerCase()}.docx`)
   }
 
-  async generate(type: DocumentTemplateType, emoCycleId: number): Promise<void> {
+  async generate(type: DocumentTemplateType, options: { emoCycleId?: number; attentionId?: number }): Promise<void> {
+    const id = options.attentionId ?? options.emoCycleId ?? 0
     const response = await axiosInstance.post(
       '/document-templates/generate',
-      { type, emoCycleId },
+      { type, ...options },
       { responseType: 'blob' },
     )
-    this.triggerDownload(response.data as Blob, `${type.toLowerCase()}_${emoCycleId}.docx`)
+    this.triggerDownload(response.data as Blob, `${type.toLowerCase()}_${id}.docx`)
   }
 
   private triggerDownload(blob: Blob, filename: string): void {

@@ -27,6 +27,10 @@ const TEMPLATE_META: Record<DocumentTemplateType, { label: string; description: 
     label: 'Conformidad Médico Ocupacional',
     description: 'Formato de conformidad del médico ocupacional sobre el resultado del EMO.',
   },
+  [DocumentTemplateType.ATTENTION_RECEIPT]: {
+    label: 'Recibo de Atención',
+    description: 'Formato de recibo de atención médica para el trabajador.',
+  },
 }
 
 const ALL_TYPES = [
@@ -34,6 +38,7 @@ const ALL_TYPES = [
   DocumentTemplateType.EMO_CERTIFICATE,
   DocumentTemplateType.EMO_CONFORMITY_RESTRICTIONS,
   DocumentTemplateType.EMO_CONFORMITY_DOCTOR,
+  DocumentTemplateType.ATTENTION_RECEIPT,
 ]
 
 const DocumentTemplatesPage = () => {
@@ -46,6 +51,7 @@ const DocumentTemplatesPage = () => {
     [DocumentTemplateType.EMO_CERTIFICATE]: null,
     [DocumentTemplateType.EMO_CONFORMITY_RESTRICTIONS]: null,
     [DocumentTemplateType.EMO_CONFORMITY_DOCTOR]: null,
+    [DocumentTemplateType.ATTENTION_RECEIPT]: null,
   })
 
   const getTemplate = (type: DocumentTemplateType): DocumentTemplateResponseDto | undefined =>

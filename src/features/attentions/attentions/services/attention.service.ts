@@ -31,6 +31,10 @@ class AttentionService extends ApiService {
       dto,
     )
   }
+
+  async sendSummary(id: number): Promise<void> {
+    await this.post(`/attentions/${id}/send-summary`, {})
+  }
 }
 
 export const attentionService = new AttentionService()

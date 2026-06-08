@@ -4,6 +4,7 @@ export type MedicalRestResponseDto = AuditResponseDto & {
   id: number
   clinicalHistoryId: number
   accidentId: number | null
+  attentionId: number | null
   startDate: string
   endDate: string
   notes: string | null
@@ -15,6 +16,7 @@ export type MedicalRestResponseDto = AuditResponseDto & {
 export type CreateMedicalRestDto = {
   clinicalHistoryId: number
   accidentId?: number
+  attentionId?: number
   startDate: string
   endDate: string
   notes?: string
