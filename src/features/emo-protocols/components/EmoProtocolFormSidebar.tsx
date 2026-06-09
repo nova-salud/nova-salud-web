@@ -21,7 +21,7 @@ const EMO_TYPE_SELECT_OPTIONS = [
   ...EMO_CYCLE_TYPE_OPTIONS,
 ]
 
-const EmoProtocolFormSidebar = ({
+export const EmoProtocolFormSidebar = ({
   isOpen,
   mode,
   emoProtocol,
@@ -85,7 +85,7 @@ const EmoProtocolFormSidebar = ({
             type="text"
             required
             placeholder="Ej. Protocolo administrativo"
-            defaultValue={emoProtocol?.name}
+            value={emoProtocol?.name}
           />
 
           <Select
@@ -101,7 +101,7 @@ const EmoProtocolFormSidebar = ({
             name="daysToExpire"
             type="number"
             placeholder="Ej. 365"
-            defaultValue={emoProtocol?.daysToExpire ?? 365}
+            value={emoProtocol?.daysToExpire ?? 365}
           />
 
           <Input
@@ -109,7 +109,7 @@ const EmoProtocolFormSidebar = ({
             name="nextEmoDaysFit"
             type="number"
             placeholder="Ej. 365"
-            defaultValue={emoProtocol?.nextEmoDaysFit ?? 365}
+            value={emoProtocol?.nextEmoDaysFit ?? 365}
           />
 
           <Input
@@ -117,7 +117,7 @@ const EmoProtocolFormSidebar = ({
             name="nextEmoDaysFitWithRestrictions"
             type="number"
             placeholder="Ej. 180"
-            defaultValue={emoProtocol?.nextEmoDaysFitWithRestrictions ?? 180}
+            value={emoProtocol?.nextEmoDaysFitWithRestrictions ?? 180}
           />
 
           {mode === 'edit' && (
@@ -150,5 +150,3 @@ const EmoProtocolFormSidebar = ({
     </Sidebar>
   )
 }
-
-export default EmoProtocolFormSidebar

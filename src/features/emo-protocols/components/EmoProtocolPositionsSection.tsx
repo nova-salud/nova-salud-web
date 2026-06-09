@@ -9,7 +9,7 @@ type Props = {
   onUnassignPosition: (positionId: number) => void | Promise<void>
 }
 
-const EmoProtocolPositionsSection = ({
+export const EmoProtocolPositionsSection = ({
   positions,
   onAssignPosition,
   onUnassignPosition,
@@ -84,5 +84,3 @@ const EmoProtocolPositionsSection = ({
     </div>
   )
 }
-
-export default EmoProtocolPositionsSection

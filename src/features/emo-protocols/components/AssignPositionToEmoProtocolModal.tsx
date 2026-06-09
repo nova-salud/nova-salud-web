@@ -1,12 +1,8 @@
-import { useMemo, useState } from 'react'
-import { Button, SearchSelect } from '@/shared/components/ui/form'
+import { useState } from 'react'
 import { useAssignOrUnassignEmoProtocolPosition } from '../hooks'
 import type { EmoProtocolResponseDto } from '../types'
-import { SortOrder } from '@/core/types/query-params.type'
-import type { FindEmployeePositionsDto } from '@/features/employees/types/find-employee-positions.dto'
-import { useEmployeePositions } from '@/features/employees/hooks/use-employee-positions'
-import type { EmployeePositionResponseDto } from '@/features/employees/types/employee-position-response.dto'
-import Modal from '@/shared/components/ui/modal/Modal'
+import { useSearchEmployeePositions } from '../hooks/useSearchEmployeePositions'
+import { Button, Modal, SearchSelect } from '@/shared/components'
 
 type Props = {
   isOpen: boolean
@@ -15,7 +11,7 @@ type Props = {
   onSuccess: () => void
 }
 
-const AssignPositionToEmoProtocolModal = ({
+export const AssignPositionToEmoProtocolModal = ({
   isOpen,
   emoProtocol,
   onClose,
@@ -23,15 +19,7 @@ const AssignPositionToEmoProtocolModal = ({
 }: Props) => {
   const [positionId, setPositionId] = useState('')
 
-  const query = useMemo<FindEmployeePositionsDto>(() => ({
-    page: 1,
-    pageSize: 100,
-    sortBy: 'name',
-    sortOrder: SortOrder.ASC,
-    isActive: true,
-  }), [])
-
-  const { data: positions, isLoading: isLoadingPositions } = useEmployeePositions(query)
+  const { positions, isLoading: isLoadingPositions } = useSearchEmployeePositions()
 
   const { isLoading, error, assignOrUnassignPosition } = useAssignOrUnassignEmoProtocolPosition({
     successMessage: 'Puesto asignado correctamente',
@@ -41,7 +29,7 @@ const AssignPositionToEmoProtocolModal = ({
 
   const options = positions
     .filter((position) => !assignedPositionIds.includes(position.id))
-    .map((position: EmployeePositionResponseDto) => ({
+    .map((position) => ({
       label: position.name,
       value: String(position.id),
     }))
@@ -108,5 +96,3 @@ const AssignPositionToEmoProtocolModal = ({
     </Modal>
   )
 }
-
-export default AssignPositionToEmoProtocolModal

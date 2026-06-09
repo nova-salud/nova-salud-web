@@ -1,72 +1,26 @@
-import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
-import { SortOrder } from '@/core/types/query-params.type'
-import PageContainer from '@/shared/components/ui/PageContainer'
-import { Button, Input, Select } from '@/shared/components/ui/form'
-import EmoProtocolFormSidebar from '../components/EmoProtocolFormSidebar'
-import EmoProtocolTable from '../components/EmoProtocolTable'
-import { useCreateEmoProtocol, useEmoProtocols, useUpdateEmoProtocol } from '../hooks'
+import { Button, PageContainer } from '@/shared/components'
+import { useCreateEmoProtocol, useEmoProtocols } from '../hooks'
 import type {
   CreateEmoProtocolDto,
   EmoProtocolResponseDto,
-  FindEmoProtocolsDto,
-  UpdateEmoProtocolDto,
 } from '../types'
-import { useDebounce } from '@/core/hooks/useDebounce'
+import { useDisclosure } from '@/shared/hooks'
+import { EmoProtocolFilter, EmoProtocolFormSidebar, EmoProtocolTable } from '../components'
 
-type EmoProtocolSidebarMode = 'create' | 'edit' | null
-
-const EMO_PROTOCOL_STATUS_OPTIONS = [
-  { label: 'Todos', value: '' },
-  { label: 'Activos', value: 'true' },
-  { label: 'Inactivos', value: 'false' },
-]
+type EmoProtocolOverlayKey = 'create' | 'edit'
 
 const EmoProtocolsPage = () => {
   const navigate = useNavigate()
 
-  const [name, setName] = useState('')
-  const [isActive, setIsActive] = useState('')
-  const [selectedEmoProtocol, setSelectedEmoProtocol] = useState<EmoProtocolResponseDto | null>(null)
-  const [sidebarMode, setSidebarMode] = useState<EmoProtocolSidebarMode>(null)
+  const { data, isLoading, error, refetch, pagination, onChangeFilters } = useEmoProtocols()
 
-  const debouncedName = useDebounce(name)
-
-  const query = useMemo<FindEmoProtocolsDto>(() => ({
-    page: 1,
-    pageSize: 10,
-    sortBy: 'name',
-    sortOrder: SortOrder.ASC,
-    name: debouncedName.trim() || undefined,
-    isActive: isActive === '' ? undefined : isActive === 'true',
-  }), [debouncedName, isActive])
-
-  const { data, isLoading, error, refetch } = useEmoProtocols(query)
+  const overlays = useDisclosure<EmoProtocolOverlayKey>()
 
   const {
     isLoading: isCreatingEmoProtocol,
     createEmoProtocol,
   } = useCreateEmoProtocol()
-
-  const {
-    isLoading: isUpdatingEmoProtocol,
-    updateEmoProtocol,
-  } = useUpdateEmoProtocol()
-
-  const handleCloseSidebars = () => {
-    setSidebarMode(null)
-    setSelectedEmoProtocol(null)
-  }
-
-  const handleOpenCreateSidebar = () => {
-    setSelectedEmoProtocol(null)
-    setSidebarMode('create')
-  }
-
-  const handleOpenEditSidebar = (emoProtocol: EmoProtocolResponseDto) => {
-    setSelectedEmoProtocol(emoProtocol)
-    setSidebarMode('edit')
-  }
 
   const handleOpenDetailPage = (emoProtocol: EmoProtocolResponseDto) => {
     navigate(`/emo-protocols/${emoProtocol.id}`)
@@ -80,21 +34,6 @@ const EmoProtocolsPage = () => {
     }
 
     await refetch()
-    handleCloseSidebars()
-  }
-
-  const handleUpdateEmoProtocol = async (
-    id: number,
-    dto: UpdateEmoProtocolDto,
-  ) => {
-    const result = await updateEmoProtocol(id, dto)
-
-    if (!result) {
-      return
-    }
-
-    await refetch()
-    handleCloseSidebars()
   }
 
   return (
@@ -106,33 +45,14 @@ const EmoProtocolsPage = () => {
           <Button
             type="button"
             className="w-auto"
-            onClick={handleOpenCreateSidebar}
+            onClick={() => overlays.open('create')}
           >
             Nuevo protocolo
           </Button>
         )}
       >
         <div className="space-y-5">
-          <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-2">
-              <Input
-                label="Nombre"
-                name="search"
-                type="text"
-                placeholder="Buscar por nombre"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-
-              <Select
-                name='status'
-                label="Estado"
-                value={isActive}
-                onChange={setIsActive}
-                options={EMO_PROTOCOL_STATUS_OPTIONS}
-              />
-            </div>
-          </div>
+          <EmoProtocolFilter onChangeFilters={onChangeFilters} />
 
           {error ? (
             <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
@@ -143,28 +63,20 @@ const EmoProtocolsPage = () => {
           <EmoProtocolTable
             items={data}
             isLoading={isLoading}
-            onEdit={handleOpenEditSidebar}
             onViewDetail={handleOpenDetailPage}
+            pagination={pagination}
           />
         </div>
       </PageContainer>
 
       <EmoProtocolFormSidebar
-        isOpen={sidebarMode === 'create'}
+        isOpen={overlays.isOpen('create')}
         mode="create"
         isLoading={isCreatingEmoProtocol}
-        onClose={handleCloseSidebars}
+        onClose={overlays.close}
         onCreate={handleCreateEmoProtocol}
       />
 
-      <EmoProtocolFormSidebar
-        isOpen={sidebarMode === 'edit'}
-        mode="edit"
-        emoProtocol={selectedEmoProtocol}
-        isLoading={isUpdatingEmoProtocol}
-        onClose={handleCloseSidebars}
-        onUpdate={handleUpdateEmoProtocol}
-      />
     </>
   )
 }

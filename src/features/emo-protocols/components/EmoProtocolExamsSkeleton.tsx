@@ -1,4 +1,4 @@
-const EmoProtocolExamsSkeleton = () => {
+export const EmoProtocolExamsSkeleton = () => {
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="mb-5 flex items-center justify-between">
@@ -33,5 +33,3 @@ const EmoProtocolExamsSkeleton = () => {
     </div>
   )
 }
-
-export default EmoProtocolExamsSkeleton

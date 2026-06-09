@@ -1,18 +1,19 @@
 import { useState } from 'react'
-import { Button } from '@/shared/components/ui/form'
-import EmoProtocolExamFormModal from './EmoProtocolExamFormModal'
+import { cn } from '@/shared/utils'
 import {
   useCreateEmoProtocolExam,
   useRemoveEmoProtocolExam,
   useUpdateEmoProtocolExam,
-} from '../../hooks'
+} from '../hooks'
 import type {
   CreateEmoProtocolExamDto,
   EmoProtocolExamResponseDto,
   UpdateEmoProtocolExamDto,
-} from '../../types'
-import { cn } from '@/shared/utils'
-import EmoProtocolExamsSkeleton from './EmoProtocolExamsSkeleton'
+} from '../types'
+import { useDisclosure } from '@/shared/hooks'
+import { EmoProtocolExamsSkeleton } from './EmoProtocolExamsSkeleton'
+import { Button } from '@/shared/components'
+import { EmoProtocolExamFormModal } from './EmoProtocolExamFormModal'
 
 type Props = {
   emoProtocolId: number
@@ -21,15 +22,15 @@ type Props = {
   onRefresh: () => Promise<void> | void
 }
 
-type ModalMode = 'create' | 'edit' | null
+type OverlayKey = 'create' | 'edit'
 
-const EmoProtocolExamsSection = ({
+export const EmoProtocolExamsSection = ({
   emoProtocolId,
   items,
   isLoading = false,
   onRefresh,
 }: Props) => {
-  const [modalMode, setModalMode] = useState<ModalMode>(null)
+  const overlays = useDisclosure<OverlayKey>()
   const [selectedItem, setSelectedItem] = useState<EmoProtocolExamResponseDto | null>(null)
 
   const existingExamIds = items.map(item => item.examId)
@@ -51,16 +52,16 @@ const EmoProtocolExamsSection = ({
 
   const handleOpenCreate = () => {
     setSelectedItem(null)
-    setModalMode('create')
+    overlays.open('create')
   }
 
   const handleOpenEdit = (item: EmoProtocolExamResponseDto) => {
     setSelectedItem(item)
-    setModalMode('edit')
+    overlays.open('edit')
   }
 
   const handleCloseModal = () => {
-    setModalMode(null)
+    overlays.close()
     setSelectedItem(null)
   }
 
@@ -172,7 +173,7 @@ const EmoProtocolExamsSection = ({
       </div>
 
       <EmoProtocolExamFormModal
-        isOpen={modalMode === 'create'}
+        isOpen={overlays.isOpen('create')}
         mode="create"
         emoProtocolId={emoProtocolId}
         existingExamIds={existingExamIds}
@@ -182,7 +183,7 @@ const EmoProtocolExamsSection = ({
       />
 
       <EmoProtocolExamFormModal
-        isOpen={modalMode === 'edit'}
+        isOpen={overlays.isOpen('edit')}
         mode="edit"
         emoProtocolId={emoProtocolId}
         emoProtocolExam={selectedItem}
@@ -194,5 +195,3 @@ const EmoProtocolExamsSection = ({
     </>
   )
 }
-
-export default EmoProtocolExamsSection

@@ -1,12 +1,7 @@
-import { useMemo, useState } from 'react'
-import { Button, SearchSelect } from '@/shared/components/ui/form'
-import { useAssignOrUnassignEmoProtocolArea } from '../hooks'
+import { useState } from 'react'
+import { useAssignOrUnassignEmoProtocolArea, useSearchAreas } from '../hooks'
 import type { EmoProtocolResponseDto } from '../types'
-import { SortOrder } from '@/core/types/query-params.type'
-import type { FindEmployeeAreasDto } from '@/features/employees/types/find-employee-areas.dto'
-import { useEmployeeAreas } from '@/features/employees/hooks/use-employee-areas'
-import type { EmployeeAreaResponseDto } from '@/features/employees/types/employee-area-response.dto'
-import Modal from '@/shared/components/ui/modal/Modal'
+import { Button, Modal, SearchSelect } from '@/shared/components'
 
 type Props = {
   isOpen: boolean
@@ -15,7 +10,7 @@ type Props = {
   onSuccess: () => void
 }
 
-const AssignAreaToEmoProtocolModal = ({
+export const AssignAreaToEmoProtocolModal = ({
   isOpen,
   emoProtocol,
   onClose,
@@ -23,30 +18,22 @@ const AssignAreaToEmoProtocolModal = ({
 }: Props) => {
   const [areaId, setAreaId] = useState('')
 
-  const query = useMemo<FindEmployeeAreasDto>(() => ({
-    page: 1,
-    pageSize: 100,
-    sortBy: 'name',
-    sortOrder: SortOrder.ASC,
-    isActive: true,
-  }), [])
-
-  const { data: areas, isLoading: isLoadingAreas } = useEmployeeAreas(query)
+  const { areas, isLoading: isLoadingAreas } = useSearchAreas()
 
   const {
     isLoading,
     error,
     assignOrUnassignArea,
-  } = useAssignOrUnassignEmoProtocolArea({ successMessage: 'Área asignada correctamente'})
+  } = useAssignOrUnassignEmoProtocolArea({ successMessage: 'Área asignada correctamente' })
 
   const assignedAreaIds = emoProtocol?.areas.map(a => a.id) ?? []
 
   const options = areas
-  .filter((area) => !assignedAreaIds.includes(area.id))
-  .map((area: EmployeeAreaResponseDto) => ({
-    label: area.name,
-    value: String(area.id),
-  }))
+    .filter((area) => !assignedAreaIds.includes(area.id))
+    .map((area) => ({
+      label: area.name,
+      value: String(area.id),
+    }))
 
   const handleSubmit = async () => {
     if (!emoProtocol || !areaId) {
@@ -114,5 +101,3 @@ const AssignAreaToEmoProtocolModal = ({
     </Modal>
   )
 }
-
-export default AssignAreaToEmoProtocolModal

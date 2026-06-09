@@ -1,31 +1,30 @@
-import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
-import PageContainer from '@/shared/components/ui/PageContainer'
-import Modal from '@/shared/components/ui/modal/Modal'
-import { Button } from '@/shared/components/ui/form'
-import AssignAreaToEmoProtocolModal from '../components/AssignAreaToEmoProtocolModal'
-import AssignPositionToEmoProtocolModal from '../components/AssignPositionToEmoProtocolModal'
-import EmoProtocolAreasSection from '../components/EmoProtocolAreasSection'
-import EmoProtocolPositionsSection from '../components/EmoProtocolPositionsSection'
-import EmoProtocolExamsSection from '../components/emo-protocol-exams/EmoProtocolExamsSection'
+import { useDisclosure } from '@/shared/hooks'
+import { Button, EntityState, Modal, PageContainer } from '@/shared/components'
 import {
   useAssignOrUnassignEmoProtocolArea,
   useAssignOrUnassignEmoProtocolPosition,
   useDeleteEmoProtocol,
   useEmoProtocol,
   useEmoProtocolExams,
+  useUpdateEmoProtocol,
 } from '../hooks'
+import { AssignAreaToEmoProtocolModal, AssignPositionToEmoProtocolModal, EmoProtocolAreasSection, EmoProtocolExamsSection, EmoProtocolFormSidebar, EmoProtocolPositionsSection } from '../components'
+import type { UpdateEmoProtocolDto } from '../types'
+
+type EmoProtocolDetailOverlaysKey = 'assign-area' | 'assign-position' | 'delete' | 'edit'
 
 const EmoProtocolDetailPage = () => {
   const navigate = useNavigate()
   const { id } = useParams()
   const emoProtocolId = Number(id)
 
-  const [isAssignAreaModalOpen, setIsAssignAreaModalOpen] = useState(false)
-  const [isAssignPositionModalOpen, setIsAssignPositionModalOpen] = useState(false)
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const { data: emo, isLoading, error, refetch } = useEmoProtocol(emoProtocolId)
+  const overlays = useDisclosure<EmoProtocolDetailOverlaysKey>()
 
-  const { data, isLoading, error, refetch } = useEmoProtocol(emoProtocolId)
+  const {
+    updateEmoProtocol
+  } = useUpdateEmoProtocol()
 
   const {
     data: protocolExams,
@@ -45,22 +44,35 @@ const EmoProtocolDetailPage = () => {
   const { deleteEmoProtocol, isLoading: isDeleting } = useDeleteEmoProtocol()
 
   const handleUnassignArea = async (areaId: number) => {
-    if (!data) return
-    const result = await assignOrUnassignArea(data.id, areaId)
+    if (!emo) return
+    const result = await assignOrUnassignArea(emo.id, areaId)
     if (!result) return
     await refetch()
   }
 
   const handleUnassignPosition = async (positionId: number) => {
-    if (!data) return
-    const result = await assignOrUnassignPosition(data.id, positionId)
+    if (!emo) return
+    const result = await assignOrUnassignPosition(emo.id, positionId)
     if (!result) return
     await refetch()
   }
 
+  const handleUpdateEmoProtocol = async (
+    id: number,
+    dto: UpdateEmoProtocolDto,
+  ) => {
+    const result = await updateEmoProtocol(id, dto)
+
+    if (!result) {
+      return
+    }
+
+    await refetch()
+  }
+
   const handleDelete = async () => {
-    if (!data) return
-    const ok = await deleteEmoProtocol(data.id)
+    if (!emo) return
+    const ok = await deleteEmoProtocol(emo.id)
     if (ok === null) return
     void navigate('/emo-protocols')
   }
@@ -69,24 +81,52 @@ const EmoProtocolDetailPage = () => {
     return <div>Cargando...</div>
   }
 
-  if (!data) {
-    return <div>No se encontró el protocolo EMO.</div>
+  if (!emo) {
+    return (
+      <EntityState
+        title="Protocolo emo no encontrado"
+        description="El protocolo emo que intentas consultar no existe o fue eliminado."
+        actionText='Regresar'
+        onAction={() => navigate('/emo-protocols')}
+      />
+    )
+  }
+
+  if (error) {
+    return (
+      <EntityState
+        title="Ocurrió un error"
+        description="No fue posible obtener la información del protocolo emo."
+        actionText="Reintentar"
+        onAction={refetch}
+      />
+    )
   }
 
   return (
     <>
       <PageContainer
-        title={`Protocolo EMO #${data.id}`}
+        title={`Protocolo EMO #${emo.id}`}
         description="Gestiona la configuración del protocolo EMO."
-        action={
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => setIsDeleteModalOpen(true)}
-            className="w-auto border-red-200 text-red-600 hover:bg-red-50"
-          >
-            Eliminar
-          </Button>
+        action={(
+          <div className='flex items-center gap-x-2'>
+            <Button
+              type="button"
+              variant="primary"
+              onClick={() => overlays.open('edit')}
+            >
+              Editar
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => overlays.open('delete')}
+              className="w-auto border-red-200 text-red-600 hover:bg-red-50"
+            >
+              Eliminar
+            </Button>
+          </div>
+        )
         }
       >
         <div className="space-y-5">
@@ -103,7 +143,7 @@ const EmoProtocolDetailPage = () => {
                   Nombre
                 </p>
                 <p className="mt-1 text-sm text-slate-700">
-                  {data.name}
+                  {emo.name}
                 </p>
               </div>
 
@@ -112,21 +152,21 @@ const EmoProtocolDetailPage = () => {
                   Estado
                 </p>
                 <p className="mt-1 text-sm text-slate-700">
-                  {data.isActive ? 'Activo' : 'Inactivo'}
+                  {emo.isActive ? 'Activo' : 'Inactivo'}
                 </p>
               </div>
             </div>
           </div>
 
           <EmoProtocolAreasSection
-            areas={data.areas}
-            onAssignArea={() => setIsAssignAreaModalOpen(true)}
+            areas={emo.areas}
+            onAssignArea={() => overlays.open('assign-area')}
             onUnassignArea={handleUnassignArea}
           />
 
           <EmoProtocolPositionsSection
-            positions={data.positions}
-            onAssignPosition={() => setIsAssignPositionModalOpen(true)}
+            positions={emo.positions}
+            onAssignPosition={() => overlays.open('assign-position')}
             onUnassignPosition={handleUnassignPosition}
           />
 
@@ -137,7 +177,7 @@ const EmoProtocolDetailPage = () => {
           ) : null}
 
           <EmoProtocolExamsSection
-            emoProtocolId={data.id}
+            emoProtocolId={emo.id}
             items={protocolExams}
             isLoading={isLoadingProtocolExams}
             onRefresh={refetchProtocolExams}
@@ -146,29 +186,38 @@ const EmoProtocolDetailPage = () => {
       </PageContainer>
 
       <AssignAreaToEmoProtocolModal
-        isOpen={isAssignAreaModalOpen}
-        emoProtocol={data}
-        onClose={() => setIsAssignAreaModalOpen(false)}
+        isOpen={overlays.isOpen('assign-area')}
+        emoProtocol={emo}
+        onClose={overlays.close}
         onSuccess={() => void refetch()}
       />
 
       <AssignPositionToEmoProtocolModal
-        isOpen={isAssignPositionModalOpen}
-        emoProtocol={data}
-        onClose={() => setIsAssignPositionModalOpen(false)}
+        isOpen={overlays.isOpen('assign-position')}
+        emoProtocol={emo}
+        onClose={overlays.close}
         onSuccess={() => void refetch()}
       />
 
+      <EmoProtocolFormSidebar
+        isOpen={overlays.isOpen('edit')}
+        mode="edit"
+        emoProtocol={emo}
+        isLoading={isLoading}
+        onClose={overlays.close}
+        onUpdate={handleUpdateEmoProtocol}
+      />
+
       <Modal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
+        isOpen={overlays.isOpen('delete')}
+        onClose={overlays.close}
         title="Eliminar protocolo EMO"
         description="Esta acción no se puede deshacer."
         size="sm"
       >
         <p className="mb-6 text-sm text-slate-600">
           ¿Estás seguro que deseas eliminar el protocolo{' '}
-          <span className="font-semibold text-slate-900">{data.name}</span>?
+          <span className="font-semibold text-slate-900">{emo.name}</span>?
           Las áreas que lo tenían asignado quedarán sin protocolo.
         </p>
 
@@ -177,7 +226,7 @@ const EmoProtocolDetailPage = () => {
             type="button"
             variant="outline"
             className="w-auto"
-            onClick={() => setIsDeleteModalOpen(false)}
+            onClick={overlays.close}
           >
             Cancelar
           </Button>

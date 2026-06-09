@@ -1,14 +1,11 @@
-import { useEffect, useMemo, useState } from 'react'
-import { SortOrder } from '@/core/types/query-params.type'
-import { Button, SearchSelect } from '@/shared/components/ui/form'
-import { useExams } from '@/features/exams/hooks'
-import type { FindExamsDto } from '@/features/exams/types'
+import { useEffect, useState } from 'react'
+import { Button, SearchSelect, Modal } from '@/shared/components'
 import type {
   CreateEmoProtocolExamDto,
   EmoProtocolExamResponseDto,
   UpdateEmoProtocolExamDto,
-} from '../../types'
-import Modal from '@/shared/components/ui/modal/Modal'
+} from '../types'
+import { useSearchExams } from '../hooks/useSearchExams'
 
 type Mode = 'create' | 'edit'
 
@@ -24,7 +21,7 @@ type Props = {
   onUpdate?: (id: number, dto: UpdateEmoProtocolExamDto) => void | Promise<void>
 }
 
-const EmoProtocolExamFormModal = ({
+export const EmoProtocolExamFormModal = ({
   isOpen,
   mode,
   emoProtocolId,
@@ -39,21 +36,13 @@ const EmoProtocolExamFormModal = ({
   const [isRequired, setIsRequired] = useState(true)
   const [orderIndex, setOrderIndex] = useState('1')
 
-  const examsQuery = useMemo<FindExamsDto>(() => ({
-    page: 1,
-    pageSize: 100,
-    sortBy: 'name',
-    sortOrder: SortOrder.ASC,
-    isActive: true,
-  }), [])
-
-  const { data: exams } = useExams(examsQuery)
+  const { exams } = useSearchExams()
 
   useEffect(() => {
     if (!isOpen) return
 
     if (mode === 'edit' && emoProtocolExam) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+
       setExamId(String(emoProtocolExam.examId))
       setIsRequired(emoProtocolExam.isRequired)
       setOrderIndex(String(emoProtocolExam.orderIndex))
@@ -66,11 +55,11 @@ const EmoProtocolExamFormModal = ({
   }, [isOpen, mode, emoProtocolExam])
 
   const options = exams
-  .filter((exam) => !existingExamIds.includes(exam.id))
-  .map((item) => ({
-    label: item.name,
-    value: String(item.id),
-  }))
+    .filter((exam) => !existingExamIds.includes(exam.id))
+    .map((item) => ({
+      label: item.name,
+      value: String(item.id),
+    }))
 
   const handleSubmit = async () => {
     if (!examId || !orderIndex) return
@@ -157,5 +146,3 @@ const EmoProtocolExamFormModal = ({
     </Modal>
   )
 }
-
-export default EmoProtocolExamFormModal

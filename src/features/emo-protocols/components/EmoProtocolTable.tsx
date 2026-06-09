@@ -1,20 +1,20 @@
-import { Button } from '@/shared/components/ui/form'
-import { DataTable } from '@/shared/components/ui/table/DataTable'
+import { Eye } from 'lucide-react'
 import { cn } from '@/shared/utils'
+import { DataTable, Dropdown, DropdownItem, type Pagination } from '@/shared/components'
 import type { EmoProtocolResponseDto } from '../types'
 
 type Props = {
   items: EmoProtocolResponseDto[]
   isLoading?: boolean
-  onEdit: (item: EmoProtocolResponseDto) => void
   onViewDetail: (item: EmoProtocolResponseDto) => void
+  pagination: Pagination
 }
 
-const EmoProtocolTable = ({
+export const EmoProtocolTable = ({
   items,
   isLoading = false,
-  onEdit,
   onViewDetail,
+  pagination
 }: Props) => {
   return (
     <DataTable
@@ -28,8 +28,8 @@ const EmoProtocolTable = ({
         'Recurrencia - Apto',
         'Recurrencia - Apto Restric.',
         'Estado',
-        'Acciones',
       ]}
+      pagination={pagination}
       renderRow={(item) => (
         <>
           <td className="px-6 py-5 font-medium text-slate-900">
@@ -64,32 +64,18 @@ const EmoProtocolTable = ({
               {item.isActive ? 'Activo' : 'Inactivo'}
             </span>
           </td>
-
-          <td className="px-6 py-5">
-            <div className="flex gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onEdit(item)}
-                className="w-auto rounded-xl px-3 py-2 text-xs"
-              >
-                Editar
-              </Button>
-
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onViewDetail(item)}
-                className="w-auto rounded-xl px-3 py-2 text-xs"
-              >
-                Ver detalle
-              </Button>
-            </div>
-          </td>
         </>
+      )}
+      renderActions={(emo) => (
+        <Dropdown>
+          <DropdownItem
+            onClick={() => onViewDetail(emo)}
+          >
+            <Eye size={14} />
+            Ver detalle
+          </DropdownItem>
+        </Dropdown>
       )}
     />
   )
 }
-
-export default EmoProtocolTable

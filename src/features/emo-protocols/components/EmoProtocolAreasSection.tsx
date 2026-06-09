@@ -9,7 +9,7 @@ type Props = {
   onUnassignArea: (areaId: number) => void | Promise<void>
 }
 
-const EmoProtocolAreasSection = ({
+export const EmoProtocolAreasSection = ({
   areas,
   onAssignArea,
   onUnassignArea,
@@ -84,5 +84,3 @@ const EmoProtocolAreasSection = ({
     </div>
   )
 }
-
-export default EmoProtocolAreasSection
