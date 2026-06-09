@@ -1,43 +1,51 @@
-import { Button } from '@/shared/components/ui/form'
-import { DataTable } from '@/shared/components/ui/table/DataTable'
+import { Eye } from 'lucide-react'
 import { cn } from '@/shared/utils'
 import {
   USER_ROLE_CLASS_MAP,
   USER_ROLE_LABEL_MAP,
 } from '../types/user-role.config'
 import type { UserResponseDto } from '../types/user-response.dto'
+import { DataTable, Dropdown, DropdownItem, type Pagination } from '@/shared/components'
 
 type Props = {
-  items: UserResponseDto[]
+  users: UserResponseDto[]
   isLoading?: boolean
   onViewDetail: (user: UserResponseDto) => void
+  pagination?: Pagination
 }
 
-const UserSimpleTable = ({ items, isLoading = false, onViewDetail }: Props) => {
+export const UsersTable = ({
+  users,
+  isLoading = false,
+  onViewDetail,
+  pagination 
+}: Props) => {
   return (
     <DataTable
-      data={items}
+      data={users}
       isLoading={isLoading}
       emptyMessage="No se encontraron usuarios."
-      columns={['#', 'Usuario', 'Rol', 'Estado', 'Acciones']}
-      renderRow={(item) => (
+      columns={['#', 'Usuario', 'Rol', 'Estado']}
+      pagination={pagination}
+      onRowDoubleClick={(user) => onViewDetail(user)}
+      renderRow={(user) => (
         <>
           <td className="px-6 py-5 font-medium text-slate-900">
-            #{item.id}
+            #{user.id}
           </td>
 
           <td className="px-6 py-5 text-slate-700">
-            {item.username}
+            {user.username}
           </td>
 
           <td className="px-6 py-5">
             <span
               className={cn(
                 'inline-flex rounded-xl border px-3 py-1 text-xs font-medium',
-                USER_ROLE_CLASS_MAP[item.role],
+                USER_ROLE_CLASS_MAP[user.role],
               )}
             >
-              {USER_ROLE_LABEL_MAP[item.role]}
+              {USER_ROLE_LABEL_MAP[user.role]}
             </span>
           </td>
 
@@ -45,29 +53,26 @@ const UserSimpleTable = ({ items, isLoading = false, onViewDetail }: Props) => {
             <span
               className={cn(
                 'inline-flex rounded-xl border px-3 py-1 text-xs font-medium',
-                item.isActive
+                user.isActive
                   ? 'border-emerald-100 bg-emerald-50 text-emerald-700'
                   : 'border-red-200 bg-red-500 text-white',
               )}
             >
-              {item.isActive ? 'Activo' : 'Inactivo'}
+              {user.isActive ? 'Activo' : 'Inactivo'}
             </span>
           </td>
-
-          <td className="px-6 py-5">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onViewDetail(item)}
-              className="w-auto rounded-xl px-3 py-2 text-xs"
-            >
-              Ver detalle
-            </Button>
-          </td>
         </>
+      )}
+      renderActions={(user) => (
+        <Dropdown>
+          <DropdownItem
+            onClick={() => onViewDetail(user)}
+          >
+            <Eye size={14} />
+            Ver perfil
+          </DropdownItem>
+        </Dropdown>
       )}
     />
   )
 }
-
-export default UserSimpleTable

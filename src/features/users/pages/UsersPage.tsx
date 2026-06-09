@@ -1,35 +1,21 @@
-import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
-import PageContainer from '@/shared/components/ui/PageContainer'
-import { Button, Input, Select } from '@/shared/components/ui/form'
-import { SortOrder } from '@/core/types/query-params.type'
-import UserSimpleTable from '../components/UserSimpleTable'
-import UserFormSidebar from '../components/UserFormSidebar'
+import { useDisclosure } from '@/shared/hooks'
+import { Button, PageContainer } from '@/shared/components'
 import { useCreateUser, useUsers } from '../hooks'
 import {
   type UserResponseDto,
-  type FindUsersDto,
   type CreateUserDto,
-  USER_ROLE_OPTIONS,
 } from '../types'
+import { UserFilter, UserFormSidebar, UsersTable } from '../components'
+
+type UserOverlayKey = 'create'
 
 const UsersPage = () => {
   const navigate = useNavigate()
-  const [username, setUsername] = useState('')
-  const [role, setRole] = useState('')
-  const [isCreateOpen, setIsCreateOpen] = useState(false)
-
-  const query = useMemo<FindUsersDto>(() => ({
-    page: 1,
-    pageSize: 30,
-    sortBy: 'username',
-    sortOrder: SortOrder.ASC,
-    username: username.trim() || undefined,
-    role: role as UserResponseDto['role'] || undefined,
-  }), [username, role])
-
-  const { data, isLoading, error, refetch } = useUsers(query)
+  const { data, isLoading, error, refetch, onChangeFilters, pagination } = useUsers()
   const { create, isLoading: isCreatingUser } = useCreateUser()
+
+  const overlays = useDisclosure<UserOverlayKey>()
 
   const handleViewDetail = (user: UserResponseDto) => {
     void navigate(`/employees/${user.id}`)
@@ -39,7 +25,7 @@ const UsersPage = () => {
     const result = await create(dto)
     if (!result) return
     await refetch()
-    setIsCreateOpen(false)
+    overlays.close()
   }
 
   return (
@@ -51,36 +37,14 @@ const UsersPage = () => {
           <Button
             type="button"
             className="w-auto"
-            onClick={() => setIsCreateOpen(true)}
+            onClick={() => overlays.open('create')}
           >
             Nuevo usuario
           </Button>
         }
       >
         <div className="space-y-5">
-          <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-            <div className="grid gap-4 md:grid-cols-2">
-              <Input
-                label="Usuario"
-                name="username"
-                type="text"
-                placeholder="Buscar por usuario"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-
-              <Select
-                name="rol"
-                label="Rol"
-                value={role}
-                onChange={setRole}
-                options={[
-                  { label: 'Todos', value: '' },
-                  ...USER_ROLE_OPTIONS,
-                ]}
-              />
-            </div>
-          </div>
+          <UserFilter onChangeFilters={onChangeFilters} />
 
           {error ? (
             <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
@@ -88,19 +52,20 @@ const UsersPage = () => {
             </div>
           ) : null}
 
-          <UserSimpleTable
-            items={data}
+          <UsersTable
+            users={data}
             isLoading={isLoading}
             onViewDetail={handleViewDetail}
+            pagination={pagination}
           />
         </div>
       </PageContainer>
 
       <UserFormSidebar
-        isOpen={isCreateOpen}
+        isOpen={overlays.isOpen('create')}
         mode="create"
         isLoading={isCreatingUser}
-        onClose={() => setIsCreateOpen(false)}
+        onClose={overlays.close}
         onCreate={handleCreateUser}
       />
     </>

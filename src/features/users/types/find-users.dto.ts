@@ -4,5 +4,5 @@ import type { QueryParams } from '@/core/types/query-params.type'
 export type FindUsersDto = QueryParams & {
   username?: string
   role?: RoleEnum
-  isActive?: boolean
+  isActive?: 1 | 0
 }

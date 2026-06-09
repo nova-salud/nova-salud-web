@@ -1,11 +1,11 @@
-import { useState } from 'react'
-import { Button, Checkbox, Input, Select } from '@/shared/components/ui/form'
+import { Button, Input, Select } from '@/shared/components/ui/form'
 import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
 import { USER_ROLE_OPTIONS } from '../types/user-role.config'
 import type { CreateUserDto } from '../types/create-user.dto'
 import type { UpdateUserDto } from '../types/update-user.dto'
 import type { UserResponseDto } from '../types/user-response.dto'
 import type { RoleEnum } from '@/core/enums/role.enum'
+import { useId } from 'react'
 
 type UserFormMode = 'create' | 'edit'
 
@@ -19,15 +19,16 @@ type Props = {
   onUpdate?: (id: number, dto: UpdateUserDto) => Promise<void> | void
 }
 
-const UserFormSidebarContent = ({
+export const UserFormSidebar = ({
+  isOpen,
   mode,
-  user,
+  user = null,
   isLoading = false,
   onClose,
   onCreate,
   onUpdate,
-}: Omit<Props, 'isOpen'>) => {
-  const [isBlocked, setIsBlocked] = useState(user?.isBlocked ?? false)
+}: Props) => {
+  const formId = useId()
 
   const handleSubmit = async (e: { preventDefault(): void; currentTarget: HTMLFormElement }) => {
     e.preventDefault()
@@ -45,82 +46,9 @@ const UserFormSidebarContent = ({
 
     await onUpdate?.(user!.id, {
       username,
-      role: role as RoleEnum,
-      isBlocked,
+      role: role as RoleEnum
     })
   }
-
-  const footer = (
-    <div className="flex flex-wrap justify-end gap-3">
-      <Button type="button" variant="outline" onClick={onClose} className="w-auto">
-        Cancelar
-      </Button>
-      <Button
-        type="submit"
-        isLoading={isLoading}
-        loadingText={mode === 'create' ? 'Guardando...' : 'Actualizando...'}
-        className="w-auto"
-      >
-        {mode === 'create' ? 'Guardar usuario' : 'Actualizar usuario'}
-      </Button>
-    </div>
-  )
-
-  return (
-    <form className="space-y-6" onSubmit={(e) => void handleSubmit(e)}>
-      <div className="space-y-4">
-        <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">
-          Acceso a la plataforma
-        </p>
-
-        <Input
-          label="Usuario"
-          name="username"
-          type="text"
-          placeholder="jhondoe"
-          defaultValue={user?.username ?? ''}
-        />
-
-        <Select
-          name="role"
-          label="Rol"
-          defaultValue={user?.role ?? ''}
-          options={USER_ROLE_OPTIONS}
-        />
-
-        {mode === 'create' && (
-          <Input
-            name="password"
-            type="password"
-            label="Contraseña"
-            placeholder="Ingresa la contraseña"
-          />
-        )}
-
-        {mode === 'edit' && (
-          <Checkbox
-            label="Vetado"
-            checked={isBlocked}
-            onChange={setIsBlocked}
-          />
-        )}
-      </div>
-
-      {footer}
-    </form>
-  )
-}
-
-export const UserFormSidebar = ({
-  isOpen,
-  mode,
-  user = null,
-  isLoading = false,
-  onClose,
-  onCreate,
-  onUpdate,
-}: Props) => {
-  const formKey = `${mode}-${user?.id ?? 'new'}-${isOpen ? 'open' : 'closed'}`
 
   return (
     <Sidebar
@@ -133,16 +61,55 @@ export const UserFormSidebar = ({
       }
       onClose={onClose}
       size="md"
+
+      footer={
+        <div className="flex flex-wrap justify-end gap-3">
+          <Button type="button" variant="outline" onClick={onClose} className="w-auto">
+            Cancelar
+          </Button>
+          <Button
+            form={formId}
+            type="submit"
+            isLoading={isLoading}
+            loadingText={mode === 'create' ? 'Guardando...' : 'Actualizando...'}
+            className="w-auto"
+          >
+            {mode === 'create' ? 'Guardar usuario' : 'Actualizar usuario'}
+          </Button>
+        </div>
+      }
     >
-      <UserFormSidebarContent
-        key={formKey}
-        mode={mode}
-        user={user}
-        isLoading={isLoading}
-        onClose={onClose}
-        onCreate={onCreate}
-        onUpdate={onUpdate}
-      />
+      <form id={formId} className="space-y-6" onSubmit={handleSubmit}>
+        <div className="space-y-4">
+          <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">
+            Acceso a la plataforma
+          </p>
+
+          <Input
+            label="Usuario"
+            name="username"
+            type="text"
+            placeholder="jhondoe"
+            defaultValue={user?.username ?? ''}
+          />
+
+          <Select
+            name="role"
+            label="Rol"
+            defaultValue={user?.role ?? ''}
+            options={USER_ROLE_OPTIONS}
+          />
+
+          {mode === 'create' && (
+            <Input
+              name="password"
+              type="password"
+              label="Contraseña"
+              placeholder="Ingresa la contraseña"
+            />
+          )}
+        </div>
+      </form>
     </Sidebar>
   )
 }
