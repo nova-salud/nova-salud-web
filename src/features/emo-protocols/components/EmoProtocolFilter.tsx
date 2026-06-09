@@ -17,7 +17,7 @@ export const EmoProtocolFilter = ({ onChangeFilters }: EmoProtocolFilterProps) =
     <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
       <div className="grid gap-4 md:grid-cols-2">
         <Input
-          label="Usuario"
+          label="Nombre"
           name="emoProtocolname"
           type="text"
           placeholder="Buscar por usuario"
