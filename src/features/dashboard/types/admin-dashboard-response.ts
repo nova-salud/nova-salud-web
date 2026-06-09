@@ -43,4 +43,16 @@ export interface AdminDashboardResponse {
     classification: string
     count: number
   }[]
+
+  // Range-dependent
+  accidentsInRange: number
+  dispensationsInRange: number
+  medicalRestsInRange: number
+  activityTrend: { date: string; consultations: number; accidents: number }[]
+
+  // Estáticos
+  employeesOnMedicalRest: number
+  emosExpiringSoon: number
+  pendingEmployeeConformity: number
+  unresolvedInventoryAlerts: number
 }

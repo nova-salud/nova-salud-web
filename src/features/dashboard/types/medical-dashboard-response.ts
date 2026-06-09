@@ -34,4 +34,21 @@ export type MedicalDashboardResponse = {
     diagnosisCode: string | null
     followUpCount: number
   }[]
+
+  // Grupo A — range-dependent
+  dispensationsInRange: number
+  medicalRestsInRange: number
+  triageDistribution: { level: string; count: number }[]
+  topDiagnoses: { code: string; name: string | null; count: number }[]
+  dispensationsByType: { type: string; count: number }[]
+
+  // Grupo B — estáticos
+  emosExpiringSoon: number
+  pendingEmployeeConformity: number
+  employeesOnMedicalRest: number
+  averageMedicalRestDays: number
+  followUpCompletionRate: number
+  averageDaysToFulfillFollowUp: number
+  workersWithOver21DmDays: number
+  dmDaysExpiringSoon: number
 }

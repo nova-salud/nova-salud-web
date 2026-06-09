@@ -58,4 +58,13 @@ export type SSTDashboardResponse = {
     form: string
     count: number
   }[]
+
+  severityDistribution: { level: string; count: number }[]
+  sctrActivations: number
+  behavioralCases: number
+  sstFollowUpCompletionRate: number
+  workersWithOver21DmDays: number
+  dmDaysExpiringSoon: number
+  openInvestigations: number
+  investigationsByResponsible: { responsible: string; count: number }[]
 }

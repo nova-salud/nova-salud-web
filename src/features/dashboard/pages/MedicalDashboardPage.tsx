@@ -1,11 +1,22 @@
 import { useState } from 'react'
-import { Activity, AlertTriangle, CheckCircle2, ClipboardList, Package, Users } from 'lucide-react'
+import {
+  Activity,
+  AlertTriangle,
+  CalendarDays,
+  CheckCircle2,
+  ClipboardList,
+  Clock,
+  Package,
+  Users,
+  BedDouble,
+  Pill,
+} from 'lucide-react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { cn } from '@/shared/utils'
 import PageContainer from '@/shared/components/ui/PageContainer'
-import { MetricCard } from '@/shared/components/dashboard/MetricCard'
 import { DateRangeFilter, toISODate } from '@/shared/components/dashboard/DateRangeFilter'
 import type { DateRange } from '@/shared/components/dashboard/DateRangeFilter'
+import { MetricPanel } from '@/shared/components/dashboard/MetricPanel'
 import { useMedicalDashboard } from '../hooks/useMedicalDashboard'
 import { ConsultationsTrendChart } from '../components/medical/ConsultationsTrendChart'
 import { MedicalDashboardSkeleton } from '../components/medical/MedicalDashboardSkeleton'
@@ -16,10 +27,23 @@ const TRIAGE_LABEL: Record<string, string> = {
   HIGH: 'Alto',
 }
 
-const TRIAGE_CLASS: Record<string, string> = {
+const TRIAGE_ROW_CLASS: Record<string, string> = {
   LOW: 'bg-emerald-100 text-emerald-700',
   MEDIUM: 'bg-amber-100 text-amber-700',
   HIGH: 'bg-red-100 text-red-700',
+}
+
+const TRIAGE_VALUE_CLASS: Record<string, string> = {
+  LOW: 'text-emerald-600',
+  MEDIUM: 'text-amber-600',
+  HIGH: 'text-red-600',
+}
+
+const DISPENSE_TYPE_LABEL: Record<string, string> = {
+  ATTENTION: 'Atención',
+  OTC: 'Venta libre',
+  EMERGENCY: 'Emergencia',
+  THIRD_PARTY: 'Terceros',
 }
 
 export const MedicalDashboardPage = () => {
@@ -64,64 +88,97 @@ export const MedicalDashboardPage = () => {
     )
   }
 
-  const mainCards = [
+  const maxDiagnosis = Math.max(...(data.topDiagnoses?.map(d => d.count) ?? []), 1)
+  const maxDispType = Math.max(...(data.dispensationsByType?.map(d => d.count) ?? []), 1)
+
+  const emoRows = [
     {
-      label: 'Atenciones en rango',
-      value: data.summary.consultationsInRange,
-      icon: <Users className="h-5 w-5 text-slate-600" />,
-      bg: 'bg-slate-100',
-      onClick: () => navigate('/clinical-attention'),
-    },
-    {
-      label: 'Ciclos EMO activos',
+      label: 'Ciclos activos',
       value: data.summary.activeCycles,
-      icon: <Activity className="h-5 w-5 text-indigo-600" />,
-      bg: 'bg-indigo-50',
-      valueClassName: 'text-indigo-600',
-      onClick: () => navigate('/clinical-histories?emoCycleStatus=IN_PROGRESS'),
+      icon: <Activity className="h-4 w-4 text-indigo-500" />,
+      valueClassName: 'text-indigo-600' as const,
     },
     {
       label: 'Pendientes de conclusión',
       value: data.summary.pendingConclusion,
-      icon: <ClipboardList className="h-5 w-5 text-amber-600" />,
-      bg: 'bg-amber-50',
+      icon: <ClipboardList className="h-4 w-4 text-amber-500" />,
       valueClassName: data.summary.pendingConclusion > 0 ? 'text-amber-600' : undefined,
-      onClick: () => navigate('/clinical-histories?emoCycleStatus=PENDING_DOCTOR_CONCLUSION'),
     },
     {
-      label: 'Follow-ups vencidos',
-      value: data.summary.overdueFollowUps,
-      icon: <AlertTriangle className="h-5 w-5 text-red-600" />,
-      bg: 'bg-red-50',
-      valueClassName: data.summary.overdueFollowUps > 0 ? 'text-red-600' : undefined,
-      onClick: () => navigate('/clinical-attention'),
+      label: 'Completados este mes',
+      value: data.alerts.cyclesCompletedThisMonth,
+      icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" />,
+      valueClassName: 'text-emerald-600' as const,
+    },
+    {
+      label: 'Por vencer (30 días)',
+      value: data.emosExpiringSoon,
+      icon: <AlertTriangle className="h-4 w-4 text-amber-500" />,
+      valueClassName: data.emosExpiringSoon > 0 ? 'text-amber-600' : undefined,
+    },
+    {
+      label: 'Conformidad pendiente',
+      value: data.pendingEmployeeConformity,
+      icon: <ClipboardList className="h-4 w-4 text-amber-500" />,
+      valueClassName: data.pendingEmployeeConformity > 0 ? 'text-amber-600' : undefined,
     },
   ]
 
-  const alertCards = [
+  const seguimientosRows = [
+    {
+      label: 'Follow-ups vencidos',
+      value: data.summary.overdueFollowUps,
+      icon: <AlertTriangle className="h-4 w-4 text-red-500" />,
+      valueClassName: data.summary.overdueFollowUps > 0 ? 'text-red-600' : undefined,
+    },
     {
       label: 'Con restricciones',
       value: data.alerts.patientsWithRestrictions,
-      icon: <AlertTriangle className="h-5 w-5 text-amber-500" />,
-      bg: 'bg-amber-50',
+      icon: <AlertTriangle className="h-4 w-4 text-amber-500" />,
       valueClassName: data.alerts.patientsWithRestrictions > 0 ? 'text-amber-600' : undefined,
-      onClick: () => navigate('/clinical-histories?conclusion=APTO_CON_RESTRICCIONES'),
     },
     {
-      label: 'EMO completados este mes',
-      value: data.alerts.cyclesCompletedThisMonth,
-      icon: <CheckCircle2 className="h-5 w-5 text-emerald-600" />,
-      bg: 'bg-emerald-50',
-      valueClassName: 'text-emerald-600',
-      onClick: () => navigate('/clinical-histories?emoCycleStatus=COMPLETED'),
+      label: 'Tasa de cumplimiento',
+      value: `${data.followUpCompletionRate.toFixed(1)}%`,
+      icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" />,
+      valueClassName: 'text-emerald-600' as const,
     },
     {
-      label: 'Medicamentos por acabarse',
+      label: 'Días prom. cumplimiento',
+      value: data.averageDaysToFulfillFollowUp.toFixed(1),
+      icon: <Clock className="h-4 w-4 text-slate-400" />,
+    },
+  ]
+
+  const atencionRows = [
+    {
+      label: 'En descanso médico',
+      value: data.employeesOnMedicalRest,
+      icon: <BedDouble className="h-4 w-4 text-indigo-500" />,
+      valueClassName: data.employeesOnMedicalRest > 0 ? 'text-indigo-600' : undefined,
+    },
+    {
+      label: 'Días prom. descanso',
+      value: data.averageMedicalRestDays.toFixed(1),
+      icon: <Clock className="h-4 w-4 text-slate-400" />,
+    },
+    {
+      label: 'Medicamentos bajo stock',
       value: data.alerts.lowStockCount,
-      icon: <Package className="h-5 w-5 text-red-500" />,
-      bg: 'bg-red-50',
+      icon: <Package className="h-4 w-4 text-red-500" />,
       valueClassName: data.alerts.lowStockCount > 0 ? 'text-red-600' : undefined,
-      onClick: () => navigate('/medications?lowStock=true'),
+    },
+    {
+      label: 'Trabajadores +21 días DM',
+      value: data.workersWithOver21DmDays,
+      icon: <AlertTriangle className="h-4 w-4 text-red-500" />,
+      valueClassName: data.workersWithOver21DmDays > 0 ? 'text-red-600' : undefined,
+    },
+    {
+      label: 'DM por vencer (mes próx.)',
+      value: data.dmDaysExpiringSoon,
+      icon: <CalendarDays className="h-4 w-4 text-amber-500" />,
+      valueClassName: data.dmDaysExpiringSoon > 0 ? 'text-amber-600' : undefined,
     },
   ]
 
@@ -133,55 +190,193 @@ export const MedicalDashboardPage = () => {
       <div className="space-y-6">
         <DateRangeFilter value={dateRange} onChange={handleDateChange} />
 
-        {/* Métricas principales */}
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {mainCards.map((card, i) => (
-            <MetricCard key={i} {...card} />
-          ))}
-        </div>
-
-        {/* Alertas secundarias */}
-        <div className="grid gap-4 sm:grid-cols-3">
-          {alertCards.map((a, i) => (
-            <MetricCard
-              key={i}
-              label={a.label}
-              value={a.value}
-              valueClassName={a.valueClassName}
-              icon={a.icon ?? <AlertTriangle className="h-5 w-5 text-slate-500" />}
-              bg={a.bg ?? 'bg-slate-100'}
-              onClick={a.onClick}
-            />
-          ))}
-        </div>
-
-        {/* Gráfico de tendencia */}
-        <div className="rounded-3xl bg-white p-5 shadow-sm">
-          <div className="mb-4 flex items-center justify-between">
-            <div>
-              <h2 className="text-base font-semibold text-slate-900">
-                Atenciones — últimos 7 días
-              </h2>
-              <p className="mt-0.5 text-xs text-slate-400">
-                Volumen diario de atenciones clínicas registradas
-              </p>
-            </div>
-
-            <button
-              onClick={() => navigate('/clinical-attention')}
-              className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
-            >
-              Ver atenciones
-            </button>
+        {/* Cards del período + Gráfico */}
+        <div className="grid gap-6 xl:grid-cols-4">
+          <div className="flex flex-col gap-3">
+            {[
+              {
+                label: 'Atenciones en rango',
+                value: data.summary.consultationsInRange,
+                icon: <Users className="h-5 w-5 text-slate-600" />,
+                bg: 'bg-slate-100',
+                onClick: () => navigate('/clinical-attention'),
+              },
+              {
+                label: 'Dispensaciones',
+                value: data.dispensationsInRange,
+                icon: <Pill className="h-5 w-5 text-indigo-600" />,
+                bg: 'bg-indigo-50',
+                valueClass: 'text-indigo-600',
+                onClick: () => navigate('/medications'),
+              },
+              {
+                label: 'Descansos emitidos',
+                value: data.medicalRestsInRange,
+                icon: <BedDouble className="h-5 w-5 text-amber-600" />,
+                bg: 'bg-amber-50',
+                valueClass: 'text-amber-600',
+              },
+            ].map((c) => (
+              <div
+                key={c.label}
+                onClick={c.onClick}
+                className={cn(
+                  'flex flex-1 items-center justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm',
+                  c.onClick && 'cursor-pointer transition hover:-translate-y-0.5 hover:shadow-md'
+                )}
+              >
+                <div>
+                  <p className="text-xs uppercase tracking-[0.14em] text-slate-400">{c.label}</p>
+                  <p className={cn('mt-1 text-lg font-semibold', (c as { valueClass?: string }).valueClass ?? 'text-slate-900')}>
+                    {c.value}
+                  </p>
+                </div>
+                <div className={cn('rounded-2xl p-3', c.bg)}>{c.icon}</div>
+              </div>
+            ))}
           </div>
 
-          {data.consultationsTrend.length > 0 ? (
-            <ConsultationsTrendChart data={data.consultationsTrend} />
-          ) : (
-            <div className="flex items-center justify-center py-12 text-sm text-slate-400">
-              Sin atenciones en los últimos 7 días
+          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm xl:col-span-3">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-base font-semibold text-slate-900">Tendencia de atenciones</h2>
+              <button
+                onClick={() => navigate('/clinical-attention')}
+                className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
+              >
+                Ver atenciones
+              </button>
             </div>
-          )}
+
+            {data.consultationsTrend.length > 0 ? (
+              <ConsultationsTrendChart data={data.consultationsTrend} />
+            ) : (
+              <div className="flex items-center justify-center py-12 text-sm text-slate-400">
+                Sin atenciones en el rango seleccionado
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Distribución de triage */}
+        <div className="grid gap-4 sm:grid-cols-3">
+          {(['HIGH', 'MEDIUM', 'LOW'] as const).map(level => {
+            const item = data.triageDistribution?.find(t => t.level === level)
+            return (
+              <div
+                key={level}
+                className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm"
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
+                      Triage {TRIAGE_LABEL[level]}
+                    </p>
+                    <p className={cn('mt-1 text-2xl font-semibold', TRIAGE_VALUE_CLASS[level])}>
+                      {item?.count ?? 0}
+                    </p>
+                  </div>
+                  <span className={cn('rounded-xl px-3 py-1.5 text-xs font-medium', TRIAGE_ROW_CLASS[level])}>
+                    {TRIAGE_LABEL[level]}
+                  </span>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Top diagnósticos + Dispensaciones por tipo */}
+        {(data.topDiagnoses?.length > 0 || data.dispensationsByType?.length > 0) && (
+          <div className={cn(
+            'grid gap-6',
+            data.topDiagnoses?.length > 0 && data.dispensationsByType?.length > 0
+              ? 'xl:grid-cols-2'
+              : ''
+          )}>
+            {data.topDiagnoses?.length > 0 && (
+              <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div className="mb-4 flex items-center justify-between">
+                  <h2 className="text-base font-semibold text-slate-900">Diagnósticos frecuentes</h2>
+                  <button
+                    onClick={() => navigate('/clinical-attention')}
+                    className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
+                  >
+                    Ver atenciones
+                  </button>
+                </div>
+                <div className="space-y-4">
+                  {data.topDiagnoses.map(item => (
+                    <div key={item.code}>
+                      <div className="flex justify-between text-sm font-medium text-slate-700">
+                        <span className="truncate pr-2">
+                          {item.name ?? item.code}
+                          {item.name && (
+                            <span className="ml-1 text-xs text-slate-400">({item.code})</span>
+                          )}
+                        </span>
+                        <span className="shrink-0 text-slate-500">{item.count}</span>
+                      </div>
+                      <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-slate-100">
+                        <div
+                          className="h-full rounded-full bg-indigo-500 transition-all"
+                          style={{ width: `${(item.count / maxDiagnosis) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {data.dispensationsByType?.length > 0 && (
+              <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div className="mb-4 flex items-center justify-between">
+                  <h2 className="text-base font-semibold text-slate-900">Dispensaciones por tipo</h2>
+                  <button
+                    onClick={() => navigate('/medications')}
+                    className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
+                  >
+                    Ver farmacia
+                  </button>
+                </div>
+                <div className="space-y-4">
+                  {data.dispensationsByType.map(item => (
+                    <div key={item.type}>
+                      <div className="flex justify-between text-sm font-medium text-slate-700">
+                        <span className="truncate pr-2">{DISPENSE_TYPE_LABEL[item.type] ?? item.type}</span>
+                        <span className="shrink-0 text-slate-500">{item.count}</span>
+                      </div>
+                      <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-slate-100">
+                        <div
+                          className="h-full rounded-full bg-emerald-500 transition-all"
+                          style={{ width: `${(item.count / maxDispType) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Estado actual — MetricPanels */}
+        <div className="grid gap-6 xl:grid-cols-3">
+          <MetricPanel
+            title="EMO"
+            rows={emoRows}
+          />
+          <MetricPanel
+            title="Seguimientos"
+            actionLabel="Ver atenciones"
+            onAction={() => navigate('/clinical-attention')}
+            rows={seguimientosRows}
+          />
+          <MetricPanel
+            title="Atención médica"
+            actionLabel="Ver inventario"
+            onAction={() => navigate('/medications?lowStock=true')}
+            rows={atencionRows}
+          />
         </div>
 
         {/* Medicamentos por acabarse */}
@@ -274,7 +469,6 @@ export const MedicalDashboardPage = () => {
             <h2 className="text-base font-semibold text-slate-900">
               Últimas atenciones
             </h2>
-
             <button
               onClick={() => navigate('/clinical-attention')}
               className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
@@ -324,7 +518,7 @@ export const MedicalDashboardPage = () => {
                       <td className="px-6 py-4">
                         <span className={cn(
                           'rounded-xl px-2 py-1 text-xs font-medium',
-                          TRIAGE_CLASS[item.triageLevel] ?? 'bg-slate-100 text-slate-600',
+                          TRIAGE_ROW_CLASS[item.triageLevel] ?? 'bg-slate-100 text-slate-600',
                         )}>
                           {TRIAGE_LABEL[item.triageLevel] ?? item.triageLevel}
                         </span>

@@ -25,6 +25,14 @@ export type ManagementDashboardResponse = {
   employeesByArea: { area: string; count: number }[]
   accidentsByArea: { area: string; count: number }[]
 
+  // Range-dependent
+  requirementsInRange: number
+  requirementsTrend: { date: string; count: number }[]
+
+  // Estáticos
+  avgDeliveryDays: number
+  unresolvedInventoryAlerts: number
+
   recentRequirements: {
     id: number
     code: string

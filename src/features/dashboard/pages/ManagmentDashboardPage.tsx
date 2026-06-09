@@ -2,20 +2,23 @@ import { useState } from 'react'
 import {
   Activity,
   AlertTriangle,
+  Bell,
   CheckCircle2,
   ClipboardList,
-  ShieldAlert,
+  Package,
+  Timer,
   TrendingUp,
   Users,
 } from 'lucide-react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { cn } from '@/shared/utils'
 import PageContainer from '@/shared/components/ui/PageContainer'
-import { MetricCard } from '@/shared/components/dashboard/MetricCard'
 import { DateRangeFilter, toISODate } from '@/shared/components/dashboard/DateRangeFilter'
 import type { DateRange } from '@/shared/components/dashboard/DateRangeFilter'
+import { MetricPanel } from '@/shared/components/dashboard/MetricPanel'
 import { useManagementDashboard } from '../hooks/useManagementDashboard'
 import { ManagementDashboardSkeleton } from '../components/management/ManagementDashboardSkeleton'
+import { RequirementsTrendChart } from '../components/management/RequirementsTrendChart'
 
 const REQ_STATUS_LABEL: Record<string, string> = {
   PENDING: 'Pendiente',
@@ -77,65 +80,6 @@ export const ManagementDashboardPage = () => {
     )
   }
 
-  const mainCards = [
-    {
-      label: 'Trabajadores activos',
-      value: data.summary.totalEmployees,
-      icon: <Users className="h-5 w-5 text-slate-600" />,
-      bg: 'bg-slate-100',
-      onClick: () => navigate('/employees'),
-    },
-    {
-      label: 'Ciclos EMO activos',
-      value: data.summary.activeCycles,
-      icon: <Activity className="h-5 w-5 text-indigo-600" />,
-      bg: 'bg-indigo-50',
-      valueClassName: 'text-indigo-600',
-      onClick: () => navigate('/clinical-histories'),
-    },
-    {
-      label: 'Accidentes totales',
-      value: data.summary.totalAccidents,
-      icon: <ShieldAlert className="h-5 w-5 text-amber-600" />,
-      bg: 'bg-amber-50',
-      valueClassName: 'text-amber-600',
-      onClick: () => navigate('/accidents'),
-    },
-    {
-      label: 'Atenciones en rango',
-      value: data.summary.attentionsInRange,
-      icon: <TrendingUp className="h-5 w-5 text-emerald-600" />,
-      bg: 'bg-emerald-50',
-      valueClassName: 'text-emerald-600',
-    },
-  ]
-
-  const alertCards = [
-    {
-      label: 'Con restricciones',
-      value: data.alerts.employeesWithRestrictions,
-      icon: <AlertTriangle className="h-5 w-5 text-amber-500" />,
-      bg: 'bg-amber-50',
-      valueClassName: data.alerts.employeesWithRestrictions > 0 ? 'text-amber-600' : undefined,
-      onClick: () => navigate('/clinical-histories'),
-    },
-    {
-      label: 'Follow-ups vencidos',
-      value: data.alerts.overdueFollowUps,
-      icon: <AlertTriangle className="h-5 w-5 text-red-500" />,
-      bg: 'bg-red-50',
-      valueClassName: data.alerts.overdueFollowUps > 0 ? 'text-red-600' : undefined,
-    },
-    {
-      label: 'Req. pendientes',
-      value: data.alerts.pendingRequirements,
-      icon: <ClipboardList className="h-5 w-5 text-slate-500" />,
-      bg: 'bg-slate-100',
-      valueClassName: data.alerts.pendingRequirements > 0 ? 'text-slate-700' : undefined,
-      onClick: () => navigate('/requirements'),
-    },
-  ]
-
   const maxEmployees = Math.max(...data.employeesByArea.map(a => a.count), 1)
   const maxAccidents = Math.max(...data.accidentsByArea.map(a => a.count), 1)
 
@@ -147,50 +91,65 @@ export const ManagementDashboardPage = () => {
       <div className="space-y-6">
         <DateRangeFilter value={dateRange} onChange={handleDateChange} />
 
-        {/* Cards principales */}
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {mainCards.map((card, i) => (
-            <MetricCard key={i} {...card} />
-          ))}
+        {/* Range-dependent: cards apiladas + histograma de tendencia */}
+        <div className="grid gap-4 xl:grid-cols-4">
+          <div className="flex flex-col gap-3">
+            <div
+              className="flex flex-1 cursor-pointer items-center justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md"
+              onClick={() => navigate('/clinical-attention')}
+            >
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wider text-slate-400">Atenciones en rango</p>
+                <p className="mt-1 text-2xl font-semibold text-emerald-600">{data.summary.attentionsInRange}</p>
+              </div>
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50">
+                <TrendingUp className="h-5 w-5 text-emerald-600" />
+              </div>
+            </div>
+
+            <div
+              className="flex flex-1 cursor-pointer items-center justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md"
+              onClick={() => navigate('/clinical-attention')}
+            >
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wider text-slate-400">Follow-ups en rango</p>
+                <p className="mt-1 text-2xl font-semibold text-blue-600">{data.summary.followUpsInRange}</p>
+              </div>
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50">
+                <ClipboardList className="h-5 w-5 text-blue-600" />
+              </div>
+            </div>
+
+            <div
+              className="flex flex-1 cursor-pointer items-center justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md"
+              onClick={() => navigate('/requirements')}
+            >
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wider text-slate-400">Requerimientos en rango</p>
+                <p className="mt-1 text-2xl font-semibold text-indigo-600">{data.requirementsInRange}</p>
+              </div>
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50">
+                <Package className="h-5 w-5 text-indigo-600" />
+              </div>
+            </div>
+          </div>
+
+          <div className="overflow-hidden rounded-3xl bg-white p-5 shadow-sm xl:col-span-3">
+            <p className="mb-3 text-sm font-semibold text-slate-700">Tendencia de requerimientos</p>
+            {data.requirementsTrend.length === 0 ? (
+              <div className="flex h-55 items-center justify-center text-sm text-slate-400 xl:h-68.75">
+                Sin datos en el período
+              </div>
+            ) : (
+              <RequirementsTrendChart data={data.requirementsTrend} />
+            )}
+          </div>
         </div>
 
-        {/* Desglose de empleados + follow-ups en rango */}
-        <div className="grid gap-4 sm:grid-cols-3">
-          <MetricCard
-            label="Empleados internos"
-            value={data.summary.internalEmployees}
-            icon={<Users className="h-5 w-5 text-slate-600" />}
-            bg="bg-slate-100"
-            onClick={() => navigate('/employees')}
-          />
-          <MetricCard
-            label="Empleados externos"
-            value={data.summary.externalEmployees}
-            icon={<Users className="h-5 w-5 text-indigo-600" />}
-            bg="bg-indigo-50"
-            onClick={() => navigate('/employees')}
-          />
-          <MetricCard
-            label="Follow-ups en rango"
-            value={data.summary.followUpsInRange}
-            icon={<ClipboardList className="h-5 w-5 text-blue-600" />}
-            bg="bg-blue-50"
-            valueClassName="text-blue-600"
-            onClick={() => navigate('/clinical-attention')}
-          />
-        </div>
-
-        {/* Alertas */}
-        <div className="grid gap-4 sm:grid-cols-3">
-          {alertCards.map((a, i) => (
-            <MetricCard key={i} {...a} />
-          ))}
-        </div>
-
-        {/* Requerimientos */}
+        {/* Estado de requerimientos — panel con mini-cards */}
         <div className="rounded-3xl bg-white p-5 shadow-sm">
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-base font-semibold text-slate-900">Requerimientos</h2>
+            <h2 className="text-base font-semibold text-slate-900">Estado de requerimientos</h2>
             <button
               onClick={() => navigate('/requirements')}
               className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
@@ -198,38 +157,22 @@ export const ManagementDashboardPage = () => {
               Ver todos
             </button>
           </div>
-
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <MetricCard
-              label="Total"
-              value={data.requirementsSummary.total}
-              icon={<ClipboardList className="h-5 w-5 text-slate-600" />}
-              bg="bg-slate-100"
-              onClick={() => navigate('/requirements')}
-            />
-            <MetricCard
-              label="Pendientes"
-              value={data.requirementsSummary.pending}
-              icon={<AlertTriangle className="h-5 w-5 text-amber-600" />}
-              bg="bg-amber-50"
-              valueClassName="text-amber-600"
-              onClick={() => navigate('/requirements')}
-            />
-            <MetricCard
-              label="En proceso"
-              value={data.requirementsSummary.inProgress}
-              icon={<TrendingUp className="h-5 w-5 text-blue-600" />}
-              bg="bg-blue-50"
-              onClick={() => navigate('/requirements')}
-            />
-            <MetricCard
-              label="Entregados"
-              value={data.requirementsSummary.delivered}
-              icon={<CheckCircle2 className="h-5 w-5 text-emerald-600" />}
-              bg="bg-emerald-50"
-              valueClassName="text-emerald-600"
-              onClick={() => navigate('/requirements')}
-            />
+            {[
+              { label: 'Total', value: data.requirementsSummary.total, color: 'text-slate-700', bg: 'bg-slate-50', border: 'border-slate-200' },
+              { label: 'Pendientes', value: data.requirementsSummary.pending, color: data.requirementsSummary.pending > 0 ? 'text-amber-600' : 'text-slate-700', bg: 'bg-amber-50', border: 'border-amber-100' },
+              { label: 'En proceso', value: data.requirementsSummary.inProgress, color: 'text-blue-600', bg: 'bg-blue-50', border: 'border-blue-100' },
+              { label: 'Entregados', value: data.requirementsSummary.delivered, color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100' },
+            ].map(item => (
+              <div
+                key={item.label}
+                onClick={() => navigate('/requirements')}
+                className={cn('cursor-pointer rounded-2xl border p-4 transition hover:shadow-sm', item.bg, item.border)}
+              >
+                <p className="text-xs font-medium uppercase tracking-wider text-slate-400">{item.label}</p>
+                <p className={cn('mt-1 text-2xl font-semibold', item.color)}>{item.value}</p>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -245,7 +188,6 @@ export const ManagementDashboardPage = () => {
                 Ver empleados
               </button>
             </div>
-
             {data.employeesByArea.length === 0 ? (
               <p className="py-6 text-center text-sm text-slate-400">Sin datos</p>
             ) : (
@@ -278,7 +220,6 @@ export const ManagementDashboardPage = () => {
                 Ver accidentes
               </button>
             </div>
-
             {data.accidentsByArea.length === 0 ? (
               <p className="py-6 text-center text-sm text-slate-400">Sin accidentes registrados</p>
             ) : (
@@ -300,6 +241,115 @@ export const ManagementDashboardPage = () => {
               </div>
             )}
           </div>
+        </div>
+
+        {/* MetricPanels — estáticos */}
+        <div className="grid gap-6 xl:grid-cols-3">
+          <MetricPanel
+            title="Personal"
+            actionLabel="Ver empleados"
+            onAction={() => navigate('/employees')}
+            rows={[
+              {
+                label: 'Trabajadores activos',
+                icon: <Users className="h-4 w-4 text-slate-600" />,
+                value: data.summary.totalEmployees,
+                iconBg: 'bg-slate-100',
+              },
+              {
+                label: 'Internos',
+                icon: <Users className="h-4 w-4 text-indigo-600" />,
+                value: data.summary.internalEmployees,
+                iconBg: 'bg-indigo-50',
+              },
+              {
+                label: 'Externos',
+                icon: <Users className="h-4 w-4 text-blue-600" />,
+                value: data.summary.externalEmployees,
+                iconBg: 'bg-blue-50',
+              },
+              {
+                label: 'Ciclos EMO activos',
+                icon: <Activity className="h-4 w-4 text-indigo-600" />,
+                value: data.summary.activeCycles,
+                iconBg: 'bg-indigo-50',
+              },
+              {
+                label: 'Con restricciones',
+                icon: <AlertTriangle className="h-4 w-4 text-amber-500" />,
+                value: data.alerts.employeesWithRestrictions,
+                iconBg: 'bg-amber-50',
+                valueClassName: data.alerts.employeesWithRestrictions > 0 ? 'text-amber-600' : undefined,
+              },
+            ]}
+          />
+
+          <MetricPanel
+            title="Alertas"
+            rows={[
+              {
+                label: 'Follow-ups vencidos',
+                icon: <AlertTriangle className="h-4 w-4 text-red-500" />,
+                value: data.alerts.overdueFollowUps,
+                iconBg: 'bg-red-50',
+                valueClassName: data.alerts.overdueFollowUps > 0 ? 'text-red-600' : undefined,
+              },
+              {
+                label: 'Req. pendientes',
+                icon: <ClipboardList className="h-4 w-4 text-amber-500" />,
+                value: data.alerts.pendingRequirements,
+                iconBg: 'bg-amber-50',
+                valueClassName: data.alerts.pendingRequirements > 0 ? 'text-amber-600' : undefined,
+              },
+              {
+                label: 'Alertas inventario',
+                icon: <Bell className="h-4 w-4 text-red-500" />,
+                value: data.unresolvedInventoryAlerts,
+                iconBg: 'bg-red-50',
+                valueClassName: data.unresolvedInventoryAlerts > 0 ? 'text-red-600' : undefined,
+              },
+              {
+                label: 'Prom. días de entrega',
+                icon: <Timer className="h-4 w-4 text-slate-500" />,
+                value: data.avgDeliveryDays > 0 ? `${data.avgDeliveryDays.toFixed(1)} días` : '—',
+                iconBg: 'bg-slate-100',
+              },
+            ]}
+          />
+
+          <MetricPanel
+            title="Requerimientos"
+            actionLabel="Ver todos"
+            onAction={() => navigate('/requirements')}
+            rows={[
+              {
+                label: 'Total histórico',
+                icon: <ClipboardList className="h-4 w-4 text-slate-600" />,
+                value: data.requirementsSummary.total,
+                iconBg: 'bg-slate-100',
+              },
+              {
+                label: 'Pendientes',
+                icon: <AlertTriangle className="h-4 w-4 text-amber-500" />,
+                value: data.requirementsSummary.pending,
+                iconBg: 'bg-amber-50',
+                valueClassName: data.requirementsSummary.pending > 0 ? 'text-amber-600' : undefined,
+              },
+              {
+                label: 'En proceso',
+                icon: <TrendingUp className="h-4 w-4 text-blue-600" />,
+                value: data.requirementsSummary.inProgress,
+                iconBg: 'bg-blue-50',
+              },
+              {
+                label: 'Entregados',
+                icon: <CheckCircle2 className="h-4 w-4 text-emerald-600" />,
+                value: data.requirementsSummary.delivered,
+                iconBg: 'bg-emerald-50',
+                valueClassName: 'text-emerald-600',
+              },
+            ]}
+          />
         </div>
 
         {/* Últimos requerimientos */}

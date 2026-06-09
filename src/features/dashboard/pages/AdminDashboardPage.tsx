@@ -1,6 +1,7 @@
 import {
   Activity,
   AlertTriangle,
+  Bell,
   ClipboardList,
   Package,
   ShieldAlert,
@@ -10,13 +11,13 @@ import {
 import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import PageContainer from '@/shared/components/ui/PageContainer'
-import { MetricCard } from '@/shared/components/dashboard/MetricCard'
 import { DateRangeFilter, toISODate } from '@/shared/components/dashboard/DateRangeFilter'
 import type { DateRange } from '@/shared/components/dashboard/DateRangeFilter'
 import { Select } from '@/shared/components/ui/form/Select'
 import { useAdminDashboard } from '../hooks/useAdminDashboard'
 import { AdminDashboardSkeleton } from '../components/admin/AdminDashboardSkeleton'
 import { MetricPanel } from '@/shared/components/dashboard/MetricPanel'
+import { AdminActivityChart } from '../components/admin/AdminActivityChart'
 import { PERSONAL_PANEL, ACCIDENTAL_PANEL, ALERTAS_PANEL, SISTEMA_PANEL } from '../constants/admin-dashboard.constants'
 
 const EVENT_TYPE_OPTIONS = [
@@ -140,26 +141,45 @@ export const AdminDashboardPage = () => {
           />
         </div>
 
-        <div className="grid gap-6 xl:grid-cols-3">
-          <div className="flex flex-col gap-4">
-            <MetricCard
-              label="Atenciones en rango"
-              value={data.summary.consultationsInRange}
-              icon={<TrendingUp className="h-5 w-5 text-indigo-600" />}
-              bg="bg-indigo-50"
-              valueClassName="text-indigo-600"
-              onClick={() => navigate('/clinical-attention')}
-            />
-            <MetricCard
-              label="Follow-ups en rango"
-              value={data.summary.followUpsInRange}
-              icon={<ClipboardList className="h-5 w-5 text-blue-600" />}
-              bg="bg-blue-50"
-              valueClassName="text-blue-600"
-              onClick={() => navigate('/clinical-attention')}
-            />
+        {/* Range-dependent: 4 cards apiladas + gráfico de actividad */}
+        <div className="grid gap-4 xl:grid-cols-4">
+          <div className="flex flex-col gap-3">
+            {[
+              { label: 'Atenciones en rango', value: data.summary.consultationsInRange, color: 'text-indigo-600', bg: 'bg-indigo-50', icon: <TrendingUp className="h-5 w-5 text-indigo-600" />, path: '/clinical-attention' },
+              { label: 'Follow-ups en rango', value: data.summary.followUpsInRange, color: 'text-blue-600', bg: 'bg-blue-50', icon: <ClipboardList className="h-5 w-5 text-blue-600" />, path: '/clinical-attention' },
+              { label: 'Accidentes en rango', value: data.accidentsInRange, color: 'text-amber-600', bg: 'bg-amber-50', icon: <ShieldAlert className="h-5 w-5 text-amber-600" />, path: '/accidents' },
+              { label: 'Dispensaciones en rango', value: data.dispensationsInRange, color: 'text-emerald-600', bg: 'bg-emerald-50', icon: <Package className="h-5 w-5 text-emerald-600" />, path: undefined },
+            ].map(card => (
+              <div
+                key={card.label}
+                onClick={() => card.path && navigate(card.path)}
+                className={`flex flex-1 ${card.path ? 'cursor-pointer' : ''} items-center justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md`}
+              >
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-wider text-slate-400">{card.label}</p>
+                  <p className={`mt-1 text-2xl font-semibold ${card.color}`}>{card.value}</p>
+                </div>
+                <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${card.bg}`}>
+                  {card.icon}
+                </div>
+              </div>
+            ))}
           </div>
 
+          <div className="overflow-hidden rounded-3xl bg-white p-5 shadow-sm xl:col-span-3">
+            <p className="mb-3 text-sm font-semibold text-slate-700">Actividad del período</p>
+            {data.activityTrend.length === 0 ? (
+              <div className="flex h-55 items-center justify-center text-sm text-slate-400 xl:h-68.75">
+                Sin datos en el período
+              </div>
+            ) : (
+              <AdminActivityChart data={data.activityTrend} />
+            )}
+          </div>
+        </div>
+
+        {/* Accidentes por área */}
+        <div className="grid gap-6 xl:grid-cols-3">
           <div className="rounded-3xl bg-white p-5 shadow-sm xl:col-span-2">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-base font-semibold text-slate-900">Accidentes por área</h2>
@@ -170,7 +190,6 @@ export const AdminDashboardPage = () => {
                 Ver accidentes
               </button>
             </div>
-
             {data.accidentsByArea.length === 0 ? (
               <p className="py-6 text-center text-sm text-slate-400">Sin accidentes en el rango</p>
             ) : (
@@ -192,38 +211,6 @@ export const AdminDashboardPage = () => {
               </div>
             )}
           </div>
-        </div>
-
-        <div className={`grid gap-6 ${hasClassification ? 'xl:grid-cols-2' : ''}`}>
-          {hasClassification && (
-            <div className="rounded-3xl bg-white p-5 shadow-sm">
-              <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-base font-semibold text-slate-900">Accidentes por clasificación</h2>
-                <button
-                  onClick={() => navigate('/accidents')}
-                  className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
-                >
-                  Ver accidentes
-                </button>
-              </div>
-              <div className="space-y-4">
-                {data.accidentsByClassification.map(item => (
-                  <div key={item.classification}>
-                    <div className="flex justify-between text-sm font-medium text-slate-700">
-                      <span className="truncate pr-2">{item.classification}</span>
-                      <span className="shrink-0 text-slate-500">{item.count}</span>
-                    </div>
-                    <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-slate-100">
-                      <div
-                        className="h-full rounded-full bg-red-500"
-                        style={{ width: `${(item.count / maxClassification) * 100}%` }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
 
           <div className="rounded-3xl bg-white p-5 shadow-sm">
             <div className="mb-4 flex items-center justify-between">
@@ -235,7 +222,6 @@ export const AdminDashboardPage = () => {
                 Gestionar farmacia
               </button>
             </div>
-
             {data.mostUsedMedications.length === 0 ? (
               <p className="py-6 text-center text-sm text-slate-400">Sin dispensaciones en el rango</p>
             ) : (
@@ -259,27 +245,88 @@ export const AdminDashboardPage = () => {
           </div>
         </div>
 
-        <div className="grid gap-6 xl:grid-cols-3">
-          {
-            principalMetrics.map(({ info, rows }) => (
-              <MetricPanel
-                {...info}
-                onAction={() => info.path ? navigate(info.path) : null}
-                rows={rows}
-                panelHeight="300px" />
-            ))
-          }
-        </div>
+        {hasClassification && (
+          <div className="rounded-3xl bg-white p-5 shadow-sm">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-base font-semibold text-slate-900">Accidentes por clasificación</h2>
+              <button
+                onClick={() => navigate('/accidents')}
+                className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
+              >
+                Ver accidentes
+              </button>
+            </div>
+            <div className="space-y-4">
+              {data.accidentsByClassification.map(item => (
+                <div key={item.classification}>
+                  <div className="flex justify-between text-sm font-medium text-slate-700">
+                    <span className="truncate pr-2">{item.classification}</span>
+                    <span className="shrink-0 text-slate-500">{item.count}</span>
+                  </div>
+                  <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-slate-100">
+                    <div
+                      className="h-full rounded-full bg-red-500"
+                      style={{ width: `${(item.count / maxClassification) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
-        {
-          secondaryMetrics.map(({ info, rows }) => (
+        <div className="grid gap-6 xl:grid-cols-4">
+          {principalMetrics.map(({ info, rows }) => (
             <MetricPanel
+              key={info.title}
               {...info}
               onAction={() => info.path ? navigate(info.path) : null}
               rows={rows}
-              panelHeight="280px" />
-          ))
-        }
+            />
+          ))}
+          <MetricPanel
+            title="Salud"
+            rows={[
+              {
+                label: 'En descanso médico',
+                icon: <Activity className="h-4 w-4 text-amber-500" />,
+                value: data.employeesOnMedicalRest,
+                iconBg: 'bg-amber-50',
+                valueClassName: data.employeesOnMedicalRest > 0 ? 'text-amber-600' : undefined,
+              },
+              {
+                label: 'EMOs por vencer (30d)',
+                icon: <AlertTriangle className="h-4 w-4 text-amber-500" />,
+                value: data.emosExpiringSoon,
+                iconBg: 'bg-amber-50',
+                valueClassName: data.emosExpiringSoon > 0 ? 'text-amber-600' : undefined,
+              },
+              {
+                label: 'Conf. pendiente empleado',
+                icon: <ClipboardList className="h-4 w-4 text-amber-500" />,
+                value: data.pendingEmployeeConformity,
+                iconBg: 'bg-amber-50',
+                valueClassName: data.pendingEmployeeConformity > 0 ? 'text-amber-600' : undefined,
+              },
+              {
+                label: 'Alertas inventario',
+                icon: <Bell className="h-4 w-4 text-red-500" />,
+                value: data.unresolvedInventoryAlerts,
+                iconBg: 'bg-red-50',
+                valueClassName: data.unresolvedInventoryAlerts > 0 ? 'text-red-600' : undefined,
+              },
+            ]}
+          />
+        </div>
+
+        {secondaryMetrics.map(({ info, rows }) => (
+          <MetricPanel
+            key={info.title}
+            {...info}
+            onAction={() => info.path ? navigate(info.path) : null}
+            rows={rows}
+          />
+        ))}
 
       </div>
     </PageContainer>

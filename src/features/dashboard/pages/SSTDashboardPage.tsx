@@ -6,11 +6,15 @@ import {
   CheckCircle2,
   Activity,
   TrendingUp,
-  Users
+  Users,
+  Clock,
+  CalendarDays,
+  RotateCcw,
+  Shield,
 } from 'lucide-react'
-import { DashboardCard } from '@/shared/components/dashboard/DashboardCard'
 import { ACCIDENT_TYPE_CLASSNAME, ACCIDENT_TYPE_LABEL } from '@/features/accidents/accidents/types'
-import { MetricBox } from '@/shared/components/dashboard/MetricBox'
+import { ACCIDENT_FORM_LABEL, AccidentFormEnum } from '@/features/accidents/accidents/types/accident-form.enum'
+import { MetricPanel } from '@/shared/components/dashboard/MetricPanel'
 import { cn } from '@/shared/utils'
 import { AccidentTrendChart } from '../components/sst/AccidentTrendChart'
 import { useSSTDashboard } from '../hooks/useSSTDashboard'
@@ -19,6 +23,38 @@ import PageContainer from '@/shared/components/ui/PageContainer'
 import { useNavigate, useSearchParams } from 'react-router'
 import { DateRangeFilter, toISODate } from '@/shared/components/dashboard/DateRangeFilter'
 import type { DateRange } from '@/shared/components/dashboard/DateRangeFilter'
+import { Select } from '@/shared/components/ui/form/Select'
+
+const EVENT_TYPE_OPTIONS = [
+  { label: 'Solo accidentes', value: 'ACCIDENT' },
+  { label: 'Solo incidentes', value: 'INCIDENT' },
+]
+
+const formLabel = (form: string): string =>
+  ACCIDENT_FORM_LABEL[form as AccidentFormEnum] ?? form
+
+const SEVERITY_LABEL: Record<string, string> = {
+  FATAL_ACCIDENT: 'Accidente fatal',
+  DISABLING_ACCIDENT: 'Accidente incapacitante',
+  MINOR_ACCIDENT: 'Accidente leve',
+  INCIDENT: 'Incidente',
+}
+
+const SEVERITY_COLOR: Record<string, string> = {
+  FATAL_ACCIDENT: 'text-red-600',
+  DISABLING_ACCIDENT: 'text-orange-500',
+  MINOR_ACCIDENT: 'text-amber-500',
+  INCIDENT: 'text-blue-500',
+}
+
+const SEVERITY_BAR: Record<string, string> = {
+  FATAL_ACCIDENT: 'bg-red-500',
+  DISABLING_ACCIDENT: 'bg-orange-400',
+  MINOR_ACCIDENT: 'bg-amber-400',
+  INCIDENT: 'bg-blue-500',
+}
+
+const SEVERITY_LEVELS = ['FATAL_ACCIDENT', 'DISABLING_ACCIDENT', 'MINOR_ACCIDENT', 'INCIDENT']
 
 export const SSTDashboardPage = () => {
   const navigate = useNavigate()
@@ -57,15 +93,11 @@ export const SSTDashboardPage = () => {
 
   const filteredTrend = useMemo(() => {
     const trend = data?.trend ?? []
-
     return trend.map(t => {
       const date = new Date(t.date)
-
       return {
         ...t,
-        date: isNaN(date.getTime())
-          ? ''
-          : format(date, 'yyyy-MM-dd'),
+        date: isNaN(date.getTime()) ? '' : format(date, 'yyyy-MM-dd'),
       }
     })
   }, [data])
@@ -73,90 +105,128 @@ export const SSTDashboardPage = () => {
   if (isLoading) return <SSTDashboardSkeleton />
   if (!data) return null
 
-  const monthlyDiff =
-    data.coreMetrics.accidentsThisMonth -
-    data.coreMetrics.accidentsLastMonth
-
-  const isGrowing = monthlyDiff > 0
-
-  const mainCards = [
-    {
-      label: 'Total accidentes',
-      value: data.summary.totalAccidents,
-      icon: <ShieldAlert className="h-5 w-5 text-slate-600" />,
-      bg: 'bg-slate-100',
-      onClick: () => navigate('/accidents'),
-    },
-    {
-      label: 'Abiertos',
-      value: data.summary.openAccidents,
-      icon: <AlertTriangle className="h-5 w-5 text-amber-600" />,
-      bg: 'bg-amber-50',
-      valueClass: 'text-amber-600',
-      onClick: () => navigate('/accidents'),
-    },
-    {
-      label: 'Con restricciones',
-      value: data.summary.withActiveRestrictions,
-      icon: <Activity className="h-5 w-5 text-red-600" />,
-      bg: 'bg-red-50',
-      valueClass: 'text-red-600',
-    },
-    {
-      label: 'Altas pendientes',
-      value: data.summary.pendingDischarges,
-      icon: <CheckCircle2 className="h-5 w-5 text-emerald-600" />,
-      bg: 'bg-emerald-50',
-      valueClass: 'text-emerald-600',
-      onClick: () => navigate('/accidents'),
-    },
-  ]
-
-  const secondaryCards = [
-    {
-      label: 'Empleados con restricciones',
-      value: data.coreMetrics.employeesWithRestrictions,
-      icon: <Users className="h-5 w-5 text-red-600" />,
-      bg: 'bg-red-50',
-      valueClass: 'text-red-600',
-    },
-    {
-      label: 'Casos prolongados',
-      value: data.coreMetrics.casesOverThresholdDays,
-      icon: <AlertTriangle className="h-5 w-5 text-orange-600" />,
-      bg: 'bg-orange-50',
-      valueClass: 'text-orange-600',
-      onClick: () => navigate('/accidents'),
-    },
-    {
-      label: 'Follow-ups vencidos',
-      value: data.coreMetrics.overdueFollowUps,
-      icon: <AlertTriangle className="h-5 w-5 text-red-600" />,
-      bg: 'bg-red-50',
-      valueClass: 'text-red-600',
-      onClick: () => navigate('/accidents'),
-    },
-    {
-      label: 'Variación mensual',
-      value: `${monthlyDiff}`,
-      icon: <TrendingUp className="h-5 w-5 text-indigo-600" />,
-      bg: 'bg-indigo-50',
-      valueClass: isGrowing ? 'text-red-600' : 'text-emerald-600',
-    },
-  ]
+  const accidentRate = data.executiveMetrics.accidentRatePer100Employees.toFixed(2)
+  const avgRecovery = data.executiveMetrics.averageRecoveryDays.toFixed(2)
+  const recurrenceRateFormatted = data.interestingMetrics.recurrenceRate.toFixed(2)
 
   const monthlyTrend = data.executiveMetrics.monthlyTrendPercentage ?? 0
   const isGood = monthlyTrend < 0
-  const percentage = Math.abs(monthlyTrend).toFixed(1)
-
+  const trendPercentage = Math.abs(monthlyTrend).toFixed(1)
   const trendLabel =
     monthlyTrend === 0
       ? 'Sin variación'
       : isGood
-        ? `↓ ${percentage}% menos accidentes`
-        : `↑ ${percentage}% más accidentes`
+        ? `↓ ${trendPercentage}%`
+        : `↑ ${trendPercentage}%`
+  const trendClassName = monthlyTrend === 0 ? undefined : isGood ? 'text-emerald-600' : 'text-red-600'
 
   const maxForm = Math.max(...(data.accidentsByForm?.map(f => f.count) ?? []), 1)
+  const maxArea = Math.max(...(data.interestingMetrics.topAreas?.map(a => a.count) ?? []), 1)
+  const maxSeverity = Math.max(...(data.severityDistribution?.map(s => s.count) ?? []), 1)
+  const maxInvestigation = Math.max(...(data.investigationsByResponsible?.map(r => r.count) ?? []), 1)
+
+  const accidentalidadRows = [
+    {
+      label: 'Accidentes totales',
+      value: data.summary.totalAccidents,
+      icon: <ShieldAlert className="h-4 w-4 text-slate-600" />,
+    },
+    {
+      label: 'Casos abiertos',
+      value: data.summary.openAccidents,
+      icon: <AlertTriangle className="h-4 w-4 text-amber-500" />,
+      valueClassName: data.summary.openAccidents > 0 ? 'text-amber-600' : undefined,
+    },
+    {
+      label: 'Con restricciones activas',
+      value: data.summary.withActiveRestrictions,
+      icon: <Activity className="h-4 w-4 text-red-500" />,
+      valueClassName: data.summary.withActiveRestrictions > 0 ? 'text-red-600' : undefined,
+    },
+    {
+      label: 'Altas pendientes',
+      value: data.summary.pendingDischarges,
+      icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" />,
+    },
+    {
+      label: 'Casos prolongados +7d',
+      value: data.coreMetrics.casesOverThresholdDays,
+      icon: <AlertTriangle className="h-4 w-4 text-orange-500" />,
+      valueClassName: data.coreMetrics.casesOverThresholdDays > 0 ? 'text-orange-600' : undefined,
+    },
+    {
+      label: 'SCTR activados',
+      value: data.sctrActivations,
+      icon: <Shield className="h-4 w-4 text-amber-500" />,
+      iconBg: 'bg-amber-50',
+      valueClassName: data.sctrActivations > 0 ? 'text-amber-600' : undefined,
+    },
+  ]
+
+  const alertasRows = [
+    {
+      label: 'Follow-ups vencidos',
+      value: data.coreMetrics.overdueFollowUps,
+      icon: <AlertTriangle className="h-4 w-4 text-red-500" />,
+      valueClassName: data.coreMetrics.overdueFollowUps > 0 ? 'text-red-600' : undefined,
+    },
+    {
+      label: 'Empleados con restricciones',
+      value: data.coreMetrics.employeesWithRestrictions,
+      icon: <Users className="h-4 w-4 text-red-500" />,
+      valueClassName: data.coreMetrics.employeesWithRestrictions > 0 ? 'text-red-600' : undefined,
+    },
+    {
+      label: 'Días sin accidente',
+      value: data.daysSinceLastAccident != null ? data.daysSinceLastAccident : '—',
+      icon: <CalendarDays className="h-4 w-4 text-emerald-500" />,
+      valueClassName: 'text-emerald-600',
+    },
+    {
+      label: 'Casos conductuales',
+      value: data.behavioralCases,
+      icon: <AlertTriangle className="h-4 w-4 text-amber-500" />,
+      iconBg: 'bg-amber-50',
+      valueClassName: data.behavioralCases > 0 ? 'text-amber-600' : undefined,
+    },
+    {
+      label: 'Trabajadores +21 días DM',
+      value: data.workersWithOver21DmDays,
+      icon: <AlertTriangle className="h-4 w-4 text-red-500" />,
+      valueClassName: data.workersWithOver21DmDays > 0 ? 'text-red-600' : undefined,
+    },
+    {
+      label: 'DM por vencer (mes próx.)',
+      value: data.dmDaysExpiringSoon,
+      icon: <CalendarDays className="h-4 w-4 text-amber-500" />,
+      valueClassName: data.dmDaysExpiringSoon > 0 ? 'text-amber-600' : undefined,
+    },
+  ]
+
+  const ejecutivasRows = [
+    {
+      label: 'Empleados externos involucrados',
+      value: data.interestingMetrics.externalEmployeesInvolved,
+      icon: <Users className="h-4 w-4 text-slate-400" />,
+    },
+    {
+      label: 'Reincidencia',
+      value: `${recurrenceRateFormatted}%`,
+      icon: <RotateCcw className="h-4 w-4 text-indigo-500" />,
+    },
+    {
+      label: 'Días prom. recuperación',
+      value: avgRecovery,
+      icon: <Clock className="h-4 w-4 text-slate-400" />,
+    },
+    {
+      label: 'Cumplim. follow-ups SST',
+      value: `${data.sstFollowUpCompletionRate.toFixed(1)}%`,
+      icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" />,
+      iconBg: 'bg-emerald-50',
+      valueClassName: 'text-emerald-600',
+    },
+  ]
 
   return (
     <PageContainer
@@ -164,116 +234,138 @@ export const SSTDashboardPage = () => {
       description="Indicadores de seguridad y salud ocupacional"
     >
       <div className="space-y-6">
-        {/* Filtros */}
-        <div className="flex flex-wrap items-center gap-3">
+
+
+        <div className="flex flex-wrap items-end gap-3">
           <DateRangeFilter value={dateRange} onChange={handleDateChange} />
-          <select
+          <Select
+            name="eventType"
+            placeholder="Todos los eventos"
+            showDefaultOption
             value={eventType ?? ''}
-            onChange={e => handleEventTypeChange(e.target.value)}
-            className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
-          >
-            <option value="">Todos los eventos</option>
-            <option value="ACCIDENT">Solo accidentes</option>
-            <option value="INCIDENT">Solo incidentes</option>
-          </select>
+            options={EVENT_TYPE_OPTIONS}
+            onChange={handleEventTypeChange}
+            className="w-52"
+          />
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {mainCards.map((c, i) => (
-            <DashboardCard
-              key={i}
-              label={c.label}
-              value={c.value}
-              valueClassName={c.valueClass}
-              onClick={c.onClick}
-              icon={
-                <div className={cn('rounded-2xl p-3', c.bg)}>
-                  {c.icon}
-                </div>
-              }
-            />
-          ))}
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {secondaryCards.map((c, i) => (
-            <DashboardCard
-              key={i}
-              label={c.label}
-              value={c.value}
-              valueClassName={c.valueClass}
-              onClick={c.onClick}
-              icon={
-                <div className={cn('rounded-2xl p-3', c.bg)}>
-                  {c.icon}
-                </div>
-              }
-            />
-          ))}
-        </div>
-
-        <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-base font-semibold text-slate-900">
-              Tendencia de accidentes
-            </h2>
-
-            <div className="flex items-center gap-4">
-              <span
+        <div className="grid gap-6 xl:grid-cols-4">
+          <div className="flex flex-col gap-3">
+            {[
+              {
+                label: 'Accidentes en rango',
+                value: data.coreMetrics.accidentsThisMonth,
+                icon: <ShieldAlert className="h-5 w-5 text-amber-600" />,
+                bg: 'bg-amber-50',
+                valueClass: 'text-amber-600',
+                onClick: () => navigate('/accidents'),
+              },
+              {
+                label: 'Período anterior',
+                value: data.coreMetrics.accidentsLastMonth,
+                icon: <ShieldAlert className="h-5 w-5 text-slate-500" />,
+                bg: 'bg-slate-100',
+              },
+              {
+                label: 'Tasa por 100 emp.',
+                value: accidentRate,
+                icon: <TrendingUp className="h-5 w-5 text-indigo-600" />,
+                bg: 'bg-indigo-50',
+              },
+              {
+                label: 'Variación del período',
+                value: trendLabel,
+                icon: <TrendingUp className="h-5 w-5 text-slate-500" />,
+                bg: 'bg-slate-100',
+                valueClass: trendClassName,
+              },
+            ].map((c) => (
+              <div
+                key={c.label}
+                onClick={c.onClick}
                 className={cn(
-                  'text-xs font-medium',
-                  isGrowing ? 'text-red-600' : 'text-emerald-600'
+                  'flex flex-1 items-center justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm',
+                  c.onClick && 'cursor-pointer transition hover:shadow-md hover:-translate-y-0.5'
                 )}
               >
-                {isGrowing ? '↑ incremento' : '↓ descenso'}
-              </span>
+                <div>
+                  <p className="text-xs uppercase tracking-[0.14em] text-slate-400">{c.label}</p>
+                  <p className={cn('mt-1 text-lg font-semibold', c.valueClass ?? 'text-slate-900')}>{c.value}</p>
+                </div>
+                <div className={cn('rounded-2xl p-3', c.bg)}>{c.icon}</div>
+              </div>
+            ))}
+          </div>
 
+          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm xl:col-span-3">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-base font-semibold text-slate-900">Tendencia de accidentes</h2>
               <button
                 onClick={() => navigate('/accidents')}
-                className="text-sm font-medium text-blue-600 hover:text-blue-700"
+                className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
               >
                 Ver accidentes
               </button>
             </div>
-          </div>
 
-          <AccidentTrendChart data={filteredTrend} />
+            <AccidentTrendChart data={filteredTrend} />
 
-          <div className="mt-4 flex gap-6 text-sm">
-            <div className="flex items-center gap-2">
-              <div className="h-3 w-3 rounded-full bg-blue-600" />
-              <span className="text-slate-600">Accidentes</span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <div className="h-3 w-3 rounded-full bg-amber-500" />
-              <span className="text-slate-600">Incidentes</span>
+            <div className="mt-4 flex gap-6 text-sm">
+              <div className="flex items-center gap-2">
+                <div className="h-3 w-3 rounded-full bg-blue-600" />
+                <span className="text-slate-600">Accidentes</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="h-3 w-3 rounded-full bg-amber-500" />
+                <span className="text-slate-600">Incidentes</span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Formas de accidente */}
+        {(data.severityDistribution?.length ?? 0) > 0 && (
+          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+            <h2 className="mb-4 text-base font-semibold text-slate-900">Distribución por severidad</h2>
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              {SEVERITY_LEVELS.map(level => {
+                const item = data.severityDistribution.find(s => s.level === level)
+                const count = item?.count ?? 0
+                return (
+                  <div key={level} className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                    <p className="truncate text-sm font-medium text-slate-700">{SEVERITY_LABEL[level] ?? level}</p>
+                    <p className={cn('mt-1 text-2xl font-semibold', SEVERITY_COLOR[level])}>{count}</p>
+                    <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-200">
+                      <div
+                        className={cn('h-full rounded-full', SEVERITY_BAR[level])}
+                        style={{ width: `${(count / maxSeverity) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
         {data.accidentsByForm?.length > 0 && (
           <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-base font-semibold text-slate-900">Formas de accidente</h2>
               <button
                 onClick={() => navigate('/accidents')}
-                className="text-sm font-medium text-blue-600 hover:text-blue-700"
+                className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
               >
                 Ver accidentes
               </button>
             </div>
-            <div className="space-y-3">
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
               {data.accidentsByForm.map(item => (
-                <div key={item.form} className="rounded-xl border border-slate-100 bg-slate-50 p-3">
-                  <div className="mb-1 flex justify-between">
-                    <span className="text-sm font-medium text-slate-700">{item.form}</span>
-                    <span className="text-sm font-semibold text-slate-900">{item.count}</span>
-                  </div>
-                  <div className="h-2 rounded-full bg-slate-200">
+                <div key={item.form} className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                  <p className="truncate text-sm font-medium text-slate-700">{formLabel(item.form)}</p>
+                  <p className="mt-1 text-2xl font-semibold text-slate-900">{item.count}</p>
+                  <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-200">
                     <div
-                      className="h-2 rounded-full bg-amber-500 transition-all"
+                      className="h-full rounded-full bg-amber-500 transition-all"
                       style={{ width: `${(item.count / maxForm) * 100}%` }}
                     />
                   </div>
@@ -283,105 +375,88 @@ export const SSTDashboardPage = () => {
           </div>
         )}
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-base font-semibold text-slate-900">
-              Métricas avanzadas
-            </h2>
-
-            <button
-              onClick={() => navigate('/accidents')}
-              className="text-sm font-medium text-blue-600 hover:text-blue-700"
-            >
-              Ver detalle
-            </button>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2">
-            <div>
-              <h3 className="mb-3 text-sm font-medium text-slate-700">
-                Áreas con mayor incidencia
-              </h3>
-
-              <div className="space-y-3">
-                {data.interestingMetrics.topAreas.map((area, i) => {
-                  const max = data.interestingMetrics.topAreas[0]?.count ?? 1
-                  const percentage = (area.count / max) * 100
-
-                  return (
+        {data.interestingMetrics.topAreas?.length > 0 && (
+          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+            <h2 className="mb-4 text-base font-semibold text-slate-900">Áreas con mayor incidencia</h2>
+            <div className="space-y-4">
+              {data.interestingMetrics.topAreas.map((area, i) => (
+                <div key={i}>
+                  <div className="flex justify-between text-sm font-medium text-slate-700">
+                    <span className="truncate pr-2">{area.area}</span>
+                    <span className="shrink-0 text-slate-500">{area.count}</span>
+                  </div>
+                  <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-slate-100">
                     <div
-                      key={i}
-                      className="rounded-xl border border-slate-100 bg-slate-50 p-3"
-                    >
-                      <div className="mb-1 flex items-center justify-between">
-                        <span className="text-sm font-medium text-slate-700">
-                          {area.area}
-                        </span>
-
-                        <span className="text-sm font-semibold text-slate-900">
-                          {area.count}
-                        </span>
-                      </div>
-
-                      <div className="h-2 w-full rounded-full bg-slate-200">
-                        <div
-                          className="h-2 rounded-full bg-blue-600 transition-all"
-                          style={{ width: `${percentage}%` }}
-                        />
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              <MetricBox
-                label="Empleados externos"
-                value={data.interestingMetrics.externalEmployeesInvolved}
-              />
-
-              <MetricBox
-                label="Reincidencia (%)"
-                value={`${data.interestingMetrics.recurrenceRate}%`}
-              />
-
-              <MetricBox
-                label="Accidentes por 100"
-                value={data.executiveMetrics.accidentRatePer100Employees}
-              />
-
-              <MetricBox
-                label="Tendencia mensual"
-                value={trendLabel}
-                valueClassName={
-                  isGood ? 'text-emerald-600' : 'text-red-600'
-                }
-              />
-
-              <MetricBox
-                label="Días recuperación"
-                value={data.executiveMetrics.averageRecoveryDays}
-              />
-
-              <MetricBox
-                label="Días sin accidente"
-                value={data.daysSinceLastAccident != null ? data.daysSinceLastAccident : '—'}
-                valueClassName="text-emerald-600"
-              />
+                      className="h-full rounded-full bg-blue-600 transition-all"
+                      style={{ width: `${(area.count / maxArea) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
+        )}
+
+        <div className="grid gap-6 xl:grid-cols-3">
+          <MetricPanel
+            title="Accidentalidad"
+            actionLabel="Ver accidentes"
+            onAction={() => navigate('/accidents')}
+            rows={accidentalidadRows}
+                      />
+          <MetricPanel
+            title="Alertas"
+            actionLabel="Ver accidentes"
+            onAction={() => navigate('/accidents')}
+            rows={alertasRows}
+                      />
+          <MetricPanel
+            title="Métricas ejecutivas"
+            rows={ejecutivasRows}
+                      />
         </div>
+
+        {(data.investigationsByResponsible?.length ?? 0) > 0 && (
+          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div className="mb-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <h2 className="text-base font-semibold text-slate-900">Investigaciones abiertas</h2>
+                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700">
+                  {data.openInvestigations}
+                </span>
+              </div>
+              <button
+                onClick={() => navigate('/accidents')}
+                className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
+              >
+                Ver accidentes
+              </button>
+            </div>
+            <div className="space-y-4">
+              {data.investigationsByResponsible.map(item => (
+                <div key={item.responsible}>
+                  <div className="flex justify-between text-sm font-medium text-slate-700">
+                    <span className="truncate pr-2">{item.responsible}</span>
+                    <span className="shrink-0 text-slate-500">{item.count}</span>
+                  </div>
+                  <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-slate-100">
+                    <div
+                      className="h-full rounded-full bg-amber-500 transition-all"
+                      style={{ width: `${(item.count / maxInvestigation) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="rounded-3xl border border-slate-200 bg-white shadow-sm">
           <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
-            <h2 className="text-base font-semibold text-slate-900">
-              Últimos accidentes
-            </h2>
-
+            <h2 className="text-base font-semibold text-slate-900">Últimos accidentes</h2>
             <button
               onClick={() => navigate('/accidents')}
-              className="text-sm font-medium text-blue-600 hover:text-blue-700"
+              className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
             >
               Ver todos
             </button>
@@ -396,7 +471,6 @@ export const SSTDashboardPage = () => {
                 <th>Estado</th>
               </tr>
             </thead>
-
             <tbody>
               {data.recentAccidents.map((item) => (
                 <tr
@@ -407,11 +481,9 @@ export const SSTDashboardPage = () => {
                   <td className="px-6 py-4 font-medium text-slate-900">
                     {item.employeeName}
                   </td>
-
                   <td>
                     {format(new Date(item.occurredAt), 'dd/MM/yyyy')}
                   </td>
-
                   <td>
                     <span
                       className={cn(
@@ -422,7 +494,6 @@ export const SSTDashboardPage = () => {
                       {ACCIDENT_TYPE_LABEL[item.type]}
                     </span>
                   </td>
-
                   <td>
                     <span
                       className={cn(
@@ -440,6 +511,7 @@ export const SSTDashboardPage = () => {
             </tbody>
           </table>
         </div>
+
       </div>
     </PageContainer>
   )
