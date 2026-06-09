@@ -51,4 +51,5 @@ export type MedicalDashboardResponse = {
   averageDaysToFulfillFollowUp: number
   workersWithOver21DmDays: number
   dmDaysExpiringSoon: number
+  lotsExpiringSoon: number
 }

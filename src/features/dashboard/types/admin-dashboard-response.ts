@@ -16,6 +16,7 @@ export interface AdminDashboardResponse {
     criticalMedications: number
     workersWithOver21DmDays: number
     dmDaysExpiringSoon: number
+    lotsExpiringSoon: number
   }
 
   accidentsByArea: {

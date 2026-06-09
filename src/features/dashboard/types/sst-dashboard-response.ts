@@ -67,4 +67,6 @@ export type SSTDashboardResponse = {
   dmDaysExpiringSoon: number
   openInvestigations: number
   investigationsByResponsible: { responsible: string; count: number }[]
+  criticalMedicationsCount: number
+  lotsExpiringSoon: number
 }

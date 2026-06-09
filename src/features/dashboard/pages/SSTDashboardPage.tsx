@@ -9,6 +9,7 @@ import {
   Users,
   Clock,
   CalendarDays,
+  Package,
   RotateCcw,
   Shield,
 } from 'lucide-react'
@@ -200,6 +201,18 @@ export const SSTDashboardPage = () => {
       value: data.dmDaysExpiringSoon,
       icon: <CalendarDays className="h-4 w-4 text-amber-500" />,
       valueClassName: data.dmDaysExpiringSoon > 0 ? 'text-amber-600' : undefined,
+    },
+    {
+      label: 'Medicamentos críticos',
+      value: data.criticalMedicationsCount,
+      icon: <Package className="h-4 w-4 text-red-500" />,
+      valueClassName: data.criticalMedicationsCount > 0 ? 'text-red-600' : undefined,
+    },
+    {
+      label: 'Lotes por vencer (30d)',
+      value: data.lotsExpiringSoon,
+      icon: <CalendarDays className="h-4 w-4 text-orange-500" />,
+      valueClassName: data.lotsExpiringSoon > 0 ? 'text-orange-600' : undefined,
     },
   ]
 

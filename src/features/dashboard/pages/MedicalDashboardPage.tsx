@@ -180,6 +180,12 @@ export const MedicalDashboardPage = () => {
       icon: <CalendarDays className="h-4 w-4 text-amber-500" />,
       valueClassName: data.dmDaysExpiringSoon > 0 ? 'text-amber-600' : undefined,
     },
+    {
+      label: 'Lotes por vencer (30d)',
+      value: data.lotsExpiringSoon,
+      icon: <CalendarDays className="h-4 w-4 text-orange-500" />,
+      valueClassName: data.lotsExpiringSoon > 0 ? 'text-orange-600' : undefined,
+    },
   ]
 
   return (
@@ -380,26 +386,32 @@ export const MedicalDashboardPage = () => {
         </div>
 
         {/* Medicamentos por acabarse */}
-        {data.lowStockMedications.length > 0 && (
-          <div className="overflow-hidden rounded-3xl bg-white shadow-sm">
-            <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
-              <div className="flex items-center gap-2">
-                <h2 className="text-base font-semibold text-slate-900">
-                  Medicamentos por acabarse
-                </h2>
+        <div className="overflow-hidden rounded-3xl bg-white shadow-sm">
+          <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
+            <div className="flex items-center gap-2">
+              <h2 className="text-base font-semibold text-slate-900">
+                Medicamentos por acabarse
+              </h2>
+              {data.lowStockMedications.length > 0 && (
                 <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-600">
                   {data.lowStockMedications.length}
                 </span>
-              </div>
-
-              <button
-                onClick={() => navigate('/medications?lowStock=true')}
-                className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
-              >
-                Ver inventario
-              </button>
+              )}
             </div>
 
+            <button
+              onClick={() => navigate('/medications?lowStock=true')}
+              className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
+            >
+              Ver inventario
+            </button>
+          </div>
+
+          {data.lowStockMedications.length === 0 ? (
+            <div className="flex items-center justify-center py-10 text-sm text-slate-400">
+              Sin medicamentos bajo stock mínimo
+            </div>
+          ) : (
             <div className="divide-y divide-slate-100">
               {data.lowStockMedications.map((med) => {
                 const pct = med.minimumStock > 0
@@ -460,8 +472,8 @@ export const MedicalDashboardPage = () => {
                 )
               })}
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Últimas atenciones */}
         <div className="overflow-hidden rounded-3xl bg-white shadow-sm">

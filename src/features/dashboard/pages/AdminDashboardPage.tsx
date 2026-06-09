@@ -2,6 +2,7 @@ import {
   Activity,
   AlertTriangle,
   Bell,
+  CalendarDays,
   ClipboardList,
   Package,
   ShieldAlert,
@@ -109,6 +110,7 @@ export const AdminDashboardPage = () => {
         { label: 'Medicamentos críticos', value: data.alerts.criticalMedications, icon: <Package className="h-4 w-4 text-rose-500" />, valueClassName: data.alerts.criticalMedications > 0 ? 'text-rose-600' : undefined },
         { label: 'Más de 21 días DM', value: data.alerts.workersWithOver21DmDays, icon: <AlertTriangle className="h-4 w-4 text-red-400" />, valueClassName: data.alerts.workersWithOver21DmDays > 0 ? 'text-red-600' : undefined },
         { label: 'DM por vencer', value: data.alerts.dmDaysExpiringSoon, icon: <AlertTriangle className="h-4 w-4 text-amber-400" />, valueClassName: data.alerts.dmDaysExpiringSoon > 0 ? 'text-amber-600' : undefined },
+        { label: 'Lotes por vencer (30d)', value: data.alerts.lotsExpiringSoon, icon: <CalendarDays className="h-4 w-4 text-orange-500" />, valueClassName: data.alerts.lotsExpiringSoon > 0 ? 'text-orange-600' : undefined },
       ]
     }
   ]
