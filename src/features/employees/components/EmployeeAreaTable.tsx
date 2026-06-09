@@ -1,18 +1,20 @@
-import { DataTable } from '@/shared/components/ui/table/DataTable'
+import { DataTable, type Pagination } from '@/shared/components/ui/table/DataTable'
 import { cn } from '@/shared/utils'
 import type { EmployeeAreaResponseDto } from '../types/employee-area-response.dto'
 
 type Props = {
   items: EmployeeAreaResponseDto[]
   isLoading?: boolean
+  pagination: Pagination
 }
 
-const EmployeeAreaTable = ({ items, isLoading = false }: Props) => {
+export const EmployeeAreaTable = ({ items, isLoading = false, pagination }: Props) => {
   return (
     <DataTable
       data={items}
       isLoading={isLoading}
       emptyMessage="No se encontraron áreas."
+      pagination={pagination}
       columns={['ID', 'Nombre', 'Estado']}
       renderRow={(item) => (
         <>
@@ -41,5 +43,3 @@ const EmployeeAreaTable = ({ items, isLoading = false }: Props) => {
     />
   )
 }
-
-export default EmployeeAreaTable

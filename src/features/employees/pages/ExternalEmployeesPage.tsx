@@ -1,31 +1,18 @@
-import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
-import PageContainer from '@/shared/components/ui/PageContainer'
-import { Input } from '@/shared/components/ui/form'
-import { SortOrder } from '@/core/types/query-params.type'
-import { RoleEnum } from '@/core/enums/role.enum'
-import ExternalEmployeeTable from '../components/ExternalEmployeeTable'
-import { useUsers } from '@/features/users/hooks/useUsers'
-import type { FindUsersDto } from '@/features/users/types/find-users.dto'
-import type { UserResponseDto } from '@/features/users/types/user-response.dto'
+import { PageContainer } from '@/shared/components'
+import type { EmployeeResponseDto } from '../types'
+import { EmployeeFilter } from '../components/EmployeeFilter'
+import { useEmployees } from '../hooks'
+import { EmployeeTable } from '../components'
 
 const ExternalEmployeesPage = () => {
   const navigate = useNavigate()
-  const [username, setUsername] = useState('')
+  const { data, isLoading, error, pagination, onChangeFilters } = useEmployees()
 
-  const query = useMemo<FindUsersDto>(() => ({
-    page: 1,
-    pageSize: 50,
-    sortBy: 'username',
-    sortOrder: SortOrder.ASC,
-    role: RoleEnum.EMPLOYEE_EXT,
-    username: username.trim() || undefined,
-  }), [username])
+  const employees = data.filter(e => e.user.role === 'EMPLOYEE_EXT')
 
-  const { data, isLoading, error } = useUsers(query)
-
-  const handleViewDetail = (user: UserResponseDto) => {
-    void navigate(`/employees/${user.id}`)
+  const handleViewDetail = (employee: EmployeeResponseDto) => {
+    void navigate(`/employees/${employee.id}`)
   }
 
   return (
@@ -34,16 +21,7 @@ const ExternalEmployeesPage = () => {
       description="Empleados externos sincronizados desde RRHH."
     >
       <div className="space-y-5">
-        <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-          <Input
-            label="Buscar"
-            name="username"
-            type="text"
-            placeholder="Buscar por usuario / nombre"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </div>
+        <EmployeeFilter onChangeFilters={onChangeFilters}></EmployeeFilter>
 
         {error ? (
           <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
@@ -51,10 +29,11 @@ const ExternalEmployeesPage = () => {
           </div>
         ) : null}
 
-        <ExternalEmployeeTable
-          items={data}
+        <EmployeeTable
+          items={employees}
           isLoading={isLoading}
           onViewDetail={handleViewDetail}
+          pagination={pagination}
         />
       </div>
     </PageContainer>

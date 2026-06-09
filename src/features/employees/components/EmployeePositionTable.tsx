@@ -1,30 +1,20 @@
-import { DataTable } from '@/shared/components/ui/table/DataTable'
+import { DataTable, type Pagination } from '@/shared/components'
 import { cn } from '@/shared/utils'
-import type { EmployeePositionResponseDto } from '../types/employee-position-response.dto'
+import { CATEGORY_CLASS, CATEGORY_LABEL, type EmployeePositionResponseDto } from '../types/employee-position-response.dto'
 
 type Props = {
   items: EmployeePositionResponseDto[]
   isLoading?: boolean
+  pagination: Pagination
 }
 
-const CATEGORY_CLASS: Record<NonNullable<EmployeePositionResponseDto['category']>, string> = {
-  EJECUTIVO: 'border-violet-100 bg-violet-50 text-violet-700',
-  EMPLEADO: 'border-sky-100 bg-sky-50 text-sky-700',
-  OBRERO: 'border-amber-100 bg-amber-50 text-amber-700',
-}
-
-const CATEGORY_LABEL: Record<NonNullable<EmployeePositionResponseDto['category']>, string> = {
-  EJECUTIVO: 'Ejecutivo',
-  EMPLEADO: 'Empleado',
-  OBRERO: 'Obrero',
-}
-
-const EmployeePositionTable = ({ items, isLoading = false }: Props) => {
+export const EmployeePositionTable = ({ items, isLoading = false, pagination }: Props) => {
   return (
     <DataTable
       data={items}
       isLoading={isLoading}
       emptyMessage="No se encontraron posiciones."
+      pagination={pagination}
       columns={['ID', 'Nombre', 'Categoría', 'Confianza', 'Estado']}
       renderRow={(item) => (
         <>
@@ -81,5 +71,3 @@ const EmployeePositionTable = ({ items, isLoading = false }: Props) => {
     />
   )
 }
-
-export default EmployeePositionTable

@@ -1,31 +1,35 @@
-import { useNavigate } from 'react-router'
+import { DataTable, type Pagination } from '@/shared/components/ui/table/DataTable'
 import { cn } from '@/shared/utils'
-import type { EmployeeResponseDto } from '../types/employee-response.dto'
-import { Button, DataTable } from '@/shared/components'
+import {
+  USER_ROLE_CLASS_MAP,
+  USER_ROLE_LABEL_MAP,
+} from '@/features/users/types/user-role.config'
+import type { EmployeeResponseDto } from '../types'
+import { Dropdown, DropdownItem } from '@/shared/components'
+import { Eye } from 'lucide-react'
 
 type Props = {
   items: EmployeeResponseDto[]
   isLoading?: boolean
+  onViewDetail: (employee: EmployeeResponseDto) => void
+  pagination: Pagination
 }
 
-const EmployeeTable = ({ items, isLoading = false }: Props) => {
-  const navigate = useNavigate()
-
+export const EmployeeTable = ({ items, isLoading = false, onViewDetail, pagination }: Props) => {
   return (
     <DataTable
       data={items}
       isLoading={isLoading}
-      emptyMessage="No se encontraron colaboradores."
+      emptyMessage="No se encontraron empleados"
+      pagination={pagination}
       columns={[
-        'ID',
-        'Nombre',
+        '#',
+        'Nombre completo',
         'DNI',
-        'Empresa',
         'Área',
-        'Cargo',
-        'Vetado',
-        'Estado',
-        'Acciones',
+        'Empresa',
+        'Estado laboral',
+        'Rol',
       ]}
       renderRow={(item) => (
         <>
@@ -33,80 +37,48 @@ const EmployeeTable = ({ items, isLoading = false }: Props) => {
             #{item.id}
           </td>
 
-          <td className="px-6 py-5">
-            <div className="flex flex-col">
-              <span className="font-medium text-slate-900">
-                {item.fullName}
-              </span>
-              <span className="text-xs text-slate-500">
-                {item.position?.name ?? '—'}
-              </span>
-            </div>
+          <td className="px-6 py-5 font-medium text-slate-900">
+            {item?.fullName ?? '—'}
           </td>
 
-          <td className="px-6 py-5 text-slate-500">
-            {item.dni}
+          <td className="px-6 py-5 text-slate-700">
+            {item?.dni ?? '—'}
           </td>
 
-          <td className="px-6 py-5">
-            <span
-              className={cn(
-                'inline-flex rounded-xl border px-3 py-1 text-xs font-medium',
-                item.company === 'empresa2' && 'border-slate-200 bg-red-400 text-white',
-              )}
-            >
-              {item.company}
-            </span>
+          <td className="px-6 py-5 text-slate-700">
+            {item?.area?.name ?? '—'}
           </td>
 
-          <td className="px-6 py-5 text-slate-500">
-            {item.area?.name ?? '—'}
+          <td className="px-6 py-5 text-slate-700">
+            {item?.company ?? '—'}
           </td>
 
-          <td className="px-6 py-5 text-slate-500">
-            {item.position?.name ?? '—'}
+          <td className="px-6 py-5 text-slate-700">
+            {item?.employmentStatus ?? '—'}
           </td>
 
           <td className="px-6 py-5">
             <span
               className={cn(
                 'inline-flex rounded-xl border px-3 py-1 text-xs font-medium',
-                !item.isBlocked
-                  ? 'border-emerald-100 bg-emerald-50 text-emerald-700'
-                  : 'border-red-200 bg-red-500 text-white',
+                USER_ROLE_CLASS_MAP[item.user.role],
               )}
             >
-              {item.isBlocked ? 'Vetado' : 'Habilitado'}
+              {USER_ROLE_LABEL_MAP[item.user.role]}
             </span>
-          </td>
-
-          <td className="px-6 py-5">
-            <span
-              className={cn(
-                'inline-flex rounded-xl border px-3 py-1 text-xs font-medium',
-                item.isActive
-                  ? 'border-emerald-100 bg-emerald-50 text-emerald-700'
-                  : 'border-slate-200 bg-slate-50 text-slate-500',
-              )}
-            >
-              {item.isActive ? 'Activo' : 'Inactivo'}
-            </span>
-          </td>
-
-          <td className="px-6 py-5">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => navigate(`/employees/${item.id}`)}
-              className="w-auto rounded-xl px-3 py-2 text-xs"
-            >
-              Ver detalle
-            </Button>
           </td>
         </>
+      )}
+      renderActions={(employee) => (
+        <Dropdown>
+          <DropdownItem
+            onClick={() => onViewDetail(employee)}
+          >
+            <Eye size={14}/>
+            Ver detalle
+          </DropdownItem>
+        </Dropdown>
       )}
     />
   )
 }
-
-export default EmployeeTable

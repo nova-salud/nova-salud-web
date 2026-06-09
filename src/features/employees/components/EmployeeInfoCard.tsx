@@ -23,7 +23,7 @@ const InfoItem = ({ label, value, className, highlight = false }: InfoItemProps)
   </div>
 )
 
-const EmployeeInfoCard = ({ employee, className }: Props) => {
+export const EmployeeInfoCard = ({ employee, className }: Props) => {
   const birthDate = employee.birthDate
     ? format(new Date(employee.birthDate), 'dd/MM/yyyy')
     : null
@@ -53,5 +53,3 @@ const EmployeeInfoCard = ({ employee, className }: Props) => {
     </div>
   )
 }
-
-export default EmployeeInfoCard
