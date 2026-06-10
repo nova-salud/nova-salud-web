@@ -6,5 +6,6 @@ export interface FindAlertsDto extends QueryParams {
   isResolved?: boolean
   type?: AlertType
   priority?: AlertPriority
-  employeeId?: number
+  title?: string
+  employeeName?: string
 }

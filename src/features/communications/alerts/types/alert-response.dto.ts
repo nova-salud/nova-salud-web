@@ -9,6 +9,8 @@ export type AlertResponseDto = {
   message: string
   priority: AlertPriority
   isResolved: boolean
+  employeeId: number | null
+  employeeName: string | null
   metadata?: AlertMetadata | null
   createdAt: string
   resolvedAt?: string | null

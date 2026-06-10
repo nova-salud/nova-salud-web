@@ -1,37 +1,29 @@
-import { useCallback, useEffect, useState } from 'react'
-import type { NotificationResponseDto } from '../types/notification-response.dto'
-import { parseBackendError } from '@/core/utils/parse-backend-error'
+import { useQueryClient } from '@tanstack/react-query'
+import { useAppQuery } from '@/shared/hooks'
+import { NOTIFICATION_QUERY_KEYS } from '../constants/notification-query-keys'
 import { notificationService } from '../services/notification.service'
+import type { NotificationResponseDto } from '../types/notification-response.dto'
 
 export const useNotifications = () => {
-  const [data, setData] = useState<NotificationResponseDto[]>([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const queryClient = useQueryClient()
 
-  const fetchNotifications = useCallback(async () => {
-    try {
-      setIsLoading(true)
-      setError(null)
+  const { data, isFetching, error, refetch } = useAppQuery<NotificationResponseDto[]>({
+    queryKey: NOTIFICATION_QUERY_KEYS.list(),
+    queryFn: () => notificationService.findAll(),
+  })
 
-      const response = await notificationService.findAll()
-      setData(response)
-    } catch (error) {
-      setData([])
-      setError(parseBackendError(error))
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
-
-  useEffect(() => {
-    void fetchNotifications()
-  }, [fetchNotifications])
+  const setData = (updater: (prev: NotificationResponseDto[]) => NotificationResponseDto[]) => {
+    queryClient.setQueryData<NotificationResponseDto[]>(
+      NOTIFICATION_QUERY_KEYS.list(),
+      (prev) => updater(prev ?? []),
+    )
+  }
 
   return {
-    data,
+    data: data ?? [],
     setData,
-    isLoading,
-    error,
-    refetch: fetchNotifications,
+    isLoading: isFetching,
+    error: error?.message ?? null,
+    refetch: async () => { await refetch() },
   }
 }
