@@ -99,7 +99,7 @@ const HealthcareCenterFormSidebar = ({
             type="text"
             required
             placeholder="Ej. Clínica San Pablo"
-            defaultValue={healthcareCenter?.name}
+            value={healthcareCenter?.name}
           />
 
           <Input
@@ -108,7 +108,7 @@ const HealthcareCenterFormSidebar = ({
             type="text"
             inputMode="numeric"
             placeholder="Ej. 20123456789"
-            defaultValue={healthcareCenter?.ruc ?? ''}
+            value={healthcareCenter?.ruc ?? ''}
             validations={NUMERIC_VALIDATION}
           />
 
@@ -118,7 +118,7 @@ const HealthcareCenterFormSidebar = ({
             type="text"
             required
             placeholder="Ej. Av. Arequipa 1234, Lima"
-            defaultValue={healthcareCenter?.address ?? ''}
+            value={healthcareCenter?.address ?? ''}
           />
 
           <Input
@@ -127,7 +127,7 @@ const HealthcareCenterFormSidebar = ({
             type="text"
             inputMode="numeric"
             placeholder="Ej. 014567890"
-            defaultValue={healthcareCenter?.phone ?? ''}
+            value={healthcareCenter?.phone ?? ''}
             validations={NUMERIC_VALIDATION}
           />
 
@@ -147,7 +147,7 @@ const HealthcareCenterFormSidebar = ({
                 name="contactName"
                 type="text"
                 placeholder="Ej. Juan Pérez"
-                defaultValue={healthcareCenter?.contactName ?? ''}
+                value={healthcareCenter?.contactName ?? ''}
               />
 
               <Input
@@ -156,7 +156,7 @@ const HealthcareCenterFormSidebar = ({
                 type="text"
                 inputMode="numeric"
                 placeholder="Ej. 987654321"
-                defaultValue={healthcareCenter?.contactPhone ?? ''}
+                value={healthcareCenter?.contactPhone ?? ''}
                 validations={NUMERIC_VALIDATION}
               />
 
@@ -165,7 +165,7 @@ const HealthcareCenterFormSidebar = ({
                 name="contactEmail"
                 type="email"
                 placeholder="Ej. contacto@clinica.com"
-                defaultValue={healthcareCenter?.contactEmail ?? ''}
+                value={healthcareCenter?.contactEmail ?? ''}
               />
             </div>
           </div>

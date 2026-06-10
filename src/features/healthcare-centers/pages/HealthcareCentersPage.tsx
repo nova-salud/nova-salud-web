@@ -1,36 +1,20 @@
-import { SortOrder } from '@/core/types/query-params.type'
-import { Button, Input, Select } from '@/shared/components/ui/form'
-import PageContainer from '@/shared/components/ui/PageContainer'
-import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router'
-import { useHealthcareCenters, useCreateHealthcareCenter } from '../hooks'
-import type { FindHealthcareCentersDto, CreateHealthcareCenterDto, HealthcareCenterResponseDto } from '../types'
+import { useDisclosure } from '@/shared/hooks'
+import { useCreateHealthcareCenter, useHealthcareCenters } from '../hooks'
+import type { CreateHealthcareCenterDto, HealthcareCenterResponseDto } from '../types'
+import { Button, PageContainer } from '@/shared/components'
 import HealthcareCenterTable from '../components/HealthcareCenterTable'
 import HealthcareCenterFormSidebar from '../components/HealthcareCenterFormSidebar'
+import { HealthcareCenterFilter } from '../components/HealthcareCenterFilter'
 
-const HEALTHCARE_CENTER_STATUS_OPTIONS = [
-  { label: 'Todos', value: '' },
-  { label: 'Activos', value: 'true' },
-  { label: 'Inactivos', value: 'false' },
-]
+type OverlayKeys = 'create'
 
 const HealthcareCentersPage = () => {
   const navigate = useNavigate()
-  const [name, setName] = useState('')
-  const [isActive, setIsActive] = useState('')
-  const [isCreateOpen, setIsCreateOpen] = useState(false)
-
-  const query = useMemo<FindHealthcareCentersDto>(() => ({
-    page: 1,
-    pageSize: 10,
-    sortBy: 'name',
-    sortOrder: SortOrder.ASC,
-    search: name.trim() || undefined,
-    isActive: isActive === '' ? undefined : isActive === 'true',
-  }), [name, isActive])
-
-  const { data, isLoading, error, refetch } = useHealthcareCenters(query)
+  const { data, isLoading, error, refetch, pagination, onChangeFilters} = useHealthcareCenters()
   const { isLoading: isCreating, createHealthcareCenter } = useCreateHealthcareCenter()
+
+  const overlays = useDisclosure<OverlayKeys>()
 
   const handleView = (center: HealthcareCenterResponseDto) => {
     navigate(`/healthcare-centers/${center.id}`)
@@ -40,7 +24,7 @@ const HealthcareCentersPage = () => {
     const result = await createHealthcareCenter(dto)
     if (!result) return
     await refetch()
-    setIsCreateOpen(false)
+    overlays.close()
   }
 
   return (
@@ -52,7 +36,7 @@ const HealthcareCentersPage = () => {
           <Button
             type="button"
             className="w-auto"
-            onClick={() => setIsCreateOpen(true)}
+            onClick={() => overlays.open('create')}
           >
             Nuevo establecimiento
           </Button>
@@ -60,24 +44,7 @@ const HealthcareCentersPage = () => {
       >
         <div className="space-y-5">
           <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-2">
-              <Input
-                label="Nombre"
-                name="search"
-                type="text"
-                placeholder="Buscar por nombre"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-
-              <Select
-                name='status'
-                label="Estado"
-                value={isActive}
-                onChange={setIsActive}
-                options={HEALTHCARE_CENTER_STATUS_OPTIONS}
-              />
-            </div>
+            <HealthcareCenterFilter onChangeFilters={onChangeFilters} />
           </div>
 
           {error ? (
@@ -90,15 +57,16 @@ const HealthcareCentersPage = () => {
             items={data}
             isLoading={isLoading}
             onView={handleView}
+            pagination={pagination}
           />
         </div>
       </PageContainer>
 
       <HealthcareCenterFormSidebar
-        isOpen={isCreateOpen}
+        isOpen={overlays.isOpen('create')}
         mode="create"
         isLoading={isCreating}
-        onClose={() => setIsCreateOpen(false)}
+        onClose={overlays.close}
         onCreate={handleCreate}
       />
     </>

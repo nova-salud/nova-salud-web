@@ -1,24 +1,28 @@
+import { Eye } from 'lucide-react'
 import { cn } from '@/shared/utils'
-import { Button } from '@/shared/components/ui/form'
-import { DataTable } from '@/shared/components/ui/table/DataTable'
+import { DataTable, type Pagination } from '@/shared/components/ui/table/DataTable'
 import type { HealthcareCenterResponseDto } from '../types'
+import { Dropdown, DropdownItem } from '@/shared/components'
 
 type Props = {
   items: HealthcareCenterResponseDto[]
   isLoading?: boolean
   onView: (item: HealthcareCenterResponseDto) => void
+  pagination: Pagination
 }
 
 const HealthcareCenterTable = ({
   items,
   isLoading = false,
   onView,
+  pagination
 }: Props) => {
   return (
     <DataTable
       data={items}
       isLoading={isLoading}
       emptyMessage="No se encontraron establecimientos."
+      pagination={pagination}
       columns={[
         'ID',
         'Nombre',
@@ -26,7 +30,6 @@ const HealthcareCenterTable = ({
         'Teléfono',
         'Convenio',
         'Estado',
-        'Acciones',
       ]}
       renderRow={(item) => (
         <>
@@ -62,18 +65,17 @@ const HealthcareCenterTable = ({
               {item.isActive ? 'Activo' : 'Inactivo'}
             </span>
           </td>
-
-          <td className="px-6 py-5">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onView(item)}
-              className="w-auto rounded-xl px-3 py-2 text-xs"
-            >
-              Ver
-            </Button>
-          </td>
         </>
+      )}
+      renderActions={(item) => (
+        <Dropdown>
+          <DropdownItem
+            onClick={() => onView(item)}
+          >
+            <Eye size={14} />
+            Ver detalle
+          </DropdownItem>
+        </Dropdown>
       )}
     />
   )

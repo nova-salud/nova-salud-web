@@ -1,13 +1,34 @@
-import { useCallback } from 'react'
-import { usePaginatedQuery } from '@/core/hooks/usePaginatedQuery'
+import { useState } from 'react'
+import type { QueryParams } from '@/core/types/query-params.type'
+import { keepPreviousData } from '@tanstack/react-query'
+import { useDebounce, usePaginatedQuery } from '@/shared/hooks'
+import type { FindHealthcareCentersDto, HealthcareCenterResponseDto } from '../types'
+import { HEALTHCARE_CENTER_QUERY_KEYS } from '../constants/healthcare-centers-query-keys'
 import { healthcareCenterService } from '../services/healthcare-center.service'
-import type { FindHealthcareCentersDto } from '../types'
 
-export const useHealthcareCenters = (query: FindHealthcareCentersDto) => {
-  const fetcher = useCallback(
-    (page: number, pageSize: number) => healthcareCenterService.findAll({ ...query, page, pageSize }),
-    [query],
-  )
+type ExtraFilters = Omit<FindHealthcareCentersDto, keyof QueryParams>
 
-  return usePaginatedQuery(fetcher, query.pageSize)
+export const useHealthcareCenters = () => {
+  const [extraFilters, setExtraFilters] = useState<ExtraFilters>({})
+  const debouncedName = useDebounce(extraFilters.name, 450)
+
+  const result = usePaginatedQuery<HealthcareCenterResponseDto, FindHealthcareCentersDto>({
+    queryKey: HEALTHCARE_CENTER_QUERY_KEYS.list({ ...extraFilters, name: debouncedName }),
+    queryFn: (filters) => healthcareCenterService.findAll({
+      ...filters,
+      ...extraFilters,
+      name: debouncedName || undefined,
+    }),
+    placeholderData: keepPreviousData
+  })
+
+  const onChangeFilters = (filters: Partial<ExtraFilters>) => {
+    setExtraFilters(prev => ({ ...prev, ...filters }))
+    result.goToPage(1)
+  }
+
+  return {
+    ...result,
+    onChangeFilters,
+  }
 }
