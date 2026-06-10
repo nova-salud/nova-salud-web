@@ -1,8 +1,6 @@
 import { Outlet } from 'react-router'
-import AppSidebar from '@/shared/components/navigation/AppSidebar'
-import { ScrollToTop } from '@/shared/components/navigation/ScrollToTop'
-import AppNavbar from '@/shared/components/navigation/AppNavbar'
 import { NotificationsProvider } from '@/features/communications/notifications/context/NotificationsContext'
+import { AppNavbar, AppSidebar, ScrollToTop } from '@/shared/components'
 
 const PrivateLayout = () => {
   return (
