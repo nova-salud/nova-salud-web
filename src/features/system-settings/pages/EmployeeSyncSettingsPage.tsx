@@ -1,15 +1,10 @@
-import PageContainer from '@/shared/components/ui/PageContainer'
+import { PageContainer } from '@/shared/components'
 import {
   Button,
   Checkbox,
   Input,
 } from '@/shared/components/ui/form'
-import { useEmployeeSyncConnectionSetting } from '../hooks/use-employee-sync-connection-setting'
-import { useEmployeeSyncJobSetting } from '../hooks/use-employee-sync-job-setting'
-import { useEmployeeSyncSettingsForm } from '../hooks/use-employee-sync-settings-form'
-import { useTestEmployeeSyncConnection } from '../hooks/use-test-employee-sync-connection'
-import { useUpdateEmployeeSyncConnectionSetting } from '../hooks/use-update-employee-sync-connection-setting'
-import { useUpdateEmployeeSyncJobSetting } from '../hooks/use-update-employee-sync-job-setting'
+import { useEmployeeSyncConnectionSetting, useEmployeeSyncJobSetting, useEmployeeSyncSettingsForm, useTestEmployeeSyncConnection, useUpdateEmployeeSyncConnectionSetting, useUpdateEmployeeSyncJobSetting } from '../hooks'
 
 const EmployeeSyncSettingsPage = () => {
   const {
