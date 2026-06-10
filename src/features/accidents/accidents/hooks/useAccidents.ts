@@ -1,13 +1,33 @@
-import { useCallback } from 'react'
-import { usePaginatedQuery } from '@/core/hooks/usePaginatedQuery'
-import { accidentService } from '../services/accident.service'
+import { useState } from 'react'
+import { keepPreviousData } from '@tanstack/react-query'
+import type { QueryParams } from '@/core/types/query-params.type'
+import { usePaginatedQuery } from '@/shared/hooks/usePaginatedQuery'
 import type { FindAccidentsDto } from '../types/find-accidents.dto'
+import type { AccidentResponseDto } from '../types'
+import { accidentService } from '../services/accident.service'
+import { ACCIDENT_QUERY_KEYS } from '../constants/accident-query-keys'
 
-export const useAccidents = (query?: FindAccidentsDto) => {
-  const fetcher = useCallback(
-    (page: number, pageSize: number) => accidentService.findAll({ ...query, page, pageSize }),
-    [query],
-  )
+type ExtraFilters = Omit<FindAccidentsDto, keyof QueryParams>
 
-  return usePaginatedQuery(fetcher, query?.pageSize)
+export const useAccidents = () => {
+  const [extraFilters, setExtraFilters] = useState<ExtraFilters>({})
+
+  const result = usePaginatedQuery<AccidentResponseDto, FindAccidentsDto>({
+    queryKey: ACCIDENT_QUERY_KEYS.list({ ...extraFilters }),
+    queryFn: (filters) => accidentService.findAll({ 
+      ...filters, 
+      ...extraFilters 
+    }),
+    placeholderData: keepPreviousData,
+  })
+
+  const onChangeFilters = (filters: Partial<ExtraFilters>) => {
+    setExtraFilters(prev => ({ ...prev, ...filters }))
+    result.goToPage(1)
+  }
+
+  return {
+    ...result,
+    onChangeFilters,
+  }
 }

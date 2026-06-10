@@ -1,9 +1,10 @@
+import { Eye } from 'lucide-react'
+import { format } from 'date-fns'
 import { Button } from '@/shared/components/ui/form'
 import { cn } from '@/shared/utils'
-import { DataTable } from '@/shared/components/ui/table/DataTable'
 import { ACCIDENT_STATUS_CLASSNAME, ACCIDENT_STATUS_LABEL, ACCIDENT_TYPE_CLASSNAME, ACCIDENT_TYPE_LABEL } from '../types'
-import { format } from 'date-fns'
-import { useAccidentsByClinicalHistory } from '../hooks/useAccidentsByClinicalHistory'
+import { useAccidentsByClinicalHistory } from '../hooks'
+import { Dropdown, DropdownItem, DataTable } from '@/shared/components'
 
 type Props = {
   clinicalHistoryId: number
@@ -12,7 +13,7 @@ type Props = {
 }
 
 export const ClinicalHistoryAccidentsSection = ({ clinicalHistoryId, onCreate, onViewDetail }: Props) => {
-  const { data, isLoading, total, page, pageSize, totalPages, goToPage } =
+  const { data, isLoading, pagination } =
     useAccidentsByClinicalHistory(clinicalHistoryId)
 
   return (
@@ -21,7 +22,7 @@ export const ClinicalHistoryAccidentsSection = ({ clinicalHistoryId, onCreate, o
         <div className="flex items-center gap-3">
           <h2 className="text-2xl font-bold text-slate-900">Accidentes</h2>
           {!isLoading && (
-            <span className="rounded-xl bg-slate-100 px-3 py-1 text-xs text-slate-600">{total}</span>
+            <span className="rounded-xl bg-slate-100 px-3 py-1 text-xs text-slate-600">{pagination.total}</span>
           )}
         </div>
 
@@ -35,11 +36,10 @@ export const ClinicalHistoryAccidentsSection = ({ clinicalHistoryId, onCreate, o
       <p className="mb-4 text-sm text-slate-500">Eventos e incidentes registrados del trabajador.</p>
 
       <DataTable
-        flat
         data={data}
         isLoading={isLoading}
         emptyMessage="No hay accidentes registrados."
-        columns={['ID', 'Fecha', 'Tipo', 'Estado', 'Descripción', 'Acciones']}
+        columns={['ID', 'Fecha', 'Tipo', 'Estado', 'Descripción']}
         renderRow={(item) => (
           <>
             <td className="px-6 py-5 font-medium text-slate-900">#{item.id}</td>
@@ -59,27 +59,19 @@ export const ClinicalHistoryAccidentsSection = ({ clinicalHistoryId, onCreate, o
             <td className="max-w-64 truncate px-6 py-5 text-slate-700">
               {item.description || 'Sin descripción'}
             </td>
-            <td className="px-6 py-5">
-              {onViewDetail && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-auto rounded-xl px-3 py-2 text-xs"
-                  onClick={() => onViewDetail(item.id)}
-                >
-                  Ver detalle
-                </Button>
-              )}
-            </td>
           </>
         )}
-        pagination={{
-          page,
-          pageSize,
-          total,
-          totalPages,
-          onPaginationChange: (p) => goToPage(p),
-        }}
+        pagination={pagination}
+        renderActions={onViewDetail ? (item) => (
+          <Dropdown>
+            <DropdownItem
+              onClick={() => onViewDetail(item.id)}
+            >
+              <Eye size={14} />
+              Ver detalle
+            </DropdownItem>
+          </Dropdown>
+        ) : undefined}
       />
     </div>
   )

@@ -17,7 +17,7 @@ type Props = {
   onRefresh?: () => void
 }
 
-const AccidentInfoSection: React.FC<Props> = ({ accident, isReadOnly = false, onRefresh }) => {
+export const AccidentInfoSection: React.FC<Props> = ({ accident, isReadOnly = false, onRefresh }) => {
   const [isEditOpen, setIsEditOpen] = useState(false)
 
   return (
@@ -144,5 +144,3 @@ const AccidentInfoSection: React.FC<Props> = ({ accident, isReadOnly = false, on
     </div>
   )
 }
-
-export default AccidentInfoSection

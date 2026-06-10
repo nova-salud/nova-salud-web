@@ -1,19 +1,21 @@
-import { Button } from '@/shared/components/ui/form'
-import { DataTable } from '@/shared/components/ui/table/DataTable'
+import { Eye } from 'lucide-react'
 import { cn } from '@/shared/utils'
 import { format } from 'date-fns'
 import { ACCIDENT_STATUS_CLASSNAME, ACCIDENT_STATUS_LABEL, ACCIDENT_TYPE_LABEL, type AccidentResponseDto } from '../types'
 import { FollowUpStatusEnum } from '@/features/follow-ups/types/follow-up-status.enum'
+import { Dropdown, DropdownItem, type Pagination, DataTable } from '@/shared/components'
 
 type Props = {
   items: AccidentResponseDto[]
   isLoading?: boolean
+  pagination: Pagination
   onView?: (id: number) => void
 }
 
 export const AccidentTable = ({
   items,
   isLoading = false,
+  pagination,
   onView,
 }: Props) => {
   return (
@@ -21,14 +23,15 @@ export const AccidentTable = ({
       data={items}
       isLoading={isLoading}
       emptyMessage="No se encontraron accidentes."
+      pagination={pagination}
+      onRowDoubleClick={(item) => onView?.(item.id)}
       columns={[
         'Trabajador',
         'Fecha',
         'Tipo',
         'Estado',
         'Seguimientos',
-        'Derivación',
-        'Acciones',
+        'Derivación'
       ]}
       renderRow={(item) => {
         const followUps = item.followUps ?? []
@@ -90,20 +93,19 @@ export const AccidentTable = ({
                 </span>
               )}
             </td>
-
-            <td className="px-6 py-5">
-              <Button
-                type="button"
-                variant="outline"
-                className="w-auto rounded-xl px-3 py-2 text-xs"
-                onClick={() => onView?.(item.id)}
-              >
-                Ver
-              </Button>
-            </td>
           </>
         )
       }}
+      renderActions={(item) => (
+        <Dropdown>
+          <DropdownItem
+            onClick={() => onView?.(item.id)}
+          >
+            <Eye size={14}/>
+            Ver detalle
+          </DropdownItem>
+        </Dropdown>
+      )}
     />
   )
 }

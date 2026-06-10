@@ -1,26 +1,23 @@
-import { Button } from '@/shared/components/ui/form'
-import PageContainer from '@/shared/components/ui/PageContainer'
-import { cn } from '@/shared/utils'
 import { useNavigate } from 'react-router'
-import { AccidentTable } from '../components/AccidentsTable'
-import { DashboardCard } from '@/shared/components/dashboard/DashboardCard'
 import { ShieldAlert, AlertTriangle, CheckCircle2 } from 'lucide-react'
-import { useAccidents } from '../hooks/useAccidents'
+import { cn } from '@/shared/utils'
+import { PageContainer, Button, DashboardCard } from '@/shared/components'
 import { AccidentStatusEnum } from '../types'
+import { AccidentFilter, AccidentTable } from '../components'
+import { useAccidents } from '../hooks'
 
 export const AccidentsPage = () => {
   const navigate = useNavigate()
 
-  const { data: accidents = [], isLoading, error } = useAccidents()
+  const { data, isLoading, error, pagination, onChangeFilters } = useAccidents()
 
-  const total = accidents.length
-  const open = accidents.filter(a => a.status === AccidentStatusEnum.OPEN).length
-  const closed = accidents.filter(a => a.status === AccidentStatusEnum.CLOSED).length
+  const open = data.filter(a => a.status === AccidentStatusEnum.OPEN).length
+  const closed = data.filter(a => a.status === AccidentStatusEnum.CLOSED).length
 
   const cards = [
     {
       label: 'Total',
-      value: total,
+      value: pagination.total,
       valueClassName: 'text-slate-900',
       icon: <ShieldAlert className="h-5 w-5 text-slate-600" />,
       iconWrapperClass: 'bg-slate-100',
@@ -55,6 +52,7 @@ export const AccidentsPage = () => {
       }
     >
       <div className="space-y-6">
+        <AccidentFilter onChangeFilters={onChangeFilters} />
 
         {error && (
           <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
@@ -79,8 +77,9 @@ export const AccidentsPage = () => {
         </div>
 
         <AccidentTable
-          items={accidents}
+          items={data}
           isLoading={isLoading}
+          pagination={pagination}
           onView={(id) => navigate(`/accidents/${id}`)}
         />
       </div>

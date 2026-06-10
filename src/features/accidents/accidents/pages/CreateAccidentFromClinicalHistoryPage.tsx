@@ -1,12 +1,9 @@
-import { parseBackendError } from '@/core/utils/parse-backend-error'
-import { employeeService } from '@/features/employees/services/employee.service'
-import type { EmployeeResponseDto } from '@/features/employees/types/employee-response.dto'
-import { Button } from '@/shared/components/ui/form'
-import PageContainer from '@/shared/components/ui/PageContainer'
-import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router'
-import { useCreateAccident } from '../hooks/useCreateAccident'
+import { EmployeeInfoCard } from '@/features/employees/components'
+import { useEmployee } from '@/features/employees/hooks/useEmployee'
+import { PageContainer, Button } from '@/shared/components'
 import { AccidentForm, type CreateAccidentFormData } from '../components/AccidentForm'
+import { useCreateAccident } from '../hooks'
 
 const CreateAccidentFromClinicalHistoryPage = () => {
   const navigate = useNavigate()
@@ -14,39 +11,13 @@ const CreateAccidentFromClinicalHistoryPage = () => {
 
   const numericEmployeeId = Number(employeeId)
 
-  const [employee, setEmployee] = useState<EmployeeResponseDto | null>(null)
-  const [employeeError, setEmployeeError] = useState<string | null>(null)
-  const [isLoadingEmployee, setIsLoadingEmployee] = useState(false)
+  const { data: employee, isLoading: isLoadingEmployee, error: employeeError } = useEmployee(numericEmployeeId)
 
   const {
     createAccident,
     isLoading: isCreating,
     error: createError,
   } = useCreateAccident()
-
-  useEffect(() => {
-    const loadEmployee = async () => {
-      if (!numericEmployeeId || Number.isNaN(numericEmployeeId)) {
-        setEmployeeError('No se recibió un trabajador válido.')
-        return
-      }
-
-      try {
-        setIsLoadingEmployee(true)
-        setEmployeeError(null)
-
-        const result = await employeeService.findById(numericEmployeeId)
-        setEmployee(result)
-      } catch (error) {
-        setEmployee(null)
-        setEmployeeError(parseBackendError(error))
-      } finally {
-        setIsLoadingEmployee(false)
-      }
-    }
-
-    void loadEmployee()
-  }, [numericEmployeeId])
 
   const handleSubmit = async (data: CreateAccidentFormData) => {
     if (!employee) return
@@ -58,7 +29,7 @@ const CreateAccidentFromClinicalHistoryPage = () => {
 
     if (!result) return
 
-    navigate(`/clinical-histories/${employee.id}/accidents/${result.id}`, { replace: true})
+    navigate(`/clinical-histories/${employee.id}/accidents/${result.id}`, { replace: true })
   }
 
   return (
@@ -80,7 +51,7 @@ const CreateAccidentFromClinicalHistoryPage = () => {
 
         {employeeError && (
           <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-            {employeeError}
+            {employeeError.message}
           </div>
         )}
 
@@ -102,35 +73,7 @@ const CreateAccidentFromClinicalHistoryPage = () => {
           )}
 
           {!isLoadingEmployee && employee && (
-            <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-              <div>
-                <p className="text-xs text-slate-400">Nombre</p>
-                <p className="text-sm font-medium text-slate-900">
-                  {employee.fullName}
-                </p>
-              </div>
-
-              <div>
-                <p className="text-xs text-slate-400">DNI</p>
-                <p className="text-sm text-slate-700">
-                  {employee.dni}
-                </p>
-              </div>
-
-              <div>
-                <p className="text-xs text-slate-400">Empresa</p>
-                <p className="text-sm text-slate-700">
-                  {employee.company}
-                </p>
-              </div>
-
-              <div>
-                <p className="text-xs text-slate-400">Área</p>
-                <p className="text-sm text-slate-700">
-                  {employee.area?.name ?? '—'}
-                </p>
-              </div>
-            </div>
+            <EmployeeInfoCard employee={employee} className="mt-4" />
           )}
         </div>
 

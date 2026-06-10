@@ -1,2 +1,2 @@
-export * from './create-employee-restriction.dto';
-export * from './employee-restriction-response.dto';
+export * from './create-employee-restriction.dto'
+export * from './employee-restriction-response.dto'

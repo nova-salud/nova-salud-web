@@ -1,19 +1,14 @@
-import { Button } from '@/shared/components/ui/form'
-import PageContainer from '@/shared/components/ui/PageContainer'
-import { cn } from '@/shared/utils'
-import { format } from 'date-fns'
 import { useNavigate, useParams } from 'react-router'
-import { useAccident } from '../hooks/useAccident'
-import { ACCIDENT_TYPE_CLASSNAME, ACCIDENT_TYPE_LABEL, ACCIDENT_STATUS_CLASSNAME, ACCIDENT_STATUS_LABEL, AccidentStatusEnum } from '../types'
-import { AccidentCaseSection } from '../../accident-cases/components/AccidentCaseSection'
-import { AccidentFollowUpsSection } from '../../accident-cases/components/AccidentFollowUpsSection'
-import { AccidentDetailSkeleton } from '../components/AccidentDetailSkeleton'
-import AccidentInfoSection from '../../accident-cases/components/AccidentInfoSection'
-import { AccidentInvestigationSection } from '../../accident-cases/components/AccidentInvestigationSection'
-import { ClinicalHistoryMedicalRestsSection } from '@/features/clinical-histories/medical-rests/components/ClinicalHistoryMedicalRestsSection'
-import { useAuth } from '@/shared/hooks/useAuth'
+import { format } from 'date-fns'
+import { cn } from '@/shared/utils'
+import { useAuth } from '@/shared/hooks'
+import { EntityState, PageContainer, Button } from '@/shared/components'
 import { RoleEnum } from '@/core/enums/role.enum'
-import { useSendAccidentSummary } from '../hooks/useSendAccidentSummary'
+import { AccidentCaseSection, AccidentFollowUpsSection, AccidentInfoSection, AccidentInvestigationSection } from '../../accident-cases/components'
+import { ClinicalHistoryMedicalRestsSection } from '@/features/clinical-histories/medical-rests/components/ClinicalHistoryMedicalRestsSection'
+import { useAccident, useSendAccidentSummary } from '../hooks'
+import { AccidentDetailSkeleton } from '../components/AccidentDetailSkeleton'
+import { ACCIDENT_STATUS_CLASSNAME, ACCIDENT_STATUS_LABEL, ACCIDENT_TYPE_CLASSNAME, ACCIDENT_TYPE_LABEL, AccidentStatusEnum } from '../types'
 
 const AccidentDetailPage = () => {
   const { user, isAdmin } = useAuth()
@@ -26,7 +21,24 @@ const AccidentDetailPage = () => {
   const { sendSummary, isLoading: isSending } = useSendAccidentSummary()
 
   if (isLoading) return <AccidentDetailSkeleton />
-  if (!accident) return <div>No encontrado</div>
+
+  if (error) return (
+    <EntityState
+      title="Ocurrió un error"
+      description="No fue posible obtener la información del accidente."
+      actionText="Reintentar"
+      onAction={refetch}
+    />
+  )
+
+  if (!accident) return (
+    <EntityState
+      title="Accidente no encontrado"
+      description="El accidente que intentas consultar no existe o fue eliminado."
+      actionText="Volver"
+      onAction={() => navigate(-1)}
+    />
+  )
 
   const isMedical = user?.role === RoleEnum.OCCUPATIONAL_DOCTOR
   const isHR = user?.role === RoleEnum.HR
@@ -63,12 +75,6 @@ const AccidentDetailPage = () => {
       }
     >
       <div className="space-y-6">
-        {error && (
-          <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-            {error}
-          </div>
-        )}
-
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>

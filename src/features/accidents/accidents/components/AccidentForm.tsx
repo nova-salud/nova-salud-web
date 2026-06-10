@@ -1,4 +1,3 @@
-import { useHealthcareCenters } from '@/features/healthcare-centers/hooks'
 import {
   ACCIDENT_TYPE_OPTIONS,
   AccidentTypeEnum,
@@ -11,7 +10,8 @@ import {
   type AccidentLaborRelationEnum,
 } from '../types'
 import { Select, Input, Textarea, Button } from '@/shared/components/ui/form'
-import { useState, useMemo, useRef } from 'react'
+import { useState, useRef } from 'react'
+import { useSearchHealthcareCenters } from '../hooks'
 
 export type CreateAccidentFormData = Omit<CreateAccidentDto, 'employeeId'>
 
@@ -27,14 +27,7 @@ export const AccidentForm = ({
   const [requiresExternalCare, setRequiresExternalCare] = useState(false)
   const formRef = useRef<HTMLFormElement>(null)
 
-  const healthcareCentersQuery = useMemo(() => ({
-    page: 1,
-    pageSize: 100,
-    isActive: true,
-  }), [])
-
-  const { data: healthcareCenters, isLoading: isLoadingCenters } =
-    useHealthcareCenters(healthcareCentersQuery)
+  const { healthcareCenters, isLoading: isLoadingCenters } = useSearchHealthcareCenters()
 
   const handleSubmit = async () => {
     const data = formRef.current ? new FormData(formRef.current) : new FormData()
