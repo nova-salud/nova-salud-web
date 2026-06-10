@@ -1,6 +1,6 @@
 import { Navigate, Outlet, useLocation } from 'react-router'
 import { useAuth } from '@/shared/hooks/useAuth'
-import LoadingScreen from '@/shared/components/feedback/LoadingScreen'
+import { LoadingScreen } from '@/shared/components'
 
 const AuthGuard = () => {
   const location = useLocation()
