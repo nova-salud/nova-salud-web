@@ -1,8 +1,6 @@
-import { useState } from 'react'
 import { Modal, Button, Input } from '@/shared/components'
 import { useAuth } from '@/shared/hooks/useAuth'
-import { lotService } from '../services/lot.service'
-import type { BackendError } from '@/core/types/backend-error.type'
+import { useRegisterLot } from '../hooks/useRegisterLot'
 
 type Props = {
   medicationId: number
@@ -11,39 +9,24 @@ type Props = {
   onSuccess: () => void
 }
 
-const RegisterLotModal = ({ medicationId, isOpen, onClose, onSuccess }: Props) => {
+export const RegisterLotModal = ({ medicationId, isOpen, onClose, onSuccess }: Props) => {
   const { user } = useAuth()
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const { register, isLoading, error } = useRegisterLot()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const data = new FormData(e.currentTarget)
 
-    try {
-      setIsLoading(true)
-      setError(null)
-
-      await lotService.create({
-        medicationId,
-        lotCode: data.get('lotCode') as string,
-        expirationDate: data.get('expirationDate') as string,
-        initialQuantity: Number(data.get('initialQuantity')),
-        receivedByUserId: user!.id,
-      })
-
-      onSuccess()
-      onClose()
-    } catch (err) {
-      const backendError = err as BackendError
-      if (Array.isArray(backendError.message)) {
-        setError(backendError.message[0])
-      } else {
-        setError(backendError.message ?? 'Error al registrar el lote.')
-      }
-    } finally {
-      setIsLoading(false)
+    const dto = {
+      medicationId,
+      lotCode: data.get('lotCode') as string,
+      expirationDate: data.get('expirationDate') as string,
+      initialQuantity: Number(data.get('initialQuantity')),
+      receivedByUserId: user!.id,
     }
+
+    await register(dto)
+    onSuccess()
   }
 
   return (
@@ -95,5 +78,3 @@ const RegisterLotModal = ({ medicationId, isOpen, onClose, onSuccess }: Props) =
     </Modal>
   )
 }
-
-export default RegisterLotModal

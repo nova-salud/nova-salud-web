@@ -1,80 +1,63 @@
 import { useNavigate, useParams } from 'react-router'
-import PageContainer from '@/shared/components/ui/PageContainer'
-import MedicationForm from '../components/MedicationForm'
-import { useMedication } from '../hooks/useMedication'
-import { useTherapeuticCategories } from '@/features/inventory/therapeutic-categories/hooks/useTherapeuticCategories'
-import { medicationService } from '../services/medication.service'
-import { useState } from 'react'
-import type { BackendError } from '@/core/types/backend-error.type'
+import { PageContainer, EntityState} from '@/shared/components'
+import { FormPageSkeleton, MedicationForm } from '../components'
+import { useMedication, useSearchTherapeuticCategories, useUpdateMedication } from '../hooks'
 import type { CreateMedicationDto } from '../types/create-medication.dto'
 
 const EditMedicationPage = () => {
   const navigate = useNavigate()
   const params = useParams()
-
   const id = Number(params.id)
 
-  const { data: medication, isLoading } = useMedication(id)
-  const { data: categories } = useTherapeuticCategories()
+  const { data: medication, isLoading: isLoadingMedication } = useMedication(id)
+  const { therapeuticCategories: categories, isLoading: isLoadingCategories } = useSearchTherapeuticCategories()
+  const { update, isLoading: isSaving, error } = useUpdateMedication()
 
-  const [error, setError] = useState<string | null>(null)
-  const [saving, setSaving] = useState(false)
-
-  const handleUpdate = async (dto: CreateMedicationDto) => {
-    try {
-      setSaving(true)
-      setError(null)
-
-      await medicationService.update(id, dto)
-
-      navigate(`/medications/${id}`)
-    } catch (err) {
-      const backendError = err as BackendError
-
-      if (Array.isArray(backendError.message)) {
-        setError(backendError.message[0])
-      } else {
-        setError(backendError.message ?? 'Error al actualizar')
-      }
-    } finally {
-      setSaving(false)
-    }
+  if (isLoadingMedication || isLoadingCategories) {
+    return <FormPageSkeleton />
   }
 
-  if (isNaN(id)) {
-    return <div>ID inválido</div>
+  if (!medication) {
+    return <EntityState
+      title="Medicamento no encontrado"
+      description="El medicamento que intentas editar no existe o fue eliminado."
+      actionText="Volver"
+      onAction={() => navigate('/medications')}
+    />
+  }
+
+  const handleUpdate = async (dto: CreateMedicationDto) => {
+    const result = await update(id, dto)
+    if (result) navigate(`/medications/${id}`)
   }
 
   return (
-    <PageContainer
-      title="Editar medicamento"
-      description="Actualización de medicamento"
-    >
+    <PageContainer title="Editar medicamento" description="Actualización de medicamento">
       <div className="space-y-5">
-        {error && <div className="text-red-500 text-sm">{error}</div>}
-
-        {isLoading || !medication ? (
-          <div>Cargando...</div>
-        ) : (
-          <MedicationForm
-            categories={categories}
-            initialValues={{
-              commercialName: medication.commercialName,
-              genericName: medication.genericName ?? '',
-              chemicalComposition: medication.chemicalComposition,
-              therapeuticCategoryId: medication.therapeuticCategory.id,
-              presentation: medication.presentation ?? '',
-              unitOfMeasure: medication.unitOfMeasure,
-              minimumStock: medication.minimumStock,
-              isOtc: medication.isOtc,
-              requiresPrescription: medication.requiresPrescription,
-              notes: medication.notes ?? '',
-              contraindications: medication.contraindications ?? ''
-            }}
-            onSubmit={handleUpdate}
-            isLoading={saving}
-          />
+        {error && (
+          <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+            {error}
+          </div>
         )}
+
+        <MedicationForm
+          categories={categories}
+          initialValues={{
+            commercialName: medication.commercialName,
+            genericName: medication.genericName ?? '',
+            chemicalComposition: medication.chemicalComposition,
+            therapeuticCategoryId: medication.therapeuticCategory.id,
+            presentation: medication.presentation ?? '',
+            unitOfMeasure: medication.unitOfMeasure,
+            minimumStock: medication.minimumStock,
+            isOtc: medication.isOtc,
+            requiresPrescription: medication.requiresPrescription,
+            notes: medication.notes ?? '',
+            contraindications: medication.contraindications ?? '',
+          }}
+          onSubmit={handleUpdate}
+          isLoading={isSaving}
+        />
       </div>
     </PageContainer>
   )

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import PageContainer from '@/shared/components/ui/PageContainer'
+import { PageContainer } from '@/shared/components'
 import { useRequestableStocks } from '@/features/inventory/stocks/hooks/useRequestableStocks'
 import { useCreateRequirement } from '../hooks/useCreateRequirement'
 import type { CreateInventoryRequirementItemDto } from '../types/create-inventory-requirement-item.dto'

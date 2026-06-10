@@ -1,26 +1,21 @@
-import { DataTable } from '@/shared/components/ui/table/DataTable'
-import { getMovementTypeMeta } from '../types/movement-type.constants'
-import type { InventoryMovementResponseDto } from '../types/inventory-movement-response.dto'
+import { DataTable, type Pagination } from '@/shared/components/ui/table/DataTable'
+import { getMovementTypeMeta } from '../../movements/types/movement-type.constants'
+import type { InventoryMovementResponseDto } from '../../movements/types/inventory-movement-response.dto'
 
 type Props = {
   items: InventoryMovementResponseDto[]
   isLoading?: boolean
+  pagination: Pagination
 }
 
-const MedicationMovementsTable = ({ items, isLoading = false }: Props) => {
+export const MedicationMovementsTable = ({ items, isLoading = false, pagination }: Props) => {
   return (
     <DataTable
       data={items}
       isLoading={isLoading}
       emptyMessage="No se encontraron movimientos para este medicamento."
-      columns={[
-        'Tipo',
-        'Lote',
-        'Cantidad',
-        'Motivo',
-        'Usuario',
-        'Fecha',
-      ]}
+      pagination={pagination}
+      columns={['Tipo', 'Lote', 'Cantidad', 'Motivo', 'Usuario', 'Fecha']}
       renderRow={(item) => (
         <>
           <td className="px-6 py-5">
@@ -42,9 +37,7 @@ const MedicationMovementsTable = ({ items, isLoading = false }: Props) => {
             <span
               className={[
                 'font-semibold',
-                item.movementType.includes('OUT') || item.movementType === 'OUT'
-                  ? 'text-red-500'
-                  : 'text-emerald-600',
+                item.movementType.includes('OUT') ? 'text-red-500' : 'text-emerald-600',
               ].join(' ')}
             >
               {item.quantity}
@@ -67,5 +60,3 @@ const MedicationMovementsTable = ({ items, isLoading = false }: Props) => {
     />
   )
 }
-
-export default MedicationMovementsTable

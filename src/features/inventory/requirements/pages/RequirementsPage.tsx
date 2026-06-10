@@ -1,24 +1,12 @@
-import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
-import PageContainer from '@/shared/components/ui/PageContainer'
-import { Select } from '@/shared/components/ui/form'
+import { PageContainer } from '@/shared/components'
+import { RequirementFilter } from '../components/RequirementFilter'
 import RequirementTable from '../components/RequirementTable'
 import { useRequirements } from '../hooks/useRequirements'
-import { InventoryRequirementStatusEnum } from '../types/inventory-requirement-status.enum'
 
 const RequirementsPage = () => {
   const navigate = useNavigate()
-  const [status, setStatus] = useState<InventoryRequirementStatusEnum | ''>('')
-
-  const query = useMemo(() => ({
-    page: 1,
-    pageSize: 10,
-    sortBy: 'createdAt',
-    sortOrder: 'DESC' as const,
-    status: status || undefined,
-  }), [status])
-
-  const { data, isLoading, error } = useRequirements(query)
+  const { data, isLoading, error, pagination, onChangeFilters } = useRequirements()
 
   return (
     <PageContainer
@@ -36,27 +24,7 @@ const RequirementsPage = () => {
     >
       <div className="space-y-5">
         <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div>
-              <p className="text-sm font-medium text-slate-800">Gestión de requerimientos</p>
-              <p className="text-sm text-slate-500">Visualiza el estado de compra, entrega y recepción.</p>
-            </div>
-
-            <div className="w-full md:w-65">
-              <Select
-                name='status'
-                label="Estado"
-                value={status}
-                onChange={(value) => setStatus(value as InventoryRequirementStatusEnum | '')}
-                options={[
-                  { label: 'Pendiente', value: InventoryRequirementStatusEnum.PENDING },
-                  { label: 'Entregado', value: InventoryRequirementStatusEnum.DELIVERED },
-                  { label: 'Recepción parcial', value: InventoryRequirementStatusEnum.RECEIVED_PARTIAL },
-                  { label: 'Recepción completa', value: InventoryRequirementStatusEnum.RECEIVED_COMPLETE },
-                ]}
-              />
-            </div>
-          </div>
+          <RequirementFilter onChangeFilters={onChangeFilters} />
         </div>
 
         {error ? (
@@ -65,7 +33,9 @@ const RequirementsPage = () => {
           </div>
         ) : null}
 
-        <RequirementTable items={data} isLoading={isLoading} />
+        <div className="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+          <RequirementTable items={data} isLoading={isLoading} pagination={pagination} />
+        </div>
       </div>
     </PageContainer>
   )

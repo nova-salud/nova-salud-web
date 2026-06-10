@@ -5,7 +5,7 @@ import type { EmployeeResponseDto } from '@/features/employees/types/employee-re
 import { MedicationDispenserSection } from '@/shared/components/dispensation/MedicationDispenserSection'
 import { EmployeeSearchSelector } from '@/shared/components/employee/EmployeeSearchSelector'
 import SelectedEmployeeCard from '@/shared/components/employee/SelectedEmployeeCard'
-import PageContainer from '@/shared/components/ui/PageContainer'
+import { PageContainer } from '@/shared/components'
 import { Button, Input, Select, Textarea } from '@/shared/components/ui/form'
 import { useCreateDispensation } from '../hooks/useCreateDispensation'
 import { useCreateDispensationForm } from '../hooks/useCreateDispensationForm'

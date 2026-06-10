@@ -1,14 +1,17 @@
 import { useNavigate } from 'react-router'
-import { DataTable } from '@/shared/components/ui/table/DataTable'
+import { DataTable, type Pagination } from '@/shared/components/ui/table/DataTable'
+import { Dropdown, DropdownItem } from '@/shared/components'
+import { ClipboardList } from 'lucide-react'
 import { cn } from '@/shared/utils'
 import { STATUS_CLASSES, STATUS_LABELS, type InventoryRequirementResponseDto } from '../types/inventory-requirement-response.dto'
 
 type Props = {
   items: InventoryRequirementResponseDto[]
   isLoading?: boolean
+  pagination: Pagination
 }
 
-const RequirementTable = ({ items, isLoading = false }: Props) => {
+const RequirementTable = ({ items, isLoading = false, pagination }: Props) => {
   const navigate = useNavigate()
 
   return (
@@ -16,7 +19,8 @@ const RequirementTable = ({ items, isLoading = false }: Props) => {
       data={items}
       isLoading={isLoading}
       emptyMessage="No se encontraron requerimientos."
-      columns={['ID', 'Código', 'Estado', 'Items', 'Costo Total', 'Solicitado', 'Entregado', 'Acciones']}
+      pagination={pagination}
+      columns={['ID', 'Código', 'Estado', 'Items', 'Costo Total', 'Solicitado', 'Entregado']}
       renderRow={(item) => (
         <>
           <td className="px-6 py-5 font-medium text-slate-900">#{item.id}</td>
@@ -35,7 +39,9 @@ const RequirementTable = ({ items, isLoading = false }: Props) => {
 
           <td className="px-6 py-5 text-slate-500">{item.items.length}</td>
 
-          <td className="px-6 py-5 text-slate-500">S/. {item.totalCost}</td>
+          <td className="px-6 py-5 text-slate-500">
+            {item.totalCost != null ? `S/. ${item.totalCost}` : '-'}
+          </td>
 
           <td className="px-6 py-5 text-slate-500">
             {new Date(item.createdAt).toLocaleDateString('es-PE')}
@@ -44,17 +50,18 @@ const RequirementTable = ({ items, isLoading = false }: Props) => {
           <td className="px-6 py-5 text-slate-500">
             {item.deliveredAt ? new Date(item.deliveredAt).toLocaleDateString('es-PE') : '-'}
           </td>
-
-          <td className="px-6 py-5">
-            <button
-              type="button"
-              onClick={() => navigate(`/requirements/${item.id}`)}
-              className="rounded-xl border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"
-            >
-              Ver detalle
-            </button>
-          </td>
         </>
+      )}
+      renderActions={(item) => (
+        <Dropdown>
+          <DropdownItem
+            className="w-44"
+            onClick={() => navigate(`/requirements/${item.id}`)}
+          >
+            <ClipboardList size={14} />
+            Ver detalle
+          </DropdownItem>
+        </Dropdown>
       )}
     />
   )

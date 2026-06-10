@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router'
-import PageContainer from '@/shared/components/ui/PageContainer'
+import { PageContainer } from '@/shared/components'
 import { Button } from '@/shared/components/ui/form'
 import { cn } from '@/shared/utils'
 import { useDispensation } from '../hooks/useDispensation'

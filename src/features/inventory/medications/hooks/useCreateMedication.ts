@@ -1,39 +1,23 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router'
-import type { BackendError } from '@/core/types/backend-error.type'
 import { medicationService } from '../services/medication.service'
 import type { CreateMedicationDto } from '../types/create-medication.dto'
+import { useAsyncAction } from '@/core/hooks/useAsyncAction'
+import type { MedicationResponseDto } from '../types'
 
 export const useCreateMedication = () => {
-  const navigate = useNavigate()
-
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
-  const create = async (dto: CreateMedicationDto) => {
-    try {
-      setIsLoading(true)
-      setError(null)
-
-      await medicationService.create(dto)
-
-      navigate('/medications')
-    } catch (err) {
-      const backendError = err as BackendError
-
-      if (Array.isArray(backendError.message)) {
-        setError(backendError.message[0])
-      } else {
-        setError(backendError.message ?? 'Error al crear medicamento')
-      }
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  const { execute, isLoading, error, clearError } = useAsyncAction<
+    [CreateMedicationDto],
+    MedicationResponseDto
+  >(
+    medicationService.create.bind(medicationService),
+    {
+      successMessage: 'Medicamento creado correctamente.',
+    },
+  )
 
   return {
-    create,
+    create: execute,
     isLoading,
     error,
+    clearError,
   }
 }

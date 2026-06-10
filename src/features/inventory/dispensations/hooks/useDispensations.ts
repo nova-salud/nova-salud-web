@@ -1,21 +1,32 @@
-import { useCallback } from 'react'
-import { usePaginatedQuery } from '@/core/hooks/usePaginatedQuery'
+import { useState } from 'react'
+import { usePaginatedQuery } from '@/shared/hooks/usePaginatedQuery'
 import { dispensationService } from '../services/dispensation.service'
-import type { FindDispensationsDto } from '../types/find-dispensations.dto'
+import type { QueryParams } from '@/core/types/query-params.type'
+import type { DispensationResponseDto, FindDispensationsDto } from '../types'
+import { DISPENSATION_QUERY_KEYS } from '../constants/dispensation-query-keys'
+import { keepPreviousData } from '@tanstack/react-query'
 
-export const useDispensations = (query: FindDispensationsDto) => {
-  const fetcher = useCallback(
-    (page: number, pageSize: number) => dispensationService.findAll({ ...query, page, pageSize }),
-    [
-      query.dispenseType,
-      query.collaboratorDni,
-      query.thirdPartyDni,
-      query.attentionId,
-      query.dispensedByUserId,
-      query.sortBy,
-      query.sortOrder,
-    ],
-  )
+type ExtraFilters = Omit<FindDispensationsDto, keyof QueryParams>
 
-  return usePaginatedQuery(fetcher, query.pageSize)
+export const useDispensations = () => {
+  const [extraFilters, setExtraFilters] = useState<ExtraFilters>({})
+
+  const result = usePaginatedQuery<DispensationResponseDto, FindDispensationsDto>({
+    queryKey: DISPENSATION_QUERY_KEYS.list({ ...extraFilters}),
+    queryFn: (filters) => dispensationService.findAll({
+      ...filters,
+      ...extraFilters,
+    }),
+    placeholderData: keepPreviousData
+  })
+
+  const onChangeFilters = (filters: Partial<ExtraFilters>) => {
+    setExtraFilters(prev => ({ ...prev, ...filters }))
+    result.goToPage(1)
+  }
+
+  return {
+    ...result,
+    onChangeFilters,
+  }
 }

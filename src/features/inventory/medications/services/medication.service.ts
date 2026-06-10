@@ -7,12 +7,12 @@ class MedicationService extends ApiService {
     return await this.get<MedicationResponseDto>(`/inventory/medications/${id}`)
   }
 
-  async create(dto: CreateMedicationDto): Promise<void> {
-    await this.post('/inventory/medications', dto)
+  async create(dto: CreateMedicationDto): Promise<MedicationResponseDto> {
+    return await this.post<MedicationResponseDto>('/inventory/medications', dto)
   }
 
-  async update(id: number, dto: CreateMedicationDto): Promise<void> {
-    await this.patch(`/inventory/medications/${id}`, dto)
+  async update(id: number, dto: CreateMedicationDto): Promise<MedicationResponseDto> {
+    return await this.patch<MedicationResponseDto>(`/inventory/medications/${id}`, dto)
   }
 }
 

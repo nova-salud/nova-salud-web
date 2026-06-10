@@ -1,19 +1,20 @@
 import { useNavigate } from 'react-router'
-import { DataTable } from '@/shared/components/ui/table/DataTable'
 import { cn } from '@/shared/utils'
 import {
   DISPENSE_TYPE_CLASS_MAP,
   DISPENSE_TYPE_LABEL_MAP,
   type DispensationResponseDto,
 } from '../types/dispensation-response.dto'
-import { Button } from '@/shared/components/ui/form'
+import { DataTable, Dropdown, DropdownItem, type Pagination } from '@/shared/components'
+import { Eye } from 'lucide-react'
 
 type Props = {
   items: DispensationResponseDto[]
   isLoading?: boolean
+  pagination: Pagination
 }
 
-const DispensationTable = ({ items, isLoading = false }: Props) => {
+const DispensationTable = ({ items, isLoading = false, pagination }: Props) => {
   const navigate = useNavigate()
 
   return (
@@ -21,7 +22,8 @@ const DispensationTable = ({ items, isLoading = false }: Props) => {
       data={items}
       isLoading={isLoading}
       emptyMessage="No se encontraron dispensaciones."
-      columns={['ID', 'Tipo', 'Trabajador', 'Motivo', 'Items', 'Fecha', 'Acciones']}
+      pagination={pagination}
+      columns={['ID', 'Tipo', 'Trabajador', 'Motivo', 'Items', 'Fecha']}
       renderRow={(item) => (
         <>
           <td className="px-6 py-5 font-medium text-slate-900">#{item.id}</td>
@@ -57,18 +59,18 @@ const DispensationTable = ({ items, isLoading = false }: Props) => {
           <td className="px-6 py-5 text-slate-500">
             {new Date(item.dispensedAt).toLocaleDateString('es-PE')}
           </td>
-
-          <td className="px-6 py-5">
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={() => navigate(`/dispensations/${item.id}`)}
-              className="w-auto px-3 py-2 text-xs"
-            >
-              Ver detalle
-            </Button>
-          </td>
         </>
+      )}
+
+      renderActions={(item) => (
+        <Dropdown >
+          <DropdownItem
+            onClick={() => navigate(`/dispensations/${item.id}`)}
+          >
+            <Eye size={14}/>
+            Ver detalle
+          </DropdownItem>
+        </Dropdown>
       )}
     />
   )

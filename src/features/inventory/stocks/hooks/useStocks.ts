@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { usePaginatedQuery } from '@/core/hooks/usePaginatedQuery'
+import { usePaginatedQuery } from '@/shared/hooks/usePaginatedQuery'
 import { stockService } from '../services/stock.service'
 import type { FindInventoryStocksDto } from '../types/find-inventory-stocks.dto'
 

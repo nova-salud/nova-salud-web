@@ -2,11 +2,11 @@ import { useState } from 'react'
 import { Modal, Button, Input } from '@/shared/components'
 import { Select, Textarea } from '@/shared/components/ui/form'
 import { useAuth } from '@/shared/hooks/useAuth'
-import { lotService } from '../services/lot.service'
 import type { MedicationLotResponseDto } from '../types/medication-lot-response.dto'
-import type { BackendError } from '@/core/types/backend-error.type'
+import { useAdjustLot } from '../hooks/useAdjustLot'
 
 type Props = {
+  isOpen: boolean
   lot: MedicationLotResponseDto | null
   onClose: () => void
   onSuccess: () => void
@@ -17,15 +17,15 @@ const ADJUSTMENT_TYPE_OPTIONS = [
   { label: 'Entrada manual', value: 'ADJUSTMENT_IN' },
 ]
 
-const AdjustLotModal = ({ lot, onClose, onSuccess }: Props) => {
+export const AdjustLotModal = ({ isOpen, lot, onClose, onSuccess }: Props) => {
   const { user } = useAuth()
   const [movementType, setMovementType] = useState<'ADJUSTMENT_IN' | 'ADJUSTMENT_OUT'>('ADJUSTMENT_OUT')
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+
+  const { adjust, isLoading, error } = useAdjustLot()
+
 
   const handleClose = () => {
     setMovementType('ADJUSTMENT_OUT')
-    setError(null)
     onClose()
   }
 
@@ -35,34 +35,22 @@ const AdjustLotModal = ({ lot, onClose, onSuccess }: Props) => {
 
     const data = new FormData(e.currentTarget)
 
-    try {
-      setIsLoading(true)
-      setError(null)
-
-      await lotService.adjust(lot.id, {
-        movementType,
-        quantity: Number(data.get('quantity')),
-        reason: data.get('reason') as string,
-        performedByUserId: user!.id,
-      })
-
-      onSuccess()
-      setMovementType('ADJUSTMENT_OUT')
-    } catch (err) {
-      const backendError = err as BackendError
-      if (Array.isArray(backendError.message)) {
-        setError(backendError.message[0])
-      } else {
-        setError(backendError.message ?? 'Error al registrar el ajuste.')
-      }
-    } finally {
-      setIsLoading(false)
+    const dto = {
+      movementType,
+      quantity: Number(data.get('quantity')),
+      reason: data.get('reason') as string,
+      performedByUserId: user!.id,
     }
+
+    await adjust(lot.id, dto)
+
+    onSuccess()
+    setMovementType('ADJUSTMENT_OUT')
   }
 
   return (
     <Modal
-      isOpen={!!lot}
+      isOpen={isOpen}
       onClose={handleClose}
       title="Ajustar lote"
       description={lot ? `Lote ${lot.lotCode} · Stock actual: ${lot.currentQuantity}` : undefined}
@@ -111,5 +99,3 @@ const AdjustLotModal = ({ lot, onClose, onSuccess }: Props) => {
     </Modal>
   )
 }
-
-export default AdjustLotModal

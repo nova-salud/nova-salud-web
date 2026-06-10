@@ -1,26 +1,23 @@
-import { DataTable } from '@/shared/components/ui/table/DataTable'
-import type { MedicationLotResponseDto } from '../types/medication-lot-response.dto'
+import { SlidersHorizontal } from 'lucide-react'
+import { DataTable, type Pagination } from '@/shared/components/ui/table/DataTable'
+import { Dropdown, DropdownItem } from '@/shared/components'
+import type { MedicationLotResponseDto } from '@/features/inventory/lots/types'
 
 type Props = {
   items: MedicationLotResponseDto[]
   isLoading?: boolean
+  pagination: Pagination
   onAdjust?: (lot: MedicationLotResponseDto) => void
 }
 
-const MedicationLotsTable = ({ items, isLoading = false, onAdjust }: Props) => {
+export const MedicationLotsTable = ({ items, isLoading = false, pagination, onAdjust }: Props) => {
   return (
     <DataTable
       data={items}
       isLoading={isLoading}
       emptyMessage="No se encontraron lotes para este medicamento."
-      columns={[
-        'Lote',
-        'Vencimiento',
-        'Cantidad inicial',
-        'Stock actual',
-        'Recepción',
-        ...(onAdjust ? ['Acciones'] : []),
-      ]}
+      pagination={pagination}
+      columns={['Lote', 'Vencimiento', 'Cantidad inicial', 'Stock actual', 'Recepción']}
       renderRow={(item) => (
         <>
           <td className="px-6 py-5 font-medium text-slate-900">
@@ -44,22 +41,16 @@ const MedicationLotsTable = ({ items, isLoading = false, onAdjust }: Props) => {
           <td className="px-6 py-5 text-slate-500">
             {new Date(item.receivedAt).toLocaleDateString('es-PE')}
           </td>
-
-          {onAdjust && (
-            <td className="px-6 py-5">
-              <button
-                type="button"
-                onClick={() => onAdjust(item)}
-                className="rounded-xl border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50"
-              >
-                Ajustar
-              </button>
-            </td>
-          )}
         </>
       )}
+      renderActions={onAdjust ? (item) => (
+        <Dropdown>
+          <DropdownItem className="w-40" onClick={() => onAdjust(item)}>
+            <SlidersHorizontal size={14} />
+            Ajustar
+          </DropdownItem>
+        </Dropdown>
+      ) : undefined}
     />
   )
 }
-
-export default MedicationLotsTable

@@ -5,4 +5,5 @@ export type FindInventoryRequirementsDto = QueryParams & {
   status?: InventoryRequirementStatusEnum
   requestedByUserId?: number
   deliveredByUserId?: number
+  requestCode?: string
 }

@@ -16,7 +16,7 @@ type Props = {
   isLoading?: boolean
 }
 
-const MedicationForm = ({
+export const MedicationForm = ({
   initialValues = {},
   categories,
   onSubmit,
@@ -200,5 +200,3 @@ const MedicationForm = ({
     </form>
   )
 }
-
-export default MedicationForm

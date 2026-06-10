@@ -1,13 +1,16 @@
 import { useNavigate } from 'react-router'
-import { DataTable } from '@/shared/components/ui/table/DataTable'
+import { DataTable, type Pagination } from '@/shared/components/ui/table/DataTable'
+import { Dropdown, DropdownItem } from '@/shared/components'
+import { Pill } from 'lucide-react'
 import type { InventoryStockResponseDto } from '@/features/inventory/stocks/types/inventory-stock-response.dto'
 
 type Props = {
   items: InventoryStockResponseDto[]
   isLoading?: boolean
+  pagination: Pagination
 }
 
-const MedicationTable = ({ items, isLoading = false }: Props) => {
+export const MedicationTable = ({ items, isLoading = false, pagination }: Props) => {
   const navigate = useNavigate()
 
   return (
@@ -15,6 +18,7 @@ const MedicationTable = ({ items, isLoading = false }: Props) => {
       data={items}
       isLoading={isLoading}
       emptyMessage="No se encontraron medicamentos."
+      pagination={pagination}
       columns={[
         'Medicamento',
         'Composición',
@@ -22,7 +26,6 @@ const MedicationTable = ({ items, isLoading = false }: Props) => {
         'Stock',
         'OTC',
         'Estado',
-        'Acciones',
       ]}
       renderRow={(item) => (
         <>
@@ -76,20 +79,19 @@ const MedicationTable = ({ items, isLoading = false }: Props) => {
               {item.isActive ? 'Activo' : 'Inactivo'}
             </span>
           </td>
-
-          <td className="px-6 py-5">
-            <button
-              type="button"
-              onClick={() => navigate(`/medications/${item.medicationId}`)}
-              className="rounded-xl border border-slate-200 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50"
-            >
-              Ver detalle
-            </button>
-          </td>
         </>
+      )}
+      renderActions={(item) => (
+        <Dropdown>
+          <DropdownItem
+            className="w-44"
+            onClick={() => navigate(`/medications/${item.medicationId}`)}
+          >
+            <Pill size={14} />
+            Ver detalle
+          </DropdownItem>
+        </Dropdown>
       )}
     />
   )
 }
-
-export default MedicationTable

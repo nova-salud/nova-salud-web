@@ -1,14 +1,17 @@
 import { useNavigate } from 'react-router'
-import { DataTable } from '@/shared/components/ui/table/DataTable'
+import { DataTable, type Pagination } from '@/shared/components/ui/table/DataTable'
 import { getMovementTypeMeta } from '../types/movement-type.constants'
 import type { InventoryMovementResponseDto } from '../types/inventory-movement-response.dto'
+import { Dropdown, DropdownItem } from '@/shared/components'
+import { Pill } from 'lucide-react'
 
 type Props = {
   items: InventoryMovementResponseDto[]
   isLoading?: boolean
+  pagination: Pagination
 }
 
-const MovementTable = ({ items, isLoading = false }: Props) => {
+const MovementTable = ({ items, isLoading = false, pagination }: Props) => {
   const navigate = useNavigate()
 
   return (
@@ -16,6 +19,7 @@ const MovementTable = ({ items, isLoading = false }: Props) => {
       data={items}
       isLoading={isLoading}
       emptyMessage="No se encontraron movimientos."
+      pagination={pagination}
       columns={[
         'Medicamento',
         'Lote',
@@ -24,7 +28,6 @@ const MovementTable = ({ items, isLoading = false }: Props) => {
         'Motivo',
         'Registrado por',
         'Fecha',
-        'Acciones',
       ]}
       renderRow={(item) => (
         <>
@@ -71,17 +74,18 @@ const MovementTable = ({ items, isLoading = false }: Props) => {
           <td className="px-6 py-5 text-slate-500">
             {new Date(item.createdAt).toLocaleDateString('es-PE')}
           </td>
-
-          <td className="px-6 py-5">
-            <button
-              type="button"
-              onClick={() => navigate(`/medications/${item.medicationId}`)}
-              className="rounded-xl border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50"
-            >
-              Ver medicamento
-            </button>
-          </td>
         </>
+      )}
+      renderActions={(item) => (
+        <Dropdown>
+          <DropdownItem
+            className='w-40'
+            onClick={() => navigate(`/medications/${item.medicationId}`)}
+          >
+            <Pill size={14} />
+            Ver medicamento
+          </DropdownItem>
+        </Dropdown>
       )}
     />
   )
