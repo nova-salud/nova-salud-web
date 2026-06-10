@@ -13,7 +13,7 @@ import {
 } from 'lucide-react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { cn } from '@/shared/utils'
-import PageContainer from '@/shared/components/ui/PageContainer'
+import { PageContainer } from '@/shared/components'
 import { DateRangeFilter, toISODate } from '@/shared/components/dashboard/DateRangeFilter'
 import type { DateRange } from '@/shared/components/dashboard/DateRangeFilter'
 import { MetricPanel } from '@/shared/components/dashboard/MetricPanel'

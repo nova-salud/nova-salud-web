@@ -11,7 +11,7 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
-import PageContainer from '@/shared/components/ui/PageContainer'
+import { PageContainer } from '@/shared/components'
 import { DateRangeFilter, toISODate } from '@/shared/components/dashboard/DateRangeFilter'
 import type { DateRange } from '@/shared/components/dashboard/DateRangeFilter'
 import { Select } from '@/shared/components/ui/form/Select'

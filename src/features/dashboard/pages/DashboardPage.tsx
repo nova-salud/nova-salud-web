@@ -1,5 +1,5 @@
 import { RoleEnum } from '@/core/enums/role.enum'
-import PageContainer from '@/shared/components/ui/PageContainer'
+import { PageContainer } from '@/shared/components'
 import { useAuth } from '@/shared/hooks/useAuth'
 import { SSTDashboardPage } from './SSTDashboardPage'
 import { MedicalDashboardPage } from './MedicalDashboardPage'
