@@ -1,67 +1,48 @@
 import { cn } from '@/shared/utils'
-import { Button } from '@/shared/components/ui/form'
-import { DataTable } from '@/shared/components/ui/table/DataTable'
+import { Button, DataTable, type Pagination } from '@/shared/components'
 import type { ExamResponseDto } from '../types'
 
 type Props = {
   items: ExamResponseDto[]
   isLoading?: boolean
+  pagination: Pagination
   onEdit: (exam: ExamResponseDto) => void
 }
 
-const ExamTable = ({
-  items,
-  isLoading = false,
-  onEdit,
-}: Props) => {
-  return (
-    <DataTable
-      data={items}
-      isLoading={isLoading}
-      emptyMessage="No se encontraron exámenes."
-      columns={[
-        'ID',
-        'Nombre',
-        'Estado',
-        'Acciones',
-      ]}
-      renderRow={(item) => (
-        <>
-          <td className="px-6 py-5 font-medium text-slate-900">
-            #{item.id}
-          </td>
-
-          <td className="px-6 py-5 text-slate-700">
-            {item.name}
-          </td>
-
-          <td className="px-6 py-5">
-            <span
-              className={cn(
-                'inline-flex rounded-xl border px-3 py-1 text-xs font-medium',
-                item.isActive
-                  ? 'border-emerald-100 bg-emerald-50 text-emerald-700'
-                  : 'border-slate-200 bg-slate-50 text-slate-500',
-              )}
-            >
-              {item.isActive ? 'Activo' : 'Inactivo'}
-            </span>
-          </td>
-
-          <td className="px-6 py-5">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onEdit(item)}
-              className="w-auto rounded-xl px-3 py-2 text-xs"
-            >
-              Editar
-            </Button>
-          </td>
-        </>
-      )}
-    />
-  )
-}
+const ExamTable = ({ items, isLoading = false, pagination, onEdit }: Props) => (
+  <DataTable
+    data={items}
+    isLoading={isLoading}
+    emptyMessage="No se encontraron exámenes."
+    columns={['ID', 'Nombre', 'Estado']}
+    pagination={pagination}
+    renderRow={(item) => (
+      <>
+        <td className="px-6 py-5 font-medium text-slate-900">#{item.id}</td>
+        <td className="px-6 py-5 text-slate-700">{item.name}</td>
+        <td className="px-6 py-5">
+          <span className={cn(
+            'inline-flex rounded-xl border px-3 py-1 text-xs font-medium',
+            item.isActive
+              ? 'border-emerald-100 bg-emerald-50 text-emerald-700'
+              : 'border-slate-200 bg-slate-50 text-slate-500',
+          )}>
+            {item.isActive ? 'Activo' : 'Inactivo'}
+          </span>
+        </td>
+      </>
+    )}
+    renderActions={(item) => (
+      <Button
+        type="button"
+        variant="outline"
+        className="w-auto rounded-xl px-3 py-2 text-xs"
+        onClick={() => onEdit(item)}
+      >
+        Editar
+      </Button>
+    )}
+  />
+)
 
 export default ExamTable

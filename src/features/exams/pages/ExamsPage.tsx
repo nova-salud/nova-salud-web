@@ -1,85 +1,39 @@
-import { SortOrder } from '@/core/types/query-params.type'
-import { Button, Input, Select } from '@/shared/components/ui/form'
-import PageContainer from '@/shared/components/ui/PageContainer'
-import { useState, useMemo } from 'react'
-import { useExams, useCreateExam, useUpdateExam } from '../hooks'
-import type { ExamResponseDto, FindExamsDto, CreateExamDto, UpdateExamDto } from '../types'
+import { useState } from 'react'
+import { Button, PageContainer } from '@/shared/components'
+import { useDisclosure } from '@/shared/hooks'
+import { ExamFilter } from '../components/ExamFilter'
 import ExamTable from '../components/ExamTable'
 import ExamFormSidebar from '../components/ExamFormModal'
+import { useExams, useCreateExam, useUpdateExam } from '../hooks'
+import type { ExamResponseDto, CreateExamDto, UpdateExamDto } from '../types'
 
-type ExamSidebarMode = 'create' | 'edit' | null
-
-const EXAM_STATUS_OPTIONS = [
-  { label: 'Todos', value: '' },
-  { label: 'Activos', value: 'true' },
-  { label: 'Inactivos', value: 'false' },
-]
+type OverlayKey = 'create' | 'edit'
 
 const ExamsPage = () => {
-  const [name, setName] = useState('')
-  const [isActive, setIsActive] = useState('')
-  const [selectedExam, setSelectedExam] = useState<ExamResponseDto | null>(null)
-  const [sidebarMode, setSidebarMode] = useState<ExamSidebarMode>(null)
+  const { data, isLoading, error, refetch, pagination, onChangeFilters } = useExams()
+  const overlays = useDisclosure<OverlayKey>()
+  const [selected, setSelected] = useState<ExamResponseDto | null>(null)
 
-  const query = useMemo<FindExamsDto>(() => ({
-    page: 1,
-    pageSize: 10,
-    sortBy: 'name',
-    sortOrder: SortOrder.ASC,
-    search: name.trim() || undefined,
-    isActive: isActive === '' ? undefined : isActive === 'true',
-  }), [name, isActive])
+  const { isLoading: isCreating, createExam } = useCreateExam()
+  const { isLoading: isUpdating, updateExam } = useUpdateExam()
 
-  const { data, isLoading, error, refetch } = useExams(query)
-
-  const {
-    isLoading: isCreatingExam,
-    createExam,
-  } = useCreateExam()
-
-  const {
-    isLoading: isUpdatingExam,
-    updateExam,
-  } = useUpdateExam()
-
-  const handleCloseSidebars = () => {
-    setSidebarMode(null)
-  }
-
-  const handleOpenCreateSidebar = () => {
-    setSelectedExam(null)
-    setSidebarMode('create')
-  }
-
-  const handleOpenEditSidebar = (exam: ExamResponseDto) => {
-    setSelectedExam(exam)
-    setSidebarMode('edit')
-  }
-
-  const handleCreateExam = async (dto: CreateExamDto) => {
+  const handleCreate = async (dto: CreateExamDto) => {
     const result = await createExam(dto)
-
-    if (!result) {
-      return
-    }
-
+    if (!result) return
     await refetch()
-    handleCloseSidebars()
+    overlays.close()
   }
 
-  const handleUpdateExam = async (
-    id: number,
-    dto: UpdateExamDto,
-  ) => {
+  const handleUpdate = async (id: number, dto: UpdateExamDto) => {
     const result = await updateExam(id, dto)
-
-    if (!result) {
-      return
-    }
-
-    setSelectedExam(result)
+    if (!result) return
     await refetch()
-    handleCloseSidebars()
+    overlays.close()
+  }
+
+  const handleOpenEdit = (exam: ExamResponseDto) => {
+    setSelected(exam)
+    overlays.open('edit')
   }
 
   return (
@@ -88,36 +42,13 @@ const ExamsPage = () => {
         title="Exámenes"
         description="Administra el catálogo de exámenes del sistema."
         action={(
-          <Button
-            type="button"
-            className="w-auto"
-            onClick={handleOpenCreateSidebar}
-          >
+          <Button type="button" className="w-auto" onClick={() => overlays.open('create')}>
             Nuevo examen
           </Button>
         )}
       >
         <div className="space-y-5">
-          <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-2">
-              <Input
-                label="Nombre"
-                name="search"
-                type="text"
-                placeholder="Buscar por nombre"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-
-              <Select
-                name='status'
-                label="Estado"
-                value={isActive}
-                onChange={setIsActive}
-                options={EXAM_STATUS_OPTIONS}
-              />
-            </div>
-          </div>
+          <ExamFilter onChangeFilters={onChangeFilters} />
 
           {error ? (
             <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
@@ -128,26 +59,27 @@ const ExamsPage = () => {
           <ExamTable
             items={data}
             isLoading={isLoading}
-            onEdit={handleOpenEditSidebar}
+            pagination={pagination}
+            onEdit={handleOpenEdit}
           />
         </div>
       </PageContainer>
 
       <ExamFormSidebar
-        isOpen={sidebarMode === 'create'}
+        isOpen={overlays.isOpen('create')}
         mode="create"
-        isLoading={isCreatingExam}
-        onClose={handleCloseSidebars}
-        onCreate={handleCreateExam}
+        isLoading={isCreating}
+        onClose={overlays.close}
+        onCreate={handleCreate}
       />
 
       <ExamFormSidebar
-        isOpen={sidebarMode === 'edit'}
+        isOpen={overlays.isOpen('edit')}
         mode="edit"
-        exam={selectedExam}
-        isLoading={isUpdatingExam}
-        onClose={handleCloseSidebars}
-        onUpdate={handleUpdateExam}
+        exam={selected}
+        isLoading={isUpdating}
+        onClose={overlays.close}
+        onUpdate={handleUpdate}
       />
     </>
   )
