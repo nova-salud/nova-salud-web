@@ -1,15 +1,18 @@
-import { useCallback } from 'react'
-import { useQuery } from '@/core/hooks/useQuery'
+import { useAppQuery } from '@/shared/hooks'
+import { DOCUMENT_TEMPLATE_QUERY_KEYS } from '../constants/document-template-query-keys'
 import { documentTemplateService } from '../services/document-template.service'
-import type { FindDocumentTemplatesDto } from '../types/document-template.types'
+import type { DocumentTemplateResponseDto } from '../types/document-template.types'
 
-export const useDocumentTemplates = (query?: FindDocumentTemplatesDto) => {
-  const fetcher = useCallback(
-    () => documentTemplateService.findAll(query),
-    [query],
-  )
+export const useDocumentTemplates = () => {
+  const { data, isLoading, error, refetch } = useAppQuery<DocumentTemplateResponseDto[]>({
+    queryKey: DOCUMENT_TEMPLATE_QUERY_KEYS.list(),
+    queryFn: () => documentTemplateService.findAll(),
+  })
 
-  const { data: templates, isLoading, error, refetch } = useQuery(fetcher, [])
-
-  return { templates, isLoading, error, refetch }
+  return {
+    templates: data ?? [],
+    isLoading,
+    error: error?.message ?? null,
+    refetch: async () => { await refetch() },
+  }
 }
