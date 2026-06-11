@@ -1,8 +1,6 @@
-import { Button, Input } from '@/shared/components/ui/form'
+import { Button, Input, Sidebar, SignatureInput } from '@/shared/components'
 import { useState } from 'react'
 import { useCloseAccidentCaseWithConsent } from '../hooks/useCloseAccidentCaseWithConsent'
-import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
-import { SignatureInput } from '@/shared/components'
 
 type Props = {
   isOpen: boolean

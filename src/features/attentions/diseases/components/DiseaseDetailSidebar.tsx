@@ -1,5 +1,4 @@
-import { Button } from '@/shared/components/ui/form'
-import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
+import { Button, Sidebar } from '@/shared/components'
 import { cn } from '@/shared/utils'
 import type { DiseaseResponseDto } from '../types'
 import { DISEASE_TYPE_LABEL } from '../types/disease-type.enum'
@@ -159,5 +158,3 @@ export const DiseaseDetailSidebar = ({
     </Sidebar>
   )
 }
-
-export default DiseaseDetailSidebar

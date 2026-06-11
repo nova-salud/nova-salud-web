@@ -1,5 +1,4 @@
-import { Button, Input, Select } from '@/shared/components/ui/form'
-import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
+import { Button, Input, Select, Sidebar } from '@/shared/components'
 import type {
   CreateDiseaseDto,
   DiseaseResponseDto,
@@ -19,14 +18,16 @@ type Props = {
   onUpdate?: (id: number, dto: UpdateDiseaseDto) => Promise<void> | void
 }
 
-const DiseaseFormSidebarContent = ({
+export const DiseaseFormSidebar = ({
+  isOpen,
   mode,
-  disease,
+  disease = null,
   isLoading = false,
   onClose,
   onCreate,
   onUpdate,
-}: Omit<Props, 'isOpen'>) => {
+}: Props) => {
+
   const handleSubmit = async (e: { preventDefault(): void; currentTarget: HTMLFormElement }) => {
     e.preventDefault()
     const data = new FormData(e.currentTarget)
@@ -50,88 +51,6 @@ const DiseaseFormSidebarContent = ({
   }
 
   return (
-    <form className="space-y-4" onSubmit={(e) => void handleSubmit(e)}>
-      <Input
-        label="Código"
-        name="code"
-        type="text"
-        placeholder="Ej. J06.9"
-        value={disease?.code}
-      />
-
-      <Input
-        label="Nombre"
-        name="name"
-        type="text"
-        placeholder="Ingresa el nombre de la enfermedad"
-        value={disease?.name}
-      />
-
-      <Input
-        label="Categoría"
-        name="category"
-        type="text"
-        placeholder="Ingresa la categoría"
-        value={disease?.category ?? ''}
-      />
-
-      <Select
-        name="diseaseType"
-        label="Tipo de enfermedad"
-        defaultValue={disease?.diseaseType ?? ''}
-        options={[
-          { label: 'Sin especificar', value: '' },
-          ...DISEASE_TYPE_OPTIONS,
-        ]}
-      />
-
-      {mode === 'edit' ? (
-        <Select
-          name="status"
-          label="Estado"
-          value={disease?.isActive ? 'true' : 'false'}
-          options={[
-            { label: 'Activo', value: 'true' },
-            { label: 'Inactivo', value: 'false' },
-          ]}
-        />
-      ) : null}
-
-      <div className="flex flex-wrap justify-end gap-3">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onClose}
-          className="w-auto"
-        >
-          Cancelar
-        </Button>
-
-        <Button
-          type="submit"
-          isLoading={isLoading}
-          loadingText={mode === 'create' ? 'Guardando...' : 'Actualizando...'}
-          className="w-auto"
-        >
-          {mode === 'create' ? 'Guardar enfermedad' : 'Actualizar enfermedad'}
-        </Button>
-      </div>
-    </form>
-  )
-}
-
-export const DiseaseFormSidebar = ({
-  isOpen,
-  mode,
-  disease = null,
-  isLoading = false,
-  onClose,
-  onCreate,
-  onUpdate,
-}: Props) => {
-  const formKey = `${mode}-${disease?.id ?? 'new'}-${isOpen ? 'open' : 'closed'}`
-
-  return (
     <Sidebar
       isOpen={isOpen}
       title={mode === 'create' ? 'Nueva enfermedad' : 'Editar enfermedad'}
@@ -143,17 +62,73 @@ export const DiseaseFormSidebar = ({
       onClose={onClose}
       size="md"
     >
-      <DiseaseFormSidebarContent
-        key={formKey}
-        mode={mode}
-        disease={disease}
-        isLoading={isLoading}
-        onClose={onClose}
-        onCreate={onCreate}
-        onUpdate={onUpdate}
-      />
+      <form className="space-y-4" onSubmit={(e) => void handleSubmit(e)}>
+        <Input
+          label="Código"
+          name="code"
+          type="text"
+          placeholder="Ej. J06.9"
+          value={disease?.code}
+        />
+
+        <Input
+          label="Nombre"
+          name="name"
+          type="text"
+          placeholder="Ingresa el nombre de la enfermedad"
+          value={disease?.name}
+        />
+
+        <Input
+          label="Categoría"
+          name="category"
+          type="text"
+          placeholder="Ingresa la categoría"
+          value={disease?.category ?? ''}
+        />
+
+        <Select
+          name="diseaseType"
+          label="Tipo de enfermedad"
+          defaultValue={disease?.diseaseType ?? ''}
+          options={[
+            { label: 'Sin especificar', value: '' },
+            ...DISEASE_TYPE_OPTIONS,
+          ]}
+        />
+
+        {mode === 'edit' ? (
+          <Select
+            name="status"
+            label="Estado"
+            value={disease?.isActive ? 'true' : 'false'}
+            options={[
+              { label: 'Activo', value: 'true' },
+              { label: 'Inactivo', value: 'false' },
+            ]}
+          />
+        ) : null}
+
+        <div className="flex flex-wrap justify-end gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onClose}
+            className="w-auto"
+          >
+            Cancelar
+          </Button>
+
+          <Button
+            type="submit"
+            isLoading={isLoading}
+            loadingText={mode === 'create' ? 'Guardando...' : 'Actualizando...'}
+            className="w-auto"
+          >
+            {mode === 'create' ? 'Guardar enfermedad' : 'Actualizar enfermedad'}
+          </Button>
+        </div>
+      </form>
     </Sidebar>
   )
 }
-
-export default DiseaseFormSidebar

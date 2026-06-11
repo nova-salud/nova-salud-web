@@ -1,7 +1,5 @@
-import { Button } from '@/shared/components/ui/form'
-import { Select } from '@/shared/components/ui/form'
+import { Button, Select, Sidebar } from '@/shared/components'
 import { useState } from 'react'
-import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
 import {
   ACCIDENT_SEVERITY_OPTIONS,
   ACCIDENT_FORM_OPTIONS,

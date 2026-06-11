@@ -1,6 +1,5 @@
-import { Button, Textarea } from '@/shared/components/ui/form'
+import { Button, Textarea, Sidebar } from '@/shared/components'
 import { useState } from 'react'
-import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
 import type { AccidentInvestigationResponseDto } from '../../accidents/types'
 import { useCreateAccidentInvestigation } from '../../accidents/hooks/useCreateAccidentInvestigation'
 import { useUpdateAccidentInvestigation } from '../../accidents/hooks/useUpdateAccidentInvestigation'
