@@ -1,19 +1,29 @@
-import { Input, Select } from '@/shared/components'
+import { Input, SearchSelect, Select } from '@/shared/components'
 import type { FindEmployeesDto } from '../types'
-
-//TODO: Find by area - SearchSelect
+import { useSearchAreas } from '@/features/emo-protocols/hooks'
+import { useMemo } from 'react'
 
 interface EmployeeFilterProps {
+  filters: FindEmployeesDto
   onChangeFilters: (filters: Partial<FindEmployeesDto>) => void
 }
 
-export const EmployeeFilter = ({ onChangeFilters }: EmployeeFilterProps) => {
+export const EmployeeFilter = ({ onChangeFilters, filters }: EmployeeFilterProps) => {
+  const { areas } = useSearchAreas()
 
   const onKeyChange = (value: string, key: keyof FindEmployeesDto) => onChangeFilters({ [key]: value })
 
   const onStatusChange = (value: string) => onChangeFilters({
     isActive: value === '' ? undefined : value === 'true'
   })
+
+  const onAreasChange = (value: string) => onChangeFilters({
+    areaId: value === '' ? undefined : +value
+  })
+
+  const areasToSelect = useMemo(() => areas
+    .map(area => ({ label: area.name, value: area.id }))
+    , [areas])
 
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
@@ -41,6 +51,16 @@ export const EmployeeFilter = ({ onChangeFilters }: EmployeeFilterProps) => {
           placeholder="Buscar por empresa"
           onChange={(e) => onKeyChange(e.target.value, 'company')}
         />
+
+        <SearchSelect
+          label='Área'
+          options={[
+            { label: 'Todos', value: '' },
+            ...areasToSelect
+          ]}
+          value={filters.areaId}
+          onChange={onAreasChange}
+        ></SearchSelect>
 
         <Select
           name="status"

@@ -12,20 +12,21 @@ type ExtraFilters = Omit<FindEmployeesDto, keyof QueryParams>
 
 const DEFAULT_DELAY = 450
 
-export const useEmployees = () => {
+export const useEmployees = ({ isExternal = false }: { isExternal: boolean }) => {
   const [extraFilters, setExtraFilters] = useState<ExtraFilters>({})
   const debounceFullName = useDebounce(extraFilters.fullName, DEFAULT_DELAY)
   const debouncedDni = useDebounce(extraFilters.dni, DEFAULT_DELAY)
   const debouncedCompany = useDebounce(extraFilters.company, DEFAULT_DELAY)
 
   const result = usePaginatedQuery<EmployeeResponseDto, FindEmployeesDto>({
-    queryKey: EMPLOYEE_QUERY_KEYS.list({ ...extraFilters, fullName: debounceFullName }),
+    queryKey: EMPLOYEE_QUERY_KEYS.list({ ...extraFilters, fullName: debounceFullName, isExternal }),
     queryFn: (filters) => employeeService.findAll({
       ...filters,
       ...extraFilters,
       fullName: debounceFullName || undefined,
       dni: debouncedDni || undefined,
       company: debouncedCompany || undefined,
+      isExternal
     }),
     placeholderData: keepPreviousData
   })
@@ -37,6 +38,7 @@ export const useEmployees = () => {
 
   return {
     ...result,
+    filters: extraFilters,
     onChangeFilters,
   }
 }

@@ -7,9 +7,7 @@ import { EmployeeTable } from '../components'
 
 const ExternalEmployeesPage = () => {
   const navigate = useNavigate()
-  const { data, isLoading, error, pagination, onChangeFilters } = useEmployees()
-
-  const employees = data.filter(e => e.user.role === 'EMPLOYEE_EXT')
+  const { data: employees, isLoading, error, pagination, onChangeFilters, filters } = useEmployees({ isExternal: true })
 
   const handleViewDetail = (employee: EmployeeResponseDto) => {
     void navigate(`/employees/${employee.id}`)
@@ -21,7 +19,7 @@ const ExternalEmployeesPage = () => {
       description="Empleados externos sincronizados desde RRHH."
     >
       <div className="space-y-5">
-        <EmployeeFilter onChangeFilters={onChangeFilters}></EmployeeFilter>
+        <EmployeeFilter onChangeFilters={onChangeFilters} filters={filters}></EmployeeFilter>
 
         {error ? (
           <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
