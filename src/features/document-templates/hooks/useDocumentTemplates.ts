@@ -4,15 +4,9 @@ import { documentTemplateService } from '../services/document-template.service'
 import type { DocumentTemplateResponseDto } from '../types/document-template.types'
 
 export const useDocumentTemplates = () => {
-  const { data, isLoading, error, refetch } = useAppQuery<DocumentTemplateResponseDto[]>({
+  const { data, ...rest } = useAppQuery<DocumentTemplateResponseDto[]>({
     queryKey: DOCUMENT_TEMPLATE_QUERY_KEYS.list(),
     queryFn: () => documentTemplateService.findAll(),
   })
-
-  return {
-    templates: data ?? [],
-    isLoading,
-    error: error?.message ?? null,
-    refetch: async () => { await refetch() },
-  }
+  return { ...rest, templates: data ?? [] }
 }

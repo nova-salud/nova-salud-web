@@ -1,7 +1,8 @@
 import { useNavigate, useParams } from 'react-router'
 import { Button, EntityState, PageContainer } from '@/shared/components'
-import { useEmployee } from '../hooks'
 import { USER_ROLE_LABEL_MAP } from '@/features/users/types'
+import { EmployeeDetailSkeleton } from '../components/EmployeeDetailSkeleton'
+import { useEmployee } from '../hooks'
 
 const Field = ({ label, value }: { label: string; value: React.ReactNode }) => (
   <div>
@@ -20,9 +21,16 @@ const EmployeeDetailPage = () => {
   const id = Number(params.id)
   const { data: employee, isLoading, error, refetch } = useEmployee(id)
 
-  if(isLoading){
+  if (isLoading) return <EmployeeDetailSkeleton />
+
+  if (error) {
     return (
-      <p>Cargando...</p>
+      <EntityState
+        title="Ocurrió un error"
+        description={error.message}
+        actionText="Reintentar"
+        onAction={refetch}
+      />
     )
   }
 
@@ -31,19 +39,8 @@ const EmployeeDetailPage = () => {
       <EntityState
         title="Empleado no encontrado"
         description="El empleado que intentas consultar no existe o fue eliminado."
-        actionText='Regresar'
+        actionText="Regresar"
         onAction={() => navigate('/employees')}
-      />
-    )
-  }
-
-  if (error) {
-    return (
-      <EntityState
-        title="Ocurrió un error"
-        description="No fue posible obtener la información del empleado"
-        actionText="Reintentar"
-        onAction={refetch}
       />
     )
   }

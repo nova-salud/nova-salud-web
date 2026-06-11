@@ -1,9 +1,13 @@
 import { useMemo, useState } from 'react'
 import { toastService } from '@/core/services/toast.service'
 import { SortOrder } from '@/core/types/query-params.type'
+import type { PaginatedResponse } from '@/core/types/paginated-response.type'
 import type { EmployeeAllergyResponseDto } from '@/features/employees/types/employee-allergy-response.dto'
-import { useStocks } from '@/features/inventory/stocks/hooks/useStocks'
+import { STOCK_QUERY_KEYS } from '@/features/inventory/stocks/constants/stock-query-keys'
+import { stockService } from '@/features/inventory/stocks/services/stock.service'
+import type { InventoryStockResponseDto } from '@/features/inventory/stocks/types/inventory-stock-response.dto'
 import type { CreateDispensationItemDto } from '@/features/inventory/dispensations/types/create-dispensation-item.dto'
+import { useAppQuery } from '@/shared/hooks'
 import { Button, Input, SearchSelect } from '@/shared/components/ui/form'
 
 const STOCKS_QUERY = {
@@ -17,13 +21,17 @@ const STOCKS_QUERY = {
 type Props = {
   allergies?: EmployeeAllergyResponseDto[]
   items: CreateDispensationItemDto[]
-  onAdd: (medicationId: number, quantity: number) => void
+  onAdd: (medicationId: number, quantity: number, commercialName: string) => void
   onRemove: (medicationId: number) => void
   noCard?: boolean
 }
 
 export const MedicationDispenserSection = ({ allergies = [], items, onAdd, onRemove, noCard = false }: Props) => {
-  const { data: stocks } = useStocks(STOCKS_QUERY)
+  const { data: stocksResponse } = useAppQuery<PaginatedResponse<InventoryStockResponseDto>>({
+    queryKey: STOCK_QUERY_KEYS.list(STOCKS_QUERY),
+    queryFn: () => stockService.findAll(STOCKS_QUERY),
+  })
+  const stocks = stocksResponse?.data ?? []
 
   const [selectedMedicationId, setSelectedMedicationId] = useState('')
   const [quantity, setQuantity] = useState('1')
@@ -82,7 +90,10 @@ export const MedicationDispenserSection = ({ allergies = [], items, onAdd, onRem
 
     if (!medicationId || qty <= 0) return
 
-    onAdd(medicationId, qty)
+    const stock = stocks.find((s) => s.medicationId === medicationId)
+    if (!stock) return
+
+    onAdd(medicationId, qty, stock.commercialName)
     setSelectedMedicationId('')
     setQuantity('1')
   }

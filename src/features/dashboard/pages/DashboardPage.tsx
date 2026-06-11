@@ -5,7 +5,7 @@ import { SSTDashboardPage } from './SSTDashboardPage'
 import { MedicalDashboardPage } from './MedicalDashboardPage'
 import { AdminDashboardPage } from './AdminDashboardPage'
 import { cn } from '@/shared/utils'
-import { ManagementDashboardPage } from './ManagmentDashboardPage'
+import { ManagementDashboardPage } from './ManagementDashboardPage'
 import { useSearchParams } from 'react-router'
 
 type DashboardType = 'MEDICAL' | 'SST' | 'MANAGEMENT' | 'EMPLOYEE' | 'ADMIN'

@@ -1,13 +1,12 @@
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-react'
-import NavItem from './NavItem'
-import { useSidebar } from '@/shared/hooks/useSidebar'
-import { useAuth } from '@/shared/hooks/useAuth'
 import { navigationConfig } from '@/app/router/navigation.config'
 import { cn } from '@/shared/utils'
 import { RoleEnum } from '@/core/enums/role.enum'
-import SidebarUserMenu from './SidebarUserMenu'
+import { useAuth, useSidebar } from '@/shared/hooks'
+import { NavItem } from './NavItem'
+import { SidebarUserMenu } from './SidebarUserMenu'
 
-const AppSidebar = () => {
+export const AppSidebar = () => {
   const {
     sidebarOpen,
     sidebarCollapsed,
@@ -116,5 +115,3 @@ const AppSidebar = () => {
     </>
   )
 }
-
-export default AppSidebar

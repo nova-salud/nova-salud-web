@@ -7,7 +7,7 @@ import type { NotificationResponseDto } from '../types/notification-response.dto
 export const useNotifications = () => {
   const queryClient = useQueryClient()
 
-  const { data, isFetching, error, refetch } = useAppQuery<NotificationResponseDto[]>({
+  const { data = [], isFetching, error, refetch } = useAppQuery<NotificationResponseDto[]>({
     queryKey: NOTIFICATION_QUERY_KEYS.list(),
     queryFn: () => notificationService.findAll(),
   })
@@ -20,10 +20,10 @@ export const useNotifications = () => {
   }
 
   return {
-    data: data ?? [],
+    data: data,
     setData,
     isLoading: isFetching,
-    error: error?.message ?? null,
-    refetch: async () => { await refetch() },
+    error,
+    refetch,
   }
 }

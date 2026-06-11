@@ -1,10 +1,6 @@
 import { useState, useEffect } from 'react'
-import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
-import { Input } from '@/shared/components/ui/form/Input'
-import { Textarea } from '@/shared/components/ui/form/Textarea'
-import { InputFile } from '@/shared/components/ui/form/InputFile'
-import { Button } from '@/shared/components/ui/form'
 import { useCreateMedicalRest } from '../hooks/useCreateMedicalRest'
+import { Button, Input, Textarea, Sidebar, InputFile } from '@/shared/components'
 
 type Props = {
   isOpen: boolean

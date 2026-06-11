@@ -11,7 +11,7 @@ type Props = {
   height?: number
 }
 
-const SignatureInput = ({
+export const SignatureInput = ({
   label = 'Firma',
   value,
   onChange,
@@ -105,5 +105,3 @@ const SignatureInput = ({
     </div>
   )
 }
-
-export default SignatureInput

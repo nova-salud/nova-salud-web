@@ -1,7 +1,6 @@
-import { Button, Input } from '@/shared/components/ui/form'
-import Modal from '@/shared/components/ui/modal/Modal'
 import { useRef, useState } from 'react'
 import SignatureCanvas from 'react-signature-canvas'
+import { Button, Input, Modal } from '@/shared/components'
 import { useCreateSignature } from '../hooks/useCreateSignature'
 import { useAuth } from '@/shared/hooks/useAuth'
 import { toastService } from '@/core/services/toast.service'

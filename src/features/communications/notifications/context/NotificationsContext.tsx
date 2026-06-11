@@ -5,7 +5,10 @@ import type { NotificationResponseDto } from '../types/notification-response.dto
 import { NotificationsContext } from './notifications-context'
 
 export const NotificationsProvider = ({ children }: PropsWithChildren) => {
-  const { data, setData, ...rest } = useNotifications()
+  const { data, setData, error, refetch, ...rest } = useNotifications()
+
+  const errorMessage = error?.message
+  const handleRefetch = async () => { await refetch() }
 
   const markAsRead = async (id: number) => {
     const target = data.find(n => n.id === id)
@@ -21,7 +24,7 @@ export const NotificationsProvider = ({ children }: PropsWithChildren) => {
   }
 
   return (
-    <NotificationsContext.Provider value={{ data, ...rest, markAsRead }}>
+    <NotificationsContext.Provider value={{ data, ...rest, error: errorMessage, refetch: handleRefetch, markAsRead }}>
       {children}
     </NotificationsContext.Provider>
   )

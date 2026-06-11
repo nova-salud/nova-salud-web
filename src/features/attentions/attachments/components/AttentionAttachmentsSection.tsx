@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react'
+import { Button, Input, Modal } from '@/shared/components'
 import { useAttentionAttachments, useCreateAttentionAttachment, useRemoveAttentionAttachment } from '../hooks'
-import { Button, Input } from '@/shared/components/ui/form'
-import { Modal } from '@/shared/components/ui/modal/Modal'
 import { getFileUrl } from '@/shared/utils'
 import { toastService } from '@/core/services/toast.service'
 
@@ -96,7 +95,7 @@ const AttentionAttachmentsSection = ({ attentionId }: Props) => {
       >
         {error ? (
           <div className="mb-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-            {error}
+            {error?.message}
           </div>
         ) : null}
 

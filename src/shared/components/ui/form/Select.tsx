@@ -32,27 +32,12 @@ type SelectPosition = {
 
 const VIEWPORT_PADDING = 8
 const DROPDOWN_OFFSET = 4
-const ESTIMATED_DROPDOWN_HEIGHT = 240
 
-const getSelectPosition = (rect: DOMRect): SelectPosition => {
-  const viewportHeight = window.innerHeight
-
-  let top = rect.bottom + window.scrollY + DROPDOWN_OFFSET
-
-  if (rect.bottom + ESTIMATED_DROPDOWN_HEIGHT > viewportHeight) {
-    top =
-      rect.top +
-      window.scrollY -
-      ESTIMATED_DROPDOWN_HEIGHT -
-      DROPDOWN_OFFSET
-  }
-
-  return {
-    top,
-    left: Math.max(VIEWPORT_PADDING, rect.left + window.scrollX),
-    width: rect.width,
-  }
-}
+const getSelectPosition = (rect: DOMRect): SelectPosition => ({
+  top: rect.bottom + DROPDOWN_OFFSET,
+  left: Math.max(VIEWPORT_PADDING, rect.left),
+  width: rect.width,
+})
 
 export const Select = ({
   name,
@@ -69,7 +54,19 @@ export const Select = ({
   onChange,
 }: Props) => {
   const triggerRef = useRef<HTMLButtonElement>(null)
-  const menuRef = useRef<HTMLDivElement>(null)
+  const menuRef = useRef<HTMLDivElement | null>(null)
+
+  const menuCallbackRef = (node: HTMLDivElement | null) => {
+    menuRef.current = node
+    if (!node || !triggerRef.current) return
+
+    const menuHeight = node.offsetHeight
+    const rect = triggerRef.current.getBoundingClientRect()
+
+    if (rect.bottom + menuHeight + DROPDOWN_OFFSET > window.innerHeight) {
+      node.style.top = `${rect.top - menuHeight - DROPDOWN_OFFSET}px`
+    }
+  }
 
   const [isOpen, setIsOpen] = useState(false)
   const [position, setPosition] = useState<SelectPosition | null>(null)
@@ -215,9 +212,9 @@ export const Select = ({
         position &&
         createPortal(
           <div
-            ref={menuRef}
+            ref={menuCallbackRef}
             style={{
-              position: 'absolute',
+              position: 'fixed',
               top: position.top,
               left: position.left,
               width: position.width,

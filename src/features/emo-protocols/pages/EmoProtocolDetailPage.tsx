@@ -9,7 +9,7 @@ import {
   useEmoProtocolExams,
   useUpdateEmoProtocol,
 } from '../hooks'
-import { AssignAreaToEmoProtocolModal, AssignPositionToEmoProtocolModal, EmoProtocolAreasSection, EmoProtocolExamsSection, EmoProtocolFormSidebar, EmoProtocolPositionsSection } from '../components'
+import { AssignAreaToEmoProtocolModal, AssignPositionToEmoProtocolModal, EmoProtocolAreasSection, EmoProtocolDetailSkeleton, EmoProtocolExamsSection, EmoProtocolFormSidebar, EmoProtocolPositionsSection } from '../components'
 import type { UpdateEmoProtocolDto } from '../types'
 
 type EmoProtocolDetailOverlaysKey = 'assign-area' | 'assign-position' | 'delete' | 'edit'
@@ -77,28 +77,26 @@ const EmoProtocolDetailPage = () => {
     void navigate('/emo-protocols')
   }
 
-  if (isLoading) {
-    return <div>Cargando...</div>
-  }
-
-  if (!emo) {
-    return (
-      <EntityState
-        title="Protocolo emo no encontrado"
-        description="El protocolo emo que intentas consultar no existe o fue eliminado."
-        actionText='Regresar'
-        onAction={() => navigate('/emo-protocols')}
-      />
-    )
-  }
+  if (isLoading) return <EmoProtocolDetailSkeleton />
 
   if (error) {
     return (
       <EntityState
         title="Ocurrió un error"
-        description="No fue posible obtener la información del protocolo emo."
+        description={error.message}
         actionText="Reintentar"
         onAction={refetch}
+      />
+    )
+  }
+
+  if (!emo) {
+    return (
+      <EntityState
+        title="Protocolo EMO no encontrado"
+        description="El protocolo EMO que intentas consultar no existe o fue eliminado."
+        actionText="Regresar"
+        onAction={() => navigate('/emo-protocols')}
       />
     )
   }
@@ -172,7 +170,7 @@ const EmoProtocolDetailPage = () => {
 
           {protocolExamsError ? (
             <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-              {protocolExamsError}
+              {protocolExamsError?.message}
             </div>
           ) : null}
 
@@ -180,7 +178,7 @@ const EmoProtocolDetailPage = () => {
             emoProtocolId={emo.id}
             items={protocolExams}
             isLoading={isLoadingProtocolExams}
-            onRefresh={refetchProtocolExams}
+            onRefresh={() => void refetchProtocolExams()}
           />
         </div>
       </PageContainer>

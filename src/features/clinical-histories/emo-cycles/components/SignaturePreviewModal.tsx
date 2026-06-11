@@ -1,4 +1,4 @@
-import Modal from '@/shared/components/ui/modal/Modal'
+import { Modal } from '@/shared/components'
 
 type Props = {
   isOpen: boolean

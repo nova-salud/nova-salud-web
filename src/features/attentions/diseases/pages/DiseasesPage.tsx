@@ -1,100 +1,43 @@
-import { useMemo, useState } from 'react'
-import PageContainer from '@/shared/components/ui/PageContainer'
-import { Button, Input, Select } from '@/shared/components/ui/form'
-import { SortOrder } from '@/core/types/query-params.type'
-import DiseaseTable from '../components/DiseaseTable'
-import DiseaseDetailSidebar from '../components/DiseaseDetailSidebar'
-import DiseaseFormSidebar from '../components/DiseaseFormSidebar'
+import { useState } from 'react'
+import { Button, PageContainer } from '@/shared/components'
+import { useDisclosure } from '@/shared/hooks'
 import { useCreateDisease, useUpdateDisease, useDiseases } from '../hooks'
-import type {
-  CreateDiseaseDto,
-  DiseaseResponseDto,
-  FindDiseasesDto,
-  UpdateDiseaseDto,
-} from '../types'
+import type { CreateDiseaseDto, DiseaseResponseDto, UpdateDiseaseDto } from '../types'
+import { DiseaseDetailSidebar, DiseaseFilter, DiseaseFormSidebar, DiseaseTable } from '../components'
 
-const DISEASE_STATUS_OPTIONS = [
-  { label: 'Todos', value: '' },
-  { label: 'Activos', value: 'true' },
-  { label: 'Inactivos', value: 'false' },
-]
-
-type DiseaseSidebarMode = 'create' | 'edit' | 'detail' | null
+type OverlayKey = 'create' | 'edit' | 'detail'
 
 const DiseasesPage = () => {
-  const [code, setCode] = useState('')
-  const [name, setName] = useState('')
-  const [category, setCategory] = useState('')
-  const [isActive, setIsActive] = useState('')
-  const [selectedDisease, setSelectedDisease] = useState<DiseaseResponseDto | null>(null)
-  const [sidebarMode, setSidebarMode] = useState<DiseaseSidebarMode>(null)
+  const { data, isLoading, error, refetch, pagination, onChangeFilters } = useDiseases()
+  const overlays = useDisclosure<OverlayKey>()
+  const [selected, setSelected] = useState<DiseaseResponseDto | null>(null)
 
-  const query = useMemo<FindDiseasesDto>(() => ({
-    page: 1,
-    pageSize: 10,
-    sortBy: 'name',
-    sortOrder: SortOrder.ASC,
-    code: code.trim() || undefined,
-    name: name.trim() || undefined,
-    category: category.trim() || undefined,
-    isActive: isActive === '' ? undefined : isActive === 'true',
-  }), [code, name, category, isActive])
+  const { isLoading: isCreating, createDisease } = useCreateDisease()
+  const { isLoading: isUpdating, updateDisease } = useUpdateDisease()
 
-  const { data, isLoading, error, refetch } = useDiseases(query)
-
-  const {
-    isLoading: isCreatingDisease,
-    createDisease,
-  } = useCreateDisease()
-
-  const {
-    isLoading: isUpdatingDisease,
-    updateDisease,
-  } = useUpdateDisease()
-
-  const handleCloseSidebars = () => {
-    setSidebarMode(null)
-  }
-
-  const handleOpenCreateSidebar = () => {
-    setSelectedDisease(null)
-    setSidebarMode('create')
-  }
-
-  const handleOpenDetailSidebar = (disease: DiseaseResponseDto) => {
-    setSelectedDisease(disease)
-    setSidebarMode('detail')
-  }
-
-  const handleOpenEditSidebar = (disease: DiseaseResponseDto) => {
-    setSelectedDisease(disease)
-    setSidebarMode('edit')
-  }
-
-  const handleCreateDisease = async (dto: CreateDiseaseDto) => {
+  const handleCreate = async (dto: CreateDiseaseDto) => {
     const result = await createDisease(dto)
-
-    if (!result) {
-      return
-    }
-
+    if (!result) return
     await refetch()
-    handleCloseSidebars()
+    overlays.close()
   }
 
-  const handleUpdateDisease = async (
-    id: number,
-    dto: UpdateDiseaseDto,
-  ) => {
+  const handleUpdate = async (id: number, dto: UpdateDiseaseDto) => {
     const result = await updateDisease(id, dto)
-
-    if (!result) {
-      return
-    }
-
-    setSelectedDisease(result)
+    if (!result) return
+    setSelected(result)
     await refetch()
-    setSidebarMode('detail')
+    overlays.open('detail')
+  }
+
+  const handleOpenDetail = (disease: DiseaseResponseDto) => {
+    setSelected(disease)
+    overlays.open('detail')
+  }
+
+  const handleOpenEdit = (disease: DiseaseResponseDto) => {
+    setSelected(disease)
+    overlays.open('edit')
   }
 
   return (
@@ -102,55 +45,14 @@ const DiseasesPage = () => {
       <PageContainer
         title="Enfermedades"
         description="Administra el catálogo de enfermedades del sistema."
-        action={
-          <Button
-            type="button"
-            className="w-auto"
-            onClick={handleOpenCreateSidebar}
-          >
+        action={(
+          <Button type="button" className="w-auto" onClick={() => overlays.open('create')}>
             Nueva enfermedad
           </Button>
-        }
+        )}
       >
         <div className="space-y-5">
-          <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-              <Input
-                label="Código"
-                name="code"
-                type="text"
-                placeholder="Buscar por código"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-              />
-
-              <Input
-                label="Nombre"
-                name="name"
-                type="text"
-                placeholder="Buscar por nombre"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-
-              <Input
-                label="Categoría"
-                name="category"
-                type="text"
-                placeholder="Buscar por categoría"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-              />
-
-              <Select
-                name='isActive'
-                label="Estado"
-                value={isActive}
-                onChange={setIsActive}
-                options={DISEASE_STATUS_OPTIONS}
-              />
-            </div>
-          </div>
+          <DiseaseFilter onChangeFilters={onChangeFilters} />
 
           {error ? (
             <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
@@ -161,33 +63,34 @@ const DiseasesPage = () => {
           <DiseaseTable
             items={data}
             isLoading={isLoading}
-            onViewDetail={handleOpenDetailSidebar}
+            pagination={pagination}
+            onViewDetail={handleOpenDetail}
           />
         </div>
       </PageContainer>
 
       <DiseaseDetailSidebar
-        disease={selectedDisease}
-        isOpen={sidebarMode === 'detail'}
-        onClose={handleCloseSidebars}
-        onEdit={handleOpenEditSidebar}
+        disease={selected}
+        isOpen={overlays.isOpen('detail')}
+        onClose={overlays.close}
+        onEdit={handleOpenEdit}
       />
 
       <DiseaseFormSidebar
-        isOpen={sidebarMode === 'create'}
+        isOpen={overlays.isOpen('create')}
         mode="create"
-        isLoading={isCreatingDisease}
-        onClose={handleCloseSidebars}
-        onCreate={handleCreateDisease}
+        isLoading={isCreating}
+        onClose={overlays.close}
+        onCreate={handleCreate}
       />
 
       <DiseaseFormSidebar
-        isOpen={sidebarMode === 'edit'}
+        isOpen={overlays.isOpen('edit')}
         mode="edit"
-        disease={selectedDisease}
-        isLoading={isUpdatingDisease}
-        onClose={handleCloseSidebars}
-        onUpdate={handleUpdateDisease}
+        disease={selected}
+        isLoading={isUpdating}
+        onClose={overlays.close}
+        onUpdate={handleUpdate}
       />
     </>
   )

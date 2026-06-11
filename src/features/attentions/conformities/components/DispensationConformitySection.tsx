@@ -1,10 +1,7 @@
 import { useState, useRef } from 'react'
 import { format } from 'date-fns'
-import { Button, Input } from '@/shared/components/ui/form'
-import { Modal } from '@/shared/components/ui/modal/Modal'
-import SignatureInput from '@/shared/components/ui/signature/SignatureInput'
-import { useAttentionConformity } from '../hooks/useAttentionConformity'
-import { useCreateAttentionConformity } from '../hooks/useCreateAttentionConformity'
+import { Button, Input, Modal, SignatureInput } from '@/shared/components'
+import { useAttentionConformity, useCreateAttentionConformity } from '../hooks'
 
 type Props = {
   attentionId: number

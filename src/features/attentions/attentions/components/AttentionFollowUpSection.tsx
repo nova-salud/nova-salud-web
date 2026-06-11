@@ -1,7 +1,5 @@
 import { useState } from 'react'
-import { Button, Input } from '@/shared/components/ui/form'
-import { DateTimePicker } from '@/shared/components/ui/form/DateTimePicker'
-import { Modal } from '@/shared/components/ui/modal/Modal'
+import { Button, DateTimePicker, Input, Modal } from '@/shared/components'
 import { format } from 'date-fns'
 import { toastService } from '@/core/services/toast.service'
 

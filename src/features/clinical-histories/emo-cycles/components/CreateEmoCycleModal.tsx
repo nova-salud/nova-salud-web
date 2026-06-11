@@ -1,5 +1,4 @@
-import { Button } from '@/shared/components/ui/form'
-import Modal from '@/shared/components/ui/modal/Modal'
+import { Button, Modal } from '@/shared/components'
 
 
 type Props = {

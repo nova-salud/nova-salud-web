@@ -1,6 +1,6 @@
 import { differenceInMonths } from 'date-fns'
 import type { EmployeeResponseDto } from '@/features/employees/types/employee-response.dto'
-import { Button } from '@/shared/components/ui/form'
+import { Button } from '../ui/form'
 
 type Props = {
   employee: EmployeeResponseDto

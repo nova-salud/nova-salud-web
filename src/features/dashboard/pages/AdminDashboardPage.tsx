@@ -11,10 +11,9 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
-import { PageContainer } from '@/shared/components'
+import { PageContainer, Select } from '@/shared/components'
 import { DateRangeFilter, toISODate } from '@/shared/components/dashboard/DateRangeFilter'
 import type { DateRange } from '@/shared/components/dashboard/DateRangeFilter'
-import { Select } from '@/shared/components/ui/form/Select'
 import { useAdminDashboard } from '../hooks/useAdminDashboard'
 import { AdminDashboardSkeleton } from '../components/admin/AdminDashboardSkeleton'
 import { MetricPanel } from '@/shared/components/dashboard/MetricPanel'
@@ -73,7 +72,7 @@ export const AdminDashboardPage = () => {
     return (
       <PageContainer title="Dashboard Administrador" description="Visión global del sistema">
         <div className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-600">
-          {error ?? 'No se pudo cargar el dashboard.'}
+          {error?.message ?? 'No se pudo cargar el dashboard.'}
         </div>
       </PageContainer>
     )

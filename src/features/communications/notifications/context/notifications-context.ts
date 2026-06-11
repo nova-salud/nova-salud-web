@@ -4,7 +4,7 @@ import type { NotificationResponseDto } from '../types/notification-response.dto
 export interface NotificationsContextValue {
   data: NotificationResponseDto[]
   isLoading: boolean
-  error: string | null
+  error?: string
   refetch: () => Promise<void>
   markAsRead: (id: number) => Promise<void>
 }

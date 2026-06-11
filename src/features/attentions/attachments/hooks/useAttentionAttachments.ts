@@ -1,14 +1,11 @@
-import { useCallback } from 'react'
-import { useQuery } from '@/core/hooks/useQuery'
+import { useAppQuery } from '@/shared/hooks'
 import { attentionAttachmentService } from '../services/attention-attachment.service'
 
 export const useAttentionAttachments = (attentionId: number | null | undefined) => {
-  const enabled = Boolean(attentionId && !Number.isNaN(attentionId))
-
-  const fetcher = useCallback(
-    () => attentionAttachmentService.findByAttentionId(attentionId!),
-    [attentionId],
-  )
-
-  return useQuery(fetcher, [], enabled)
+  const { data, ...rest } = useAppQuery({
+    queryKey: ['attention-attachments', attentionId],
+    queryFn: () => attentionAttachmentService.findByAttentionId(attentionId!),
+    enabled: Boolean(attentionId && !Number.isNaN(attentionId)),
+  })
+  return { ...rest, data: data ?? [] }
 }

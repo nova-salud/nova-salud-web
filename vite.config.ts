@@ -16,6 +16,22 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        chunkFileNames: 'assets/[hash].js',
+        entryFileNames: 'assets/[hash].js',
+        assetFileNames: 'assets/[hash][extname]',
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return
+          if (/react|react-dom|react-router/.test(id)) return 'vendor-react'
+          if (id.includes('@tanstack/react-query')) return 'vendor-query'
+          if (id.includes('lightweight-charts')) return 'vendor-charts'
+          return 'vendor-utils'
+        },
+      },
+    },
+  },
   server: {
     proxy: {
       '/api': {

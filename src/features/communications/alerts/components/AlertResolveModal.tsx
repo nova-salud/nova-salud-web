@@ -1,5 +1,4 @@
-import { Button } from '@/shared/components'
-import Modal from '@/shared/components/ui/modal/Modal'
+import { Button, Modal } from '@/shared/components'
 import { ALERT_LABELS } from '../types/alert-type.enum'
 import type { AlertResponseDto } from '../types/alert-response.dto'
 

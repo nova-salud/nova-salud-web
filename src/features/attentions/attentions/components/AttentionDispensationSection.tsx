@@ -1,14 +1,14 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Button, Input, Textarea } from '@/shared/components/ui/form'
 import { Sidebar } from '@/shared/components/ui/sidebar/Sidebar'
 import { MedicationDispenserSection } from '@/shared/components/dispensation/MedicationDispenserSection'
 import type { EmployeeAllergyResponseDto } from '@/features/employees/types/employee-allergy-response.dto'
 import type { CreateDispensationItemDto } from '@/features/inventory/dispensations/types/create-dispensation-item.dto'
 import { toastService } from '@/core/services/toast.service'
-import { useStocks } from '@/features/inventory/stocks/hooks/useStocks'
-import { SortOrder } from '@/core/types/query-params.type'
 
-const STOCKS_QUERY = { page: 1, pageSize: 200, sortBy: 'commercialName', sortOrder: SortOrder.ASC, isActive: true }
+type DispensationDraftItem = { medicationId: number; quantity: number; commercialName: string }
+
+type DraftState = { reason: string; notes: string; items: DispensationDraftItem[] }
 
 export type DispensationFormState = {
   reason: string
@@ -22,27 +22,30 @@ type Props = {
   allergies?: EmployeeAllergyResponseDto[]
 }
 
-const emptyState = (): DispensationFormState => ({ reason: '', notes: '', items: [] })
+const emptyDraft = (): DraftState => ({ reason: '', notes: '', items: [] })
 
 const AttentionDispensationSection = ({ dispensation, onChange, allergies = [] }: Props) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [draft, setDraft] = useState<DispensationFormState>(emptyState)
-
-  const { data: stocks } = useStocks(STOCKS_QUERY)
-  const nameMap = useMemo(
-    () => new Map(stocks.map((s) => [s.medicationId, s.commercialName])),
-    [stocks],
-  )
+  const [draft, setDraft] = useState<DraftState>(emptyDraft)
+  const [nameMap, setNameMap] = useState<Map<number, string>>(new Map())
 
   const openSidebar = () => {
-    setDraft(dispensation ?? emptyState())
+    setDraft(
+      dispensation
+        ? {
+            reason: dispensation.reason,
+            notes: dispensation.notes,
+            items: dispensation.items.map((i) => ({ ...i, commercialName: nameMap.get(i.medicationId) ?? '' })),
+          }
+        : emptyDraft(),
+    )
     setIsOpen(true)
   }
 
-  const handleAdd = (medicationId: number, quantity: number) => {
+  const handleAdd = (medicationId: number, quantity: number, commercialName: string) => {
     setDraft((prev) => {
       if (prev.items.some((i) => i.medicationId === medicationId)) return prev
-      return { ...prev, items: [...prev.items, { medicationId, quantity }] }
+      return { ...prev, items: [...prev.items, { medicationId, quantity, commercialName }] }
     })
   }
 
@@ -63,7 +66,12 @@ const AttentionDispensationSection = ({ dispensation, onChange, allergies = [] }
       toastService.error('Debes agregar al menos un medicamento.')
       return
     }
-    onChange(draft)
+    setNameMap(new Map(draft.items.map((i) => [i.medicationId, i.commercialName])))
+    onChange({
+      reason: draft.reason,
+      notes: draft.notes,
+      items: draft.items.map(({ medicationId, quantity }) => ({ medicationId, quantity })),
+    })
     setIsOpen(false)
   }
 

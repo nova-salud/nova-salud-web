@@ -27,6 +27,15 @@ export const AccidentForm = ({
   const [requiresExternalCare, setRequiresExternalCare] = useState(false)
   const formRef = useRef<HTMLFormElement>(null)
 
+  const maxOccurredAt = (() => {
+    const d = new Date()
+    d.setDate(d.getDate() + 1)
+    const y = d.getFullYear()
+    const m = String(d.getMonth() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
+    return `${y}-${m}-${day}T00:00`
+  })()
+
   const { healthcareCenters, isLoading: isLoadingCenters } = useSearchHealthcareCenters()
 
   const handleSubmit = async () => {
@@ -39,7 +48,7 @@ export const AccidentForm = ({
     await onSubmit({
       type: data.get('type') as AccidentTypeEnum,
       description: (data.get('description') as string).trim(),
-      occurredAt: occurredAt || new Date().toISOString(),
+      occurredAt: new Date(occurredAt).toISOString(),
       requiresExternalReferral: requiresExternalCare,
       healthcareCenterId: requiresExternalCare
         ? Number(data.get('healthcareCenterId'))
@@ -69,6 +78,9 @@ export const AccidentForm = ({
             label="Fecha y hora"
             name="occurredAt"
             type="datetime-local"
+            step={60}
+            max={maxOccurredAt}
+            required
           />
 
           <div className="md:col-span-2">

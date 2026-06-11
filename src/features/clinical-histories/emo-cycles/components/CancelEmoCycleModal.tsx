@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { Button, Select, Textarea } from '@/shared/components/ui/form'
-import Modal from '@/shared/components/ui/modal/Modal'
+import { Button, Modal, Select, Textarea } from '@/shared/components'
 import { EMO_CANCELLATION_REASON_OPTIONS } from '../types/emo-cycle-cancellation-reason.constants'
 import type { CancelEmoCycleDto } from '../types'
 

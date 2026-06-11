@@ -1,29 +1,19 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useAppQuery } from '@/shared/hooks'
+import { ATTENTION_CONFORMITY_QUERY_KEYS } from '../constants/attention-conformity-query-keys'
 import { attentionConformityService } from '../services/attention-conformity.service'
 import type { AttentionConformityResponseDto } from '../types/attention-conformity.types'
-import { parseBackendError } from '@/core/utils/parse-backend-error'
 
 export const useAttentionConformity = (attentionId: number) => {
-  const [data, setData] = useState<AttentionConformityResponseDto | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const { data, isFetching, error, refetch } = useAppQuery<AttentionConformityResponseDto | null>({
+    queryKey: ATTENTION_CONFORMITY_QUERY_KEYS.byAttention(attentionId),
+    queryFn: () => attentionConformityService.findByAttention(attentionId),
+    enabled: Boolean(attentionId),
+  })
 
-  const fetch = useCallback(async () => {
-    try {
-      setIsLoading(true)
-      setError(null)
-      const result = await attentionConformityService.findByAttention(attentionId)
-      setData(result)
-    } catch (err) {
-      setError(parseBackendError(err))
-    } finally {
-      setIsLoading(false)
-    }
-  }, [attentionId])
-
-  useEffect(() => {
-    void fetch()
-  }, [fetch])
-
-  return { data, isLoading, error, refetch: fetch }
+  return {
+    data: data ?? null,
+    isLoading: isFetching,
+    error: error?.message ?? null,
+    refetch: async () => { await refetch() },
+  }
 }

@@ -12,7 +12,7 @@ type Option = {
 type Props = {
   label?: string
   error?: string
-  value: string | number
+  value?: string | number
   options: Option[]
   onChange: (value: string) => void
   placeholder?: string

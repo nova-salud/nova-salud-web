@@ -6,7 +6,7 @@ type Props = PropsWithChildren<{
   action?: ReactNode
 }>
 
-const PageContainer = ({ title, description, action, children }: Props) => {
+export const PageContainer = ({ title, description, action, children }: Props) => {
   return (
     <div className="space-y-4">
       {title || description || action ? (
@@ -29,5 +29,3 @@ const PageContainer = ({ title, description, action, children }: Props) => {
     </div>
   )
 }
-
-export default PageContainer

@@ -1,12 +1,10 @@
-import { useCallback } from 'react'
-import { useQuery } from '@/core/hooks/useQuery'
+import { useAppQuery } from '@/shared/hooks'
 import { lotService } from '../services/lot.service'
 
 export const useDeliveryLots = (deliveryId: number) => {
-  const fetcher = useCallback(
-    () => lotService.findByDeliveryId(deliveryId),
-    [deliveryId],
-  )
-
-  return useQuery(fetcher, [])
+  const { data, ...rest } = useAppQuery({
+    queryKey: ['delivery-lots', deliveryId],
+    queryFn: () => lotService.findByDeliveryId(deliveryId),
+  })
+  return { ...rest, data: data ?? [] }
 }

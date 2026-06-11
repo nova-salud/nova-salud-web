@@ -7,7 +7,7 @@ type Props = {
   onBack?: () => void
 }
 
-const ResourceNotFound = ({
+export const ResourceNotFound = ({
   title = 'Recurso no encontrado',
   description = 'El recurso que buscas no existe o ya no está disponible.',
   onBack,
@@ -34,5 +34,3 @@ const ResourceNotFound = ({
     </div>
   )
 }
-
-export default ResourceNotFound

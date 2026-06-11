@@ -16,7 +16,7 @@ type Props = {
 export const ClinicalHistoryMedicalRestsSection = ({ clinicalHistoryId, accidentId, attentionId, isReadOnly = false }: Props) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
-  const { data, isLoading, total, page, pageSize, totalPages, goToPage, refetch } =
+  const { data, isLoading, refetch, pagination } =
     useMedicalRests({ clinicalHistoryId, accidentId, attentionId })
 
   return (
@@ -25,7 +25,7 @@ export const ClinicalHistoryMedicalRestsSection = ({ clinicalHistoryId, accident
         <div className="flex items-center gap-3">
           <h2 className="text-2xl font-bold text-slate-900">Descansos médicos</h2>
           {!isLoading && (
-            <span className="rounded-xl bg-slate-100 px-3 py-1 text-xs text-slate-600">{total}</span>
+            <span className="rounded-xl bg-slate-100 px-3 py-1 text-xs text-slate-600">{pagination.total}</span>
           )}
         </div>
 
@@ -39,7 +39,6 @@ export const ClinicalHistoryMedicalRestsSection = ({ clinicalHistoryId, accident
       <p className="mb-4 text-sm text-slate-500">Descansos médicos emitidos al trabajador.</p>
 
       <DataTable
-        flat
         data={data}
         isLoading={isLoading}
         emptyMessage="No hay descansos médicos registrados."
@@ -71,13 +70,7 @@ export const ClinicalHistoryMedicalRestsSection = ({ clinicalHistoryId, accident
             </td>
           </>
         )}
-        pagination={{
-          page,
-          pageSize,
-          total,
-          totalPages,
-          onPaginationChange: (p) => goToPage(p),
-        }}
+        pagination={pagination}
       />
 
       <MedicalRestFormSidebar

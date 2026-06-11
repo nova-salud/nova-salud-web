@@ -11,7 +11,7 @@ type Props = {
   notes: string
   onNotesChange: (value: string) => void
   items: CreateDispensationItemDto[]
-  onAdd: (medicationId: number, quantity: number) => void
+  onAdd: (medicationId: number, quantity: number, commercialName: string) => void
   onRemove: (medicationId: number) => void
   allergies?: EmployeeAllergyResponseDto[]
 }

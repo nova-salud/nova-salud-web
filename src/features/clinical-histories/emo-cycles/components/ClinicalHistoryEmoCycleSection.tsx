@@ -6,11 +6,11 @@ import {
   EMO_CONCLUSION_LABEL,
   EMO_STATUS_CLASSNAME,
   EMO_STATUS_LABEL,
-  type ClinicalHistoryEmoCycleResponseDto,
 } from '../types'
 import { ClinicalHistoryEmoCycleSectionSkeleton } from './ClinicalHistoryEmoCycleSectionSkeleton'
 import { useState } from 'react'
 import {
+  useActiveClinicalHistoryEmoCycle,
   useCreateEmoCycle,
   useGenerateNextEmoCycle,
   useCancelEmoCycle,
@@ -22,18 +22,12 @@ import { CancelEmoCycleModal } from './CancelEmoCycleModal'
 import type { CancelEmoCycleDto } from '../types'
 
 type Props = {
-  cycle: ClinicalHistoryEmoCycleResponseDto | null
   clinicalHistoryId: number
-  isLoading?: boolean
-  error?: string | null
   onViewHistory?: () => void
   onViewDetail?: (id: number) => void
 }
 
 const ClinicalHistoryEmoCycleSection = ({
-  cycle,
-  isLoading = false,
-  error = null,
   clinicalHistoryId,
   onViewHistory,
   onViewDetail,
@@ -42,34 +36,34 @@ const ClinicalHistoryEmoCycleSection = ({
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false)
 
-  const { createEmoCycle, isLoading: isCreating } = useCreateEmoCycle()
+  const { data: cycle, isLoading, error, refetch } = useActiveClinicalHistoryEmoCycle(clinicalHistoryId)
 
+  const { createEmoCycle, isLoading: isCreating } = useCreateEmoCycle()
   const { generateNextEmoCycle, isLoading: isGeneratingNext } = useGenerateNextEmoCycle()
   const { cancelEmoCycle, isLoading: isCancelling } = useCancelEmoCycle()
 
   const canGenerateEmo = user?.role === RoleEnum.OCCUPATIONAL_DOCTOR || user?.role === RoleEnum.ADMIN
 
   const isCycleCompleted = cycle?.status === 'COMPLETED'
-  const isCycleActive = cycle !== null && cycle.status !== 'COMPLETED' && cycle.status !== 'CANCELLED'
+  const isCycleActive = cycle !== null && cycle !== undefined && cycle.status !== 'COMPLETED' && cycle.status !== 'CANCELLED'
 
   const handleCreateCycle = async () => {
     if (!clinicalHistoryId) return
     await createEmoCycle(clinicalHistoryId)
     setIsCreateModalOpen(false)
-    window.location.reload()
+    await refetch()
   }
-
 
   const handleGenerateNext = async () => {
     await generateNextEmoCycle(clinicalHistoryId)
-    window.location.reload()
+    await refetch()
   }
 
   const handleCancel = async (dto: CancelEmoCycleDto) => {
     if (!cycle) return
     await cancelEmoCycle(cycle.id, dto)
     setIsCancelModalOpen(false)
-    window.location.reload()
+    await refetch()
   }
 
   if (isLoading) return <ClinicalHistoryEmoCycleSectionSkeleton />
@@ -130,7 +124,7 @@ const ClinicalHistoryEmoCycleSection = ({
 
       {error ? (
         <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-          {error}
+          {error.message}
         </div>
       ) : null}
 

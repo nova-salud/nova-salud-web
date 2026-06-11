@@ -1,29 +1,25 @@
-import { useState } from 'react'
+import { useCallback } from 'react'
 import { useNavigate } from 'react-router'
-import PageContainer from '@/shared/components/ui/PageContainer'
-import { EmployeeSearchSelector } from '@/shared/components/employee/EmployeeSearchSelector'
+import { EmployeeSearchSelector, PageContainer } from '@/shared/components'
+import { useAsyncAction } from '@/core/hooks/useAsyncAction'
 import type { EmployeeResponseDto } from '@/features/employees/types/employee-response.dto'
-import { parseBackendError } from '@/core/utils/parse-backend-error'
 import { clinicalAttentionService } from '../services/clinical-attention.service'
 
 const ClinicalAttentionEntryPage = () => {
   const navigate = useNavigate()
-  const [error, setError] = useState<string | null>(null)
 
-  const handleSelectEmployee = async (employee: EmployeeResponseDto) => {
-    try {
-      setError(null)
+  const selectAction = useCallback(
+    async (employee: EmployeeResponseDto) => {
       const history = await clinicalAttentionService.findClinicalHistoryByEmployeeId(employee.id)
-
       if (history) {
         navigate(`/clinical-histories/${employee.id}`)
       } else {
         navigate(`/clinical-histories/new?employeeId=${employee.id}`)
       }
-    } catch (err) {
-      setError(parseBackendError(err))
-    }
-  }
+    },
+    [navigate],
+  )
+  const { execute: handleSelectEmployee, error } = useAsyncAction(selectAction, { showSuccessToast: false })
 
   return (
     <PageContainer

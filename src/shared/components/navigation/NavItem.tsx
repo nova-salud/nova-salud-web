@@ -11,7 +11,7 @@ type Props = {
   onClick?: () => void
 }
 
-const NavItem = ({
+export const NavItem = ({
   label,
   path,
   icon: Icon,
@@ -47,5 +47,3 @@ const NavItem = ({
     </NavLink>
   )
 }
-
-export default NavItem

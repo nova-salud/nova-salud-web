@@ -1,8 +1,8 @@
 import { Menu } from 'lucide-react'
-import { useSidebar } from '@/shared/hooks/useSidebar'
 import NotificationDropdown from '@/features/communications/notifications/components/NotificationDropdown'
+import { useSidebar } from '@/shared/hooks'
 
-const AppNavbar = () => {
+export const AppNavbar = () => {
   const { toggleSidebar } = useSidebar()
 
   return (
@@ -29,5 +29,3 @@ const AppNavbar = () => {
     </header>
   )
 }
-
-export default AppNavbar

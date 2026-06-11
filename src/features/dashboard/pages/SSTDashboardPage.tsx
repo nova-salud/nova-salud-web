@@ -21,10 +21,9 @@ import { AccidentTrendChart } from '../components/sst/AccidentTrendChart'
 import { useSSTDashboard } from '../hooks/useSSTDashboard'
 import { SSTDashboardSkeleton } from '../components/sst/SSTDashboardSkeleton'
 import { useNavigate, useSearchParams } from 'react-router'
+import { PageContainer, Select } from '@/shared/components'
 import { DateRangeFilter, toISODate } from '@/shared/components/dashboard/DateRangeFilter'
 import type { DateRange } from '@/shared/components/dashboard/DateRangeFilter'
-import { Select } from '@/shared/components/ui/form/Select'
-import { PageContainer } from '@/shared/components'
 
 const EVENT_TYPE_OPTIONS = [
   { label: 'Solo accidentes', value: 'ACCIDENT' },

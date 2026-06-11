@@ -1,8 +1,7 @@
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import { useNavigate } from 'react-router'
+import { useAsyncAction } from '@/core/hooks/useAsyncAction'
 import { authService } from '../services/auth.service'
-import { parseBackendError } from '@/core/utils/parse-backend-error'
-import { toastService } from '@/core/services/toast.service'
 import { useAuthStore } from '@/shared/store/auth.store'
 
 type LoginDto = {
@@ -10,46 +9,23 @@ type LoginDto = {
   password: string
 }
 
-type UseLoginReturn = {
-  login: (dto: LoginDto) => Promise<void>
-  isLoading: boolean
-  error: string | null
-  clearError: () => void
-}
-
-export const useLogin = (): UseLoginReturn => {
+export const useLogin = () => {
   const setSession = useAuthStore((state) => state.setSession)
   const navigate = useNavigate()
 
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
-  const login = useCallback(async (dto: LoginDto) => {
-    try {
-      setIsLoading(true)
-      setError(null)
-
+  const action = useCallback(
+    async (dto: LoginDto) => {
       const session = await authService.login(dto)
       setSession(session)
-
-      toastService.success('Bienvenido 👋')
       navigate('/')
-    } catch (err) {
-      const message = parseBackendError(err)
+      return session
+    },
+    [setSession, navigate],
+  )
 
-      setError(message)
-      toastService.error(message)
-    } finally {
-      setIsLoading(false)
-    }
-  }, [navigate])
+  const { execute, isLoading, error, clearError } = useAsyncAction(action, {
+    successMessage: 'Bienvenido 👋',
+  })
 
-  const clearError = () => setError(null)
-
-  return {
-    login,
-    isLoading,
-    error,
-    clearError,
-  }
+  return { login: execute, isLoading, error, clearError }
 }

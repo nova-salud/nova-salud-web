@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { PageContainer } from '@/shared/components'
-import { useAlerts, useCreateAlert } from '../hooks'
+import { useAlerts, useResolveAlert } from '../hooks'
 import { useNotificationsContext } from '../../notifications/hooks'
 import { AlertPriority, type AlertResponseDto } from '../types'
 import { AlertFilter, AlertList, AlertResolveModal, AlertSummaryCards } from '../components'
@@ -11,7 +11,7 @@ const PRIORITY_ORDER = { HIGH: 0, MEDIUM: 1, LOW: 2 }
 
 const AlertsPage = () => {
   const { data, isLoading, refetch, onChangeFilters, pagination } = useAlerts()
-  const { resolveAlert, isLoading: isResolving } = useCreateAlert()
+  const { resolveAlert, isLoading: isResolving } = useResolveAlert()
   const { refetch: refetchNotifications } = useNotificationsContext()
   const navigate = useNavigate()
 

@@ -1,12 +1,14 @@
 import { useState } from 'react'
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import { Button } from '@/shared/components/ui/form'
-import { useConfirmEmoCycleExamReview } from '../hooks'
+import { useConfirmEmoCycleExamReview, useGenerateEmoCycleDocument } from '../hooks'
 import { Download, Paperclip, FileText } from 'lucide-react'
 import { cn } from '@/shared/utils'
 import { getFileUrl } from '@/shared/utils'
-import PageContainer from '@/shared/components/ui/PageContainer'
+import { EntityState, PageContainer } from '@/shared/components'
+import { useDisclosure } from '@/shared/hooks'
 import EmoCycleExamsSection from '../components/EmoCycleExamsSection'
+import { EmoCycleDetailSkeleton } from '../components/EmoCycleDetailSkeleton'
 import { useEmoCycle } from '../hooks/useEmoCycle'
 import { EMO_STATUS_CLASSNAME, EMO_STATUS_LABEL } from '../types'
 import EmoCycleConclusionSection from '../components/EmoCycleConclusionSection'
@@ -16,45 +18,52 @@ import EmitClinicalHistoryConclusionSidebar from '../components/EmitClinicalHist
 import SignClinicalHistoryConformitySidebar from '../components/SignClinicalHistoryConformitySidebar'
 import SignaturePreviewModal from '../components/SignaturePreviewModal'
 import AttachEmoCycleFinalReportSidebar from '../components/AttachEmoCycleFinalReportSidebar'
-import { documentTemplateService } from '@/features/document-templates/services/document-template.service'
 import { DocumentTemplateType } from '@/features/document-templates/types/document-template.types'
-import { parseBackendError } from '@/core/utils/parse-backend-error'
-import { toastService } from '@/core/services/toast.service'
+
+type ModalKey = 'emit-conclusion' | 'sign-conformity' | 'attach-report' | 'signature-preview'
+
+type SignaturePreview = {
+  data: string
+  title: string
+}
 
 const EmoCycleDetailPage = () => {
   const { cycleId } = useParams()
   const numericCycleId = Number(cycleId)
+  const navigate = useNavigate()
+
+  const { isOpen, open, close } = useDisclosure<ModalKey>()
 
   const { data: emoCycle, isLoading, error, refetch } = useEmoCycle(numericCycleId)
   const { confirmExamReview, isLoading: isConfirming } = useConfirmEmoCycleExamReview()
-  const [isEmitConclusionSidebarOpen, setIsEmitConclusionSidebarOpen] = useState(false)
-  const [isSignConformitySidebarOpen, setIsSignConformitySidebarOpen] = useState(false)
-  const [previewSignatureData, setPreviewSignatureData] = useState<string | null>(null)
-  const [previewSignatureTitle, setPreviewSignatureTitle] = useState('Vista previa de firma')
-  const [generatingType, setGeneratingType] = useState<DocumentTemplateType | null>(null)
-  const [isAttachReportSidebarOpen, setIsAttachReportSidebarOpen] = useState(false)
+  const { generate: handleGenerate, generatingType } = useGenerateEmoCycleDocument(numericCycleId)
+  const [signaturePreview, setSignaturePreview] = useState<SignaturePreview | null>(null)
 
-  const handleGenerate = async (type: DocumentTemplateType) => {
-    if (!emoCycle) return
-    setGeneratingType(type)
-    try {
-      await documentTemplateService.generate(type, { emoCycleId: emoCycle.id })
-    } catch (err) {
-      toastService.error(parseBackendError(err))
-    } finally {
-      setGeneratingType(null)
-    }
-  }
+  if (isLoading) return <EmoCycleDetailSkeleton />
 
-  if (isLoading) return <div>Cargando ciclo...</div>
-  if (error) return <div>{error}</div>
-  if (!emoCycle) return <div>No encontrado</div>
+  if (error) return (
+    <EntityState
+      title="Ocurrió un error"
+      description="No fue posible obtener el ciclo EMO."
+      actionText="Reintentar"
+      onAction={refetch}
+    />
+  )
+
+  if (!emoCycle) return (
+    <EntityState
+      title="Ciclo no encontrado"
+      description="El ciclo EMO solicitado no existe o fue eliminado."
+      actionText="Regresar"
+      onAction={() => navigate(-1)}
+    />
+  )
 
   const viewState = getEmoCycleViewState(emoCycle)
 
   const handlePreviewSignature = (signatureData: string, title: string) => {
-    setPreviewSignatureData(signatureData)
-    setPreviewSignatureTitle(title)
+    setSignaturePreview({ data: signatureData, title })
+    open('signature-preview')
   }
 
   return (
@@ -147,7 +156,7 @@ const EmoCycleDetailPage = () => {
 
                   <button
                     type="button"
-                    onClick={() => setIsAttachReportSidebarOpen(true)}
+                    onClick={() => open('attach-report')}
                     className="flex items-center gap-1.5 rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-200"
                   >
                     <Paperclip className="h-3.5 w-3.5" />
@@ -181,7 +190,7 @@ const EmoCycleDetailPage = () => {
           cycle={emoCycle}
           canEmitConclusion={viewState.canEmitConclusion}
           areRequiredExamsCompleted={viewState.areRequiredExamsCompleted}
-          onEmitConclusion={() => setIsEmitConclusionSidebarOpen(true)}
+          onEmitConclusion={() => open('emit-conclusion')}
         />
 
         {viewState.showConformitySection ? (
@@ -189,40 +198,40 @@ const EmoCycleDetailPage = () => {
             cycle={emoCycle}
             showEmployeeConformity={viewState.showEmployeeConformity}
             canEmployeeSign={viewState.canEmployeeSign}
-            onSignEmployeeConformity={() => setIsSignConformitySidebarOpen(true)}
+            onSignEmployeeConformity={() => open('sign-conformity')}
             onPreviewSignature={handlePreviewSignature}
           />
         ) : null}
       </div>
 
       <EmitClinicalHistoryConclusionSidebar
-        isOpen={isEmitConclusionSidebarOpen}
+        isOpen={isOpen('emit-conclusion')}
         cycle={emoCycle}
-        onClose={() => setIsEmitConclusionSidebarOpen(false)}
+        onClose={close}
         onSuccess={refetch}
       />
 
       <SignClinicalHistoryConformitySidebar
-        isOpen={isSignConformitySidebarOpen}
+        isOpen={isOpen('sign-conformity')}
         cycle={emoCycle}
-        onClose={() => setIsSignConformitySidebarOpen(false)}
+        onClose={close}
         onSuccess={refetch}
       />
 
       <SignaturePreviewModal
-        isOpen={Boolean(previewSignatureData)}
-        title={previewSignatureTitle}
-        signatureData={previewSignatureData}
+        isOpen={isOpen('signature-preview')}
+        title={signaturePreview?.title ?? 'Vista previa de firma'}
+        signatureData={signaturePreview?.data ?? null}
         onClose={() => {
-          setPreviewSignatureData(null)
-          setPreviewSignatureTitle('Vista previa de firma')
+          close()
+          setSignaturePreview(null)
         }}
       />
 
       <AttachEmoCycleFinalReportSidebar
-        isOpen={isAttachReportSidebarOpen}
+        isOpen={isOpen('attach-report')}
         cycleId={emoCycle.id}
-        onClose={() => setIsAttachReportSidebarOpen(false)}
+        onClose={close}
         onSuccess={refetch}
       />
     </PageContainer>

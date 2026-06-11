@@ -5,47 +5,48 @@ import RoleGuard from '@/app/router/guards/role.guard'
 import NotFoundPage from '@/shared/pages/NotFoundPage'
 import ErrorPage from '@/shared/pages/ErrorPage'
 import { RoleEnum } from '@/core/enums/role.enum'
-
-import DashboardPage from '@/features/dashboard/pages/DashboardPage'
-import MedicationsPage from '@/features/inventory/medications/pages/MedicationsPage'
-import MedicationDetailPage from '@/features/inventory/medications/pages/MedicationDetailPage'
-import CreateMedicationPage from '@/features/inventory/medications/pages/CreateMedicationPage'
-import EditMedicationPage from '@/features/inventory/medications/pages/EditMedicationPage'
-import MovementsPage from '@/features/inventory/movements/pages/MovementsPage'
-import RequirementsPage from '@/features/inventory/requirements/pages/RequirementsPage'
-import CreateRequirementPage from '@/features/inventory/requirements/pages/CreateRequirementPage'
-import RequirementDetailPage from '@/features/inventory/requirements/pages/RequirementDetailPage'
-import DispensationsPage from '@/features/inventory/dispensations/pages/DispensationsPage'
-import CreateDispensationPage from '@/features/inventory/dispensations/pages/CreateDispensationPage'
-import DispensationDetailPage from '@/features/inventory/dispensations/pages/DispensationDetailPage'
-import EmployeesPage from '@/features/employees/pages/EmployeesPage'
-import EmployeeDetailPage from '@/features/employees/pages/EmployeeDetailPage'
-import EmployeeAreasPage from '@/features/employees/pages/EmployeeAreasPage'
-import EmployeePositionsPage from '@/features/employees/pages/EmployeePositionsPage'
-import EmployeeSyncSettingsPage from '@/features/system-settings/pages/EmployeeSyncSettingsPage'
-import ExternalEmployeesPage from '@/features/employees/pages/ExternalEmployeesPage'
-import UsersPage from '@/features/users/pages/UsersPage'
-import DiseasesPage from '@/features/attentions/diseases/pages/DiseasesPage'
-import CreateAttentionPage from '@/features/attentions/attentions/pages/CreateAttentionPage'
-import AttentionDetailPage from '@/features/attentions/attentions/pages/AttentionDetailPage'
-import ClinicalAttentionEntryPage from '@/features/clinical-histories/clinical-attention/pages/ClinicalAttentionEntryPage'
-import ClinicalHistoryDetailPage from '@/features/clinical-histories/cllinical-histories/pages/ClinicalHistoryDetailPage'
-import CreateClinicalHistoryPage from '@/features/clinical-histories/cllinical-histories/pages/CreateClinicalHistoryPage'
-import ExamsPage from '@/features/exams/pages/ExamsPage'
-import EmoProtocolsPage from '@/features/emo-protocols/pages/EmoProtocolsPage'
-import EmoProtocolDetailPage from '@/features/emo-protocols/pages/EmoProtocolDetailPage'
-import EmoCycleDetailPage from '@/features/clinical-histories/emo-cycles/pages/EmoCycleDetailPage'
-import EmoCycleHistoryPage from '@/features/clinical-histories/emo-cycles/pages/EmoCycleHistoryPage'
-import ClinicalHistoriesPage from '@/features/clinical-histories/cllinical-histories/pages/ClinicalHistoriesPage'
-import HealthcareCentersPage from '@/features/healthcare-centers/pages/HealthcareCentersPage'
-import HealthcareCenterDetailPage from '@/features/healthcare-centers/pages/HealthcareCenterDetailPage'
-import AllergyTypesPage from '@/features/clinical-histories/allergy-types/pages/AllergyTypesPage'
-import AccidentDetailPage from '@/features/accidents/accidents/pages/AccidentDetailPage'
-import { AccidentsPage } from '@/features/accidents/accidents/pages/AccidentsPage'
-import CreateAccidentFromClinicaHistoryPage from '@/features/accidents/accidents/pages/CreateAccidentFromClinicalHistoryPage'
-import { CreateAccidentPage } from '@/features/accidents/accidents/pages/CreateAccidentPage'
-import AlertsPage from '@/features/communications/alerts/pages/AlertPage'
-import DocumentTemplatesPage from '@/features/document-templates/pages/DocumentTemplatesPage'
+import {
+  DashboardPage,
+  MedicationsPage,
+  MedicationDetailPage,
+  CreateMedicationPage,
+  EditMedicationPage,
+  MovementsPage,
+  RequirementsPage,
+  CreateRequirementPage,
+  RequirementDetailPage,
+  DispensationsPage,
+  CreateDispensationPage,
+  DispensationDetailPage,
+  EmployeesPage,
+  EmployeeDetailPage,
+  EmployeeAreasPage,
+  EmployeePositionsPage,
+  EmployeeSyncSettingsPage,
+  ExternalEmployeesPage,
+  UsersPage,
+  DiseasesPage,
+  CreateAttentionPage,
+  AttentionDetailPage,
+  ClinicalAttentionEntryPage,
+  ClinicalHistoryDetailPage,
+  CreateClinicalHistoryPage,
+  ExamsPage,
+  EmoProtocolsPage,
+  EmoProtocolDetailPage,
+  EmoCycleDetailPage,
+  EmoCycleHistoryPage,
+  ClinicalHistoriesPage,
+  HealthcareCentersPage,
+  HealthcareCenterDetailPage,
+  AllergyTypesPage,
+  AccidentDetailPage,
+  AccidentsPage,
+  CreateAccidentFromClinicaHistoryPage,
+  CreateAccidentPage,
+  AlertsPage,
+  DocumentTemplatesPage,
+} from './lazy-pages'
 
 
 export const appRoutes: RouteObject = {

@@ -1,6 +1,7 @@
-import { useCallback } from 'react'
-import { usePaginatedQuery } from '@/core/hooks/usePaginatedQuery'
+import { usePaginatedQuery } from '@/shared/hooks/usePaginatedQuery'
 import { medicalRestService } from '../services/medical-rest.service'
+import type { FindMedicalRestsParams } from '../services/medical-rest.service'
+import type { MedicalRestResponseDto } from '../types'
 
 type Params = {
   clinicalHistoryId: number
@@ -9,11 +10,9 @@ type Params = {
 }
 
 export const useMedicalRests = ({ clinicalHistoryId, accidentId, attentionId }: Params) => {
-  const fetcher = useCallback(
-    (page: number, pageSize: number) =>
-      medicalRestService.findAll({ clinicalHistoryId, accidentId, attentionId, page, pageSize }),
-    [clinicalHistoryId, accidentId, attentionId],
-  )
-
-  return usePaginatedQuery(fetcher)
+  return usePaginatedQuery<MedicalRestResponseDto, FindMedicalRestsParams>({
+    queryKey: ['medical-rests', { clinicalHistoryId, accidentId, attentionId }],
+    queryFn: (filters) =>
+      medicalRestService.findAll({ ...filters, clinicalHistoryId, accidentId, attentionId }),
+  })
 }

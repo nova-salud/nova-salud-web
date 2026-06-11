@@ -21,7 +21,6 @@ class DispensationService extends ApiService {
   }
 
   async findByAttentionId(attentionId: number): Promise<DispensationResponseDto> {
-    console.log('Entra')
     return await this.get<DispensationResponseDto>(
       `/inventory/dispensations/attention/${attentionId}`,
     )

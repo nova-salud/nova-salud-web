@@ -1,13 +1,10 @@
 import { useMemo, useRef, useState } from 'react'
-import { useEmployeeAreas } from '@/features/employees/hooks/use-employee-areas'
-import { useEmployeePositions } from '@/features/employees/hooks/use-employee-positions'
+import { useEmployeeAreas } from '@/features/employees/hooks/useEmployeeAreas'
+import { useEmployeePositions } from '@/features/employees/hooks/useEmployeePositions'
 import { employeeService } from '@/features/employees/services/employee.service'
 import type { EmployeeResponseDto } from '@/features/employees/types/employee-response.dto'
 import { Button, Input, SearchSelect } from '@/shared/components/ui/form'
 import { DataTable } from '@/shared/components/ui/table/DataTable'
-
-const AREAS_QUERY = { page: 1, pageSize: 200, isActive: true }
-const POSITIONS_QUERY = { page: 1, pageSize: 200, isActive: true }
 
 type SearchParams = {
   fullName: string
@@ -28,8 +25,8 @@ type Props = {
 }
 
 export const EmployeeSearchSelector = ({ onSelect }: Props) => {
-  const { data: areas } = useEmployeeAreas(AREAS_QUERY)
-  const { data: positions } = useEmployeePositions(POSITIONS_QUERY)
+  const { data: areas } = useEmployeeAreas()
+  const { data: positions } = useEmployeePositions()
 
   const [params, setParams] = useState<SearchParams>(INITIAL_SEARCH)
   const [employees, setEmployees] = useState<EmployeeResponseDto[]>([])

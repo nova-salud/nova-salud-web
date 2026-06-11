@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Button, Input, Textarea } from '@/shared/components/ui/form'
+import { Button, Input, Textarea, SignatureInput, Sidebar } from '@/shared/components'
 import { useEmitClinicalHistoryConclusion } from '../hooks'
 import type {
   ClinicalHistoryEmoCycleResponseDto,
@@ -7,8 +7,6 @@ import type {
   EmitClinicalHistoryConclusionDto,
 } from '../types'
 import { EMO_CONCLUSION_CLASSNAME, EMO_CONCLUSION_LABEL } from '../types/clinical-history-emo-cycle-response.dto'
-import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
-import SignatureInput from '@/shared/components/ui/signature/SignatureInput'
 import { useAuth } from '@/shared/hooks/useAuth'
 
 type Props = {
@@ -46,7 +44,7 @@ const EmitClinicalHistoryConclusionSidebar = ({
   useEffect(() => {
     if (!isOpen || !cycle) return
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+     
     setConclusion(cycle.conclusion ?? 'APTO')
     setRestrictions(cycle.restrictions ?? '')
     setDoctorFullName('')

@@ -1,27 +1,23 @@
-import { useState } from 'react'
+import { useCallback } from 'react'
 import { format } from 'date-fns'
 import { useNavigate, useParams } from 'react-router'
-import PageContainer from '@/shared/components/ui/PageContainer'
-import { Button } from '@/shared/components/ui/form'
-import { useAttention } from '../hooks/useAttention'
-import { useDispensationByAttention } from '@/features/inventory/dispensations/hooks/useDispensationByAttention'
-import { useSendAttentionSummary } from '../hooks/useSendAttentionSummary'
-import { TRIAGE_LEVEL_CLASSNAME, TRIAGE_LEVEL_LABEL } from '../types/triage.enum'
+import { Button, PageContainer, ResourceNotFound } from '@/shared/components'
+import { useAsyncAction } from '@/core/hooks/useAsyncAction'
 import { DISEASE_TYPE_LABEL } from '@/features/attentions/diseases/types/disease-type.enum'
 import { FOLLOW_UP_STATUS_CLASSNAME, FOLLOW_UP_STATUS_LABEL, FollowUpStatusEnum } from '@/features/follow-ups/types/follow-up-status.enum'
-import { AttentionDetailSkeleton } from '../components/AttentionDetailSkeleton'
-import ResourceNotFound from '@/shared/components/ui/ResourceNotFound'
-import { ClinicalHistoryMedicalRestsSection } from '@/features/clinical-histories/medical-rests/components/ClinicalHistoryMedicalRestsSection'
-import DispensationConformitySection from '@/features/attentions/conformities/components/DispensationConformitySection'
+import { useDispensationByAttention } from '@/features/inventory/dispensations/hooks/useDispensationByAttention'
 import { documentTemplateService } from '@/features/document-templates/services/document-template.service'
 import { DocumentTemplateType } from '@/features/document-templates/types/document-template.types'
-import { parseBackendError } from '@/core/utils/parse-backend-error'
-import { toastService } from '@/core/services/toast.service'
+import { ClinicalHistoryMedicalRestsSection } from '@/features/clinical-histories/medical-rests/components/ClinicalHistoryMedicalRestsSection'
+import DispensationConformitySection from '@/features/attentions/conformities/components/DispensationConformitySection'
+import { AttentionDetailSkeleton } from '../components/AttentionDetailSkeleton'
+import { useAttention } from '../hooks'
+import { useSendAttentionSummary } from '../hooks/useSendAttentionSummary'
+import { TRIAGE_LEVEL_CLASSNAME, TRIAGE_LEVEL_LABEL } from '../types/triage.enum'
 
 const AttentionDetailPage = () => {
   const navigate = useNavigate()
   const { employeeId, attentionId } = useParams()
-  const [isGenerating, setIsGenerating] = useState(false)
 
   const numericEmployeeId = Number(employeeId)
   const numericAttentionId = Number(attentionId)
@@ -30,16 +26,11 @@ const AttentionDetailPage = () => {
   const { data: dispensation, isLoading: isLoadingDispensation } = useDispensationByAttention(numericAttentionId)
   const { sendSummary, isLoading: isSending } = useSendAttentionSummary()
 
-  const handleGenerateFormat = async () => {
-    setIsGenerating(true)
-    try {
-      await documentTemplateService.generate(DocumentTemplateType.ATTENTION_RECEIPT, { attentionId: numericAttentionId })
-    } catch (err) {
-      toastService.error(parseBackendError(err))
-    } finally {
-      setIsGenerating(false)
-    }
-  }
+  const generateAction = useCallback(
+    () => documentTemplateService.generate(DocumentTemplateType.ATTENTION_RECEIPT, { attentionId: numericAttentionId }),
+    [numericAttentionId],
+  )
+  const { execute: handleGenerateFormat, isLoading: isGenerating } = useAsyncAction(generateAction, { showSuccessToast: false })
 
   if (isLoading) return <AttentionDetailSkeleton />
   if (!attention) return (
@@ -97,7 +88,7 @@ const AttentionDetailPage = () => {
       <div className="space-y-6">
         {error ? (
           <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-            {error}
+            {error?.message}
           </div>
         ) : null}
 

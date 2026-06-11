@@ -1,10 +1,13 @@
-import { PageContainer } from '@/shared/components'
+import { Button, Checkbox, Input, PageContainer } from '@/shared/components'
+import { EmployeeSyncSettingsSkeleton } from '../components/EmployeeSyncSettingsSkeleton'
 import {
-  Button,
-  Checkbox,
-  Input,
-} from '@/shared/components/ui/form'
-import { useEmployeeSyncConnectionSetting, useEmployeeSyncJobSetting, useEmployeeSyncSettingsForm, useTestEmployeeSyncConnection, useUpdateEmployeeSyncConnectionSetting, useUpdateEmployeeSyncJobSetting } from '../hooks'
+  useEmployeeSyncConnectionSetting,
+  useEmployeeSyncJobSetting,
+  useEmployeeSyncSettingsForm,
+  useTestEmployeeSyncConnection,
+  useUpdateEmployeeSyncConnectionSetting,
+  useUpdateEmployeeSyncJobSetting,
+} from '../hooks'
 
 const EmployeeSyncSettingsPage = () => {
   const {
@@ -47,8 +50,8 @@ const EmployeeSyncSettingsPage = () => {
     isConnectionFormValid,
     isJobFormValid,
   } = useEmployeeSyncSettingsForm({
-    connectionSetting,
-    jobSetting,
+    connectionSetting: connectionSetting ?? null,
+    jobSetting: jobSetting ?? null,
   })
 
   const handleSaveConnection = async () => {
@@ -96,6 +99,8 @@ const EmployeeSyncSettingsPage = () => {
   const isLoading = isLoadingConnectionSetting || isLoadingJobSetting
   const error = connectionSettingError ?? jobSettingError
 
+  if (isLoading) return <EmployeeSyncSettingsSkeleton />
+
   return (
     <PageContainer
       title="Configuración de sincronización RRHH"
@@ -104,18 +109,11 @@ const EmployeeSyncSettingsPage = () => {
       <div className="space-y-5">
         {error ? (
           <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-            {error}
+            {error.message}
           </div>
         ) : null}
 
-        {isLoading ? (
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <p className="text-sm text-slate-500">Cargando configuración...</p>
-          </div>
-        ) : null}
-
-        {!isLoading ? (
-          <>
+        <>
             <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
               <div className="mb-5">
                 <h3 className="text-sm font-semibold text-slate-900">
@@ -290,8 +288,7 @@ const EmployeeSyncSettingsPage = () => {
                 </Button>
               </div>
             </div>
-          </>
-        ) : null}
+        </>
       </div>
     </PageContainer>
   )

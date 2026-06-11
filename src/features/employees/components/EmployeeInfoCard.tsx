@@ -3,8 +3,10 @@ import { cn } from '@/shared/utils'
 import type { EmployeeResponseDto } from '../types/employee-response.dto'
 
 type Props = {
-  employee: EmployeeResponseDto
+  employee?: EmployeeResponseDto
   className?: string
+  isLoading?: boolean
+  error?: string | null
 }
 
 type InfoItemProps = {
@@ -23,7 +25,27 @@ const InfoItem = ({ label, value, className, highlight = false }: InfoItemProps)
   </div>
 )
 
-export const EmployeeInfoCard = ({ employee, className }: Props) => {
+export const EmployeeInfoCard = ({ employee, className, isLoading, error }: Props) => {
+  if (isLoading) {
+    return (
+      <div className={cn('grid animate-pulse grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4', className)}>
+        {Array.from({ length: 12 }).map((_, i) => (
+          <div key={i} className="h-14 rounded-2xl bg-slate-100 px-4 py-3" />
+        ))}
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className={cn('rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600', className)}>
+        {error}
+      </div>
+    )
+  }
+
+  if (!employee) return null
+
   const birthDate = employee.birthDate
     ? format(new Date(employee.birthDate), 'dd/MM/yyyy')
     : null

@@ -1,7 +1,7 @@
 import { useAsyncAction } from '@/core/hooks/useAsyncAction'
 import { alertService } from '../services/alert.service'
 
-export const useCreateAlert = () => {
+export const useResolveAlert = () => {
   const { execute, isLoading, error, clearError } = useAsyncAction<
     [number],
     void

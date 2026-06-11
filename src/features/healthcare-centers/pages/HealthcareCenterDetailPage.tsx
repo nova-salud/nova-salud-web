@@ -1,6 +1,5 @@
 import { useNavigate, useParams } from 'react-router'
-import { EntityState, PageContainer } from '@/shared/components'
-import { Button } from '@/shared/components/ui/form'
+import { Button, EntityState, PageContainer } from '@/shared/components'
 import { cn } from '@/shared/utils'
 import { useHealthcareCenter } from '../hooks/useHealthcareCenter'
 import { useUpdateHealthcareCenter } from '../hooks'
@@ -29,18 +28,11 @@ const HealthcareCenterDetailPage = () => {
 
   if (isLoading) {
     return (
-      <p>Cargando...</p>
-    )
-  }
-
-  if (!center) {
-    return (
-      <EntityState
-        title="Empleado no encontrado"
-        description="El empleado que intentas consultar no existe o fue eliminado."
-        actionText='Regresar'
-        onAction={() => navigate('/employees')}
-      />
+      <div className="animate-pulse space-y-5 p-6">
+        <div className="h-10 w-48 rounded-2xl bg-slate-100" />
+        <div className="h-40 rounded-3xl bg-slate-100" />
+        <div className="h-40 rounded-3xl bg-slate-100" />
+      </div>
     )
   }
 
@@ -48,9 +40,20 @@ const HealthcareCenterDetailPage = () => {
     return (
       <EntityState
         title="Ocurrió un error"
-        description="No fue posible obtener la información del empleado"
+        description={error.message}
         actionText="Reintentar"
         onAction={refetch}
+      />
+    )
+  }
+
+  if (!center) {
+    return (
+      <EntityState
+        title="Centro de salud no encontrado"
+        description="El centro de salud que intentas consultar no existe o fue eliminado."
+        actionText="Regresar"
+        onAction={() => navigate('/healthcare-centers')}
       />
     )
   }

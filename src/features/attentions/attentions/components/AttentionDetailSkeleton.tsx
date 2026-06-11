@@ -1,4 +1,4 @@
-import PageContainer from '@/shared/components/ui/PageContainer'
+import { PageContainer } from '@/shared/components'
 
 export const AttentionDetailSkeleton = () => {
   return (

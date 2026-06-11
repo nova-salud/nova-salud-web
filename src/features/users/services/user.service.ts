@@ -6,8 +6,6 @@ class UserService extends ApiService {
   async findAll(
     query: FindUsersDto,
   ): Promise<PaginatedResponse<UserResponseDto>> {
-    console.log(query)
-
     return await this.getPaginated<UserResponseDto>(
       '/users',
       { params: query },

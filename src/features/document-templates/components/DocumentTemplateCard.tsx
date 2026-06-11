@@ -2,8 +2,7 @@ import { useState } from 'react'
 import { Download, FileText } from 'lucide-react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { parseBackendError } from '@/core/utils/parse-backend-error'
-import { toastService } from '@/core/services/toast.service'
+import { useAsyncAction } from '@/core/hooks/useAsyncAction'
 import { Button, InputFile } from '@/shared/components'
 import { documentTemplateService } from '../services/document-template.service'
 import { useUploadDocumentTemplate } from '../hooks/useUploadDocumentTemplate'
@@ -19,7 +18,6 @@ type Props = {
 export const DocumentTemplateCard = ({ type, template, onUploaded }: Props) => {
   const { upload, isLoading: isUploading } = useUploadDocumentTemplate()
   const [file, setFile] = useState<File | null>(null)
-  const [isDownloading, setIsDownloading] = useState(false)
 
   const meta = DOCUMENT_TEMPLATE_META[type]
 
@@ -31,16 +29,10 @@ export const DocumentTemplateCard = ({ type, template, onUploaded }: Props) => {
     if (result) onUploaded()
   }
 
-  const handleDownload = async () => {
-    setIsDownloading(true)
-    try {
-      await documentTemplateService.downloadFile(type)
-    } catch (err) {
-      toastService.error(parseBackendError(err))
-    } finally {
-      setIsDownloading(false)
-    }
-  }
+  const { execute: handleDownload, isLoading: isDownloading } = useAsyncAction(
+    () => documentTemplateService.downloadFile(type),
+    { showSuccessToast: false },
+  )
 
   return (
     <div className="flex flex-col gap-4 rounded-xl border border-slate-200 bg-white p-5">

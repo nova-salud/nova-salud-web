@@ -49,12 +49,6 @@ const CreateAccidentFromClinicalHistoryPage = () => {
     >
       <div className="space-y-6">
 
-        {employeeError && (
-          <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
-            {employeeError.message}
-          </div>
-        )}
-
         {createError && (
           <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
             {createError}
@@ -66,15 +60,7 @@ const CreateAccidentFromClinicalHistoryPage = () => {
             Trabajador
           </h2>
 
-          {isLoadingEmployee && (
-            <p className="mt-3 text-sm text-slate-500">
-              Cargando trabajador...
-            </p>
-          )}
-
-          {!isLoadingEmployee && employee && (
-            <EmployeeInfoCard employee={employee} className="mt-4" />
-          )}
+          <EmployeeInfoCard isLoading={isLoadingEmployee} error={employeeError?.message} employee={employee}  className="mt-4" />
         </div>
 
         {employee && (

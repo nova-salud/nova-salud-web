@@ -82,7 +82,7 @@ export const MedicalDashboardPage = () => {
     return (
       <PageContainer title="Dashboard Médico" description="Resumen clínico y operativo">
         <div className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-600">
-          {error ?? 'No se pudo cargar el dashboard.'}
+          {error?.message ?? 'No se pudo cargar el dashboard.'}
         </div>
       </PageContainer>
     )

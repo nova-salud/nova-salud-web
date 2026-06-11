@@ -1,45 +1,21 @@
-import { useState } from 'react'
+import { useCallback } from 'react'
 import { useNavigate } from 'react-router'
-import type { BackendError } from '@/core/types/backend-error.type'
+import { useAsyncAction } from '@/core/hooks/useAsyncAction'
 import { requirementService } from '../services/requirement.service'
 import type { CreateInventoryRequirementDto } from '../types/create-inventory-requirement.dto'
 
-type UseCreateRequirementReturn = {
-  create: (dto: CreateInventoryRequirementDto) => Promise<void>
-  isLoading: boolean
-  error: string | null
-}
-
-export const useCreateRequirement = (): UseCreateRequirementReturn => {
+export const useCreateRequirement = () => {
   const navigate = useNavigate()
 
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
-  const create = async (dto: CreateInventoryRequirementDto): Promise<void> => {
-    try {
-      setIsLoading(true)
-      setError(null)
-
-      await requirementService.create(dto)
-
+  const action = useCallback(
+    async (dto: CreateInventoryRequirementDto) => {
+      const result = await requirementService.create(dto)
       navigate('/requirements')
-    } catch (err) {
-      const backendError = err as BackendError
+      return result
+    },
+    [navigate],
+  )
 
-      if (Array.isArray(backendError.message)) {
-        setError(backendError.message[0] ?? 'No se pudo crear el requerimiento.')
-      } else {
-        setError(backendError.message ?? 'No se pudo crear el requerimiento.')
-      }
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  return {
-    create,
-    isLoading,
-    error,
-  }
+  const { execute: create, isLoading, error, clearError } = useAsyncAction(action)
+  return { create, isLoading, error, clearError }
 }

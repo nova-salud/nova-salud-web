@@ -1,6 +1,6 @@
 import { Toaster } from 'sonner'
 
-const AppToaster = () => {
+export const AppToaster = () => {
   return (
     <Toaster
       position="top-center"
@@ -11,5 +11,3 @@ const AppToaster = () => {
     />
   )
 }
-
-export default AppToaster

@@ -1,6 +1,8 @@
+import { Suspense } from 'react'
 import { Outlet } from 'react-router'
 import { NotificationsProvider } from '@/features/communications/notifications/context/NotificationsContext'
 import { AppNavbar, AppSidebar, ScrollToTop } from '@/shared/components'
+import LoadingScreen from '@/shared/pages/LoadingScreen'
 
 const PrivateLayout = () => {
   return (
@@ -15,7 +17,9 @@ const PrivateLayout = () => {
 
             <main id="main-scroll" className="flex-1 overflow-y-auto p-5 lg:p-6">
               <ScrollToTop />
-              <Outlet />
+              <Suspense fallback={<LoadingScreen />}>
+                <Outlet />
+              </Suspense>
             </main>
           </div>
 

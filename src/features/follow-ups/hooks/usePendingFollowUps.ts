@@ -1,14 +1,11 @@
-import { useCallback } from 'react'
-import { useQuery } from '@/core/hooks/useQuery'
+import { useAppQuery } from '@/shared/hooks'
 import { followUpService } from '../services/follow-up.service'
 
 export const usePendingFollowUps = (employeeId = 0) => {
-  const enabled = Boolean(employeeId && !Number.isNaN(employeeId))
-
-  const fetcher = useCallback(
-    () => followUpService.findPendingByClinicalHistory(employeeId),
-    [employeeId],
-  )
-
-  return useQuery(fetcher, [], enabled)
+  const { data, ...rest } = useAppQuery({
+    queryKey: ['pending-follow-ups', employeeId],
+    queryFn: () => followUpService.findPendingByClinicalHistory(employeeId),
+    enabled: Boolean(employeeId && !Number.isNaN(employeeId)),
+  })
+  return { ...rest, data: data ?? [] }
 }
