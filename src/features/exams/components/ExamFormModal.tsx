@@ -1,6 +1,5 @@
-import { Input, Button } from '@/shared/components/ui/form'
+import { Input, Button, Sidebar } from '@/shared/components'
 import type { ExamResponseDto, CreateExamDto, UpdateExamDto } from '../types'
-import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
 
 type ExamFormSidebarMode = 'create' | 'edit'
 
