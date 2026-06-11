@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { Button, Input } from '@/shared/components/ui/form'
-import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
+import { Button, Input, Sidebar } from '@/shared/components'
 import type { UpdateUserPasswordDto } from '../types/update-user-password.dto'
 import type { UserResponseDto } from '../types/user-response.dto'
 

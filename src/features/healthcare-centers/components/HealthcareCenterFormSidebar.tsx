@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react'
-import { Input, Button, Select } from '@/shared/components/ui/form'
+import { Input, Button, Select, Sidebar } from '@/shared/components'
 import type { InputValidation } from '@/shared/components/ui/form/Input'
 import type { CreateHealthcareCenterDto, HealthcareCenterResponseDto, UpdateHealthcareCenterDto } from '../types'
 import { CONVENIO_OPTIONS } from '../types/convenio.constants'
-import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
 
 type HealthcareCenterFormSidebarMode = 'create' | 'edit'
 

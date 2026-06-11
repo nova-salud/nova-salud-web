@@ -122,5 +122,3 @@ export const Sidebar = ({
     document.body,
   )
 }
-
-export default Sidebar

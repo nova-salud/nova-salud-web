@@ -1,5 +1,4 @@
-import { Button, Input, Select } from '@/shared/components/ui/form'
-import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
+import { Button, Input, Select, Sidebar } from '@/shared/components'
 import { USER_ROLE_OPTIONS } from '../types/user-role.config'
 import type { CreateUserDto } from '../types/create-user.dto'
 import type { UpdateUserDto } from '../types/update-user.dto'

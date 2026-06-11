@@ -1,10 +1,8 @@
-import { Textarea, Button, InputFile } from '@/shared/components/ui/form'
-import { SearchSelect } from '@/shared/components/ui/form/SearchSelect'
+import { Textarea, Button, InputFile, Sidebar, SearchSelect,  } from '@/shared/components'
 import { getFileUrl } from '@/shared/utils'
 import { useState, useEffect } from 'react'
 import type { ClinicalHistoryExamResponseDto } from '../../emo-cycles/types'
 import { useCompleteClinicalHistoryExam } from '../hooks'
-import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
 import { healthcareCenterService } from '@/features/healthcare-centers/services/healthcare-center.service'
 import type { HealthcareCenterResponseDto } from '@/features/healthcare-centers/types'
 

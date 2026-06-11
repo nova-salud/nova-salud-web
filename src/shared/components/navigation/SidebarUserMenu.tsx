@@ -1,9 +1,9 @@
 import { useRef, useState } from 'react'
 import { ChevronRight } from 'lucide-react'
-import { useClickOutside } from '@/shared/hooks/useClickOutside'
 import { USER_ROLE_LABEL_MAP } from '@/features/users/types'
 import { cn } from '@/shared/utils'
 import type { UserSession } from '@/core/types/user-session.type'
+import { useClickOutside } from '@/shared/hooks'
 
 type Props = {
   user: UserSession['user']
@@ -11,7 +11,7 @@ type Props = {
   onLogout: () => void
 }
 
-const SidebarUserMenu = ({ user, sidebarCollapsed, onLogout }: Props) => {
+export const SidebarUserMenu = ({ user, sidebarCollapsed, onLogout }: Props) => {
   const dropdownRef = useRef(null)
   const [open, setOpen] = useState(false)
 
@@ -83,5 +83,3 @@ const SidebarUserMenu = ({ user, sidebarCollapsed, onLogout }: Props) => {
     </div>
   )
 }
-
-export default SidebarUserMenu

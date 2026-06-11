@@ -1,12 +1,7 @@
 import { useState, useMemo } from 'react'
-import { SortOrder } from '@/core/types/query-params.type'
-import { useStocks } from '@/features/inventory/stocks/hooks/useStocks'
 import { useAllergyTypes } from '@/features/clinical-histories/allergy-types/hooks'
-import { Select, Textarea, Button } from '@/shared/components/ui/form'
-import { SearchSelect } from '@/shared/components/ui/form/SearchSelect'
-import { useCreateAllergy } from '../hooks'
-import type { FindInventoryStocksDto } from '@/features/inventory/stocks/types/find-inventory-stocks.dto'
-import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
+import { Select, Textarea, Button, SearchSelect, Sidebar } from '@/shared/components'
+import { useCreateAllergy, useSearchMedications } from '../hooks'
 
 type Props = {
   isOpen: boolean
@@ -15,33 +10,17 @@ type Props = {
   onSuccess: () => void
 }
 
-const STOCKS_QUERY: FindInventoryStocksDto = {
-  page: 1,
-  pageSize: 100,
-  sortBy: 'commercialName',
-  sortOrder: SortOrder.ASC,
-  isActive: true,
-}
-
-const ALLERGY_TYPES_QUERY = {
-  page: 1,
-  pageSize: 100,
-  sortBy: 'name',
-  sortOrder: SortOrder.ASC,
-  isActive: true,
-}
-
 const AllergyFormSidebar = ({ isOpen, clinicalHistoryId, onClose, onSuccess }: Props) => {
   const [medicationId, setMedicationId] = useState('')
   const [allergyTypeId, setAllergyTypeId] = useState('')
   const [reaction, setReaction] = useState('')
 
-  const { data: stocks, isLoading: isLoadingStocks } = useStocks(STOCKS_QUERY)
-  const { data: allergyTypes, isLoading: isLoadingTypes } = useAllergyTypes(ALLERGY_TYPES_QUERY)
+  const { data: medications, isLoading: isLoadingMedications } = useSearchMedications()
+  const { data: allergyTypes, isLoading: isLoadingTypes } = useAllergyTypes()
 
   const medicationOptions = useMemo(
-    () => stocks.map((item) => ({ label: item.commercialName, value: item.medicationId })),
-    [stocks],
+    () => medications.map((item) => ({ label: item.commercialName, value: item.id })),
+    [medications],
   )
 
   const allergyTypeOptions = useMemo(
@@ -101,7 +80,7 @@ const AllergyFormSidebar = ({ isOpen, clinicalHistoryId, onClose, onSuccess }: P
           value={medicationId}
           onChange={setMedicationId}
           options={medicationOptions}
-          disabled={isLoadingStocks}
+          disabled={isLoadingMedications}
           placeholder="Buscar medicamento..."
         />
 

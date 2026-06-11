@@ -1,5 +1,4 @@
-import { Button } from '@/shared/components/ui/form'
-import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
+import { Button, Sidebar } from '@/shared/components'
 import { cn } from '@/shared/utils'
 import {
   USER_ROLE_CLASS_MAP,

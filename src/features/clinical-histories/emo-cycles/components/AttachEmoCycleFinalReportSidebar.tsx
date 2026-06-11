@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Button, InputFile } from '@/shared/components/ui/form'
-import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
+import { Button, InputFile, Sidebar } from '@/shared/components'
 import { useAttachEmoCycleFinalReport } from '../hooks'
 
 type Props = {

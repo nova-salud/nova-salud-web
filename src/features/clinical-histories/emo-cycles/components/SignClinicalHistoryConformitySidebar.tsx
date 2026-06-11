@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react'
-import { Button, Input } from '@/shared/components/ui/form'
-import SignatureInput from '@/shared/components/ui/signature/SignatureInput'
+import { Button, Input, SignatureInput, Sidebar } from '@/shared/components'
 import { useSignClinicalHistoryConformity } from '../hooks'
 import type { ClinicalHistoryEmoCycleResponseDto } from '../types'
-import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
 import { useParams } from 'react-router'
 
 type Props = {
@@ -33,7 +31,7 @@ const SignClinicalHistoryConformitySidebar = ({
   useEffect(() => {
     if (!isOpen) return
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+     
     setFullName('')
     setSignatureData('')
   }, [isOpen])

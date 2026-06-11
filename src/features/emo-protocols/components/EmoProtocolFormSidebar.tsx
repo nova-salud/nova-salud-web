@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
-import { Button, Input, Select } from '@/shared/components/ui/form'
+import { Button, Input, Select, Sidebar } from '@/shared/components'
 import type { CreateEmoProtocolDto, EmoProtocolResponseDto, UpdateEmoProtocolDto } from '../types'
 import { EMO_CYCLE_TYPE_OPTIONS } from '@/features/clinical-histories/emo-cycles/types/emo-cycle-type.constants'
-import Sidebar from '@/shared/components/ui/sidebar/Sidebar'
 
 type EmoProtocolFormSidebarMode = 'create' | 'edit'
 
