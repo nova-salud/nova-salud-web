@@ -34,6 +34,7 @@ const EmoProtocolsPage = () => {
     }
 
     await refetch()
+    overlays.close()
   }
 
   return (

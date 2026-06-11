@@ -23,7 +23,8 @@ const EmoProtocolDetailPage = () => {
   const overlays = useDisclosure<EmoProtocolDetailOverlaysKey>()
 
   const {
-    updateEmoProtocol
+    updateEmoProtocol,
+    isLoading: isUpdating,
   } = useUpdateEmoProtocol()
 
   const {
@@ -68,6 +69,7 @@ const EmoProtocolDetailPage = () => {
     }
 
     await refetch()
+    overlays.close()
   }
 
   const handleDelete = async () => {
@@ -201,7 +203,7 @@ const EmoProtocolDetailPage = () => {
         isOpen={overlays.isOpen('edit')}
         mode="edit"
         emoProtocol={emo}
-        isLoading={isLoading}
+        isLoading={isUpdating}
         onClose={overlays.close}
         onUpdate={handleUpdateEmoProtocol}
       />

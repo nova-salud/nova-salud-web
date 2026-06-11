@@ -1,4 +1,5 @@
 export * from './AssignAreaToEmoProtocolModal'
+export * from './DeleteEmoProtocolExamModal'
 export * from './AssignPositionToEmoProtocolModal'
 export * from './EmoProtocolAreasSection'
 export * from './EmoProtocolDetailSkeleton'

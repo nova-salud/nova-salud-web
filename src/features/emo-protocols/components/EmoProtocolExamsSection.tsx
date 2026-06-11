@@ -1,19 +1,18 @@
-import { useState } from 'react'
 import { cn } from '@/shared/utils'
 import {
   useCreateEmoProtocolExam,
   useRemoveEmoProtocolExam,
-  useUpdateEmoProtocolExam,
 } from '../hooks'
 import type {
   CreateEmoProtocolExamDto,
   EmoProtocolExamResponseDto,
-  UpdateEmoProtocolExamDto,
 } from '../types'
 import { useDisclosure } from '@/shared/hooks'
 import { EmoProtocolExamsSkeleton } from './EmoProtocolExamsSkeleton'
 import { Button } from '@/shared/components'
 import { EmoProtocolExamFormModal } from './EmoProtocolExamFormModal'
+import { DeleteEmoProtocolExamModal } from './DeleteEmoProtocolExamModal'
+import { useState } from 'react'
 
 type Props = {
   emoProtocolId: number
@@ -22,7 +21,7 @@ type Props = {
   onRefresh: () => Promise<void> | void
 }
 
-type OverlayKey = 'create' | 'edit'
+type OverlayKey = 'create' | 'edit' | 'delete'
 
 export const EmoProtocolExamsSection = ({
   emoProtocolId,
@@ -31,7 +30,7 @@ export const EmoProtocolExamsSection = ({
   onRefresh,
 }: Props) => {
   const overlays = useDisclosure<OverlayKey>()
-  const [selectedItem, setSelectedItem] = useState<EmoProtocolExamResponseDto | null>(null)
+  const [examToDelete, setExamToDelete] = useState<EmoProtocolExamResponseDto | null>(null)
 
   const existingExamIds = items.map(item => item.examId)
 
@@ -41,28 +40,16 @@ export const EmoProtocolExamsSection = ({
   } = useCreateEmoProtocolExam()
 
   const {
-    updateEmoProtocolExam,
-    isLoading: isUpdating,
-  } = useUpdateEmoProtocolExam()
-
-  const {
     removeEmoProtocolExam,
     isLoading: isRemoving,
   } = useRemoveEmoProtocolExam()
 
   const handleOpenCreate = () => {
-    setSelectedItem(null)
     overlays.open('create')
-  }
-
-  const handleOpenEdit = (item: EmoProtocolExamResponseDto) => {
-    setSelectedItem(item)
-    overlays.open('edit')
   }
 
   const handleCloseModal = () => {
     overlays.close()
-    setSelectedItem(null)
   }
 
   const handleCreate = async (dto: CreateEmoProtocolExamDto) => {
@@ -73,20 +60,22 @@ export const EmoProtocolExamsSection = ({
     handleCloseModal()
   }
 
-  const handleUpdate = async (id: number, dto: UpdateEmoProtocolExamDto) => {
-    const result = await updateEmoProtocolExam(id, dto)
-    if (!result) return
-
-    await onRefresh()
-    handleCloseModal()
+  const handleOpenDelete = (item: EmoProtocolExamResponseDto) => {
+    setExamToDelete(item)
+    overlays.open('delete')
   }
 
-  const handleDelete = async (item: EmoProtocolExamResponseDto) => {
-    const confirmed = window.confirm(`¿Eliminar "${item.examName ?? 'este examen'}" del protocolo?`)
-    if (!confirmed) return
+  const handleCloseDelete = () => {
+    overlays.close()
+    setExamToDelete(null)
+  }
 
-    await removeEmoProtocolExam(item.id)
+  const handleConfirmDelete = async () => {
+    if (!examToDelete) return
+
+    await removeEmoProtocolExam(examToDelete.id)
     await onRefresh()
+    handleCloseDelete()
   }
 
   if (isLoading) {
@@ -150,18 +139,7 @@ export const EmoProtocolExamsSection = ({
                     type="button"
                     variant="outline"
                     className="w-auto rounded-xl px-3 py-2 text-xs"
-                    onClick={() => handleOpenEdit(item)}
-                  >
-                    Editar
-                  </Button>
-
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-auto rounded-xl px-3 py-2 text-xs"
-                    onClick={() => void handleDelete(item)}
-                    isLoading={isRemoving}
-                    loadingText='Eliminando...'
+                    onClick={() => handleOpenDelete(item)}
                   >
                     Eliminar
                   </Button>
@@ -182,15 +160,12 @@ export const EmoProtocolExamsSection = ({
         onCreate={handleCreate}
       />
 
-      <EmoProtocolExamFormModal
-        isOpen={overlays.isOpen('edit')}
-        mode="edit"
-        emoProtocolId={emoProtocolId}
-        emoProtocolExam={selectedItem}
-        existingExamIds={existingExamIds}
-        isLoading={isUpdating}
-        onClose={handleCloseModal}
-        onUpdate={handleUpdate}
+      <DeleteEmoProtocolExamModal
+        isOpen={overlays.isOpen('delete')}
+        item={examToDelete}
+        isLoading={isRemoving}
+        onClose={handleCloseDelete}
+        onConfirm={handleConfirmDelete}
       />
     </>
   )
