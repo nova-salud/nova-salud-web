@@ -7,4 +7,5 @@ export type FindDispensationsDto = QueryParams & {
   thirdPartyDni?: string
   attentionId?: number
   dispensedByUserId?: number
+  employeeFullName?: string
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { usePaginatedQuery } from '@/shared/hooks/usePaginatedQuery'
+import { usePaginatedQuery, useDebounce } from '@/shared/hooks'
 import { dispensationService } from '../services/dispensation.service'
 import type { QueryParams } from '@/core/types/query-params.type'
 import type { DispensationResponseDto, FindDispensationsDto } from '../types'
@@ -10,12 +10,14 @@ type ExtraFilters = Omit<FindDispensationsDto, keyof QueryParams>
 
 export const useDispensations = () => {
   const [extraFilters, setExtraFilters] = useState<ExtraFilters>({})
+  const debouncedEmployeeFullName = useDebounce(extraFilters.employeeFullName, 450)
 
   const result = usePaginatedQuery<DispensationResponseDto, FindDispensationsDto>({
-    queryKey: DISPENSATION_QUERY_KEYS.list({ ...extraFilters}),
+    queryKey: DISPENSATION_QUERY_KEYS.list({ ...extraFilters, employeeFullName: debouncedEmployeeFullName }),
     queryFn: (filters) => dispensationService.findAll({
       ...filters,
       ...extraFilters,
+      employeeFullName: debouncedEmployeeFullName || undefined,
     }),
     placeholderData: keepPreviousData
   })
