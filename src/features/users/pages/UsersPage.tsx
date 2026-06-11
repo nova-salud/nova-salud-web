@@ -18,7 +18,7 @@ const UsersPage = () => {
   const overlays = useDisclosure<UserOverlayKey>()
 
   const handleViewDetail = (user: UserResponseDto) => {
-    void navigate(`/employees/${user.id}`)
+    void navigate(`/employees/${user.employee?.id}`)
   }
 
   const handleCreateUser = async (dto: CreateUserDto) => {
