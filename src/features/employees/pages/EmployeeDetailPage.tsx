@@ -1,8 +1,19 @@
 import { useNavigate, useParams } from 'react-router'
-import { Button, EntityState, PageContainer } from '@/shared/components'
+import { Lock, UserKey } from 'lucide-react'
+import { Button, Dropdown, DropdownItem, EntityState, PageContainer } from '@/shared/components'
+import { RoleEnum } from '@/core/enums/role.enum'
 import { USER_ROLE_LABEL_MAP } from '@/features/users/types'
+import { useAuth } from '@/shared/hooks/useAuth'
+import { useUpdateUser } from '@/features/users/hooks'
+import { useUpdateUserPassword } from '@/features/users/hooks'
+import { useDisclosure } from '@/shared/hooks/useDisclosure'
 import { EmployeeDetailSkeleton } from '../components/EmployeeDetailSkeleton'
-import { useEmployee } from '../hooks'
+import { EmployeeVetoModal } from '../components/EmployeeVetoModal'
+import { EmployeePasswordModal } from '../components/EmployeePasswordModal'
+import { EmployeeChangeRoleModal } from '../components/EmployeeChangeRoleModal'
+import { useEmployee, useUpdateEmployeeVeto } from '../hooks'
+import type { UpdateUserDto } from '@/features/users/types/update-user.dto'
+import type { UpdateUserPasswordDto } from '@/features/users/types/update-user-password.dto'
 
 const Field = ({ label, value }: { label: string; value: React.ReactNode }) => (
   <div>
@@ -20,6 +31,33 @@ const EmployeeDetailPage = () => {
 
   const id = Number(params.id)
   const { data: employee, isLoading, error, refetch } = useEmployee(id)
+
+  const overlays = useDisclosure<'veto' | 'password' | 'role'>()
+  const { user: authUser } = useAuth()
+  const isAdmin = authUser?.role === RoleEnum.ADMIN
+  const isHR = authUser?.role === RoleEnum.HR
+
+  const { updateVeto, isLoading: isVetoLoading } = useUpdateEmployeeVeto()
+  const { updatePassword, isLoading: isPasswordLoading } = useUpdateUserPassword()
+  const { update: updateUser, isLoading: isRoleLoading } = useUpdateUser()
+
+  const handleToggleVeto = async () => {
+    if (!employee) return
+    await updateVeto(employee.id, { isVetoed: !employee.isVetoed })
+    overlays.close()
+    void refetch()
+  }
+
+  const handleUpdatePassword = async (userId: number, dto: UpdateUserPasswordDto) => {
+    await updatePassword(userId, dto)
+    overlays.close()
+  }
+
+  const handleUpdateRole = async (userId: number, dto: UpdateUserDto) => {
+    await updateUser(userId, dto)
+    overlays.close()
+    void refetch()
+  }
 
   if (isLoading) return <EmployeeDetailSkeleton />
 
@@ -45,7 +83,6 @@ const EmployeeDetailPage = () => {
     )
   }
 
-
   const displayName = employee?.fullName ?? employee.user?.username ?? '—'
 
   return (
@@ -55,43 +92,6 @@ const EmployeeDetailPage = () => {
         description="Información del usuario y sus datos de empleado."
         action={
           <div className="flex flex-wrap items-center gap-2">
-            {/* {employee && canVeto ? (
-              <Button
-                type="button"
-                variant="outline"
-                isLoading={isUpdating}
-                loadingText="Actualizando..."
-                onClick={() => void handleToggleBlock()}
-                className="w-auto"
-              >
-                {employee.isBlocked ? 'Habilitar' : 'Vetar'}
-              </Button>
-            ) : null}
-
-            {employee && isAdmin ? (
-              <>
-                <Button
-                  type="button"
-                  variant="outline"
-                  isLoading={isUpdatingStatus}
-                  loadingText="Actualizando..."
-                  onClick={() => void handleToggleStatus()}
-                  className="w-auto"
-                >
-                  {employee.isActive ? 'Desactivar' : 'Activar'}
-                </Button>
-
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setSidebarMode('password')}
-                  className="w-auto"
-                >
-                  Cambiar contraseña
-                </Button>
-              </>
-            ) : null} */}
-
             <Button
               type="button"
               variant="secondary"
@@ -100,6 +100,32 @@ const EmployeeDetailPage = () => {
             >
               Volver
             </Button>
+
+            {(isAdmin || isHR) ? (
+              <Button
+                type="button"
+                variant={employee.isVetoed ? 'outline' : 'error'}
+                isLoading={isVetoLoading}
+                loadingText="Actualizando..."
+                onClick={() => overlays.open('veto')}
+                className="w-auto"
+              >
+                {employee.isVetoed ? 'Quitar veto' : 'Vetar'}
+              </Button>
+            ) : null}
+
+            {isAdmin ? (
+              <Dropdown>
+                <DropdownItem onClick={() => overlays.open('password')}>
+                  <Lock size={14} />
+                  Cambiar contraseña
+                </DropdownItem>
+                <DropdownItem onClick={() => overlays.open('role')}>
+                  <UserKey size={14}/>
+                  Cambiar rol
+                </DropdownItem>
+              </Dropdown>
+            ) : null}
           </div>
         }
       >
@@ -116,7 +142,20 @@ const EmployeeDetailPage = () => {
               ) : null}
               <Field label="Rol" value={USER_ROLE_LABEL_MAP[employee.user.role]} />
               <Field label="Estado" value={employee.isActive ? 'Activo' : 'Inactivo'} />
-              <Field label="Acceso" value={employee.isBlocked ? 'Vetado' : 'Habilitado'} />
+              <Field
+                label="Acceso"
+                value={
+                  <span
+                    className={
+                      employee.isVetoed
+                        ? 'inline-block rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-600'
+                        : 'inline-block rounded-full bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700'
+                    }
+                  >
+                    {employee.isVetoed ? 'Vetado' : 'Habilitado'}
+                  </span>
+                }
+              />
             </div>
           </div>
 
@@ -214,15 +253,29 @@ const EmployeeDetailPage = () => {
         </div>
       </PageContainer>
 
-      {/* {isAdmin ? (
-        <UserPasswordSidebar
-          isOpen={sidebarMode === 'password'}
-          user={employee}
-          isLoading={isUpdatingPassword}
-          onClose={() => setSidebarMode(null)}
-          onSubmit={handleUpdatePassword}
-        />
-      ) : null} */}
+      <EmployeeVetoModal
+        isOpen={overlays.isOpen('veto')}
+        employee={employee}
+        isLoading={isVetoLoading}
+        onConfirm={() => void handleToggleVeto()}
+        onClose={overlays.close}
+      />
+
+      <EmployeePasswordModal
+        isOpen={overlays.isOpen('password')}
+        employee={employee}
+        isLoading={isPasswordLoading}
+        onClose={overlays.close}
+        onSubmit={handleUpdatePassword}
+      />
+
+      <EmployeeChangeRoleModal
+        isOpen={overlays.isOpen('role')}
+        employee={employee}
+        isLoading={isRoleLoading}
+        onClose={overlays.close}
+        onSubmit={handleUpdateRole}
+      />
     </>
   )
 }

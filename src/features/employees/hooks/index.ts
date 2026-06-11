@@ -1,4 +1,5 @@
 export * from './useEmployee'
+export * from './useUpdateEmployeeVeto'
 export * from './useEmployeeAreas'
 export * from './useEmployeePositions'
 export * from './useEmployees'

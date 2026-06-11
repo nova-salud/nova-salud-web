@@ -19,7 +19,7 @@ export const DropdownItem = ({
       type="button"
       onClick={onClick}
       className={cn(
-        'flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm transition-colors',
+        'flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm transition-colors min-w-45',
         'focus:outline-none',
         danger
           ? 'text-red-600 hover:bg-red-50'

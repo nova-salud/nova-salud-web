@@ -29,6 +29,10 @@ class EmployeeService extends ApiService {
     )
   }
 
+  async updateVeto(id: number, dto: { isVetoed: boolean }): Promise<EmployeeResponseDto> {
+    return await this.patch<EmployeeResponseDto>(`/employees/${id}`, dto)
+  }
+
   async importCsv(file: File): Promise<ImportEmployeesResultDto> {
     const formData = new FormData()
     formData.append('file', file)
