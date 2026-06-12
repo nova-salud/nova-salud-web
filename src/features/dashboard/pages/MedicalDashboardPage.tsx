@@ -238,7 +238,7 @@ export const MedicalDashboardPage = () => {
                 onClick={c.onClick}
                 className={cn(
                   'flex flex-1 items-center justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm',
-                  c.onClick && 'cursor-pointer transition hover:-translate-y-0.5 hover:shadow-md'
+                  'cursor-pointer transition hover:-translate-y-0.5 hover:shadow-md'
                 )}
               >
                 <div>
