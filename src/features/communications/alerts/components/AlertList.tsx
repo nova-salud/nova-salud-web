@@ -4,6 +4,7 @@ import { Button, DataTablePagination, type Pagination } from '@/shared/component
 import { AlertPriority } from '../types/alert-priority.enum'
 import { ALERT_LABELS } from '../types/alert-type.enum'
 import type { AlertResponseDto } from '../types/alert-response.dto'
+import { AlertListSkeleton } from './AlertListSkeleton'
 
 const PRIORITY_STYLES = {
   [AlertPriority.HIGH]: {
@@ -30,9 +31,7 @@ type Props = {
 
 export const AlertList = ({ alerts, isLoading, pagination, onNavigate, onResolve }: Props) => {
   if (isLoading) {
-    return (
-      <div className="p-6 text-sm text-slate-400">Cargando alertas...</div>
-    )
+    return <AlertListSkeleton />
   }
 
   if (alerts.length === 0) {
