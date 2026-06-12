@@ -47,6 +47,7 @@ import {
   CreateAccidentPage,
   AlertsPage,
   DocumentTemplatesPage,
+  UserDetailPage,
 } from './lazy-pages'
 
 
@@ -263,6 +264,10 @@ export const appRoutes: RouteObject = {
             {
               path: '/users',
               element: <UsersPage />,
+            },
+            {
+              path: '/users/:id',
+              element: <UserDetailPage />,
             },
             {
               path: '/document-templates',

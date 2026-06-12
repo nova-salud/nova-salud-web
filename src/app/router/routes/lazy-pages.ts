@@ -41,3 +41,4 @@ export const CreateAccidentPage = lazy(() => import('@/features/accidents/accide
 export const AlertsPage = lazy(() => import('@/features/communications/alerts/pages/AlertPage'))
 export const DocumentTemplatesPage = lazy(() => import('@/features/document-templates/pages/DocumentTemplatesPage'))
 export const TherapeuticCategoriesPage = lazy(() => import('@/features/inventory/therapeutic-categories/pages/TherapeuticCategoriesPage'))
+export const UserDetailPage = lazy(() => import('@/features/users/pages/UserDetailPage'))
