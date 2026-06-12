@@ -119,15 +119,7 @@ Mostrar el número de ítems del requerimiento o la prioridad si existe.
 
 ---
 
-## 9. Exportación / impresión de datos del dashboard
-
-**Ausencia:** No existe forma de exportar los datos del dashboard a PDF, Excel o CSV.
-
-**Sugerencia:** Agregar un botón "Exportar" en cada panel de gráfico que permita descargar la data en tabla (CSV) o capturar el panel como imagen (PNG). Esto es especialmente útil para reportes ejecutivos y SST.
-
----
-
-## 10. Tooltips en gráficos de tendencia
+## 9 Tooltips en gráficos de tendencia
 
 **Problema:** Los gráficos de línea (`AdminActivityChart`, `ConsultationsTrendChart`, `AccidentTrendChart`, `RequirementsTrendChart`) usan `lightweight-charts` pero no se verifica si los tooltips están habilitados al hacer hover sobre los puntos de datos.
 
@@ -135,7 +127,7 @@ Mostrar el número de ítems del requerimiento o la prioridad si existe.
 
 ---
 
-## 11. Dashboard de empleados (rol EMPLOYEE/EMPLOYEE_EXT) no implementado
+## 10. Dashboard de empleados (rol EMPLOYEE/EMPLOYEE_EXT) no implementado
 
 **Observación:** En `DashboardPage.tsx`, cuando el rol del usuario es `EMPLOYEE` o `EMPLOYEE_EXT`, se muestra un placeholder. Implementar un dashboard básico para el empleado con:
 - Sus propias atenciones recientes
@@ -144,7 +136,7 @@ Mostrar el número de ítems del requerimiento o la prioridad si existe.
 
 ---
 
-## 12. Sin indicador de "última actualización" de datos en el dashboard
+## 11. Sin indicador de "última actualización" de datos en el dashboard
 
 **Problema:** El usuario no sabe si los datos del dashboard están actualizados o en caché. Si una consulta tarda, el usuario puede tomar decisiones con datos desactualizados.
 
@@ -152,7 +144,7 @@ Mostrar el número de ítems del requerimiento o la prioridad si existe.
 
 ---
 
-## 13. Falta de estado "vacío" enriquecido en gráficos de barras
+## 12. Falta de estado "vacío" enriquecido en gráficos de barras
 
 **Problema:** Cuando `accidentsByArea.length === 0`, se muestra solo "Sin accidentes en el rango" en texto plano. Un estado vacío con ícono y mensaje contextual mejoraría la percepción de calidad de la app.
 
@@ -160,7 +152,7 @@ Mostrar el número de ítems del requerimiento o la prioridad si existe.
 
 ---
 
-## 14. Sin feedback visual en barras horizontales al hacer hover
+## 13. Sin feedback visual en barras horizontales al hacer hover
 
 **Estado parcialmente resuelto:** Se agregó `cursor-pointer` a las filas de barras para indicar que son clickeables. Sin embargo, no hay cambio visual de color o elevación al hacer hover.
 
@@ -168,7 +160,7 @@ Mostrar el número de ítems del requerimiento o la prioridad si existe.
 
 ---
 
-## 15. Notificaciones en tiempo real (Alertas)
+## 15. Notificaciones (Alertas)
 
 **Observación:** Las alertas (`/alerts`) solo son visibles si el usuario navega explícitamente a esa sección. No hay ningún indicador en el layout principal (ej. un badge en el icono del sidebar o una notificación push) cuando nuevas alertas aparecen.
 
