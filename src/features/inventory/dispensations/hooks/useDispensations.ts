@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import { usePaginatedQuery, useDebounce } from '@/shared/hooks'
+import { usePaginatedQuery, useDebounce, useUrlFilters } from '@/shared/hooks'
 import { dispensationService } from '../services/dispensation.service'
 import type { QueryParams } from '@/core/types/query-params.type'
 import type { DispensationResponseDto, FindDispensationsDto } from '../types'
@@ -9,8 +8,8 @@ import { keepPreviousData } from '@tanstack/react-query'
 type ExtraFilters = Omit<FindDispensationsDto, keyof QueryParams>
 
 export const useDispensations = () => {
-  const [extraFilters, setExtraFilters] = useState<ExtraFilters>({})
-  const debouncedEmployeeFullName = useDebounce(extraFilters.employeeFullName, 450)
+  const { filters: extraFilters, setFilters } = useUrlFilters<ExtraFilters>()
+  const debouncedEmployeeFullName = useDebounce(extraFilters.employeeFullName as string | undefined, 450)
 
   const result = usePaginatedQuery<DispensationResponseDto, FindDispensationsDto>({
     queryKey: DISPENSATION_QUERY_KEYS.list({ ...extraFilters, employeeFullName: debouncedEmployeeFullName }),
@@ -19,16 +18,17 @@ export const useDispensations = () => {
       ...extraFilters,
       employeeFullName: debouncedEmployeeFullName || undefined,
     }),
-    placeholderData: keepPreviousData
+    placeholderData: keepPreviousData,
   })
 
   const onChangeFilters = (filters: Partial<ExtraFilters>) => {
-    setExtraFilters(prev => ({ ...prev, ...filters }))
+    setFilters(filters)
     result.goToPage(1)
   }
 
   return {
     ...result,
+    filters: extraFilters,
     onChangeFilters,
   }
 }

@@ -130,29 +130,34 @@ export const SSTDashboardPage = () => {
       label: 'Accidentes totales',
       value: data.summary.totalAccidents,
       icon: <ShieldAlert className="h-4 w-4 text-slate-600" />,
+      path: '/accidents',
     },
     {
       label: 'Casos abiertos',
       value: data.summary.openAccidents,
       icon: <AlertTriangle className="h-4 w-4 text-amber-500" />,
       valueClassName: data.summary.openAccidents > 0 ? 'text-amber-600' : undefined,
+      path: '/accidents',
     },
     {
       label: 'Con restricciones activas',
       value: data.summary.withActiveRestrictions,
       icon: <Activity className="h-4 w-4 text-red-500" />,
       valueClassName: data.summary.withActiveRestrictions > 0 ? 'text-red-600' : undefined,
+      path: '/employees',
     },
     {
       label: 'Altas pendientes',
       value: data.summary.pendingDischarges,
       icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" />,
+      path: '/accidents',
     },
     {
       label: 'Casos prolongados +7d',
       value: data.coreMetrics.casesOverThresholdDays,
       icon: <AlertTriangle className="h-4 w-4 text-orange-500" />,
       valueClassName: data.coreMetrics.casesOverThresholdDays > 0 ? 'text-orange-600' : undefined,
+      path: '/accidents',
     },
     {
       label: 'SCTR activados',
@@ -169,12 +174,14 @@ export const SSTDashboardPage = () => {
       value: data.coreMetrics.overdueFollowUps,
       icon: <AlertTriangle className="h-4 w-4 text-red-500" />,
       valueClassName: data.coreMetrics.overdueFollowUps > 0 ? 'text-red-600' : undefined,
+      path: '/attentions',
     },
     {
       label: 'Empleados con restricciones',
       value: data.coreMetrics.employeesWithRestrictions,
       icon: <Users className="h-4 w-4 text-red-500" />,
       valueClassName: data.coreMetrics.employeesWithRestrictions > 0 ? 'text-red-600' : undefined,
+      path: '/employees',
     },
     {
       label: 'Días sin accidente',
@@ -188,6 +195,7 @@ export const SSTDashboardPage = () => {
       icon: <AlertTriangle className="h-4 w-4 text-amber-500" />,
       iconBg: 'bg-amber-50',
       valueClassName: data.behavioralCases > 0 ? 'text-amber-600' : undefined,
+      path: '/accidents',
     },
     {
       label: 'Trabajadores +21 días DM',
@@ -206,12 +214,14 @@ export const SSTDashboardPage = () => {
       value: data.criticalMedicationsCount,
       icon: <Package className="h-4 w-4 text-red-500" />,
       valueClassName: data.criticalMedicationsCount > 0 ? 'text-red-600' : undefined,
+      path: '/medications',
     },
     {
       label: 'Lotes por vencer (30d)',
       value: data.lotsExpiringSoon,
       icon: <CalendarDays className="h-4 w-4 text-orange-500" />,
       valueClassName: data.lotsExpiringSoon > 0 ? 'text-orange-600' : undefined,
+      path: '/medications',
     },
   ]
 
@@ -220,11 +230,13 @@ export const SSTDashboardPage = () => {
       label: 'Empleados externos involucrados',
       value: data.interestingMetrics.externalEmployeesInvolved,
       icon: <Users className="h-4 w-4 text-slate-400" />,
+      path: '/externos',
     },
     {
       label: 'Reincidencia',
       value: `${recurrenceRateFormatted}%`,
       icon: <RotateCcw className="h-4 w-4 text-indigo-500" />,
+      path: '/accidents',
     },
     {
       label: 'Días prom. recuperación',
@@ -337,13 +349,21 @@ export const SSTDashboardPage = () => {
 
         {(data.severityDistribution?.length ?? 0) > 0 && (
           <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="mb-4 text-base font-semibold text-slate-900">Distribución por severidad</h2>
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-base font-semibold text-slate-900">Distribución por severidad</h2>
+              <button
+                onClick={() => navigate('/accidents')}
+                className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
+              >
+                Ver accidentes
+              </button>
+            </div>
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
               {SEVERITY_LEVELS.map(level => {
                 const item = data.severityDistribution.find(s => s.level === level)
                 const count = item?.count ?? 0
                 return (
-                  <div key={level} className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                  <div key={level} onClick={() => navigate(`/accidents?severityClassification=${level}`)} className="cursor-pointer rounded-2xl border border-slate-100 bg-slate-50 p-4 transition hover:border-slate-200 hover:shadow-sm">
                     <p className="truncate text-sm font-medium text-slate-700">{SEVERITY_LABEL[level] ?? level}</p>
                     <p className={cn('mt-1 text-2xl font-semibold', SEVERITY_COLOR[level])}>{count}</p>
                     <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-200">
@@ -372,7 +392,7 @@ export const SSTDashboardPage = () => {
             </div>
             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
               {data.accidentsByForm.map(item => (
-                <div key={item.form} className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                <div key={item.form} onClick={() => navigate(`/accidents?formClassification=${item.form}`)} className="cursor-pointer rounded-2xl border border-slate-100 bg-slate-50 p-4 transition hover:border-slate-200 hover:shadow-sm">
                   <p className="truncate text-sm font-medium text-slate-700">{formLabel(item.form)}</p>
                   <p className="mt-1 text-2xl font-semibold text-slate-900">{item.count}</p>
                   <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-200">
@@ -389,10 +409,18 @@ export const SSTDashboardPage = () => {
 
         {data.interestingMetrics.topAreas?.length > 0 && (
           <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="mb-4 text-base font-semibold text-slate-900">Áreas con mayor incidencia</h2>
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-base font-semibold text-slate-900">Áreas con mayor incidencia</h2>
+              <button
+                onClick={() => navigate('/accidents')}
+                className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
+              >
+                Ver accidentes
+              </button>
+            </div>
             <div className="space-y-4">
               {data.interestingMetrics.topAreas.map((area, i) => (
-                <div key={i}>
+                <div key={i} onClick={() => navigate(`/accidents?areaName=${encodeURIComponent(area.area)}`)} className="cursor-pointer">
                   <div className="flex justify-between text-sm font-medium text-slate-700">
                     <span className="truncate pr-2">{area.area}</span>
                     <span className="shrink-0 text-slate-500">{area.count}</span>
@@ -424,6 +452,8 @@ export const SSTDashboardPage = () => {
                       />
           <MetricPanel
             title="Métricas ejecutivas"
+            actionLabel="Ver accidentes"
+            onAction={() => navigate('/accidents')}
             rows={ejecutivasRows}
                       />
         </div>
@@ -446,7 +476,7 @@ export const SSTDashboardPage = () => {
             </div>
             <div className="space-y-4">
               {data.investigationsByResponsible.map(item => (
-                <div key={item.responsible}>
+                <div key={item.responsible} onClick={() => navigate('/accidents')} className="cursor-pointer">
                   <div className="flex justify-between text-sm font-medium text-slate-700">
                     <span className="truncate pr-2">{item.responsible}</span>
                     <span className="shrink-0 text-slate-500">{item.count}</span>

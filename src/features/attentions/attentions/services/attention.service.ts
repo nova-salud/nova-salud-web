@@ -5,6 +5,10 @@ import type { AttentionResponseDto, CreateAttentionDto, CreateAttentionWithDispe
 
 export type FindAttentionsParams = QueryParams & {
   clinicalHistoryId?: number
+  employeeId?: number
+  triageLevel?: string
+  employeeFullName?: string
+  diagnosisCode?: string
 }
 
 class AttentionService extends ApiService {

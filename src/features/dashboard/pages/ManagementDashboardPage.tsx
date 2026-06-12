@@ -193,7 +193,7 @@ export const ManagementDashboardPage = () => {
             ) : (
               <div className="space-y-4">
                 {data.employeesByArea.map(item => (
-                  <div key={item.area}>
+                  <div key={item.area} onClick={() => navigate(`/employees?areaName=${encodeURIComponent(item.area)}`)} className="cursor-pointer">
                     <div className="flex justify-between text-sm font-medium text-slate-700">
                       <span className="truncate pr-2">{item.area}</span>
                       <span className="shrink-0 text-slate-500">{item.count}</span>
@@ -225,7 +225,7 @@ export const ManagementDashboardPage = () => {
             ) : (
               <div className="space-y-4">
                 {data.accidentsByArea.map(item => (
-                  <div key={item.area}>
+                  <div key={item.area} onClick={() => navigate(`/accidents?areaName=${encodeURIComponent(item.area)}`)} className="cursor-pointer">
                     <div className="flex justify-between text-sm font-medium text-slate-700">
                       <span className="truncate pr-2">{item.area}</span>
                       <span className="shrink-0 text-slate-500">{item.count}</span>
@@ -255,24 +255,28 @@ export const ManagementDashboardPage = () => {
                 icon: <Users className="h-4 w-4 text-slate-600" />,
                 value: data.summary.totalEmployees,
                 iconBg: 'bg-slate-100',
+                path: '/employees',
               },
               {
                 label: 'Internos',
                 icon: <Users className="h-4 w-4 text-indigo-600" />,
                 value: data.summary.internalEmployees,
                 iconBg: 'bg-indigo-50',
+                path: '/employees',
               },
               {
                 label: 'Externos',
                 icon: <Users className="h-4 w-4 text-blue-600" />,
                 value: data.summary.externalEmployees,
                 iconBg: 'bg-blue-50',
+                path: '/externos',
               },
               {
                 label: 'Ciclos EMO activos',
                 icon: <Activity className="h-4 w-4 text-indigo-600" />,
                 value: data.summary.activeCycles,
                 iconBg: 'bg-indigo-50',
+                path: '/emo-cycles',
               },
               {
                 label: 'Con restricciones',
@@ -280,12 +284,15 @@ export const ManagementDashboardPage = () => {
                 value: data.alerts.employeesWithRestrictions,
                 iconBg: 'bg-amber-50',
                 valueClassName: data.alerts.employeesWithRestrictions > 0 ? 'text-amber-600' : undefined,
+                path: '/employees',
               },
             ]}
           />
 
           <MetricPanel
             title="Alertas"
+            actionLabel="Ver requerimientos"
+            onAction={() => navigate('/requirements')}
             rows={[
               {
                 label: 'Follow-ups vencidos',
@@ -293,6 +300,7 @@ export const ManagementDashboardPage = () => {
                 value: data.alerts.overdueFollowUps,
                 iconBg: 'bg-red-50',
                 valueClassName: data.alerts.overdueFollowUps > 0 ? 'text-red-600' : undefined,
+                path: '/attentions',
               },
               {
                 label: 'Req. pendientes',
@@ -300,6 +308,7 @@ export const ManagementDashboardPage = () => {
                 value: data.alerts.pendingRequirements,
                 iconBg: 'bg-amber-50',
                 valueClassName: data.alerts.pendingRequirements > 0 ? 'text-amber-600' : undefined,
+                path: '/requirements',
               },
               {
                 label: 'Alertas inventario',
@@ -307,6 +316,7 @@ export const ManagementDashboardPage = () => {
                 value: data.unresolvedInventoryAlerts,
                 iconBg: 'bg-red-50',
                 valueClassName: data.unresolvedInventoryAlerts > 0 ? 'text-red-600' : undefined,
+                path: '/alerts',
               },
               {
                 label: 'Prom. días de entrega',
@@ -327,6 +337,7 @@ export const ManagementDashboardPage = () => {
                 icon: <ClipboardList className="h-4 w-4 text-slate-600" />,
                 value: data.requirementsSummary.total,
                 iconBg: 'bg-slate-100',
+                path: '/requirements',
               },
               {
                 label: 'Pendientes',
@@ -334,12 +345,14 @@ export const ManagementDashboardPage = () => {
                 value: data.requirementsSummary.pending,
                 iconBg: 'bg-amber-50',
                 valueClassName: data.requirementsSummary.pending > 0 ? 'text-amber-600' : undefined,
+                path: '/requirements',
               },
               {
                 label: 'En proceso',
                 icon: <TrendingUp className="h-4 w-4 text-blue-600" />,
                 value: data.requirementsSummary.inProgress,
                 iconBg: 'bg-blue-50',
+                path: '/requirements',
               },
               {
                 label: 'Entregados',
@@ -347,6 +360,7 @@ export const ManagementDashboardPage = () => {
                 value: data.requirementsSummary.delivered,
                 iconBg: 'bg-emerald-50',
                 valueClassName: 'text-emerald-600',
+                path: '/requirements',
               },
             ]}
           />

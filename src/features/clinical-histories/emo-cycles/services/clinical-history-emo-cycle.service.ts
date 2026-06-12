@@ -1,8 +1,17 @@
 
 import { ApiService } from '@/core/api/api.service'
+import type { PaginatedResponse } from '@/core/types/paginated-response.type'
 import type { CancelEmoCycleDto, ClinicalHistoryEmoCycleResponseDto, EmitClinicalHistoryConclusionDto, SignClinicalHistoryConformityDto } from '../types'
+import type { FindEmoCyclesDto } from '../types/find-emo-cycles.dto'
 
 class ClinicalHistoryEmoCycleService extends ApiService {
+  async findAll(params?: FindEmoCyclesDto): Promise<PaginatedResponse<ClinicalHistoryEmoCycleResponseDto>> {
+    return await this.get<PaginatedResponse<ClinicalHistoryEmoCycleResponseDto>>(
+      '/clinical-history-emo-cycles',
+      { params },
+    )
+  }
+
   async create(
     clinicalHistoryId: number
   ): Promise<ClinicalHistoryEmoCycleResponseDto> {

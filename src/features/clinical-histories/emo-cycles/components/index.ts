@@ -1,4 +1,6 @@
 export { default as AttachEmoCycleFinalReportSidebar } from './AttachEmoCycleFinalReportSidebar'
+export * from './EmoCycleFilter'
+export * from './EmoCycleTable'
 export * from './CancelEmoCycleModal'
 export { default as ClinicalHistoryEmoCycleSection } from './ClinicalHistoryEmoCycleSection'
 export * from './ClinicalHistoryEmoCycleSectionSkeleton'

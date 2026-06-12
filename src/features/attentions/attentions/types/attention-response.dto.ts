@@ -6,7 +6,10 @@ import type { DiseaseType } from '@/features/attentions/diseases/types/disease-t
 export type AttentionResponseDto = AuditResponseDto & {
   id: number
   clinicalHistoryId: number
+  employeeId: number | null
+  employeeFullName: string | null
   attendedByUserId: number
+  attendedByUserFullName: string | null
   originFollowUpId: number | null
 
   originFollowUp: FollowUpResponseDto | null

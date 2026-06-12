@@ -97,30 +97,35 @@ export const MedicalDashboardPage = () => {
       value: data.summary.activeCycles,
       icon: <Activity className="h-4 w-4 text-indigo-500" />,
       valueClassName: 'text-indigo-600' as const,
+      path: '/emo-cycles',
     },
     {
       label: 'Pendientes de conclusión',
       value: data.summary.pendingConclusion,
       icon: <ClipboardList className="h-4 w-4 text-amber-500" />,
       valueClassName: data.summary.pendingConclusion > 0 ? 'text-amber-600' : undefined,
+      path: '/emo-cycles',
     },
     {
       label: 'Completados este mes',
       value: data.alerts.cyclesCompletedThisMonth,
       icon: <CheckCircle2 className="h-4 w-4 text-emerald-500" />,
       valueClassName: 'text-emerald-600' as const,
+      path: '/emo-cycles',
     },
     {
       label: 'Por vencer (30 días)',
       value: data.emosExpiringSoon,
       icon: <AlertTriangle className="h-4 w-4 text-amber-500" />,
       valueClassName: data.emosExpiringSoon > 0 ? 'text-amber-600' : undefined,
+      path: '/emo-cycles',
     },
     {
       label: 'Conformidad pendiente',
       value: data.pendingEmployeeConformity,
       icon: <ClipboardList className="h-4 w-4 text-amber-500" />,
       valueClassName: data.pendingEmployeeConformity > 0 ? 'text-amber-600' : undefined,
+      path: '/emo-cycles',
     },
   ]
 
@@ -130,12 +135,14 @@ export const MedicalDashboardPage = () => {
       value: data.summary.overdueFollowUps,
       icon: <AlertTriangle className="h-4 w-4 text-red-500" />,
       valueClassName: data.summary.overdueFollowUps > 0 ? 'text-red-600' : undefined,
+      path: '/attentions',
     },
     {
       label: 'Con restricciones',
       value: data.alerts.patientsWithRestrictions,
       icon: <AlertTriangle className="h-4 w-4 text-amber-500" />,
       valueClassName: data.alerts.patientsWithRestrictions > 0 ? 'text-amber-600' : undefined,
+      path: '/employees',
     },
     {
       label: 'Tasa de cumplimiento',
@@ -167,6 +174,7 @@ export const MedicalDashboardPage = () => {
       value: data.alerts.lowStockCount,
       icon: <Package className="h-4 w-4 text-red-500" />,
       valueClassName: data.alerts.lowStockCount > 0 ? 'text-red-600' : undefined,
+      path: '/medications',
     },
     {
       label: 'Trabajadores +21 días DM',
@@ -185,6 +193,7 @@ export const MedicalDashboardPage = () => {
       value: data.lotsExpiringSoon,
       icon: <CalendarDays className="h-4 w-4 text-orange-500" />,
       valueClassName: data.lotsExpiringSoon > 0 ? 'text-orange-600' : undefined,
+      path: '/medications',
     },
   ]
 
@@ -205,7 +214,7 @@ export const MedicalDashboardPage = () => {
                 value: data.summary.consultationsInRange,
                 icon: <Users className="h-5 w-5 text-slate-600" />,
                 bg: 'bg-slate-100',
-                onClick: () => navigate('/clinical-attention'),
+                onClick: () => navigate('/attentions'),
               },
               {
                 label: 'Dispensaciones',
@@ -221,6 +230,7 @@ export const MedicalDashboardPage = () => {
                 icon: <BedDouble className="h-5 w-5 text-amber-600" />,
                 bg: 'bg-amber-50',
                 valueClass: 'text-amber-600',
+                onClick: () => navigate('/clinical-attention'),
               },
             ].map((c) => (
               <div
@@ -246,7 +256,7 @@ export const MedicalDashboardPage = () => {
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-base font-semibold text-slate-900">Tendencia de atenciones</h2>
               <button
-                onClick={() => navigate('/clinical-attention')}
+                onClick={() => navigate('/attentions')}
                 className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
               >
                 Ver atenciones
@@ -270,7 +280,8 @@ export const MedicalDashboardPage = () => {
             return (
               <div
                 key={level}
-                className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm"
+                onClick={() => navigate(`/attentions?triageLevel=${level}`)}
+                className="cursor-pointer rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
               >
                 <div className="flex items-center justify-between">
                   <div>
@@ -303,7 +314,7 @@ export const MedicalDashboardPage = () => {
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-base font-semibold text-slate-900">Diagnósticos frecuentes</h2>
                   <button
-                    onClick={() => navigate('/clinical-attention')}
+                    onClick={() => navigate('/attentions')}
                     className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
                   >
                     Ver atenciones
@@ -311,7 +322,7 @@ export const MedicalDashboardPage = () => {
                 </div>
                 <div className="space-y-4">
                   {data.topDiagnoses.map(item => (
-                    <div key={item.code}>
+                    <div key={item.code} onClick={() => navigate(`/attentions?diagnosisCode=${encodeURIComponent(item.code)}`)} className="cursor-pointer">
                       <div className="flex justify-between text-sm font-medium text-slate-700">
                         <span className="truncate pr-2">
                           {item.name ?? item.code}
@@ -346,7 +357,7 @@ export const MedicalDashboardPage = () => {
                 </div>
                 <div className="space-y-4">
                   {data.dispensationsByType.map(item => (
-                    <div key={item.type}>
+                    <div key={item.type} onClick={() => navigate(`/dispensations?dispenseType=${encodeURIComponent(item.type)}`)} className="cursor-pointer">
                       <div className="flex justify-between text-sm font-medium text-slate-700">
                         <span className="truncate pr-2">{DISPENSE_TYPE_LABEL[item.type] ?? item.type}</span>
                         <span className="shrink-0 text-slate-500">{item.count}</span>
@@ -369,12 +380,14 @@ export const MedicalDashboardPage = () => {
         <div className="grid gap-6 xl:grid-cols-3">
           <MetricPanel
             title="EMO"
+            actionLabel="Ver ciclos EMO"
+            onAction={() => navigate('/emo-cycles')}
             rows={emoRows}
           />
           <MetricPanel
             title="Seguimientos"
             actionLabel="Ver atenciones"
-            onAction={() => navigate('/clinical-attention')}
+            onAction={() => navigate('/attentions')}
             rows={seguimientosRows}
           />
           <MetricPanel
@@ -482,10 +495,10 @@ export const MedicalDashboardPage = () => {
               Últimas atenciones
             </h2>
             <button
-              onClick={() => navigate('/clinical-attention')}
+              onClick={() => navigate('/attentions')}
               className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
             >
-              Ver atención clínica
+              Ver atenciones
             </button>
           </div>
 

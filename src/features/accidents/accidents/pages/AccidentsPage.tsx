@@ -9,7 +9,7 @@ import { useAccidents } from '../hooks'
 export const AccidentsPage = () => {
   const navigate = useNavigate()
 
-  const { data, isLoading, error, pagination, onChangeFilters } = useAccidents()
+  const { data, isLoading, error, pagination, filters, onChangeFilters } = useAccidents()
 
   const open = data.filter(a => a.status === AccidentStatusEnum.OPEN).length
   const closed = data.filter(a => a.status === AccidentStatusEnum.CLOSED).length
@@ -52,7 +52,7 @@ export const AccidentsPage = () => {
       }
     >
       <div className="space-y-6">
-        <AccidentFilter onChangeFilters={onChangeFilters} />
+        <AccidentFilter filters={filters} onChangeFilters={onChangeFilters} />
 
         {error && (
           <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">

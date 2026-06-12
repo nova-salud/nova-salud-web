@@ -87,29 +87,29 @@ export const AdminDashboardPage = () => {
     {
       info: PERSONAL_PANEL,
       rows: [
-        { label: 'Trabajadores activos', value: data.summary.totalEmployees, icon: <Users className="h-4 w-4 text-slate-600" /> },
-        { label: 'Empleados internos', value: data.summary.internalEmployees, icon: <Users className="h-4 w-4 text-indigo-500" /> },
-        { label: 'Empleados externos', value: data.summary.externalEmployees, icon: <Users className="h-4 w-4 text-slate-400" /> },
+        { label: 'Trabajadores activos', value: data.summary.totalEmployees, icon: <Users className="h-4 w-4 text-slate-600" />, path: '/employees' },
+        { label: 'Empleados internos', value: data.summary.internalEmployees, icon: <Users className="h-4 w-4 text-indigo-500" />, path: '/employees' },
+        { label: 'Empleados externos', value: data.summary.externalEmployees, icon: <Users className="h-4 w-4 text-slate-400" />, path: '/externos' },
       ]
     },
     {
       info: ACCIDENTAL_PANEL,
       rows: [
-        { label: 'Casos activos', value: data.summary.activeCases, icon: <Activity className="h-4 w-4 text-red-500" />, valueClassName: data.summary.activeCases > 0 ? 'text-red-600' : undefined },
-        { label: 'Accidentes totales', value: data.summary.totalAccidents, icon: <ShieldAlert className="h-4 w-4 text-amber-500" />, valueClassName: 'text-amber-600' },
-        { label: 'Casos prolongados +30d', value: data.sst.casesOverThresholdDays, icon: <AlertTriangle className="h-4 w-4 text-orange-500" />, valueClassName: data.sst.casesOverThresholdDays > 0 ? 'text-orange-600' : undefined },
+        { label: 'Casos activos', value: data.summary.activeCases, icon: <Activity className="h-4 w-4 text-red-500" />, valueClassName: data.summary.activeCases > 0 ? 'text-red-600' : undefined, path: '/accidents' },
+        { label: 'Accidentes totales', value: data.summary.totalAccidents, icon: <ShieldAlert className="h-4 w-4 text-amber-500" />, valueClassName: 'text-amber-600', path: '/accidents' },
+        { label: 'Casos prolongados +30d', value: data.sst.casesOverThresholdDays, icon: <AlertTriangle className="h-4 w-4 text-orange-500" />, valueClassName: data.sst.casesOverThresholdDays > 0 ? 'text-orange-600' : undefined, path: '/accidents' },
         { label: 'Tasa por 100 emp.', value: data.sst.accidentRatePer100Employees, icon: <TrendingUp className="h-4 w-4 text-slate-400" /> },
       ]
     },
     {
       info: ALERTAS_PANEL,
       rows: [
-        { label: 'Follow-ups vencidos', value: data.alerts.overdueFollowUps, icon: <AlertTriangle className="h-4 w-4 text-red-500" />, valueClassName: data.alerts.overdueFollowUps > 0 ? 'text-red-600' : undefined },
-        { label: 'Con restricciones', value: data.alerts.employeesWithRestrictions, icon: <AlertTriangle className="h-4 w-4 text-amber-500" />, valueClassName: data.alerts.employeesWithRestrictions > 0 ? 'text-amber-600' : undefined },
-        { label: 'Medicamentos críticos', value: data.alerts.criticalMedications, icon: <Package className="h-4 w-4 text-rose-500" />, valueClassName: data.alerts.criticalMedications > 0 ? 'text-rose-600' : undefined },
+        { label: 'Follow-ups vencidos', value: data.alerts.overdueFollowUps, icon: <AlertTriangle className="h-4 w-4 text-red-500" />, valueClassName: data.alerts.overdueFollowUps > 0 ? 'text-red-600' : undefined, path: '/attentions' },
+        { label: 'Con restricciones', value: data.alerts.employeesWithRestrictions, icon: <AlertTriangle className="h-4 w-4 text-amber-500" />, valueClassName: data.alerts.employeesWithRestrictions > 0 ? 'text-amber-600' : undefined, path: '/employees' },
+        { label: 'Medicamentos críticos', value: data.alerts.criticalMedications, icon: <Package className="h-4 w-4 text-rose-500" />, valueClassName: data.alerts.criticalMedications > 0 ? 'text-rose-600' : undefined, path: '/medications' },
         { label: 'Más de 21 días DM', value: data.alerts.workersWithOver21DmDays, icon: <AlertTriangle className="h-4 w-4 text-red-400" />, valueClassName: data.alerts.workersWithOver21DmDays > 0 ? 'text-red-600' : undefined },
         { label: 'DM por vencer', value: data.alerts.dmDaysExpiringSoon, icon: <AlertTriangle className="h-4 w-4 text-amber-400" />, valueClassName: data.alerts.dmDaysExpiringSoon > 0 ? 'text-amber-600' : undefined },
-        { label: 'Lotes por vencer (30d)', value: data.alerts.lotsExpiringSoon, icon: <CalendarDays className="h-4 w-4 text-orange-500" />, valueClassName: data.alerts.lotsExpiringSoon > 0 ? 'text-orange-600' : undefined },
+        { label: 'Lotes por vencer (30d)', value: data.alerts.lotsExpiringSoon, icon: <CalendarDays className="h-4 w-4 text-orange-500" />, valueClassName: data.alerts.lotsExpiringSoon > 0 ? 'text-orange-600' : undefined, path: '/medications' },
       ]
     }
   ]
@@ -146,10 +146,10 @@ export const AdminDashboardPage = () => {
         <div className="grid gap-4 xl:grid-cols-4">
           <div className="flex flex-col gap-3">
             {[
-              { label: 'Atenciones en rango', value: data.summary.consultationsInRange, color: 'text-indigo-600', bg: 'bg-indigo-50', icon: <TrendingUp className="h-5 w-5 text-indigo-600" />, path: '/clinical-attention' },
-              { label: 'Follow-ups en rango', value: data.summary.followUpsInRange, color: 'text-blue-600', bg: 'bg-blue-50', icon: <ClipboardList className="h-5 w-5 text-blue-600" />, path: '/clinical-attention' },
+              { label: 'Atenciones en rango', value: data.summary.consultationsInRange, color: 'text-indigo-600', bg: 'bg-indigo-50', icon: <TrendingUp className="h-5 w-5 text-indigo-600" />, path: '/attentions' },
+              { label: 'Follow-ups en rango', value: data.summary.followUpsInRange, color: 'text-blue-600', bg: 'bg-blue-50', icon: <ClipboardList className="h-5 w-5 text-blue-600" />, path: '/attentions' },
               { label: 'Accidentes en rango', value: data.accidentsInRange, color: 'text-amber-600', bg: 'bg-amber-50', icon: <ShieldAlert className="h-5 w-5 text-amber-600" />, path: '/accidents' },
-              { label: 'Dispensaciones en rango', value: data.dispensationsInRange, color: 'text-emerald-600', bg: 'bg-emerald-50', icon: <Package className="h-5 w-5 text-emerald-600" />, path: undefined },
+              { label: 'Dispensaciones en rango', value: data.dispensationsInRange, color: 'text-emerald-600', bg: 'bg-emerald-50', icon: <Package className="h-5 w-5 text-emerald-600" />, path: '/dispensations' },
             ].map(card => (
               <div
                 key={card.label}
@@ -196,7 +196,7 @@ export const AdminDashboardPage = () => {
             ) : (
               <div className="space-y-4">
                 {data.accidentsByArea.map(item => (
-                  <div key={item.area}>
+                  <div key={item.area} onClick={() => navigate(`/accidents?areaName=${encodeURIComponent(item.area)}`)} className="cursor-pointer">
                     <div className="flex justify-between text-sm font-medium text-slate-700">
                       <span className="truncate pr-2">{item.area}</span>
                       <span className="shrink-0 text-slate-500">{item.count}</span>
@@ -228,7 +228,7 @@ export const AdminDashboardPage = () => {
             ) : (
               <div className="space-y-4">
                 {data.mostUsedMedications.map(m => (
-                  <div key={m.name}>
+                  <div key={m.name} onClick={() => navigate('/medications')} className="cursor-pointer">
                     <div className="flex justify-between text-sm font-medium text-slate-700">
                       <span className="truncate pr-2">{m.name}</span>
                       <span className="shrink-0 text-slate-500">{m.count} uds</span>
@@ -259,7 +259,7 @@ export const AdminDashboardPage = () => {
             </div>
             <div className="space-y-4">
               {data.accidentsByClassification.map(item => (
-                <div key={item.classification}>
+                <div key={item.classification} onClick={() => navigate(`/accidents?formClassification=${encodeURIComponent(item.classification)}`)} className="cursor-pointer">
                   <div className="flex justify-between text-sm font-medium text-slate-700">
                     <span className="truncate pr-2">{item.classification}</span>
                     <span className="shrink-0 text-slate-500">{item.count}</span>
@@ -287,6 +287,8 @@ export const AdminDashboardPage = () => {
           ))}
           <MetricPanel
             title="Salud"
+            actionLabel="Ver ciclos EMO"
+            onAction={() => navigate('/emo-cycles')}
             rows={[
               {
                 label: 'En descanso médico',
@@ -301,6 +303,7 @@ export const AdminDashboardPage = () => {
                 value: data.emosExpiringSoon,
                 iconBg: 'bg-amber-50',
                 valueClassName: data.emosExpiringSoon > 0 ? 'text-amber-600' : undefined,
+                path: '/emo-cycles',
               },
               {
                 label: 'Conf. pendiente empleado',
@@ -308,6 +311,7 @@ export const AdminDashboardPage = () => {
                 value: data.pendingEmployeeConformity,
                 iconBg: 'bg-amber-50',
                 valueClassName: data.pendingEmployeeConformity > 0 ? 'text-amber-600' : undefined,
+                path: '/emo-cycles',
               },
               {
                 label: 'Alertas inventario',
@@ -315,6 +319,7 @@ export const AdminDashboardPage = () => {
                 value: data.unresolvedInventoryAlerts,
                 iconBg: 'bg-red-50',
                 valueClassName: data.unresolvedInventoryAlerts > 0 ? 'text-red-600' : undefined,
+                path: '/alerts',
               },
             ]}
           />

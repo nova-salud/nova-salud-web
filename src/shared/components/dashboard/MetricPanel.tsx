@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { useNavigate } from 'react-router'
 
 export interface MetricPanelRow {
   label: string
@@ -6,6 +7,7 @@ export interface MetricPanelRow {
   value: string | number
   valueClassName?: string
   iconBg?: string
+  path?: string
 }
 
 interface MetricPanelProps {
@@ -31,6 +33,7 @@ export function MetricPanel({
   panelHeight,
   rowHeight = 'md',
 }: MetricPanelProps) {
+  const navigate = useNavigate()
   const rowClass = panelHeight ? 'flex-1' : ROW_HEIGHT[rowHeight]
 
   return (
@@ -52,7 +55,15 @@ export function MetricPanel({
 
       <div className="flex flex-1 flex-col divide-y divide-slate-100">
         {rows.map(row => (
-          <div key={row.label} className={`flex items-center gap-3 ${rowClass}`}>
+          <div
+            key={row.label}
+            onClick={row.path ? () => navigate(row.path!) : undefined}
+            className={[
+              'flex items-center gap-3 rounded-xl px-1 transition-colors',
+              rowClass,
+              row.path ? 'cursor-pointer hover:bg-slate-50' : '',
+            ].join(' ')}
+          >
             <div
               className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${row.iconBg ?? 'bg-slate-100'}`}
             >

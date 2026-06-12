@@ -6,6 +6,7 @@ import {
   BellDot,
   BookOpen,
   Building2,
+  ClipboardList,
   ClipboardPlus,
   FileBadge,
   FileText,
@@ -112,6 +113,26 @@ export const navigationConfig: NavigationSection[] = [
         label: 'Tipos de alergia',
         path: '/allergy-types',
         icon: AlertCircle,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.NURSE,
+        ],
+      },
+      {
+        label: 'Ciclos EMO',
+        path: '/emo-cycles',
+        icon: ClipboardList,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.NURSE,
+        ],
+      },
+      {
+        label: 'Atenciones',
+        path: '/attentions',
+        icon: Stethoscope,
         roles: [
           RoleEnum.ADMIN,
           RoleEnum.OCCUPATIONAL_DOCTOR,
