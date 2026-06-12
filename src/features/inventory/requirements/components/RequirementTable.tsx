@@ -20,7 +20,7 @@ const RequirementTable = ({ items, isLoading = false, pagination }: Props) => {
       isLoading={isLoading}
       emptyMessage="No se encontraron requerimientos."
       pagination={pagination}
-      columns={['ID', 'Código', 'Estado', 'Items', 'Costo Total', 'Solicitado', 'Entregado']}
+      columns={['ID', 'Código', 'Estado', 'Items', 'Costo Total', 'Solicitante', 'Despachador', 'Solicitado', 'Entregado']}
       renderRow={(item) => (
         <>
           <td className="px-6 py-5 font-medium text-slate-900">#{item.id}</td>
@@ -42,6 +42,9 @@ const RequirementTable = ({ items, isLoading = false, pagination }: Props) => {
           <td className="px-6 py-5 text-slate-500">
             {item.totalCost != null ? `S/. ${item.totalCost}` : '-'}
           </td>
+
+          <td className="px-6 py-5 text-slate-500">{item.requestedByUserName}</td>
+          <td className="px-6 py-5 text-slate-500">{item.deliveredByUserName ?? '-'}</td>
 
           <td className="px-6 py-5 text-slate-500">
             {new Date(item.createdAt).toLocaleDateString('es-PE')}

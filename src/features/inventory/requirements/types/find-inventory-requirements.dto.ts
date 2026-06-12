@@ -6,4 +6,6 @@ export type FindInventoryRequirementsDto = QueryParams & {
   requestedByUserId?: number
   deliveredByUserId?: number
   requestCode?: string
+  requestedByUserName?: string
+  deliveredByUserName?: string
 }

@@ -6,7 +6,9 @@ export type InventoryRequirementResponseDto = AuditResponseDto & {
   id: number
   code: string
   requestedByUserId: number
+  requestedByUserName: string
   deliveredByUserId: number | null
+  deliveredByUserName: string | null
   status: InventoryRequirementStatusEnum
   requestNote: string | null
   deliveryNote: string | null

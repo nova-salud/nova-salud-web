@@ -1,4 +1,4 @@
-import { Select } from '@/shared/components/ui/form'
+import { Input, Select } from '@/shared/components/ui/form'
 import { InventoryRequirementStatusEnum } from '../types/inventory-requirement-status.enum'
 import type { FindInventoryRequirementsDto } from '../types/find-inventory-requirements.dto'
 
@@ -20,6 +20,27 @@ export const RequirementFilter = ({ onChangeFilters }: RequirementFilterProps) =
 
   return (
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <Input
+        label="Código"
+        name="requestCode"
+        type="text"
+        placeholder="Buscar por código..."
+        onChange={(e) => onKeyChange(e.target.value, 'requestCode')}
+      />
+      <Input
+        label="Solicitante"
+        name="requestedByUserName"
+        type="text"
+        placeholder="Buscar por nombre..."
+        onChange={(e) => onKeyChange(e.target.value, 'requestedByUserName')}
+      />
+      <Input
+        label="Despachador"
+        name="deliveredByUserName"
+        type="text"
+        placeholder="Buscar por nombre..."
+        onChange={(e) => onKeyChange(e.target.value, 'deliveredByUserName')}
+      />
       <Select
         name="status"
         label="Estado"
