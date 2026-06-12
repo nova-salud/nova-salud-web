@@ -40,3 +40,4 @@ export const CreateAccidentFromClinicaHistoryPage = lazy(() => import('@/feature
 export const CreateAccidentPage = lazy(() => import('@/features/accidents/accidents/pages/CreateAccidentPage').then(m => ({ default: m.CreateAccidentPage })))
 export const AlertsPage = lazy(() => import('@/features/communications/alerts/pages/AlertPage'))
 export const DocumentTemplatesPage = lazy(() => import('@/features/document-templates/pages/DocumentTemplatesPage'))
+export const TherapeuticCategoriesPage = lazy(() => import('@/features/inventory/therapeutic-categories/pages/TherapeuticCategoriesPage'))

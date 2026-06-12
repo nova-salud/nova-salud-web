@@ -40,6 +40,7 @@ import {
   HealthcareCentersPage,
   HealthcareCenterDetailPage,
   AllergyTypesPage,
+  TherapeuticCategoriesPage,
   AccidentDetailPage,
   AccidentsPage,
   CreateAccidentFromClinicaHistoryPage,
@@ -75,6 +76,10 @@ export const appRoutes: RouteObject = {
             {
               path: '/allergy-types',
               element: <AllergyTypesPage />,
+            },
+            {
+              path: '/therapeutic-categories',
+              element: <TherapeuticCategoriesPage />,
             },
             {
               path: '/clinical-histories',

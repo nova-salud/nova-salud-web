@@ -17,6 +17,7 @@ import {
   ShieldAlert,
   ShoppingCart,
   Stethoscope,
+  Tag,
   UserCog,
   Users,
   Briefcase,
@@ -151,6 +152,16 @@ export const navigationConfig: NavigationSection[] = [
         label: 'Medicamentos',
         path: '/medications',
         icon: Pill,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.NURSE,
+        ],
+      },
+      {
+        label: 'Categorías de medicamentos',
+        path: '/therapeutic-categories',
+        icon: Tag,
         roles: [
           RoleEnum.ADMIN,
           RoleEnum.OCCUPATIONAL_DOCTOR,
