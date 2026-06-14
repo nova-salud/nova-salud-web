@@ -3,6 +3,7 @@ import {
   Activity,
   AlertCircle,
   ArrowLeftRight,
+  BedDouble,
   BellDot,
   BookOpen,
   Building2,
@@ -133,6 +134,16 @@ export const navigationConfig: NavigationSection[] = [
         label: 'Atenciones',
         path: '/attentions',
         icon: Stethoscope,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.NURSE,
+        ],
+      },
+      {
+        label: 'Descansos Médicos',
+        path: '/medical-rests',
+        icon: BedDouble,
         roles: [
           RoleEnum.ADMIN,
           RoleEnum.OCCUPATIONAL_DOCTOR,

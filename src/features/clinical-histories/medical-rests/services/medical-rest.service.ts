@@ -7,6 +7,9 @@ export type FindMedicalRestsParams = QueryParams & {
   clinicalHistoryId?: number
   accidentId?: number
   attentionId?: number
+  employeeFullName?: string
+  startDateFrom?: string
+  startDateTo?: string
 }
 
 class MedicalRestService extends ApiService {

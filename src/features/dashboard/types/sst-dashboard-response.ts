@@ -46,6 +46,7 @@ export type SSTDashboardResponse = {
   recentAccidents: {
     id: number
     employeeName: string
+    areaName: string | null
     occurredAt: string
     type: AccidentTypeEnum
     status: AccidentStatusEnum

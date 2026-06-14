@@ -32,6 +32,7 @@ export type MedicalDashboardResponse = {
     attendedAt: string
     triageLevel: string
     diagnosisCode: string | null
+    diseaseName: string | null
     followUpCount: number
   }[]
 

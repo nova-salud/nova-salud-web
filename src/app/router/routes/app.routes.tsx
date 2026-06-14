@@ -7,6 +7,7 @@ import ErrorPage from '@/shared/pages/ErrorPage'
 import { RoleEnum } from '@/core/enums/role.enum'
 import {
   DashboardPage,
+  MedicalRestsPage,
   MedicationsPage,
   MedicationDetailPage,
   CreateMedicationPage,
@@ -131,6 +132,10 @@ export const appRoutes: RouteObject = {
             {
               path: '/attentions',
               element: <AttentionsPage />,
+            },
+            {
+              path: '/medical-rests',
+              element: <MedicalRestsPage />,
             },
             {
               path: '/diseases',

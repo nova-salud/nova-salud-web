@@ -163,11 +163,13 @@ export const MedicalDashboardPage = () => {
       value: data.employeesOnMedicalRest,
       icon: <BedDouble className="h-4 w-4 text-indigo-500" />,
       valueClassName: data.employeesOnMedicalRest > 0 ? 'text-indigo-600' : undefined,
+      path: '/medical-rests',
     },
     {
       label: 'Días prom. descanso',
       value: data.averageMedicalRestDays.toFixed(1),
       icon: <Clock className="h-4 w-4 text-slate-400" />,
+      path: '/medical-rests',
     },
     {
       label: 'Medicamentos bajo stock',
@@ -230,7 +232,7 @@ export const MedicalDashboardPage = () => {
                 icon: <BedDouble className="h-5 w-5 text-amber-600" />,
                 bg: 'bg-amber-50',
                 valueClass: 'text-amber-600',
-                onClick: () => navigate('/clinical-attention'),
+                onClick: () => navigate('/medical-rests'),
               },
             ].map((c) => (
               <div
@@ -550,7 +552,14 @@ export const MedicalDashboardPage = () => {
                       </td>
 
                       <td className="px-6 py-4 text-slate-600">
-                        {item.diagnosisCode ?? '—'}
+                        {item.diagnosisCode ? (
+                          <div>
+                            <p className="font-medium text-slate-700">{item.diseaseName ?? item.diagnosisCode}</p>
+                            {item.diseaseName && (
+                              <p className="text-xs text-slate-400">{item.diagnosisCode}</p>
+                            )}
+                          </div>
+                        ) : '—'}
                       </td>
 
                       <td className="px-6 py-4">

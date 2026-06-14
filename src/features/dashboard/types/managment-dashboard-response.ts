@@ -39,5 +39,6 @@ export type ManagementDashboardResponse = {
     status: string
     requestedBy: string
     createdAt: string
+    itemCount: number
   }[]
 }

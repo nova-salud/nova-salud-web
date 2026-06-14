@@ -11,6 +11,8 @@ export type MedicalRestResponseDto = AuditResponseDto & {
   fileName: string | null
   fileUrl: string | null
   fileType: string | null
+  employeeId: number | null
+  employeeFullName: string | null
 }
 
 export type CreateMedicalRestDto = {

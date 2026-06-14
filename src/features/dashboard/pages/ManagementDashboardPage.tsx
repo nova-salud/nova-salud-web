@@ -390,6 +390,7 @@ export const ManagementDashboardPage = () => {
                     <th className="px-6 py-3">Código</th>
                     <th className="px-6 py-3">Solicitante</th>
                     <th className="px-6 py-3">Estado</th>
+                    <th className="px-6 py-3">Ítems</th>
                     <th className="px-6 py-3">Fecha</th>
                   </tr>
                 </thead>
@@ -409,6 +410,9 @@ export const ManagementDashboardPage = () => {
                         )}>
                           {REQ_STATUS_LABEL[item.status] ?? item.status}
                         </span>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-slate-600">
+                        {item.itemCount} ítem{item.itemCount !== 1 ? 's' : ''}
                       </td>
                       <td className="px-6 py-4 text-slate-500">
                         {new Date(item.createdAt).toLocaleDateString('es-PE', {

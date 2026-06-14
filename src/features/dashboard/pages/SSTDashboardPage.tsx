@@ -508,6 +508,7 @@ export const SSTDashboardPage = () => {
             <thead>
               <tr className="text-left text-xs text-slate-400">
                 <th className="px-6 py-3">Trabajador</th>
+                <th>Área</th>
                 <th>Fecha</th>
                 <th>Tipo</th>
                 <th>Estado</th>
@@ -522,6 +523,9 @@ export const SSTDashboardPage = () => {
                 >
                   <td className="px-6 py-4 font-medium text-slate-900">
                     {item.employeeName}
+                  </td>
+                  <td className="px-3 py-4 text-sm text-slate-500">
+                    {item.areaName ?? '—'}
                   </td>
                   <td>
                     {format(new Date(item.occurredAt), 'dd/MM/yyyy')}
