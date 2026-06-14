@@ -45,3 +45,4 @@ export const UserDetailPage = lazy(() => import('@/features/users/pages/UserDeta
 export const EmoCyclesPage = lazy(() => import('@/features/clinical-histories/emo-cycles/pages/EmoCyclesPage'))
 export const AttentionsPage = lazy(() => import('@/features/attentions/attentions/pages/AttentionsPage'))
 export const MedicalRestsPage = lazy(() => import('@/features/clinical-histories/medical-rests/pages/MedicalRestsPage'))
+export const MyClinicialHistoryPage = lazy(() => import('@/features/clinical-histories/clinical-histories/pages/MyClinicialHistoryPage'))

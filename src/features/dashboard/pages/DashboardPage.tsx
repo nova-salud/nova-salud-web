@@ -4,8 +4,9 @@ import { useAuth } from '@/shared/hooks/useAuth'
 import { SSTDashboardPage } from './SSTDashboardPage'
 import { MedicalDashboardPage } from './MedicalDashboardPage'
 import { AdminDashboardPage } from './AdminDashboardPage'
-import { cn } from '@/shared/utils'
 import { ManagementDashboardPage } from './ManagementDashboardPage'
+import { EmployeeDashboardPage } from './EmployeeDashboardPage'
+import { cn } from '@/shared/utils'
 import { useSearchParams } from 'react-router'
 
 type DashboardType = 'MEDICAL' | 'SST' | 'MANAGEMENT' | 'EMPLOYEE' | 'ADMIN'
@@ -38,7 +39,7 @@ const dashboardMap: Record<DashboardType, React.ComponentType> = {
   MEDICAL: MedicalDashboardPage,
   SST: SSTDashboardPage,
   MANAGEMENT: ManagementDashboardPage,
-  EMPLOYEE: () => <div>Employee</div>,
+  EMPLOYEE: EmployeeDashboardPage,
 }
 
 const DashboardPage = () => {

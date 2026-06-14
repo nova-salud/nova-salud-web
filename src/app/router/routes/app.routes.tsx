@@ -5,9 +5,11 @@ import RoleGuard from '@/app/router/guards/role.guard'
 import NotFoundPage from '@/shared/pages/NotFoundPage'
 import ErrorPage from '@/shared/pages/ErrorPage'
 import { RoleEnum } from '@/core/enums/role.enum'
+import { ALERT_ROLES_WITH_ACCESS } from '@/features/communications/alerts/config/alert-role-config'
 import {
   DashboardPage,
   MedicalRestsPage,
+  MyClinicialHistoryPage,
   MedicationsPage,
   MedicationDetailPage,
   CreateMedicationPage,
@@ -73,6 +75,8 @@ export const appRoutes: RouteObject = {
                 RoleEnum.ADMIN,
                 RoleEnum.OCCUPATIONAL_DOCTOR,
                 RoleEnum.NURSE,
+                RoleEnum.EMPLOYEE,
+                RoleEnum.EMPLOYEE_EXT,
               ]}
             />
           ),
@@ -291,10 +295,7 @@ export const appRoutes: RouteObject = {
           ],
         },
         {
-          element: <RoleGuard roles={[
-            RoleEnum.SST,
-            RoleEnum.ADMIN
-          ]} />,
+          element: <RoleGuard roles={[RoleEnum.SST, RoleEnum.ADMIN]} />,
           children: [
             {
               path: '/accidents',
@@ -308,10 +309,21 @@ export const appRoutes: RouteObject = {
               path: '/accidents/:accidentId',
               element: <AccidentDetailPage />,
             },
+          ],
+        },
+        {
+          element: <RoleGuard roles={[...ALERT_ROLES_WITH_ACCESS]} />,
+          children: [
             {
               path: '/alerts',
-              element: <AlertsPage />
-            }
+              element: <AlertsPage />,
+            },
+          ],
+        },
+        {
+          element: <RoleGuard roles={[RoleEnum.EMPLOYEE, RoleEnum.EMPLOYEE_EXT]} />,
+          children: [
+            { path: '/my-clinical-history', element: <MyClinicialHistoryPage /> },
           ],
         },
         {

@@ -3,6 +3,7 @@ import type { SSTDashboardResponse } from '../types/sst-dashboard-response'
 import type { MedicalDashboardResponse } from '../types/medical-dashboard-response'
 import type { ManagementDashboardResponse } from '../types/managment-dashboard-response'
 import type { AdminDashboardResponse } from '../types/admin-dashboard-response'
+import type { EmployeeDashboardResponse } from '../types/employee-dashboard-response'
 import type { DateRange } from '@/shared/components/dashboard/DateRangeFilter'
 
 class DashboardService extends ApiService {
@@ -24,6 +25,10 @@ class DashboardService extends ApiService {
     return await this.get<AdminDashboardResponse>('/dashboards/admin', {
       params: { ...filters, ...(eventType ? { eventType } : {}) },
     })
+  }
+
+  async getEmployeeDashboard(): Promise<EmployeeDashboardResponse> {
+    return await this.get<EmployeeDashboardResponse>('/dashboards/employee')
   }
 }
 

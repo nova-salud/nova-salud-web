@@ -1,4 +1,5 @@
 import { RoleEnum } from '@/core/enums/role.enum'
+import { ALERT_ROLES_WITH_ACCESS } from '@/features/communications/alerts/config/alert-role-config'
 import {
   Activity,
   AlertCircle,
@@ -55,15 +56,21 @@ export const navigationConfig: NavigationSection[] = [
           RoleEnum.HR,
           RoleEnum.SUPERVISOR,
           RoleEnum.MANAGEMENT,
+          RoleEnum.EMPLOYEE,
+          RoleEnum.EMPLOYEE_EXT,
         ],
       },
       {
         label: 'Alertas',
         path: '/alerts',
         icon: BellDot,
-        roles: [
-          RoleEnum.ADMIN,
-        ],
+        roles: [...ALERT_ROLES_WITH_ACCESS],
+      },
+      {
+        label: 'Mi Historia Clínica',
+        path: '/my-clinical-history',
+        icon: BookOpen,
+        roles: [RoleEnum.EMPLOYEE, RoleEnum.EMPLOYEE_EXT],
       },
     ],
   },

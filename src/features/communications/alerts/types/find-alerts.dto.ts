@@ -5,6 +5,7 @@ import type { AlertPriority } from './alert-priority.enum'
 export interface FindAlertsDto extends QueryParams {
   isResolved?: boolean
   type?: AlertType
+  types?: AlertType[]
   priority?: AlertPriority
   title?: string
   employeeName?: string

@@ -1,17 +1,27 @@
 import { createChart, LineSeries, ColorType } from 'lightweight-charts'
 import { useEffect, useRef } from 'react'
 
-type Props = {
-  data: { date: string; count: number }[]
+const MONTHS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
+
+const formatDate = (time: string) => {
+  const [year, month, day] = time.split('-').map(Number)
+  return `${day} ${MONTHS[month - 1]} ${year}`
 }
 
-export const ConsultationsTrendChart = ({ data }: Props) => {
-  const ref = useRef<HTMLDivElement | null>(null)
+type Props = {
+  data: { date: string; count: number }[]
+  onDateClick?: (date: string) => void
+}
+
+export const ConsultationsTrendChart = ({ data, onDateClick }: Props) => {
+  const containerRef = useRef<HTMLDivElement | null>(null)
+  const tooltipRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
-    if (!ref.current || data.length === 0) return
+    if (!containerRef.current || data.length === 0) return
 
-    const container = ref.current
+    const container = containerRef.current
+    const tooltip = tooltipRef.current!
 
     const chart = createChart(container, {
       width: container.clientWidth,
@@ -38,6 +48,33 @@ export const ConsultationsTrendChart = ({ data }: Props) => {
     series.setData(data.map(d => ({ time: d.date, value: d.count })))
     chart.timeScale().fitContent()
 
+    chart.subscribeCrosshairMove((param) => {
+      if (!param.point || !param.time || param.point.x < 0 || param.point.y < 0) {
+        tooltip.style.display = 'none'
+        return
+      }
+      const item = param.seriesData.get(series) as { value: number } | undefined
+      if (!item) { tooltip.style.display = 'none'; return }
+
+      const date = param.time as string
+      tooltip.innerHTML = `
+        <p style="font-size:11px;color:#94a3b8;margin-bottom:2px">${formatDate(date)}</p>
+        <p style="font-size:13px;font-weight:600;color:#1e293b">Atenciones: <span style="color:#6366f1">${Math.round(item.value)}</span></p>
+      `
+      const tw = tooltip.offsetWidth
+      const left = param.point.x + 12 + tw > container.clientWidth ? param.point.x - tw - 12 : param.point.x + 12
+      tooltip.style.left = `${left}px`
+      tooltip.style.top = `${Math.max(0, param.point.y - 44)}px`
+      tooltip.style.display = 'block'
+    })
+
+    if (onDateClick) {
+      chart.subscribeClick((param) => {
+        if (!param.time) return
+        onDateClick(param.time as string)
+      })
+    }
+
     const resizeObserver = new ResizeObserver((entries) => {
       const { width } = entries[0].contentRect
       chart.applyOptions({ width, height: width < 768 ? 200 : 260 })
@@ -49,7 +86,16 @@ export const ConsultationsTrendChart = ({ data }: Props) => {
       resizeObserver.disconnect()
       chart.remove()
     }
-  }, [data])
+  }, [data, onDateClick])
 
-  return <div ref={ref} className="w-full" />
+  return (
+    <div className="relative w-full">
+      <div ref={containerRef} className="w-full" />
+      <div
+        ref={tooltipRef}
+        className="pointer-events-none absolute hidden rounded-xl border border-slate-200 bg-white px-3 py-2 shadow-md"
+        style={{ zIndex: 10 }}
+      />
+    </div>
+  )
 }

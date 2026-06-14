@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from 'react-router'
 import { EntityState, PageContainer } from '@/shared/components'
-import { useDisclosure, useTabs } from '@/shared/hooks'
+import { useAuth, useDisclosure, useTabs } from '@/shared/hooks'
+import { RoleEnum } from '@/core/enums/role.enum'
 
 import { useClinicalHistory } from '../hooks/useClinicalHistory'
 import ClinicalHistoryHeader from '../components/ClinicalHistoryHeader'
@@ -26,8 +27,10 @@ const TABS: { id: TabId; label: string }[] = [
 const ClinicalHistoryDetailPage = () => {
   const { employeeId } = useParams()
   const navigate = useNavigate()
+  const { user } = useAuth()
 
   const numericEmployeeId = Number(employeeId)
+  const isEmployee = user?.role === RoleEnum.EMPLOYEE || user?.role === RoleEnum.EMPLOYEE_EXT
 
   const { activeTab, activatedTabs, changeTab } = useTabs<TabId>('attentions')
   const { isOpen, open, close } = useDisclosure<'add-allergy'>()
@@ -68,7 +71,7 @@ const ClinicalHistoryDetailPage = () => {
 
         <ClinicalHistoryInfoCard data={data} />
 
-        <ClinicalHistoryAllergies allergies={data.allergies} onAdd={() => open('add-allergy')} />
+        <ClinicalHistoryAllergies allergies={data.allergies} onAdd={!isEmployee ? () => open('add-allergy') : undefined} />
 
         <ClinicalHistoryEmoCycleSection
           clinicalHistoryId={data.id}
@@ -99,7 +102,7 @@ const ClinicalHistoryDetailPage = () => {
               {activatedTabs.has('attentions') && (
                 <ClinicalHistoryAttentionsTable
                   clinicalHistoryId={data.id}
-                  onCreateAttention={goToAttentionNew}
+                  onCreateAttention={!isEmployee ? goToAttentionNew : undefined}
                   onViewDetail={goToAttentionDetail}
                 />
               )}
@@ -109,7 +112,7 @@ const ClinicalHistoryDetailPage = () => {
               {activatedTabs.has('accidents') && (
                 <ClinicalHistoryAccidentsSection
                   clinicalHistoryId={data.id}
-                  onCreate={goToAccidentNew}
+                  onCreate={!isEmployee ? goToAccidentNew : undefined}
                   onViewDetail={goToAccidentDetail}
                 />
               )}
@@ -117,19 +120,21 @@ const ClinicalHistoryDetailPage = () => {
 
             <div className={cn(activeTab !== 'medical-rests' && 'hidden')}>
               {activatedTabs.has('medical-rests') && (
-                <ClinicalHistoryMedicalRestsSection clinicalHistoryId={data.id} />
+                <ClinicalHistoryMedicalRestsSection clinicalHistoryId={data.id} isReadOnly={isEmployee} />
               )}
             </div>
           </div>
         </div>
       </div>
 
-      <AllergyFormSidebar
-        isOpen={isOpen('add-allergy')}
-        clinicalHistoryId={data.id}
-        onClose={close}
-        onSuccess={refetch}
-      />
+      {!isEmployee && (
+        <AllergyFormSidebar
+          isOpen={isOpen('add-allergy')}
+          clinicalHistoryId={data.id}
+          onClose={close}
+          onSuccess={refetch}
+        />
+      )}
     </PageContainer>
   )
 }

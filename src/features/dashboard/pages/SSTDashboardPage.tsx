@@ -24,6 +24,7 @@ import { useNavigate, useSearchParams } from 'react-router'
 import { PageContainer, Select } from '@/shared/components'
 import { DateRangeFilter, toISODate } from '@/shared/components/dashboard/DateRangeFilter'
 import type { DateRange } from '@/shared/components/dashboard/DateRangeFilter'
+import { LastUpdatedLabel } from '@/shared/components/dashboard/LastUpdatedLabel'
 
 const EVENT_TYPE_OPTIONS = [
   { label: 'Solo accidentes', value: 'ACCIDENT' },
@@ -89,7 +90,7 @@ export const SSTDashboardPage = () => {
     })
   }
 
-  const { data, isLoading } = useSSTDashboard(dateRange, eventType)
+  const { data, isLoading, dataUpdatedAt } = useSSTDashboard(dateRange, eventType)
 
   const filteredTrend = useMemo(() => {
     const trend = data?.trend ?? []
@@ -260,8 +261,9 @@ export const SSTDashboardPage = () => {
       <div className="space-y-6">
 
 
-        <div className="flex flex-wrap items-end gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <DateRangeFilter value={dateRange} onChange={handleDateChange} />
+
           <Select
             name="eventType"
             placeholder="Todos los eventos"
@@ -271,6 +273,7 @@ export const SSTDashboardPage = () => {
             onChange={handleEventTypeChange}
             className="w-52"
           />
+          <LastUpdatedLabel timestamp={dataUpdatedAt} />
         </div>
 
         <div className="grid gap-6 xl:grid-cols-4">
@@ -332,7 +335,10 @@ export const SSTDashboardPage = () => {
               </button>
             </div>
 
-            <AccidentTrendChart data={filteredTrend} />
+            <AccidentTrendChart
+              data={filteredTrend}
+              onDateClick={(date) => navigate(`/accidents?accidentDateFrom=${date}&accidentDateTo=${date}`)}
+            />
 
             <div className="mt-4 flex gap-6 text-sm">
               <div className="flex items-center gap-2">
@@ -420,14 +426,14 @@ export const SSTDashboardPage = () => {
             </div>
             <div className="space-y-4">
               {data.interestingMetrics.topAreas.map((area, i) => (
-                <div key={i} onClick={() => navigate(`/accidents?areaName=${encodeURIComponent(area.area)}`)} className="cursor-pointer">
-                  <div className="flex justify-between text-sm font-medium text-slate-700">
+                <div key={i} onClick={() => navigate(`/accidents?areaName=${encodeURIComponent(area.area)}`)} className="cursor-pointer group">
+                  <div className="flex justify-between text-sm font-medium text-slate-700 transition-colors group-hover:text-indigo-600">
                     <span className="truncate pr-2">{area.area}</span>
                     <span className="shrink-0 text-slate-500">{area.count}</span>
                   </div>
                   <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-slate-100">
                     <div
-                      className="h-full rounded-full bg-blue-600 transition-all"
+                      className="h-full rounded-full bg-blue-600 transition-opacity group-hover:opacity-80"
                       style={{ width: `${(area.count / maxArea) * 100}%` }}
                     />
                   </div>
@@ -476,14 +482,14 @@ export const SSTDashboardPage = () => {
             </div>
             <div className="space-y-4">
               {data.investigationsByResponsible.map(item => (
-                <div key={item.responsible} onClick={() => navigate('/accidents')} className="cursor-pointer">
-                  <div className="flex justify-between text-sm font-medium text-slate-700">
+                <div key={item.responsible} onClick={() => navigate('/accidents')} className="cursor-pointer group">
+                  <div className="flex justify-between text-sm font-medium text-slate-700 transition-colors group-hover:text-indigo-600">
                     <span className="truncate pr-2">{item.responsible}</span>
                     <span className="shrink-0 text-slate-500">{item.count}</span>
                   </div>
                   <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-slate-100">
                     <div
-                      className="h-full rounded-full bg-amber-500 transition-all"
+                      className="h-full rounded-full bg-amber-500 transition-opacity group-hover:opacity-80"
                       style={{ width: `${(item.count / maxInvestigation) * 100}%` }}
                     />
                   </div>

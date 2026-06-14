@@ -12,9 +12,10 @@ import {
 } from 'lucide-react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { cn } from '@/shared/utils'
-import { PageContainer } from '@/shared/components'
+import { EmptyState, PageContainer } from '@/shared/components'
 import { DateRangeFilter, toISODate } from '@/shared/components/dashboard/DateRangeFilter'
 import type { DateRange } from '@/shared/components/dashboard/DateRangeFilter'
+import { LastUpdatedLabel } from '@/shared/components/dashboard/LastUpdatedLabel'
 import { MetricPanel } from '@/shared/components/dashboard/MetricPanel'
 import { useManagementDashboard } from '../hooks/useManagementDashboard'
 import { ManagementDashboardSkeleton } from '../components/management/ManagementDashboardSkeleton'
@@ -60,7 +61,7 @@ export const ManagementDashboardPage = () => {
     })
   }
 
-  const { data, isLoading, error } = useManagementDashboard(dateRange)
+  const { data, isLoading, error, dataUpdatedAt } = useManagementDashboard(dateRange)
 
   if (isLoading) {
     return (
@@ -89,7 +90,10 @@ export const ManagementDashboardPage = () => {
       description="Visión operativa de personal y requerimientos"
     >
       <div className="space-y-6">
-        <DateRangeFilter value={dateRange} onChange={handleDateChange} />
+        <div className="flex flex-wrap items-center gap-3">
+          <DateRangeFilter value={dateRange} onChange={handleDateChange} />
+          <LastUpdatedLabel timestamp={dataUpdatedAt} />
+        </div>
 
         {/* Range-dependent: cards apiladas + histograma de tendencia */}
         <div className="grid gap-4 xl:grid-cols-4">
@@ -137,11 +141,12 @@ export const ManagementDashboardPage = () => {
           <div className="overflow-hidden rounded-3xl bg-white p-5 shadow-sm xl:col-span-3">
             <p className="mb-3 text-sm font-semibold text-slate-700">Tendencia de requerimientos</p>
             {data.requirementsTrend.length === 0 ? (
-              <div className="flex h-55 items-center justify-center text-sm text-slate-400 xl:h-68.75">
-                Sin datos en el período
-              </div>
+              <EmptyState title="Sin datos en el período" />
             ) : (
-              <RequirementsTrendChart data={data.requirementsTrend} />
+              <RequirementsTrendChart
+                data={data.requirementsTrend}
+                onDateClick={(date) => navigate(`/requirements?createdAtFrom=${date}&createdAtTo=${date}`)}
+              />
             )}
           </div>
         </div>
@@ -189,18 +194,18 @@ export const ManagementDashboardPage = () => {
               </button>
             </div>
             {data.employeesByArea.length === 0 ? (
-              <p className="py-6 text-center text-sm text-slate-400">Sin datos</p>
+              <EmptyState title="Sin empleados por área" />
             ) : (
               <div className="space-y-4">
                 {data.employeesByArea.map(item => (
-                  <div key={item.area} onClick={() => navigate(`/employees?areaName=${encodeURIComponent(item.area)}`)} className="cursor-pointer">
-                    <div className="flex justify-between text-sm font-medium text-slate-700">
+                  <div key={item.area} onClick={() => navigate(`/employees?areaName=${encodeURIComponent(item.area)}`)} className="cursor-pointer group">
+                    <div className="flex justify-between text-sm font-medium text-slate-700 transition-colors group-hover:text-indigo-600">
                       <span className="truncate pr-2">{item.area}</span>
                       <span className="shrink-0 text-slate-500">{item.count}</span>
                     </div>
                     <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-slate-100">
                       <div
-                        className="h-full rounded-full bg-indigo-500"
+                        className="h-full rounded-full bg-indigo-500 transition-opacity group-hover:opacity-80"
                         style={{ width: `${(item.count / maxEmployees) * 100}%` }}
                       />
                     </div>
@@ -221,18 +226,18 @@ export const ManagementDashboardPage = () => {
               </button>
             </div>
             {data.accidentsByArea.length === 0 ? (
-              <p className="py-6 text-center text-sm text-slate-400">Sin accidentes registrados</p>
+              <EmptyState title="Sin accidentes en el período" />
             ) : (
               <div className="space-y-4">
                 {data.accidentsByArea.map(item => (
-                  <div key={item.area} onClick={() => navigate(`/accidents?areaName=${encodeURIComponent(item.area)}`)} className="cursor-pointer">
-                    <div className="flex justify-between text-sm font-medium text-slate-700">
+                  <div key={item.area} onClick={() => navigate(`/accidents?areaName=${encodeURIComponent(item.area)}`)} className="cursor-pointer group">
+                    <div className="flex justify-between text-sm font-medium text-slate-700 transition-colors group-hover:text-indigo-600">
                       <span className="truncate pr-2">{item.area}</span>
                       <span className="shrink-0 text-slate-500">{item.count}</span>
                     </div>
                     <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-slate-100">
                       <div
-                        className="h-full rounded-full bg-amber-500"
+                        className="h-full rounded-full bg-amber-500 transition-opacity group-hover:opacity-80"
                         style={{ width: `${(item.count / maxAccidents) * 100}%` }}
                       />
                     </div>

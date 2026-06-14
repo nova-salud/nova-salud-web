@@ -11,9 +11,10 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
-import { PageContainer, Select } from '@/shared/components'
+import { EmptyState, PageContainer, Select } from '@/shared/components'
 import { DateRangeFilter, toISODate } from '@/shared/components/dashboard/DateRangeFilter'
 import type { DateRange } from '@/shared/components/dashboard/DateRangeFilter'
+import { LastUpdatedLabel } from '@/shared/components/dashboard/LastUpdatedLabel'
 import { useAdminDashboard } from '../hooks/useAdminDashboard'
 import { AdminDashboardSkeleton } from '../components/admin/AdminDashboardSkeleton'
 import { MetricPanel } from '@/shared/components/dashboard/MetricPanel'
@@ -58,7 +59,7 @@ export const AdminDashboardPage = () => {
     })
   }
 
-  const { data, isLoading, error } = useAdminDashboard(dateRange, eventType)
+  const { data, isLoading, error, dataUpdatedAt } = useAdminDashboard(dateRange, eventType)
 
   if (isLoading) {
     return (
@@ -129,7 +130,7 @@ export const AdminDashboardPage = () => {
     <PageContainer title="Dashboard Administrador" description="Visión global del sistema">
       <div className="space-y-6">
 
-        <div className="flex flex-wrap items-end gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <DateRangeFilter value={dateRange} onChange={handleDateChange} />
           <Select
             name="eventType"
@@ -140,6 +141,7 @@ export const AdminDashboardPage = () => {
             onChange={handleEventTypeChange}
             className="w-52"
           />
+          <LastUpdatedLabel timestamp={dataUpdatedAt} />
         </div>
 
         {/* Range-dependent: 4 cards apiladas + gráfico de actividad */}
@@ -170,11 +172,12 @@ export const AdminDashboardPage = () => {
           <div className="overflow-hidden rounded-3xl bg-white p-5 shadow-sm xl:col-span-3">
             <p className="mb-3 text-sm font-semibold text-slate-700">Actividad del período</p>
             {data.activityTrend.length === 0 ? (
-              <div className="flex h-55 items-center justify-center text-sm text-slate-400 xl:h-68.75">
-                Sin datos en el período
-              </div>
+              <EmptyState title="Sin datos en el período" />
             ) : (
-              <AdminActivityChart data={data.activityTrend} />
+              <AdminActivityChart
+                data={data.activityTrend}
+                onDateClick={(date) => navigate(`/attentions?attendedAtFrom=${date}&attendedAtTo=${date}`)}
+              />
             )}
           </div>
         </div>
@@ -192,18 +195,18 @@ export const AdminDashboardPage = () => {
               </button>
             </div>
             {data.accidentsByArea.length === 0 ? (
-              <p className="py-6 text-center text-sm text-slate-400">Sin accidentes en el rango</p>
+              <EmptyState title="Sin accidentes en el período" />
             ) : (
               <div className="space-y-4">
                 {data.accidentsByArea.map(item => (
-                  <div key={item.area} onClick={() => navigate(`/accidents?areaName=${encodeURIComponent(item.area)}`)} className="cursor-pointer">
-                    <div className="flex justify-between text-sm font-medium text-slate-700">
+                  <div key={item.area} onClick={() => navigate(`/accidents?areaName=${encodeURIComponent(item.area)}`)} className="cursor-pointer group">
+                    <div className="flex justify-between text-sm font-medium text-slate-700 transition-colors group-hover:text-indigo-600">
                       <span className="truncate pr-2">{item.area}</span>
                       <span className="shrink-0 text-slate-500">{item.count}</span>
                     </div>
                     <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-slate-100">
                       <div
-                        className="h-full rounded-full bg-amber-500"
+                        className="h-full rounded-full bg-amber-500 transition-opacity group-hover:opacity-80"
                         style={{ width: `${(item.count / maxArea) * 100}%` }}
                       />
                     </div>
@@ -224,18 +227,18 @@ export const AdminDashboardPage = () => {
               </button>
             </div>
             {data.mostUsedMedications.length === 0 ? (
-              <p className="py-6 text-center text-sm text-slate-400">Sin dispensaciones en el rango</p>
+              <EmptyState title="Sin dispensaciones en el período" />
             ) : (
               <div className="space-y-4">
                 {data.mostUsedMedications.map(m => (
-                  <div key={m.name} onClick={() => navigate('/medications')} className="cursor-pointer">
-                    <div className="flex justify-between text-sm font-medium text-slate-700">
+                  <div key={m.name} onClick={() => navigate('/medications')} className="cursor-pointer group">
+                    <div className="flex justify-between text-sm font-medium text-slate-700 transition-colors group-hover:text-indigo-600">
                       <span className="truncate pr-2">{m.name}</span>
                       <span className="shrink-0 text-slate-500">{m.count} uds</span>
                     </div>
                     <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-slate-100">
                       <div
-                        className="h-full rounded-full bg-indigo-400"
+                        className="h-full rounded-full bg-indigo-400 transition-opacity group-hover:opacity-80"
                         style={{ width: `${(m.count / maxMeds) * 100}%` }}
                       />
                     </div>
@@ -259,14 +262,14 @@ export const AdminDashboardPage = () => {
             </div>
             <div className="space-y-4">
               {data.accidentsByClassification.map(item => (
-                <div key={item.classification} onClick={() => navigate(`/accidents?formClassification=${encodeURIComponent(item.classification)}`)} className="cursor-pointer">
-                  <div className="flex justify-between text-sm font-medium text-slate-700">
+                <div key={item.classification} onClick={() => navigate(`/accidents?formClassification=${encodeURIComponent(item.classification)}`)} className="cursor-pointer group">
+                  <div className="flex justify-between text-sm font-medium text-slate-700 transition-colors group-hover:text-indigo-600">
                     <span className="truncate pr-2">{item.classification}</span>
                     <span className="shrink-0 text-slate-500">{item.count}</span>
                   </div>
                   <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-slate-100">
                     <div
-                      className="h-full rounded-full bg-red-500"
+                      className="h-full rounded-full bg-red-500 transition-opacity group-hover:opacity-80"
                       style={{ width: `${(item.count / maxClassification) * 100}%` }}
                     />
                   </div>

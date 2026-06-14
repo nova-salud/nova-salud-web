@@ -13,9 +13,10 @@ import {
 } from 'lucide-react'
 import { useNavigate, useSearchParams } from 'react-router'
 import { cn } from '@/shared/utils'
-import { PageContainer } from '@/shared/components'
+import { EmptyState, PageContainer } from '@/shared/components'
 import { DateRangeFilter, toISODate } from '@/shared/components/dashboard/DateRangeFilter'
 import type { DateRange } from '@/shared/components/dashboard/DateRangeFilter'
+import { LastUpdatedLabel } from '@/shared/components/dashboard/LastUpdatedLabel'
 import { MetricPanel } from '@/shared/components/dashboard/MetricPanel'
 import { useMedicalDashboard } from '../hooks/useMedicalDashboard'
 import { ConsultationsTrendChart } from '../components/medical/ConsultationsTrendChart'
@@ -68,7 +69,7 @@ export const MedicalDashboardPage = () => {
     })
   }
 
-  const { data, isLoading, error } = useMedicalDashboard(dateRange)
+  const { data, isLoading, error, dataUpdatedAt } = useMedicalDashboard(dateRange)
 
   if (isLoading) {
     return (
@@ -205,7 +206,10 @@ export const MedicalDashboardPage = () => {
       description="Resumen clínico y operativo"
     >
       <div className="space-y-6">
-        <DateRangeFilter value={dateRange} onChange={handleDateChange} />
+        <div className="flex flex-wrap items-center gap-3">
+          <DateRangeFilter value={dateRange} onChange={handleDateChange} />
+          <LastUpdatedLabel timestamp={dataUpdatedAt} />
+        </div>
 
         {/* Cards del período + Gráfico */}
         <div className="grid gap-6 xl:grid-cols-4">
@@ -266,11 +270,12 @@ export const MedicalDashboardPage = () => {
             </div>
 
             {data.consultationsTrend.length > 0 ? (
-              <ConsultationsTrendChart data={data.consultationsTrend} />
+              <ConsultationsTrendChart
+                data={data.consultationsTrend}
+                onDateClick={(date) => navigate(`/attentions?attendedAtFrom=${date}&attendedAtTo=${date}`)}
+              />
             ) : (
-              <div className="flex items-center justify-center py-12 text-sm text-slate-400">
-                Sin atenciones en el rango seleccionado
-              </div>
+              <EmptyState title="Sin atenciones en el rango seleccionado" />
             )}
           </div>
         </div>
@@ -324,8 +329,8 @@ export const MedicalDashboardPage = () => {
                 </div>
                 <div className="space-y-4">
                   {data.topDiagnoses.map(item => (
-                    <div key={item.code} onClick={() => navigate(`/attentions?diagnosisCode=${encodeURIComponent(item.code)}`)} className="cursor-pointer">
-                      <div className="flex justify-between text-sm font-medium text-slate-700">
+                    <div key={item.code} onClick={() => navigate(`/attentions?diagnosisCode=${encodeURIComponent(item.code)}`)} className="cursor-pointer group">
+                      <div className="flex justify-between text-sm font-medium text-slate-700 transition-colors group-hover:text-indigo-600">
                         <span className="truncate pr-2">
                           {item.name ?? item.code}
                           {item.name && (
@@ -336,7 +341,7 @@ export const MedicalDashboardPage = () => {
                       </div>
                       <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-slate-100">
                         <div
-                          className="h-full rounded-full bg-indigo-500 transition-all"
+                          className="h-full rounded-full bg-indigo-500 transition-opacity group-hover:opacity-80"
                           style={{ width: `${(item.count / maxDiagnosis) * 100}%` }}
                         />
                       </div>
@@ -359,14 +364,14 @@ export const MedicalDashboardPage = () => {
                 </div>
                 <div className="space-y-4">
                   {data.dispensationsByType.map(item => (
-                    <div key={item.type} onClick={() => navigate(`/dispensations?dispenseType=${encodeURIComponent(item.type)}`)} className="cursor-pointer">
-                      <div className="flex justify-between text-sm font-medium text-slate-700">
+                    <div key={item.type} onClick={() => navigate(`/dispensations?dispenseType=${encodeURIComponent(item.type)}`)} className="cursor-pointer group">
+                      <div className="flex justify-between text-sm font-medium text-slate-700 transition-colors group-hover:text-indigo-600">
                         <span className="truncate pr-2">{DISPENSE_TYPE_LABEL[item.type] ?? item.type}</span>
                         <span className="shrink-0 text-slate-500">{item.count}</span>
                       </div>
                       <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-slate-100">
                         <div
-                          className="h-full rounded-full bg-emerald-500 transition-all"
+                          className="h-full rounded-full bg-emerald-500 transition-opacity group-hover:opacity-80"
                           style={{ width: `${(item.count / maxDispType) * 100}%` }}
                         />
                       </div>

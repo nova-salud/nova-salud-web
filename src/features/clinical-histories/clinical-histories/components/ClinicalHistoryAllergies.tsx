@@ -3,7 +3,7 @@ import { Button } from '@/shared/components/ui/form'
 
 type Props = {
   allergies: AllergyResponseDto[]
-  onAdd: () => void
+  onAdd?: () => void
 }
 
 const ClinicalHistoryAllergies = ({
@@ -20,9 +20,11 @@ const ClinicalHistoryAllergies = ({
           </p>
         </div>
 
-        <Button type="button" className="w-auto" onClick={onAdd}>
-          Agregar alergia
-        </Button>
+        {onAdd && (
+          <Button type="button" className="w-auto" onClick={onAdd}>
+            Agregar alergia
+          </Button>
+        )}
       </div>
 
       {allergies.length === 0 ? (

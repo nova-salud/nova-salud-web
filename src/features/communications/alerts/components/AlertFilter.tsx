@@ -7,12 +7,8 @@ type ExtraFilters = Pick<FindAlertsDto, 'title' | 'employeeName' | 'type' | 'pri
 
 type Props = {
   onChangeFilters: (filters: Partial<ExtraFilters>) => void
+  allowedTypes?: AlertType[]
 }
-
-const TYPE_OPTIONS = [
-  { label: 'Todos los tipos', value: '' },
-  ...Object.values(AlertType).map((value) => ({ label: ALERT_LABELS[value], value })),
-]
 
 const PRIORITY_OPTIONS = [
   { label: 'Todas las prioridades', value: '' },
@@ -25,41 +21,50 @@ const STATUS_OPTIONS = [
   { label: 'Todas', value: '' },
 ]
 
-export const AlertFilter = ({ onChangeFilters }: Props) => (
-  <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-      <Input
-        label="Título"
-        name="title"
-        type="text"
-        placeholder="Buscar por título"
-        onChange={(e) => onChangeFilters({ title: e.target.value })}
-      />
-      <Input
-        label="Empleado"
-        name="employeeName"
-        type="text"
-        placeholder="Buscar por nombre"
-        onChange={(e) => onChangeFilters({ employeeName: e.target.value })}
-      />
-      <Select
-        label="Tipo"
-        name="type"
-        options={TYPE_OPTIONS}
-        onChange={(v) => onChangeFilters({ type: (v as AlertType) || undefined })}
-      />
-      <Select
-        label="Prioridad"
-        name="priority"
-        options={PRIORITY_OPTIONS}
-        onChange={(v) => onChangeFilters({ priority: (v as AlertPriority) || undefined })}
-      />
-      <Select
-        label="Estado"
-        name="isResolved"
-        options={STATUS_OPTIONS}
-        onChange={(v) => onChangeFilters({ isResolved: v === '' ? undefined : v === 'true' })}
-      />
+export const AlertFilter = ({ onChangeFilters, allowedTypes }: Props) => {
+  const typeOptions = [
+    { label: 'Todos los tipos', value: '' },
+    ...Object.values(AlertType)
+      .filter((v) => !allowedTypes || allowedTypes.includes(v))
+      .map((value) => ({ label: ALERT_LABELS[value], value })),
+  ]
+
+  return (
+    <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <Input
+          label="Título"
+          name="title"
+          type="text"
+          placeholder="Buscar por título"
+          onChange={(e) => onChangeFilters({ title: e.target.value })}
+        />
+        <Input
+          label="Empleado"
+          name="employeeName"
+          type="text"
+          placeholder="Buscar por nombre"
+          onChange={(e) => onChangeFilters({ employeeName: e.target.value })}
+        />
+        <Select
+          label="Tipo"
+          name="type"
+          options={typeOptions}
+          onChange={(v) => onChangeFilters({ type: (v as AlertType) || undefined })}
+        />
+        <Select
+          label="Prioridad"
+          name="priority"
+          options={PRIORITY_OPTIONS}
+          onChange={(v) => onChangeFilters({ priority: (v as AlertPriority) || undefined })}
+        />
+        <Select
+          label="Estado"
+          name="isResolved"
+          options={STATUS_OPTIONS}
+          onChange={(v) => onChangeFilters({ isResolved: v === '' ? undefined : v === 'true' })}
+        />
+      </div>
     </div>
-  </div>
-)
+  )
+}

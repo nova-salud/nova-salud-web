@@ -3,6 +3,7 @@ import { navigationConfig } from '@/app/router/navigation.config'
 import { cn } from '@/shared/utils'
 import { RoleEnum } from '@/core/enums/role.enum'
 import { useAuth, useSidebar } from '@/shared/hooks'
+import { useAlertsCount } from '@/features/communications/alerts/hooks/useAlertsCount'
 import { NavItem } from './NavItem'
 import { SidebarUserMenu } from './SidebarUserMenu'
 
@@ -14,6 +15,7 @@ export const AppSidebar = () => {
     toggleSidebarCollapsed,
   } = useSidebar()
   const { user, clearSession } = useAuth()
+  const alertsCount = useAlertsCount()
 
   const desktopWidthClass = sidebarCollapsed ? 'lg:w-[92px]' : 'lg:w-[230px]'
 
@@ -95,7 +97,7 @@ export const AppSidebar = () => {
                       label={item.label}
                       path={item.path}
                       icon={item.icon}
-                      badge={item.badge}
+                      badge={item.path === '/alerts' ? (alertsCount || undefined) : item.badge}
                       collapsed={sidebarCollapsed}
                       onClick={closeSidebar}
                     />
