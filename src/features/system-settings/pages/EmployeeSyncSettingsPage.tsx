@@ -192,7 +192,7 @@ const EmployeeSyncSettingsPage = () => {
                   </p>
                   <p className="mt-1 text-sm text-slate-700">
                     {connectionInfo.lastTestedAt
-                      ? new Date(connectionInfo.lastTestedAt).toLocaleString('es-PE')
+                      ? new Date(connectionInfo.lastTestedAt).toLocaleString('es-PE', { timeZone: 'America/Lima' })
                       : '—'}
                   </p>
                 </div>
@@ -248,11 +248,13 @@ const EmployeeSyncSettingsPage = () => {
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
-                <Checkbox
-                  label="Job habilitado"
-                  checked={values.isEnabled}
-                  onChange={handleChange('isEnabled')}
-                />
+                <div className="flex items-center rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                  <Checkbox
+                    label="Job habilitado"
+                    checked={values.isEnabled}
+                    onChange={handleChange('isEnabled')}
+                  />
+                </div>
 
                 <Input
                   name="intervalMinutes"
@@ -264,18 +266,18 @@ const EmployeeSyncSettingsPage = () => {
                 />
               </div>
 
-              <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
                 <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
                   Última ejecución
                 </p>
-                <p className="mt-1 text-sm text-slate-700">
+                <p className="mt-0.5 text-sm font-medium text-slate-700">
                   {jobInfo.lastExecutedAt
-                    ? new Date(jobInfo.lastExecutedAt).toLocaleString('es-PE')
+                    ? new Date(jobInfo.lastExecutedAt).toLocaleString('es-PE', { timeZone: 'America/Lima' })
                     : '—'}
                 </p>
               </div>
 
-              <div className="mt-5">
+              <div className="mt-4">
                 <Button
                   type="button"
                   isLoading={isUpdatingJobSetting}
