@@ -1,2 +1,2 @@
-dni,firstName,lastName,fullName,company,birthDate,areaName,position,immediateBoss,employmentStatus,isActive
-12345678,Juan,Perez,Juan Perez,empresa2,1990-01-10,Operaciones,Operario,Carlos Ruiz,ACTIVE,true
+dni,firstName,lastName,fullName,company,birthDate,areaName,position,sex,maritalStatus,phone,email,admissionDate,contractType,workerType,educationLevel,medicalInsurance,eps,epsPlan,sctrHealth,immediateBoss,employmentStatus,isActive
+12345678,Juan,Perez,Juan Perez,Mi Empresa,1990-01-10,Operaciones,Operario,M,SOLTERO,987654321,juan.perez@empresa.com,2022-03-01,,,,,,,,,ACTIVE,true

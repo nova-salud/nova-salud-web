@@ -78,7 +78,7 @@ export const UserFormSidebar = ({
         </div>
       }
     >
-      <form id={formId} className="space-y-6" onSubmit={handleSubmit}>
+      <form key={isOpen ? 'open' : 'closed'} id={formId} className="space-y-6" onSubmit={handleSubmit}>
         <div className="space-y-4">
           <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">
             Acceso a la plataforma
