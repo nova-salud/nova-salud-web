@@ -59,7 +59,7 @@ export const MedicationForm = ({
             label="Nombre comercial"
             name="commercialName"
             type="text"
-            value={initialValues.commercialName ?? ''}
+            defaultValue={initialValues.commercialName ?? ''}
             placeholder="Ej. Paracetamol Genfar"
             required
           />
@@ -68,7 +68,7 @@ export const MedicationForm = ({
             label="Nombre genérico"
             name="genericName"
             type="text"
-            value={initialValues.genericName ?? ''}
+            defaultValue={initialValues.genericName ?? ''}
             placeholder="Ej. Acetaminofén"
           />
 
@@ -76,7 +76,7 @@ export const MedicationForm = ({
             label="Composición"
             name="chemicalComposition"
             type="text"
-            value={initialValues.chemicalComposition ?? ''}
+            defaultValue={initialValues.chemicalComposition ?? ''}
             className="md:col-span-2"
             placeholder="Ej. Acetaminofén 500mg, almidón de maíz, celulosa microcristalina"
             required
@@ -85,7 +85,7 @@ export const MedicationForm = ({
           <Select
             name="medication"
             label="Categoría"
-            value={initialValues.therapeuticCategoryId}
+            defaultValue={initialValues.therapeuticCategoryId}
             options={categories.map((c) => ({
               label: c.name,
               value: c.id,
@@ -155,7 +155,7 @@ export const MedicationForm = ({
 
         <Textarea
           name="notes"
-          value={initialValues.notes ?? ''}
+          defaultValue={initialValues.notes ?? ''}
           placeholder="Ej. Conservar en lugar fresco y seco, evitar la exposición directa al sol"
         />
       </div>
@@ -167,7 +167,7 @@ export const MedicationForm = ({
 
         <Textarea
           name="contraindications"
-          value={initialValues.contraindications ?? ''}
+          defaultValue={initialValues.contraindications ?? ''}
           placeholder="Ej. Hipersensibilidad al principio activo, insuficiencia hepática grave"
         />
       </div>

@@ -64,11 +64,11 @@ export const EmployeeFilter = ({ onChangeFilters, filters }: EmployeeFilterProps
 
         <Select
           name="status"
-          label="Estado"
+          label="Estado Laboral"
           options={[
             { label: 'Todos', value: '' },
             { label: 'Activo', value: 'true' },
-            { label: 'Inactivo', value: 'false' }
+            { label: 'Baja', value: 'false' }
           ]}
           onChange={(status) => onStatusChange(status)}
         />

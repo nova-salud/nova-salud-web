@@ -23,6 +23,9 @@ export const useEmployees = ({ isExternal = false }: { isExternal: boolean }) =>
     queryKey: EMPLOYEE_QUERY_KEYS.list({
       ...extraFilters,
       fullName: debounceFullName,
+      dni: debouncedDni,
+      company: debouncedCompany,
+      areaName: debouncedAreaName,
       isExternal,
     }),
     queryFn: (filters) => employeeService.findAll({

@@ -1,13 +1,24 @@
 import { PageContainer } from '@/shared/components'
 import { FormPageSkeleton, MedicationForm } from '../components'
 import { useCreateMedication, useSearchTherapeuticCategories } from '../hooks'
+import type { CreateMedicationDto } from '../types'
+import { useNavigate } from 'react-router'
 
 const CreateMedicationPage = () => {
+  const navigate = useNavigate()
   const { create, isLoading, error } = useCreateMedication()
   const { therapeuticCategories: categories, isLoading: isLoadingCategories } = useSearchTherapeuticCategories()
 
   if (isLoadingCategories) {
     return <FormPageSkeleton />
+  }
+
+  const onSubmit = async (data: CreateMedicationDto) => {
+    const medication = await create(data)
+
+    if(medication?.id == null) return
+
+    navigate(`/medications/${medication.id}`)
   }
 
   return (
@@ -21,7 +32,7 @@ const CreateMedicationPage = () => {
 
       <MedicationForm
         categories={categories}
-        onSubmit={create}
+        onSubmit={onSubmit}
         isLoading={isLoading}
       />
     </PageContainer>

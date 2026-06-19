@@ -58,7 +58,7 @@ const TherapeuticCategoryFormSidebar = ({
       }
     >
       <form
-        key={`${mode}-${therapeuticCategory?.id ?? 'new'}`}
+        key={isOpen ? 'true' : 'false'}
         onSubmit={(e) => void handleSubmit(e)}
       >
         <div className="space-y-5">
@@ -68,7 +68,7 @@ const TherapeuticCategoryFormSidebar = ({
             type="text"
             required
             placeholder="Ej. Analgésicos"
-            defaultValue={therapeuticCategory?.name}
+            value={therapeuticCategory?.name}
           />
 
           <Textarea
