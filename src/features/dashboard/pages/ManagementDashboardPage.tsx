@@ -65,7 +65,7 @@ export const ManagementDashboardPage = () => {
 
   if (isLoading) {
     return (
-      <PageContainer title="Dashboard HR / Gerencia" description="Visión operativa de personal y requerimientos">
+      <PageContainer title="Dashboard RRHH" description="Visión operativa de personal y requerimientos">
         <ManagementDashboardSkeleton />
       </PageContainer>
     )
@@ -73,7 +73,7 @@ export const ManagementDashboardPage = () => {
 
   if (error || !data) {
     return (
-      <PageContainer title="Dashboard HR / Gerencia" description="Visión operativa de personal y requerimientos">
+      <PageContainer title="Dashboard RRHH" description="Visión operativa de personal y requerimientos">
         <div className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm text-red-600">
           {error?.message ?? 'No se pudo cargar el dashboard.'}
         </div>
@@ -86,7 +86,7 @@ export const ManagementDashboardPage = () => {
 
   return (
     <PageContainer
-      title="Dashboard HR / Gerencia"
+      title="Dashboard RRHH"
       description="Visión operativa de personal y requerimientos"
     >
       <div className="space-y-6">
@@ -95,7 +95,6 @@ export const ManagementDashboardPage = () => {
           <LastUpdatedLabel timestamp={dataUpdatedAt} />
         </div>
 
-        {/* Range-dependent: cards apiladas + histograma de tendencia */}
         <div className="grid gap-4 xl:grid-cols-4">
           <div className="flex flex-col gap-3">
             <div
@@ -181,7 +180,6 @@ export const ManagementDashboardPage = () => {
           </div>
         </div>
 
-        {/* Distribución por área */}
         <div className="grid gap-6 xl:grid-cols-2">
           <div className="rounded-3xl bg-white p-5 shadow-sm">
             <div className="mb-4 flex items-center justify-between">
@@ -248,7 +246,6 @@ export const ManagementDashboardPage = () => {
           </div>
         </div>
 
-        {/* MetricPanels — estáticos */}
         <div className="grid gap-6 xl:grid-cols-3">
           <MetricPanel
             title="Personal"
@@ -371,7 +368,6 @@ export const ManagementDashboardPage = () => {
           />
         </div>
 
-        {/* Últimos requerimientos */}
         <div className="overflow-hidden rounded-3xl bg-white shadow-sm">
           <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
             <h2 className="text-base font-semibold text-slate-900">Últimos requerimientos</h2>
