@@ -50,14 +50,15 @@ const ExamFormSidebar = ({
           : 'Actualiza la información del examen.'
       }
     >
-      <form key={`${mode}-${exam?.id ?? 'new'}`} onSubmit={(e) => void handleSubmit(e)}>
+      <form
+        key={isOpen ? 'si' : 'no'} onSubmit={(e) => void handleSubmit(e)}>
         <div className="space-y-5">
           <Input
             label="Nombre"
             name="name"
             type="text"
             placeholder="Ej. Hemograma"
-            defaultValue={exam?.name}
+            value={exam?.name}
           />
 
           {mode === 'edit' && (
