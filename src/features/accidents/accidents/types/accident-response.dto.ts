@@ -15,6 +15,7 @@ export interface AccidentResponseDto extends AuditResponseDto {
   employeeFullName: string | null
 
   clinicalHistoryId: number
+  employeeId: number
   reportedByUserId: number
   reportedByUser: UserResponseDto | null
 

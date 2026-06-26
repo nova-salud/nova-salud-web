@@ -13,11 +13,13 @@ import { ACCIDENT_STATUS_CLASSNAME, ACCIDENT_STATUS_LABEL, ACCIDENT_TYPE_CLASSNA
 const AccidentDetailPage = () => {
   const { user, isAdmin } = useAuth()
   const navigate = useNavigate()
-  const { accidentId: id, employeeId } = useParams()
+  const { accidentId: id, employeeId: employeeIdParam } = useParams()
 
   const numericId = Number(id)
 
   const { data: accident, isLoading, error, refetch } = useAccident(numericId)
+
+  const employeeId = employeeIdParam ?? (accident ? String(accident.employeeId) : undefined)
   const { sendSummary, isLoading: isSending } = useSendAccidentSummary()
 
   if (isLoading) return <AccidentDetailSkeleton />
