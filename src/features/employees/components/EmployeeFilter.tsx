@@ -6,9 +6,10 @@ import { useMemo } from 'react'
 interface EmployeeFilterProps {
   filters: FindEmployeesDto
   onChangeFilters: (filters: Partial<FindEmployeesDto>) => void
+  hasCompanyFilter?: boolean
 }
 
-export const EmployeeFilter = ({ onChangeFilters, filters }: EmployeeFilterProps) => {
+export const EmployeeFilter = ({ onChangeFilters, filters, hasCompanyFilter = false }: EmployeeFilterProps) => {
   const { areas } = useSearchAreas()
 
   const onKeyChange = (value: string, key: keyof FindEmployeesDto) => onChangeFilters({ [key]: value })
@@ -44,13 +45,13 @@ export const EmployeeFilter = ({ onChangeFilters, filters }: EmployeeFilterProps
           onChange={(e) => onKeyChange(e.target.value, 'dni')}
         />
 
-        <Input
+        {hasCompanyFilter && <Input
           label="Empresa"
           name="company"
           type="text"
           placeholder="Buscar por empresa"
           onChange={(e) => onKeyChange(e.target.value, 'company')}
-        />
+        />}
 
         <SearchSelect
           label='Área'

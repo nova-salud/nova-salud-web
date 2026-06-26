@@ -36,7 +36,7 @@ const ExternalEmployeesPage = () => {
         }
       >
         <div className="space-y-5">
-          <EmployeeFilter onChangeFilters={onChangeFilters} filters={filters}></EmployeeFilter>
+          <EmployeeFilter onChangeFilters={onChangeFilters} filters={filters} hasCompanyFilter></EmployeeFilter>
 
           {error ? (
             <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">

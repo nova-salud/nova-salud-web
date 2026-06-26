@@ -5,7 +5,7 @@ import {
   USER_ROLE_LABEL_MAP,
 } from '@/features/users/types/user-role.config'
 import type { EmployeeResponseDto } from '../types'
-import { Dropdown, DropdownItem } from '@/shared/components'
+import { Badge, Dropdown, DropdownItem } from '@/shared/components'
 import { Eye } from 'lucide-react'
 
 type Props = {
@@ -53,8 +53,18 @@ export const EmployeeTable = ({ items, isLoading = false, onViewDetail, paginati
             {item?.company ?? '—'}
           </td>
 
-          <td className="px-6 py-5 text-slate-700">
-            {item?.employmentStatus ?? '—'}
+          <td className="px-6 py-5">
+            {item?.employmentStatus ? (
+              <Badge
+                variant={
+                  item.employmentStatus === 'ACTIVO' ? 'green'
+                  : item.employmentStatus === 'BAJA' ? 'red'
+                  : 'slate'
+                }
+              >
+                {item.employmentStatus}
+              </Badge>
+            ) : '—'}
           </td>
 
           <td className="px-6 py-5">
