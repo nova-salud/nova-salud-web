@@ -254,7 +254,7 @@ export const navigationConfig: NavigationSection[] = [
         ],
       },
       {
-        label: 'Externos',
+        label: 'Service - Externos',
         path: '/externos',
         icon: Users,
         roles: [
