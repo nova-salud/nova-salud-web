@@ -17,10 +17,10 @@ export const EmployeePositionFilter = ({ onChangeFilters }: EmployeePositionFilt
     <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
       <div className="grid gap-4 md:grid-cols-2">
         <Input
-          label="Nombre"
+          label="Nombre de la posición / cargo"
           name="name"
           type="text"
-          placeholder="Buscar por usuario"
+          placeholder="Buscar posición / cargo"
           onChange={(e) => onNameChange(e.target.value)}
         />
 
