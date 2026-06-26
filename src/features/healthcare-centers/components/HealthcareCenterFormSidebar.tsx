@@ -3,6 +3,8 @@ import { Input, Button, Select, Sidebar } from '@/shared/components'
 import type { InputValidation } from '@/shared/components/ui/form/Input'
 import type { CreateHealthcareCenterDto, HealthcareCenterResponseDto, UpdateHealthcareCenterDto } from '../types'
 import { CONVENIO_OPTIONS } from '../types/convenio.constants'
+import { HEALTHCARE_CENTER_TYPE, HEALTHCARE_CENTER_TYPE_OPTIONS } from '../types/healthcare-center-type.constants'
+import type { HealthcareCenterTypeValue } from '../types/healthcare-center-type.constants'
 
 type HealthcareCenterFormSidebarMode = 'create' | 'edit'
 
@@ -36,9 +38,13 @@ const HealthcareCenterFormSidebar = ({
   onUpdate,
 }: Props) => {
   const [convenio, setConvenio] = useState(healthcareCenter?.convenio ?? '')
+  const [type, setType] = useState<HealthcareCenterTypeValue>(
+    healthcareCenter?.type ?? HEALTHCARE_CENTER_TYPE.HOSPITAL
+  )
 
   useEffect(() => {
     setConvenio(healthcareCenter?.convenio ?? '')
+    setType(healthcareCenter?.type ?? HEALTHCARE_CENTER_TYPE.HOSPITAL)
   }, [healthcareCenter])
 
   const handleSubmit = async (e: { preventDefault(): void; currentTarget: HTMLFormElement }) => {
@@ -54,6 +60,7 @@ const HealthcareCenterFormSidebar = ({
         address: (data.get('address') as string).trim(),
         phone: (data.get('phone') as string).trim() || undefined,
         convenio: convenio || undefined,
+        type,
         contactName: (data.get('contactName') as string).trim() || undefined,
         contactPhone: (data.get('contactPhone') as string).trim() || undefined,
         contactEmail: (data.get('contactEmail') as string).trim() || undefined,
@@ -69,6 +76,7 @@ const HealthcareCenterFormSidebar = ({
       address: (data.get('address') as string).trim() || undefined,
       phone: (data.get('phone') as string).trim() || undefined,
       convenio: convenio || undefined,
+      type,
       contactName: (data.get('contactName') as string).trim() || undefined,
       contactPhone: (data.get('contactPhone') as string).trim() || undefined,
       contactEmail: (data.get('contactEmail') as string).trim() || undefined,
@@ -128,6 +136,14 @@ const HealthcareCenterFormSidebar = ({
             placeholder="Ej. 014567890"
             value={healthcareCenter?.phone ?? ''}
             validations={NUMERIC_VALIDATION}
+          />
+
+          <Select
+            label="Tipo"
+            name="type"
+            value={type}
+            options={HEALTHCARE_CENTER_TYPE_OPTIONS}
+            onChange={(v) => setType(v as HealthcareCenterTypeValue)}
           />
 
           <Select

@@ -4,6 +4,7 @@ import { cn } from '@/shared/utils'
 import { useHealthcareCenter } from '../hooks/useHealthcareCenter'
 import { useUpdateHealthcareCenter } from '../hooks'
 import type { UpdateHealthcareCenterDto } from '../types'
+import { HEALTHCARE_CENTER_TYPE_LABEL } from '../types/healthcare-center-type.constants'
 import HealthcareCenterFormSidebar from '../components/HealthcareCenterFormSidebar'
 import { useDisclosure } from '@/shared/hooks'
 
@@ -121,6 +122,11 @@ const HealthcareCenterDetailPage = () => {
               <div>
                 <p className="text-xs uppercase tracking-[0.14em] text-slate-400">Teléfono</p>
                 <p className="mt-1 text-sm font-medium text-slate-900">{center.phone ?? '—'}</p>
+              </div>
+
+              <div>
+                <p className="text-xs uppercase tracking-[0.14em] text-slate-400">Tipo</p>
+                <p className="mt-1 text-sm font-medium text-slate-900">{HEALTHCARE_CENTER_TYPE_LABEL[center.type] ?? '—'}</p>
               </div>
 
               <div>

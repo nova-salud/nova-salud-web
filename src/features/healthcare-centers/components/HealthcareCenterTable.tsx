@@ -3,6 +3,7 @@ import { cn } from '@/shared/utils'
 import { DataTable, type Pagination } from '@/shared/components/ui/table/DataTable'
 import type { HealthcareCenterResponseDto } from '../types'
 import { Dropdown, DropdownItem } from '@/shared/components'
+import { HEALTHCARE_CENTER_TYPE_LABEL } from '../types/healthcare-center-type.constants'
 
 type Props = {
   items: HealthcareCenterResponseDto[]
@@ -26,6 +27,7 @@ const HealthcareCenterTable = ({
       columns={[
         'ID',
         'Nombre',
+        'Tipo',
         'RUC',
         'Teléfono',
         'Convenio',
@@ -39,6 +41,10 @@ const HealthcareCenterTable = ({
 
           <td className="px-6 py-5 text-slate-700">
             {item.name}
+          </td>
+
+          <td className="px-6 py-5 text-slate-700">
+            {HEALTHCARE_CENTER_TYPE_LABEL[item.type] ?? '—'}
           </td>
 
           <td className="px-6 py-5 text-slate-700">
