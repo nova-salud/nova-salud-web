@@ -163,7 +163,7 @@ export const navigationConfig: NavigationSection[] = [
     label: 'SALUD OCUPACIONAL',
     items: [
       {
-        label: 'Accidentes',
+        label: 'Accidentes / Incidentes',
         path: '/accidents',
         icon: ShieldAlert,
         roles: [
