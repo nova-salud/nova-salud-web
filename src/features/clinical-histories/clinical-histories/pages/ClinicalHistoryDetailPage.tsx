@@ -67,7 +67,7 @@ const ClinicalHistoryDetailPage = () => {
   return (
     <PageContainer>
       <div className="space-y-6">
-        <ClinicalHistoryHeader data={data} />
+        <ClinicalHistoryHeader data={data} onEdit={!isEmployee ? () => navigate(`/clinical-histories/${numericEmployeeId}/edit`) : undefined} />
 
         <ClinicalHistoryInfoCard data={data} />
 

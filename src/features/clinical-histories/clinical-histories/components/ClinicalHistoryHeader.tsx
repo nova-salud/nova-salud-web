@@ -6,9 +6,10 @@ import { EmployeeInfoCard } from '@/features/employees/components'
 
 type Props = {
   data: ClinicalHistoryFullResponseDto
+  onEdit?: () => void
 }
 
-const ClinicalHistoryHeader = ({ data }: Props) => {
+const ClinicalHistoryHeader = ({ data, onEdit }: Props) => {
   const { employee } = data
   const navigate = useNavigate()
 
@@ -42,6 +43,11 @@ const ClinicalHistoryHeader = ({ data }: Props) => {
         </div>
 
         <div className="flex gap-2">
+          {onEdit && (
+            <Button className="w-auto" onClick={onEdit}>
+              Editar
+            </Button>
+          )}
           <Button variant="warning" className="w-auto" onClick={() => navigate(-1)}>
             Volver
           </Button>

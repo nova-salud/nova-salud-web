@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
-import { Button, Input, PageContainer, Textarea } from '@/shared/components'
+import { Button, Input, PageContainer, Select, Textarea } from '@/shared/components'
 import { EmployeeInfoCard } from '@/features/employees/components'
 import { useEmployee } from '@/features/employees/hooks'
 import { useCreateClinicalHistory } from '../hooks'
@@ -82,11 +82,21 @@ const CreateClinicalHistoryPage = () => {
           </h2>
 
           <div className="mt-4 grid gap-4 md:grid-cols-2">
-            <Input
+            <Select
               label="Grupo sanguíneo"
               name="bloodType"
-              type="text"
-              placeholder="Ej. O+, A-, AB+"
+              placeholder="Selecciona el grupo"
+              showDefaultOption
+              options={[
+                { label: 'A+', value: 'A+' },
+                { label: 'A-', value: 'A-' },
+                { label: 'B+', value: 'B+' },
+                { label: 'B-', value: 'B-' },
+                { label: 'AB+', value: 'AB+' },
+                { label: 'AB-', value: 'AB-' },
+                { label: 'O+', value: 'O+' },
+                { label: 'O-', value: 'O-' },
+              ]}
             />
 
             <Input
@@ -101,6 +111,12 @@ const CreateClinicalHistoryPage = () => {
               name="emergencyContactPhone"
               type="text"
               placeholder="Ingresa el teléfono"
+              validations={[
+                {
+                  regex: /^[0-9+]+$/,
+                  message: 'Solo se permite números y (+)'
+                }
+              ]}
             />
 
             <div className="md:col-span-2">

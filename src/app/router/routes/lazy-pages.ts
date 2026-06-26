@@ -25,6 +25,7 @@ export const AttentionDetailPage = lazy(() => import('@/features/attentions/atte
 export const ClinicalAttentionEntryPage = lazy(() => import('@/features/clinical-histories/clinical-attention/pages/ClinicalAttentionEntryPage'))
 export const ClinicalHistoryDetailPage = lazy(() => import('@/features/clinical-histories/clinical-histories/pages/ClinicalHistoryDetailPage'))
 export const CreateClinicalHistoryPage = lazy(() => import('@/features/clinical-histories/clinical-histories/pages/CreateClinicalHistoryPage'))
+export const EditClinicalHistoryPage = lazy(() => import('@/features/clinical-histories/clinical-histories/pages/EditClinicalHistoryPage'))
 export const ExamsPage = lazy(() => import('@/features/exams/pages/ExamsPage'))
 export const EmoProtocolsPage = lazy(() => import('@/features/emo-protocols/pages/EmoProtocolsPage'))
 export const EmoProtocolDetailPage = lazy(() => import('@/features/emo-protocols/pages/EmoProtocolDetailPage'))

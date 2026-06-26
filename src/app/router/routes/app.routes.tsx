@@ -34,6 +34,7 @@ import {
   ClinicalAttentionEntryPage,
   ClinicalHistoryDetailPage,
   CreateClinicalHistoryPage,
+  EditClinicalHistoryPage,
   ExamsPage,
   EmoProtocolsPage,
   EmoProtocolDetailPage,
@@ -104,6 +105,10 @@ export const appRoutes: RouteObject = {
             {
               path: '/clinical-histories/:employeeId',
               element: <ClinicalHistoryDetailPage />,
+            },
+            {
+              path: '/clinical-histories/:employeeId/edit',
+              element: <EditClinicalHistoryPage />,
             },
             {
               path: '/clinical-histories/:employeeId/attentions/new',
