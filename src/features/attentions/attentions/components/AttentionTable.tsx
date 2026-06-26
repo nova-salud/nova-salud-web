@@ -30,12 +30,12 @@ export const AttentionTable = ({ items, isLoading = false, pagination }: Props) 
       emptyMessage="No se encontraron atenciones."
       pagination={pagination}
       onRowDoubleClick={goToDetail}
-      columns={['Empleado', 'Fecha', 'Triage', 'Diagnóstico', 'Atendido por', 'Follow-up']}
+      columns={['Empleado', 'Fecha', 'Triage', 'Diagnóstico', 'Atendido por', 'Seguimiento']}
       renderRow={(item) => (
         <>
           <td className="px-6 py-5">
             <p className="font-medium text-slate-900">{item.employeeFullName ?? '—'}</p>
-            <p className="text-xs text-slate-500">HC #{item.clinicalHistoryId}</p>
+            <p className="text-xs text-slate-500">Hist. Clínica {item.clinicalHistoryId}</p>
           </td>
 
           <td className="px-6 py-5 text-sm text-slate-600">

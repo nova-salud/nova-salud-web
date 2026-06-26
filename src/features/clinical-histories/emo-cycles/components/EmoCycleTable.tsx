@@ -51,7 +51,7 @@ export const EmoCycleTable = ({ items, isLoading = false, pagination }: Props) =
             <p className="font-medium text-slate-900">
               {item.clinicalHistory?.employee?.fullName ?? '—'}
             </p>
-            <p className="text-xs text-slate-500">HC #{item.clinicalHistoryId}</p>
+            <p className="text-xs text-slate-500">Hist. Clínica {item.clinicalHistoryId}</p>
           </td>
 
           <td className="px-6 py-5 text-sm text-slate-600">

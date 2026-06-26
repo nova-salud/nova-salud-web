@@ -132,7 +132,7 @@ export const MedicalDashboardPage = () => {
 
   const seguimientosRows = [
     {
-      label: 'Follow-ups vencidos',
+      label: 'Seguimientos vencidos',
       value: data.summary.overdueFollowUps,
       icon: <AlertTriangle className="h-4 w-4 text-red-500" />,
       valueClassName: data.summary.overdueFollowUps > 0 ? 'text-red-600' : undefined,

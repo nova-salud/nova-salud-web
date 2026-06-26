@@ -105,7 +105,7 @@ export const AdminDashboardPage = () => {
     {
       info: ALERTAS_PANEL,
       rows: [
-        { label: 'Follow-ups vencidos', value: data.alerts.overdueFollowUps, icon: <AlertTriangle className="h-4 w-4 text-red-500" />, valueClassName: data.alerts.overdueFollowUps > 0 ? 'text-red-600' : undefined, path: '/attentions' },
+        { label: 'Seguimientos vencidos', value: data.alerts.overdueFollowUps, icon: <AlertTriangle className="h-4 w-4 text-red-500" />, valueClassName: data.alerts.overdueFollowUps > 0 ? 'text-red-600' : undefined, path: '/attentions' },
         { label: 'Con restricciones', value: data.alerts.employeesWithRestrictions, icon: <AlertTriangle className="h-4 w-4 text-amber-500" />, valueClassName: data.alerts.employeesWithRestrictions > 0 ? 'text-amber-600' : undefined, path: '/employees' },
         { label: 'Medicamentos críticos', value: data.alerts.criticalMedications, icon: <Package className="h-4 w-4 text-rose-500" />, valueClassName: data.alerts.criticalMedications > 0 ? 'text-rose-600' : undefined, path: '/medications' },
         { label: 'Más de 21 días DM', value: data.alerts.workersWithOver21DmDays, icon: <AlertTriangle className="h-4 w-4 text-red-400" />, valueClassName: data.alerts.workersWithOver21DmDays > 0 ? 'text-red-600' : undefined },
@@ -149,7 +149,7 @@ export const AdminDashboardPage = () => {
           <div className="flex flex-col gap-3">
             {[
               { label: 'Atenciones en rango', value: data.summary.consultationsInRange, color: 'text-indigo-600', bg: 'bg-indigo-50', icon: <TrendingUp className="h-5 w-5 text-indigo-600" />, path: '/attentions' },
-              { label: 'Follow-ups en rango', value: data.summary.followUpsInRange, color: 'text-blue-600', bg: 'bg-blue-50', icon: <ClipboardList className="h-5 w-5 text-blue-600" />, path: '/attentions' },
+              { label: 'Seguimientos en rango', value: data.summary.followUpsInRange, color: 'text-blue-600', bg: 'bg-blue-50', icon: <ClipboardList className="h-5 w-5 text-blue-600" />, path: '/attentions' },
               { label: 'Accidentes en rango', value: data.accidentsInRange, color: 'text-amber-600', bg: 'bg-amber-50', icon: <ShieldAlert className="h-5 w-5 text-amber-600" />, path: '/accidents' },
               { label: 'Dispensaciones en rango', value: data.dispensationsInRange, color: 'text-emerald-600', bg: 'bg-emerald-50', icon: <Package className="h-5 w-5 text-emerald-600" />, path: '/dispensations' },
             ].map(card => (

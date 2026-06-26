@@ -171,7 +171,7 @@ export const SSTDashboardPage = () => {
 
   const alertasRows = [
     {
-      label: 'Follow-ups vencidos',
+      label: 'Seguimientos vencidos',
       value: data.coreMetrics.overdueFollowUps,
       icon: <AlertTriangle className="h-4 w-4 text-red-500" />,
       valueClassName: data.coreMetrics.overdueFollowUps > 0 ? 'text-red-600' : undefined,

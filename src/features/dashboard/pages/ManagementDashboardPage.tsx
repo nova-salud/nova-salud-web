@@ -116,7 +116,7 @@ export const ManagementDashboardPage = () => {
               onClick={() => navigate('/clinical-attention')}
             >
               <div>
-                <p className="text-xs font-medium uppercase tracking-wider text-slate-400">Follow-ups en rango</p>
+                <p className="text-xs font-medium uppercase tracking-wider text-slate-400">Seguimientos en rango</p>
                 <p className="mt-1 text-2xl font-semibold text-blue-600">{data.summary.followUpsInRange}</p>
               </div>
               <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50">
@@ -300,7 +300,7 @@ export const ManagementDashboardPage = () => {
             onAction={() => navigate('/requirements')}
             rows={[
               {
-                label: 'Follow-ups vencidos',
+                label: 'Seguimientos vencidos',
                 icon: <AlertTriangle className="h-4 w-4 text-red-500" />,
                 value: data.alerts.overdueFollowUps,
                 iconBg: 'bg-red-50',
