@@ -1,6 +1,5 @@
 import { ApiService } from '@/core/api/api.service'
 import type { FindAlertsDto } from '../types/find-alerts.dto'
-import type { AlertType } from '../types/alert-type.enum'
 import type { PaginatedResponse } from '@/core/types/paginated-response.type'
 import type { AlertResponseDto } from '../types/alert-response.dto'
 
@@ -15,10 +14,8 @@ class AlertService extends ApiService {
     return await this.get<{ high: number; medium: number; low: number }>('/alerts/summary', { params })
   }
 
-  async getUnresolvedCount(types?: AlertType[]): Promise<{ count: number }> {
-    return await this.get<{ count: number }>('/alerts/count', {
-      params: types?.length ? { types } : undefined,
-    })
+  async getUnresolvedCount(): Promise<{ count: number }> {
+    return await this.get<{ count: number }>('/alerts/count')
   }
 
   async resolve(id: number): Promise<void> {
