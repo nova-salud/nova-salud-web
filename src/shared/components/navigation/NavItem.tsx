@@ -26,24 +26,31 @@ export const NavItem = ({
       title={collapsed ? label : undefined}
       className={({ isActive }) => cn(
         [
-          'flex w-full items-center rounded-2xl text-[13px] py-3 transition-all',
+          'flex w-full items-center rounded-2xl text-[13px] py-2 transition-all',
           collapsed ? 'justify-center px-0' : 'justify-between px-4',
           isActive
-            ? 'bg-slate-100 text-[#2447F9] font-medium'
-            : 'text-slate-700 hover:bg-slate-50',
+            ? 'bg-[#d6001c] text-white font-medium'
+            : 'text-slate-500 hover:bg-[#d6001c] hover:text-white',
         ])
       }
     >
-      <div className={`flex items-center ${collapsed ? '' : 'gap-3'}`}>
-        <Icon size={18} className="shrink-0" />
-        {!collapsed ? <span>{label}</span> : null}
-      </div>
+      {({ isActive }) => (
+        <>
+          <div className={`flex items-center ${collapsed ? '' : 'gap-3'}`}>
+            <Icon size={18} className="shrink-0" />
+            {!collapsed ? <span>{label}</span> : null}
+          </div>
 
-      {!collapsed && badge ? (
-        <span className="min-w-5 rounded-full bg-red-100 px-1.5 py-0.5 text-center text-[10px] font-semibold text-red-500">
-          {badge}
-        </span>
-      ) : null}
+          {!collapsed && badge ? (
+            <span className={cn(
+              'min-w-5 rounded-full px-1.5 py-0.5 text-center text-[10px] font-semibold',
+              isActive ? 'bg-white/20 text-white' : 'bg-red-100 text-red-500',
+            )}>
+              {badge}
+            </span>
+          ) : null}
+        </>
+      )}
     </NavLink>
   )
 }

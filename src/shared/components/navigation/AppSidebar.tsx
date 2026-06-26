@@ -4,7 +4,7 @@ import { cn } from '@/shared/utils'
 import { RoleEnum } from '@/core/enums/role.enum'
 import { useAuth, useSidebar } from '@/shared/hooks'
 import { useAlertsCount } from '@/features/communications/alerts/hooks/useAlertsCount'
-import { NavItem } from './NavItem'
+import { NavSection } from './NavSection'
 import { SidebarUserMenu } from './SidebarUserMenu'
 
 export const AppSidebar = () => {
@@ -83,27 +83,14 @@ export const AppSidebar = () => {
         <div className="sidebar flex-1 overflow-y-auto px-3 py-5">
           <div className="space-y-7">
             {filteredSections.map((section) => (
-              <div key={section.label}>
-                {!sidebarCollapsed ? (
-                  <p className="mb-3 px-2 text-[11px] font-semibold tracking-[0.18em] text-slate-400">
-                    {section.label}
-                  </p>
-                ) : null}
-
-                <div className="space-y-1">
-                  {section.items.map((item) => (
-                    <NavItem
-                      key={item.path}
-                      label={item.label}
-                      path={item.path}
-                      icon={item.icon}
-                      badge={item.path === '/alerts' ? (alertsCount || undefined) : item.badge}
-                      collapsed={sidebarCollapsed}
-                      onClick={closeSidebar}
-                    />
-                  ))}
-                </div>
-              </div>
+              <NavSection
+                key={section.label}
+                label={section.label}
+                items={section.items}
+                alertsCount={alertsCount}
+                collapsed={sidebarCollapsed}
+                onItemClick={closeSidebar}
+              />
             ))}
           </div>
         </div>
