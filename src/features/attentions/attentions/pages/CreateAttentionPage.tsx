@@ -216,7 +216,7 @@ const CreateAttentionPage = () => {
             <div className="grid gap-4 md:grid-cols-2">
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-medium text-slate-500">
-                  EVA (dolor) <span className="text-red-600">*</span>
+                  Nivel de dolor (EVA) <span className="text-red-600">*</span>
                 </label>
                 <input
                   name="eva"

@@ -9,6 +9,8 @@ export type FindAttentionsParams = QueryParams & {
   triageLevel?: string
   employeeFullName?: string
   diagnosisCode?: string
+  createdAtFrom?: string
+  createdAtTo?: string
 }
 
 class AttentionService extends ApiService {

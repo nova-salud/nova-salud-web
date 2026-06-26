@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router'
 import { format } from 'date-fns'
 import { Eye, User } from 'lucide-react'
 import { cn } from '@/shared/utils'
-import { DataTable, Dropdown, DropdownItem, type Pagination } from '@/shared/components'
+import { Badge, DataTable, Dropdown, DropdownItem, type Pagination } from '@/shared/components'
 import { TRIAGE_LEVEL_CLASSNAME, TRIAGE_LEVEL_LABEL } from '../types/triage.enum'
 import type { AttentionResponseDto } from '../types'
 
@@ -30,7 +30,7 @@ export const AttentionTable = ({ items, isLoading = false, pagination }: Props) 
       emptyMessage="No se encontraron atenciones."
       pagination={pagination}
       onRowDoubleClick={goToDetail}
-      columns={['Empleado', 'Fecha', 'Triage', 'Diagnóstico', 'Atendido por', 'Seguimiento']}
+      columns={['Empleado', 'Fecha', 'Triage', 'Diagnóstico', 'Atendido por', 'Seguimiento generado']}
       renderRow={(item) => (
         <>
           <td className="px-6 py-5">
@@ -57,15 +57,9 @@ export const AttentionTable = ({ items, isLoading = false, pagination }: Props) 
           </td>
 
           <td className="px-6 py-5">
-            {item.originFollowUpId != null ? (
-              <span className="inline-flex rounded-xl border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700">
-                Sí
-              </span>
-            ) : (
-              <span className="inline-flex rounded-xl border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-500">
-                No
-              </span>
-            )}
+            <Badge variant={item.hasGeneratedFollowUp ? 'blue' : 'slate'}>
+              {item.hasGeneratedFollowUp ? 'Sí' : 'No'}
+            </Badge>
           </td>
         </>
       )}

@@ -24,6 +24,7 @@ export type AttentionResponseDto = AuditResponseDto & {
 
   triageLevel: TriageLevelEnum
 
+  hasGeneratedFollowUp: boolean
   followUps: FollowUpResponseDto[]
 
   snapshotMedicalInsurance: string | null

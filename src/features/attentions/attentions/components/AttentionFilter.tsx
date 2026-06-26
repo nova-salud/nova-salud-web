@@ -1,8 +1,8 @@
-import { Input, Select } from '@/shared/components'
+import { Input, Select, DateRangeInput, type DateRangeValue } from '@/shared/components'
 import type { FindAttentionsParams } from '../services/attention.service'
 import { TRIAGE_LEVEL_OPTIONS, type TriageLevelEnum } from '../types/triage.enum'
 
-type ExtraFilters = Pick<FindAttentionsParams, 'employeeFullName' | 'triageLevel' | 'diagnosisCode'>
+type ExtraFilters = Pick<FindAttentionsParams, 'employeeFullName' | 'triageLevel' | 'diagnosisCode' | 'createdAtFrom' | 'createdAtTo'>
 
 interface AttentionFilterProps {
   filters: Partial<ExtraFilters>
@@ -10,6 +10,13 @@ interface AttentionFilterProps {
 }
 
 export const AttentionFilter = ({ filters, onChangeFilters }: AttentionFilterProps) => {
+  const handleDateChange = (range: DateRangeValue) => {
+    onChangeFilters({
+      createdAtFrom: range.from || undefined,
+      createdAtTo: range.to || undefined,
+    })
+  }
+
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
       <div className="grid gap-4 md:grid-cols-3">
@@ -43,6 +50,15 @@ export const AttentionFilter = ({ filters, onChangeFilters }: AttentionFilterPro
           onChange={(e) =>
             onChangeFilters({ diagnosisCode: (e.target as HTMLInputElement).value || undefined })
           }
+        />
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-3 mt-4">
+        <DateRangeInput
+          labelFrom="Fecha inicio"
+          labelTo="Fecha fin"
+          value={{ from: filters.createdAtFrom ?? '', to: filters.createdAtTo ?? '' }}
+          onChange={handleDateChange}
         />
       </div>
     </div>

@@ -78,7 +78,7 @@ const AttentionDispensationSection = ({ dispensation, onChange, allergies = [] }
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-base font-semibold text-slate-900">Dispensación</h2>
+        <h2 className="text-base font-semibold text-slate-900">Medicina entregada</h2>
 
         {dispensation ? (
           <div className="flex gap-2">
@@ -91,7 +91,7 @@ const AttentionDispensationSection = ({ dispensation, onChange, allergies = [] }
           </div>
         ) : (
           <Button type="button" variant="secondary" onClick={openSidebar} className="w-auto">
-            Agregar dispensación
+            Registrar
           </Button>
         )}
       </div>

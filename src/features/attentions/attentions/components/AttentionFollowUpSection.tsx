@@ -45,7 +45,7 @@ const AttentionFollowUpSection = ({ followUp, onChange }: Props) => {
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="text-base font-semibold text-slate-900">Seguimiento</h2>
+        <h2 className="text-base font-semibold text-slate-900">Promximo control en topico</h2>
 
         {followUp ? (
           <div className="flex gap-2">
@@ -58,7 +58,7 @@ const AttentionFollowUpSection = ({ followUp, onChange }: Props) => {
           </div>
         ) : (
           <Button type="button" variant="secondary" onClick={openModal} className="w-auto">
-            Agregar seguimiento
+            Agendar
           </Button>
         )}
       </div>
