@@ -157,6 +157,16 @@ export const navigationConfig: NavigationSection[] = [
           RoleEnum.NURSE,
         ],
       },
+      {
+        label: 'Especialidades',
+        path: '/specialties',
+        icon: Stethoscope,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.NURSE,
+        ],
+      },
     ],
   },
   {

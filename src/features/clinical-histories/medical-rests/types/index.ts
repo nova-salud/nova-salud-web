@@ -13,12 +13,15 @@ export type MedicalRestResponseDto = AuditResponseDto & {
   fileType: string | null
   employeeId: number | null
   employeeFullName: string | null
+  specialtyId: number | null
+  specialtyName: string | null
 }
 
 export type CreateMedicalRestDto = {
   clinicalHistoryId: number
   accidentId?: number
   attentionId?: number
+  specialtyId?: number
   startDate: string
   endDate: string
   notes?: string

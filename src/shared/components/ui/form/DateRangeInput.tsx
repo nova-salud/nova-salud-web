@@ -16,6 +16,7 @@ interface Props {
   labelTo?: string
   value: DateRangeValue
   onChange: (value: DateRangeValue) => void
+  maxDays?: number
 }
 
 function toDate(iso: string): Date | undefined {
@@ -78,6 +79,7 @@ export const DateRangeInput = ({
   labelTo = 'Hasta',
   value,
   onChange,
+  maxDays,
 }: Props) => {
   const [open, setOpen] = useState(false)
   const [phase, setPhase] = useState<'idle' | 'picking'>('idle')
@@ -222,6 +224,7 @@ export const DateRangeInput = ({
             components={{ PreviousMonthButton: NavPrev, NextMonthButton: NavNext, DayButton }}
             modifiers={modifiers}
             modifiersClassNames={modifiersClassNames}
+            disabled={phase === 'picking' && pickingFrom && maxDays ? { after: addDays(pickingFrom, maxDays) } : undefined}
             onDayMouseEnter={(day) => { if (phase === 'picking') setHover(day) }}
             onDayMouseLeave={() => setHover(undefined)}
             onDayClick={handleDayClick}

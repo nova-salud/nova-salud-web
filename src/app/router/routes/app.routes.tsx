@@ -47,6 +47,7 @@ import {
   HealthcareCenterDetailPage,
   AllergyTypesPage,
   TherapeuticCategoriesPage,
+  SpecialtiesPage,
   AccidentDetailPage,
   AccidentsPage,
   CreateAccidentFromClinicaHistoryPage,
@@ -145,6 +146,10 @@ export const appRoutes: RouteObject = {
             {
               path: '/medical-rests',
               element: <MedicalRestsPage />,
+            },
+            {
+              path: '/specialties',
+              element: <SpecialtiesPage />,
             },
             {
               path: '/diseases',
