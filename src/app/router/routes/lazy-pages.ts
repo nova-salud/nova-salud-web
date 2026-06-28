@@ -31,6 +31,7 @@ export const EmoProtocolsPage = lazy(() => import('@/features/emo-protocols/page
 export const EmoProtocolDetailPage = lazy(() => import('@/features/emo-protocols/pages/EmoProtocolDetailPage'))
 export const EmoCycleDetailPage = lazy(() => import('@/features/clinical-histories/emo-cycles/pages/EmoCycleDetailPage'))
 export const EmoCycleHistoryPage = lazy(() => import('@/features/clinical-histories/emo-cycles/pages/EmoCycleHistoryPage'))
+export const EmoLegacyRecordsPage = lazy(() => import('@/features/clinical-histories/emo-cycles/pages/EmoLegacyRecordsPage'))
 export const ClinicalHistoriesPage = lazy(() => import('@/features/clinical-histories/clinical-histories/pages/ClinicalHistoriesPage'))
 export const HealthcareCentersPage = lazy(() => import('@/features/healthcare-centers/pages/HealthcareCentersPage'))
 export const HealthcareCenterDetailPage = lazy(() => import('@/features/healthcare-centers/pages/HealthcareCenterDetailPage'))

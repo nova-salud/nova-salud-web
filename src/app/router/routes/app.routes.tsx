@@ -42,6 +42,7 @@ import {
   EmoProtocolDetailPage,
   EmoCycleDetailPage,
   EmoCycleHistoryPage,
+  EmoLegacyRecordsPage,
   EmoCyclesPage,
   AttentionsPage,
   ClinicalHistoriesPage,
@@ -136,6 +137,10 @@ export const appRoutes: RouteObject = {
             {
               path: '/clinical-histories/:employeeId/emo-cycles',
               element: <EmoCycleHistoryPage />,
+            },
+            {
+              path: '/clinical-histories/:employeeId/emo-legacy',
+              element: <EmoLegacyRecordsPage />,
             },
             {
               path: '/emo-cycles',

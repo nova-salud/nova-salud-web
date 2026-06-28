@@ -53,14 +53,23 @@ const EmoCycleHistoryPage = () => {
       title="Historial de ciclos EMO"
       description={clinicalHistory?.employee.fullName}
       action={
-        <Button
-          variant="outline"
-          onClick={() => navigate(`/clinical-histories/${numericEmployeeId}`)}
-          className="gap-1.5 text-sm py-2"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Volver
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() => navigate(`/clinical-histories/${numericEmployeeId}/emo-legacy`)}
+            className="gap-1.5 text-sm py-2"
+          >
+            Ver histórico anterior
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => navigate(`/clinical-histories/${numericEmployeeId}`)}
+            className="gap-1.5 text-sm py-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Volver
+          </Button>
+        </div>
       }
     >
       <div className="space-y-3">
