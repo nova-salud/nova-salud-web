@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Download, FileText } from 'lucide-react'
+import { ChevronDown, ChevronUp, Download, FileText } from 'lucide-react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { useAsyncAction } from '@/core/hooks/useAsyncAction'
@@ -7,6 +7,7 @@ import { Button, InputFile } from '@/shared/components'
 import { documentTemplateService } from '../services/document-template.service'
 import { useUploadDocumentTemplate } from '../hooks/useUploadDocumentTemplate'
 import { DOCUMENT_TEMPLATE_META } from '../constants/document-template.constants'
+import { TemplatePlaceholderList } from './TemplatePlaceholderList'
 import type { DocumentTemplateResponseDto, DocumentTemplateType } from '../types/document-template.types'
 
 type Props = {
@@ -18,6 +19,7 @@ type Props = {
 export const DocumentTemplateCard = ({ type, template, onUploaded }: Props) => {
   const { upload, isLoading: isUploading } = useUploadDocumentTemplate()
   const [file, setFile] = useState<File | null>(null)
+  const [showFields, setShowFields] = useState(false)
 
   const meta = DOCUMENT_TEMPLATE_META[type]
 
@@ -60,6 +62,21 @@ export const DocumentTemplateCard = ({ type, template, onUploaded }: Props) => {
               {format(new Date(template.updatedAt), "d 'de' MMMM 'de' yyyy", { locale: es })}
             </p>
           )}
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={() => setShowFields((v) => !v)}
+        className="flex items-center gap-1 self-start text-xs font-medium text-slate-500 hover:text-slate-700"
+      >
+        {showFields ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+        {showFields ? 'Ocultar campos' : 'Ver campos disponibles'}
+      </button>
+
+      <div className={`grid transition-all duration-300 ease-in-out ${showFields ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
+        <div className="overflow-hidden">
+          <TemplatePlaceholderList placeholders={meta.placeholders} />
         </div>
       </div>
 

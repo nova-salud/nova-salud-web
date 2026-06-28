@@ -14,7 +14,7 @@ const DocumentTemplatesPage = () => {
       title="Plantillas de Documentos"
       description="Gestiona las plantillas Word utilizadas para generar documentos médico ocupacionales."
     >
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid items-start gap-4 sm:grid-cols-2">
         {ALL_DOCUMENT_TEMPLATE_TYPES.map((type) => (
           <DocumentTemplateCard
             key={type}
