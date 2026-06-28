@@ -4,6 +4,7 @@ import {
   Activity,
   AlertCircle,
   ArrowLeftRight,
+  BarChart2,
   BedDouble,
   BellDot,
   BookOpen,
@@ -325,6 +326,24 @@ export const navigationConfig: NavigationSection[] = [
         icon: FileText,
         roles: [
           RoleEnum.ADMIN,
+        ],
+      },
+    ],
+  },
+  {
+    label: 'REPORTERÍA',
+    items: [
+      {
+        label: 'Reporte de Eventos',
+        path: '/events/report',
+        icon: BarChart2,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.NURSE,
+          RoleEnum.SST,
+          RoleEnum.HR,
+          RoleEnum.MANAGEMENT,
         ],
       },
     ],

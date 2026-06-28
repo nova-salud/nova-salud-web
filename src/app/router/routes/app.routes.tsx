@@ -8,6 +8,7 @@ import { RoleEnum } from '@/core/enums/role.enum'
 import { ALERT_ROLES_WITH_ACCESS } from '@/features/communications/alerts/config/alert-role-config'
 import {
   DashboardPage,
+  EventReportPage,
   MedicalRestsPage,
   MedicalRestDetailPage,
   MyClinicialHistoryPage,
@@ -356,6 +357,26 @@ export const appRoutes: RouteObject = {
           element: <RoleGuard roles={[RoleEnum.EMPLOYEE, RoleEnum.EMPLOYEE_EXT]} />,
           children: [
             { path: '/my-clinical-history', element: <MyClinicialHistoryPage /> },
+          ],
+        },
+        {
+          element: (
+            <RoleGuard
+              roles={[
+                RoleEnum.ADMIN,
+                RoleEnum.OCCUPATIONAL_DOCTOR,
+                RoleEnum.NURSE,
+                RoleEnum.SST,
+                RoleEnum.HR,
+                RoleEnum.MANAGEMENT,
+              ]}
+            />
+          ),
+          children: [
+            {
+              path: '/events/report',
+              element: <EventReportPage />,
+            },
           ],
         },
         {

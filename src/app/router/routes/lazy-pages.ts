@@ -49,3 +49,4 @@ export const MedicalRestsPage = lazy(() => import('@/features/clinical-histories
 export const MedicalRestDetailPage = lazy(() => import('@/features/clinical-histories/medical-rests/pages/MedicalRestDetailPage'))
 export const MyClinicialHistoryPage = lazy(() => import('@/features/clinical-histories/clinical-histories/pages/MyClinicialHistoryPage'))
 export const SpecialtiesPage = lazy(() => import('@/features/specialties/pages/SpecialtiesPage'))
+export const EventReportPage = lazy(() => import('@/features/events/pages/EventReportPage'))
