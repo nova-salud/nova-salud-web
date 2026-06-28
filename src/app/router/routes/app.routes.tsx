@@ -58,6 +58,8 @@ import {
   AlertsPage,
   DocumentTemplatesPage,
   UserDetailPage,
+  EmployeeDocumentsListPage,
+  EmployeeDocumentsDetailPage,
 } from './lazy-pages'
 
 
@@ -381,6 +383,27 @@ export const appRoutes: RouteObject = {
             {
               path: '/events/report',
               element: <EventReportPage />,
+            },
+          ],
+        },
+        {
+          element: (
+            <RoleGuard
+              roles={[
+                RoleEnum.ADMIN,
+                RoleEnum.HR,
+                RoleEnum.MANAGEMENT,
+              ]}
+            />
+          ),
+          children: [
+            {
+              path: '/documents/employees',
+              element: <EmployeeDocumentsListPage />,
+            },
+            {
+              path: '/documents/employees/:employeeId',
+              element: <EmployeeDocumentsDetailPage />,
             },
           ],
         },

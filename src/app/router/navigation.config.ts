@@ -346,6 +346,16 @@ export const navigationConfig: NavigationSection[] = [
           RoleEnum.MANAGEMENT,
         ],
       },
+      {
+        label: 'Documentos por Empleado',
+        path: '/documents/employees',
+        icon: FileText,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.HR,
+          RoleEnum.MANAGEMENT,
+        ],
+      },
     ],
   },
   {
