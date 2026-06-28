@@ -24,4 +24,5 @@ export type CreateAttentionWithDispensationDto = {
   triageLevel: TriageLevelEnum
 
   accidentId?: number
+  hasEta?: boolean
 }

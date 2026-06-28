@@ -33,6 +33,7 @@ const CreateAttentionPage = () => {
   const [diseaseTypeFilter, setDiseaseTypeFilter] = useState<DiseaseType | 'NO_TYPE' | ''>('')
   const [dispensation, setDispensation] = useState<DispensationFormState | null>(null)
   const [followUp, setFollowUp] = useState<FollowUpFormState | null>(null)
+  const [hasEta, setHasEta] = useState(false)
   const [originFollowUpId, setOriginFollowUpId] = useState<number | undefined>(
     followUpIdParam ? Number(followUpIdParam) : undefined
   )
@@ -97,6 +98,7 @@ const CreateAttentionPage = () => {
       originFollowUpId,
       triageLevel,
       accidentId: accidentIdParam ? Number(accidentIdParam) : undefined,
+      hasEta,
     })
 
     if (!result) return
@@ -261,6 +263,16 @@ const CreateAttentionPage = () => {
               placeholder="Agrega observaciones adicionales"
               rows={3}
             />
+
+            <label className="flex cursor-pointer items-center gap-3">
+              <input
+                type="checkbox"
+                checked={hasEta}
+                onChange={(e) => setHasEta(e.target.checked)}
+                className="h-4 w-4 rounded border-slate-300 accent-[#0B1739]"
+              />
+              <span className="text-sm text-slate-700">¿Se diagnosticó ETA?</span>
+            </label>
           </div>
         </div>
 

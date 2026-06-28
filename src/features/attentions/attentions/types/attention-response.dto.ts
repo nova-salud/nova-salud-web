@@ -31,4 +31,6 @@ export type AttentionResponseDto = AuditResponseDto & {
   snapshotEps: string | null
   snapshotEpsPlan: string | null
   snapshotSctrHealth: string | null
+
+  hasEta: boolean
 }

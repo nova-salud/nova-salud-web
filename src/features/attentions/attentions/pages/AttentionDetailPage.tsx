@@ -32,6 +32,12 @@ const AttentionDetailPage = () => {
   )
   const { execute: handleGenerateFormat, isLoading: isGenerating } = useAsyncAction(generateAction, { showSuccessToast: false })
 
+  const generateEtaAction = useCallback(
+    () => documentTemplateService.generate(DocumentTemplateType.ETA_RESULTS, { attentionId: numericAttentionId }),
+    [numericAttentionId],
+  )
+  const { execute: handleGenerateEta, isLoading: isGeneratingEta } = useAsyncAction(generateEtaAction, { showSuccessToast: false })
+
   if (isLoading) return <AttentionDetailSkeleton />
   if (!attention) return (
     <ResourceNotFound
@@ -62,6 +68,19 @@ const AttentionDetailPage = () => {
           >
             Formato de atención
           </Button>
+
+          {attention.hasEta && (
+            <Button
+              type="button"
+              variant="outline"
+              className="w-auto"
+              isLoading={isGeneratingEta}
+              loadingText="Generando..."
+              onClick={() => void handleGenerateEta()}
+            >
+              Formato ETAS
+            </Button>
+          )}
 
           <Button
             type="button"
@@ -117,6 +136,12 @@ const AttentionDetailPage = () => {
               {attention.triageLevel && (
                 <span className={`rounded-xl px-3 py-1 text-xs ${TRIAGE_LEVEL_CLASSNAME[attention.triageLevel]}`}>
                   Triaje: {TRIAGE_LEVEL_LABEL[attention.triageLevel]}
+                </span>
+              )}
+
+              {attention.hasEta && (
+                <span className="rounded-xl bg-amber-100 px-3 py-1 text-amber-700">
+                  ETA diagnosticada
                 </span>
               )}
             </div>

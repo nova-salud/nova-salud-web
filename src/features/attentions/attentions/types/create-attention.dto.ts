@@ -5,4 +5,5 @@ export type CreateAttentionDto = {
   eva?: number
   treatment?: string
   notes?: string
+  hasEta?: boolean
 }

@@ -9,6 +9,7 @@ export const DocumentTemplateType = {
   EMO_CONFORMITY_RESTRICTIONS: 'EMO_CONFORMITY_RESTRICTIONS',
   EMO_CONFORMITY_DOCTOR: 'EMO_CONFORMITY_DOCTOR',
   ATTENTION_RECEIPT: 'ATTENTION_RECEIPT',
+  ETA_RESULTS: 'ETA_RESULTS',
 } as const
 
 export type DocumentTemplateType = typeof DocumentTemplateType[keyof typeof DocumentTemplateType];

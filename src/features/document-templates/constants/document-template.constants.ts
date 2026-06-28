@@ -21,6 +21,10 @@ export const DOCUMENT_TEMPLATE_META: Record<DocumentTemplateType, { label: strin
     label: 'Recibo de Atención',
     description: 'Formato de recibo de atención médica para el trabajador.',
   },
+  [DocumentTemplateType.ETA_RESULTS]: {
+    label: 'Entrega de Resultados ETAS',
+    description: 'Formato de entrega de resultados para enfermedades transmitidas por alimentos (ETA).',
+  },
 }
 
 export const ALL_DOCUMENT_TEMPLATE_TYPES: DocumentTemplateType[] = [
@@ -29,4 +33,5 @@ export const ALL_DOCUMENT_TEMPLATE_TYPES: DocumentTemplateType[] = [
   DocumentTemplateType.EMO_CONFORMITY_RESTRICTIONS,
   DocumentTemplateType.EMO_CONFORMITY_DOCTOR,
   DocumentTemplateType.ATTENTION_RECEIPT,
+  DocumentTemplateType.ETA_RESULTS,
 ]
