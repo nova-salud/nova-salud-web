@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useCreateMedicalRest } from '../hooks/useCreateMedicalRest'
-import { Button, Textarea, Sidebar, InputFile, SearchSelect, DateRangeInput } from '@/shared/components'
+import { Button, Textarea, Sidebar, InputFile, SearchSelect, DateRangeInput, Select } from '@/shared/components'
 import type { DateRangeValue } from '@/shared/components'
 import { useSearchSpecialties } from '@/features/specialties/hooks'
+import type { MedicalRestContingency, MedicalRestType } from '../types'
 
 const MAX_REST_DAYS = 30
 
@@ -10,6 +11,19 @@ function diffDays(from: string, to: string): number {
   const ms = new Date(to).getTime() - new Date(from).getTime()
   return Math.round(ms / 86400000)
 }
+
+const TYPE_OPTIONS: { label: string; value: MedicalRestType }[] = [
+  { label: 'CITT', value: 'CITT' },
+  { label: 'Particular', value: 'PARTICULAR' },
+]
+
+const CONTINGENCY_OPTIONS: { label: string; value: MedicalRestContingency }[] = [
+  { label: 'Enfermedad común', value: 'COMMON_DISEASE' },
+  { label: 'Acc. de trabajo', value: 'WORK_ACCIDENT' },
+  { label: 'Acc. de tránsito', value: 'TRANSIT_ACCIDENT' },
+  { label: 'Emergencia', value: 'EMERGENCY' },
+  { label: 'Acc. común', value: 'COMMON_ACCIDENT' },
+]
 
 type Props = {
   isOpen: boolean
@@ -26,6 +40,8 @@ const MedicalRestFormSidebar = ({ isOpen, clinicalHistoryId, accidentId, attenti
   const [file, setFile] = useState<File | null>(null)
   const [specialtyId, setSpecialtyId] = useState<string>('')
   const [specialtyError, setSpecialtyError] = useState<string | null>(null)
+  const [typeError, setTypeError] = useState<string | null>(null)
+  const [contingencyError, setContingencyError] = useState<string | null>(null)
 
   const { isLoading, error, createMedicalRest, clearError } = useCreateMedicalRest()
   const { specialties } = useSearchSpecialties()
@@ -37,6 +53,8 @@ const MedicalRestFormSidebar = ({ isOpen, clinicalHistoryId, accidentId, attenti
     setFile(null)
     setSpecialtyId('')
     setSpecialtyError(null)
+    setTypeError(null)
+    setContingencyError(null)
     clearError()
   }, [isOpen, clearError])
 
@@ -53,6 +71,10 @@ const MedicalRestFormSidebar = ({ isOpen, clinicalHistoryId, accidentId, attenti
     e.preventDefault()
     const data = new FormData(e.currentTarget)
 
+    const type = data.get('type') as MedicalRestType | ''
+    const contingency = data.get('contingency') as MedicalRestContingency | ''
+    const diagnosis = (data.get('diagnosis') as string).trim()
+
     let hasError = false
 
     if (!dateRange.from || !dateRange.to) {
@@ -68,6 +90,20 @@ const MedicalRestFormSidebar = ({ isOpen, clinicalHistoryId, accidentId, attenti
       hasError = true
     }
 
+    if (!type) {
+      setTypeError('Selecciona el tipo de descanso.')
+      hasError = true
+    } else {
+      setTypeError(null)
+    }
+
+    if (!contingency) {
+      setContingencyError('Selecciona la contingencia.')
+      hasError = true
+    } else {
+      setContingencyError(null)
+    }
+
     if (hasError) return
 
     setDateRangeError(null)
@@ -79,6 +115,9 @@ const MedicalRestFormSidebar = ({ isOpen, clinicalHistoryId, accidentId, attenti
         accidentId,
         attentionId,
         specialtyId: Number(specialtyId),
+        diagnosis,
+        type: type as MedicalRestType,
+        contingency: contingency as MedicalRestContingency,
         startDate: dateRange.from,
         endDate: dateRange.to,
         notes: (data.get('notes') as string).trim() || undefined,
@@ -98,7 +137,7 @@ const MedicalRestFormSidebar = ({ isOpen, clinicalHistoryId, accidentId, attenti
     <Sidebar
       isOpen={isOpen}
       onClose={onClose}
-      size='md'
+      size="md"
       title="Registrar descanso médico"
       description="Ingresa las fechas del descanso médico y adjunta el documento PDF."
     >
@@ -125,6 +164,26 @@ const MedicalRestFormSidebar = ({ isOpen, clinicalHistoryId, accidentId, attenti
           error={specialtyError ?? undefined}
         />
 
+        <Select
+          label="Tipo"
+          name="type"
+          options={TYPE_OPTIONS}
+          showDefaultOption
+          placeholder="Seleccionar tipo"
+          error={typeError ?? undefined}
+          onChange={() => setTypeError(null)}
+        />
+
+        <Select
+          label="Contingencia"
+          name="contingency"
+          options={CONTINGENCY_OPTIONS}
+          showDefaultOption
+          placeholder="Seleccionar contingencia"
+          error={contingencyError ?? undefined}
+          onChange={() => setContingencyError(null)}
+        />
+
         <div className="space-y-1">
           <DateRangeInput
             labelFrom="Fecha de inicio"
@@ -137,6 +196,14 @@ const MedicalRestFormSidebar = ({ isOpen, clinicalHistoryId, accidentId, attenti
             <p className="px-1 text-xs text-red-500">{dateRangeError}</p>
           ) : null}
         </div>
+
+        <Textarea
+          label="Diagnóstico"
+          name="diagnosis"
+          placeholder="Ingresa el diagnóstico"
+          rows={3}
+          required
+        />
 
         <Textarea
           label="Observaciones (opcional)"

@@ -20,6 +20,10 @@ class MedicalRestService extends ApiService {
     formData.append('endDate', dto.endDate)
     if (dto.accidentId) formData.append('accidentId', String(dto.accidentId))
     if (dto.attentionId) formData.append('attentionId', String(dto.attentionId))
+    if (dto.specialtyId) formData.append('specialtyId', String(dto.specialtyId))
+    formData.append('diagnosis', dto.diagnosis)
+    formData.append('type', dto.type)
+    formData.append('contingency', dto.contingency)
     if (dto.notes) formData.append('notes', dto.notes)
     if (file) formData.append('file', file)
 
@@ -35,6 +39,10 @@ class MedicalRestService extends ApiService {
       '/clinical-histories/medical-rests',
       { params },
     )
+  }
+
+  async findById(id: number): Promise<MedicalRestResponseDto> {
+    return await this.get<MedicalRestResponseDto>(`/clinical-histories/medical-rests/${id}`)
   }
 
   async remove(id: number): Promise<void> {

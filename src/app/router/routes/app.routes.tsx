@@ -9,6 +9,7 @@ import { ALERT_ROLES_WITH_ACCESS } from '@/features/communications/alerts/config
 import {
   DashboardPage,
   MedicalRestsPage,
+  MedicalRestDetailPage,
   MyClinicialHistoryPage,
   MedicationsPage,
   MedicationDetailPage,
@@ -146,6 +147,10 @@ export const appRoutes: RouteObject = {
             {
               path: '/medical-rests',
               element: <MedicalRestsPage />,
+            },
+            {
+              path: '/medical-rests/:id',
+              element: <MedicalRestDetailPage />,
             },
             {
               path: '/specialties',

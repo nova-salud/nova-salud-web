@@ -1,5 +1,14 @@
 import type { AuditResponseDto } from '@/core/types/audit-response.dto'
 
+export type MedicalRestType = 'CITT' | 'PARTICULAR'
+
+export type MedicalRestContingency =
+  | 'COMMON_DISEASE'
+  | 'WORK_ACCIDENT'
+  | 'TRANSIT_ACCIDENT'
+  | 'EMERGENCY'
+  | 'COMMON_ACCIDENT'
+
 export type MedicalRestResponseDto = AuditResponseDto & {
   id: number
   clinicalHistoryId: number
@@ -15,6 +24,9 @@ export type MedicalRestResponseDto = AuditResponseDto & {
   employeeFullName: string | null
   specialtyId: number | null
   specialtyName: string | null
+  diagnosis: string | null
+  type: MedicalRestType | null
+  contingency: MedicalRestContingency | null
 }
 
 export type CreateMedicalRestDto = {
@@ -25,4 +37,7 @@ export type CreateMedicalRestDto = {
   startDate: string
   endDate: string
   notes?: string
+  diagnosis: string
+  type: MedicalRestType
+  contingency: MedicalRestContingency
 }

@@ -1,8 +1,13 @@
 import { useNavigate } from 'react-router'
 import { format, differenceInDays } from 'date-fns'
-import { Download, User } from 'lucide-react'
+import { Download, Eye } from 'lucide-react'
 import { DataTable, Dropdown, DropdownItem, type Pagination } from '@/shared/components'
-import type { MedicalRestResponseDto } from '../types'
+import type { MedicalRestResponseDto, MedicalRestType } from '../types'
+
+const TYPE_LABEL: Record<MedicalRestType, string> = {
+  CITT: 'CITT',
+  PARTICULAR: 'Particular',
+}
 
 type Props = {
   items: MedicalRestResponseDto[]
@@ -12,10 +17,6 @@ type Props = {
 
 export const MedicalRestTable = ({ items, isLoading = false, pagination }: Props) => {
   const navigate = useNavigate()
-
-  const goToClinicalHistory = (item: MedicalRestResponseDto) => {
-    if (item.employeeId) navigate(`/clinical-histories/${item.employeeId}`)
-  }
 
   const downloadFile = (item: MedicalRestResponseDto) => {
     if (!item.fileUrl) return
@@ -32,11 +33,12 @@ export const MedicalRestTable = ({ items, isLoading = false, pagination }: Props
       isLoading={isLoading}
       emptyMessage="No se encontraron descansos médicos."
       pagination={pagination}
-      columns={['Empleado', 'Inicio', 'Fin', 'Días', 'Notas', 'Documento']}
+      columns={['Empleado', 'Inicio', 'Fin', 'Días DM', 'Días subsidiados', 'Tipo', 'Especialidad', 'Documento']}
       renderRow={(item) => {
         const start = new Date(item.startDate)
         const end = new Date(item.endDate)
-        const days = differenceInDays(end, start) + 1
+        const daysDm = differenceInDays(end, start) + 1
+        const daysSubsidized = Math.max(0, daysDm - 30)
 
         return (
           <>
@@ -56,15 +58,19 @@ export const MedicalRestTable = ({ items, isLoading = false, pagination }: Props
             </td>
 
             <td className="px-6 py-5 text-sm text-slate-600">
-              {days} día{days !== 1 ? 's' : ''}
+              {daysDm}
             </td>
 
-            <td className="px-6 py-5 text-sm text-slate-500">
-              {item.notes
-                ? item.notes.length > 40
-                  ? `${item.notes.slice(0, 40)}…`
-                  : item.notes
-                : '—'}
+            <td className="px-6 py-5 text-sm text-slate-600">
+              {daysSubsidized > 0 ? daysSubsidized : '—'}
+            </td>
+
+            <td className="px-6 py-5 text-sm text-slate-600">
+              {item.type ? TYPE_LABEL[item.type] : '—'}
+            </td>
+
+            <td className="px-6 py-5 text-sm text-slate-600">
+              {item.specialtyName ?? '—'}
             </td>
 
             <td className="px-6 py-5">
@@ -83,9 +89,9 @@ export const MedicalRestTable = ({ items, isLoading = false, pagination }: Props
       }}
       renderActions={(item) => (
         <Dropdown>
-          <DropdownItem onClick={() => goToClinicalHistory(item)}>
-            <User size={14} />
-            Ver historia clínica
+          <DropdownItem onClick={() => navigate(`/medical-rests/${item.id}`)}>
+            <Eye size={14} />
+            Ver detalle
           </DropdownItem>
           {item.fileUrl && (
             <DropdownItem onClick={() => downloadFile(item)}>
