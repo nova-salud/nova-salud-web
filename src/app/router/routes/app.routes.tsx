@@ -145,14 +145,6 @@ export const appRoutes: RouteObject = {
               element: <AttentionsPage />,
             },
             {
-              path: '/medical-rests',
-              element: <MedicalRestsPage />,
-            },
-            {
-              path: '/medical-rests/:id',
-              element: <MedicalRestDetailPage />,
-            },
-            {
               path: '/specialties',
               element: <SpecialtiesPage />,
             },
@@ -185,16 +177,8 @@ export const appRoutes: RouteObject = {
               element: <MovementsPage />,
             },
             {
-              path: '/requirements',
-              element: <RequirementsPage />,
-            },
-            {
               path: '/requirements/create',
               element: <CreateRequirementPage />,
-            },
-            {
-              path: '/requirements/:id',
-              element: <RequirementDetailPage />,
             },
             {
               path: '/emo-protocols',
@@ -203,6 +187,39 @@ export const appRoutes: RouteObject = {
             {
               path: '/emo-protocols/:id',
               element: <EmoProtocolDetailPage />,
+            },
+          ],
+        },
+        {
+          element: (
+            <RoleGuard
+              roles={[
+                RoleEnum.ADMIN,
+                RoleEnum.OCCUPATIONAL_DOCTOR,
+                RoleEnum.NURSE,
+                RoleEnum.EMPLOYEE,
+                RoleEnum.EMPLOYEE_EXT,
+                RoleEnum.HR,
+                RoleEnum.MANAGEMENT,
+              ]}
+            />
+          ),
+          children: [
+            {
+              path: '/medical-rests',
+              element: <MedicalRestsPage />,
+            },
+            {
+              path: '/medical-rests/:id',
+              element: <MedicalRestDetailPage />,
+            },
+            {
+              path: '/requirements',
+              element: <RequirementsPage />,
+            },
+            {
+              path: '/requirements/:id',
+              element: <RequirementDetailPage />,
             },
           ],
         },
