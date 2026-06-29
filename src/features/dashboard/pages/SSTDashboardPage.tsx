@@ -187,30 +187,12 @@ export const SSTDashboardPage = () => {
       path: '/employees',
     },
     {
-      label: 'Días sin accidente',
-      value: data.daysSinceLastAccident != null ? data.daysSinceLastAccident : '—',
-      icon: <CalendarDays className="h-4 w-4 text-emerald-500" />,
-      valueClassName: 'text-emerald-600',
-    },
-    {
       label: 'Casos conductuales',
       value: data.behavioralCases,
       icon: <AlertTriangle className="h-4 w-4 text-amber-500" />,
       iconBg: 'bg-amber-50',
       valueClassName: data.behavioralCases > 0 ? 'text-amber-600' : undefined,
       path: '/accidents',
-    },
-    {
-      label: 'Trabajadores +21 días DM',
-      value: data.workersWithOver21DmDays,
-      icon: <AlertTriangle className="h-4 w-4 text-red-500" />,
-      valueClassName: data.workersWithOver21DmDays > 0 ? 'text-red-600' : undefined,
-    },
-    {
-      label: 'DM por vencer (mes próx.)',
-      value: data.dmDaysExpiringSoon,
-      icon: <CalendarDays className="h-4 w-4 text-amber-500" />,
-      valueClassName: data.dmDaysExpiringSoon > 0 ? 'text-amber-600' : undefined,
     },
     {
       label: 'Medicamentos críticos',
@@ -225,6 +207,24 @@ export const SSTDashboardPage = () => {
       icon: <CalendarDays className="h-4 w-4 text-orange-500" />,
       valueClassName: data.lotsExpiringSoon > 0 ? 'text-orange-600' : undefined,
       path: '/medications',
+    },
+    {
+      label: 'Días sin accidente',
+      value: data.daysSinceLastAccident != null ? data.daysSinceLastAccident : '—',
+      icon: <CalendarDays className="h-4 w-4 text-emerald-500" />,
+      valueClassName: 'text-emerald-600',
+    },
+    {
+      label: 'Trabajadores +21 días DM',
+      value: data.workersWithOver21DmDays,
+      icon: <AlertTriangle className="h-4 w-4 text-red-500" />,
+      valueClassName: data.workersWithOver21DmDays > 0 ? 'text-red-600' : undefined,
+    },
+    {
+      label: 'DM por vencer (mes próx.)',
+      value: data.dmDaysExpiringSoon,
+      icon: <CalendarDays className="h-4 w-4 text-amber-500" />,
+      valueClassName: data.dmDaysExpiringSoon > 0 ? 'text-amber-600' : undefined,
     },
   ]
 

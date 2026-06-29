@@ -160,7 +160,7 @@ export const MedicalDashboardPage = () => {
     },
   ]
 
-  const atencionRows = [
+  const descansoRows = [
     {
       label: 'En descanso médico',
       value: data.employeesOnMedicalRest,
@@ -175,13 +175,6 @@ export const MedicalDashboardPage = () => {
       path: '/medical-rests',
     },
     {
-      label: 'Medicamentos bajo stock',
-      value: data.alerts.lowStockCount,
-      icon: <Package className="h-4 w-4 text-red-500" />,
-      valueClassName: data.alerts.lowStockCount > 0 ? 'text-red-600' : undefined,
-      path: '/medications',
-    },
-    {
       label: 'Trabajadores +21 días DM',
       value: data.workersWithOver21DmDays,
       icon: <AlertTriangle className="h-4 w-4 text-red-500" />,
@@ -192,6 +185,16 @@ export const MedicalDashboardPage = () => {
       value: data.dmDaysExpiringSoon,
       icon: <CalendarDays className="h-4 w-4 text-amber-500" />,
       valueClassName: data.dmDaysExpiringSoon > 0 ? 'text-amber-600' : undefined,
+    },
+  ]
+
+  const inventarioRows = [
+    {
+      label: 'Medicamentos bajo stock',
+      value: data.alerts.lowStockCount,
+      icon: <Package className="h-4 w-4 text-red-500" />,
+      valueClassName: data.alerts.lowStockCount > 0 ? 'text-red-600' : undefined,
+      path: '/medications',
     },
     {
       label: 'Lotes por vencer (30d)',
@@ -389,7 +392,7 @@ export const MedicalDashboardPage = () => {
         )}
 
         {/* Estado actual — MetricPanels */}
-        <div className="grid gap-6 xl:grid-cols-3">
+        <div className="grid gap-6 xl:grid-cols-4">
           <MetricPanel
             title="EMO"
             actionLabel="Ver ciclos EMO"
@@ -403,10 +406,16 @@ export const MedicalDashboardPage = () => {
             rows={seguimientosRows}
           />
           <MetricPanel
-            title="Atención médica"
-            actionLabel="Ver inventario"
-            onAction={() => navigate('/medications?lowStock=true')}
-            rows={atencionRows}
+            title="Descansos médicos"
+            actionLabel="Ver descansos"
+            onAction={() => navigate('/medical-rests')}
+            rows={descansoRows}
+          />
+          <MetricPanel
+            title="Inventario"
+            actionLabel="Ver medicamentos"
+            onAction={() => navigate('/medications')}
+            rows={inventarioRows}
           />
         </div>
 

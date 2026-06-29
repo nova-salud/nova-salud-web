@@ -75,7 +75,7 @@ export function MetricPanel({
               {row.value}
             </span>
             {row.path && (
-              <ChevronRight className="h-3.5 w-3.5 shrink-0 text-slate-300 opacity-0 transition-opacity group-hover:opacity-100" />
+              <ChevronRight className="h-3.5 w-3.5 shrink-0 text-slate-400 transition-colors group-hover:text-indigo-500" />
             )}
           </div>
         ))}

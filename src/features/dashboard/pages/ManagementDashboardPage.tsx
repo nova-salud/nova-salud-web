@@ -7,10 +7,10 @@ import {
   Bell,
   CheckCircle2,
   ClipboardList,
+  Clock,
   Eye,
   Package,
   ShieldAlert,
-  Timer,
   TrendingUp,
   Users,
 } from 'lucide-react'
@@ -365,7 +365,7 @@ export const ManagementDashboardPage = () => {
           </div>
         </div>
 
-        <div className="grid gap-6 xl:grid-cols-3">
+        <div className="grid gap-6 xl:grid-cols-4">
           <MetricPanel
             title="Personal"
             actionLabel="Ver empleados"
@@ -392,6 +392,14 @@ export const ManagementDashboardPage = () => {
                 iconBg: 'bg-blue-50',
                 path: '/externos',
               },
+            ]}
+          />
+
+          <MetricPanel
+            title="Salud ocupacional"
+            actionLabel="Ver EMO"
+            onAction={() => navigate('/emo-cycles')}
+            rows={[
               {
                 label: 'Ciclos EMO activos',
                 icon: <Activity className="h-4 w-4 text-indigo-600" />,
@@ -415,13 +423,20 @@ export const ManagementDashboardPage = () => {
                 valueClassName: data.workersOnMedicalRest > 0 ? 'text-amber-600' : undefined,
                 path: '/medical-rests',
               },
+              {
+                label: 'Trabajadores +21 días DM',
+                icon: <BedDouble className="h-4 w-4 text-red-500" />,
+                value: data.workersWithOver21DmDays,
+                iconBg: 'bg-red-50',
+                valueClassName: data.workersWithOver21DmDays > 0 ? 'text-red-600' : undefined,
+              },
             ]}
           />
 
           <MetricPanel
             title="Alertas"
-            actionLabel="Ver requerimientos"
-            onAction={() => navigate('/requirements')}
+            actionLabel="Ver alertas"
+            onAction={() => navigate('/alerts')}
             rows={[
               {
                 label: 'Seguimientos vencidos',
@@ -447,25 +462,12 @@ export const ManagementDashboardPage = () => {
                 valueClassName: data.unresolvedInventoryAlerts > 0 ? 'text-red-600' : undefined,
                 path: '/alerts',
               },
-              {
-                label: 'Trabajadores +21 días DM',
-                icon: <BedDouble className="h-4 w-4 text-red-500" />,
-                value: data.workersWithOver21DmDays,
-                iconBg: 'bg-red-50',
-                valueClassName: data.workersWithOver21DmDays > 0 ? 'text-red-600' : undefined,
-              },
-              {
-                label: 'Prom. días de entrega',
-                icon: <Timer className="h-4 w-4 text-slate-500" />,
-                value: data.avgDeliveryDays > 0 ? `${data.avgDeliveryDays.toFixed(1)} días` : '—',
-                iconBg: 'bg-slate-100',
-              },
             ]}
           />
 
           <MetricPanel
             title="Requerimientos"
-            actionLabel="Ver todos"
+            actionLabel="Ver requerimientos"
             onAction={() => navigate('/requirements')}
             rows={[
               {
@@ -497,6 +499,12 @@ export const ManagementDashboardPage = () => {
                 iconBg: 'bg-emerald-50',
                 valueClassName: 'text-emerald-600',
                 path: '/requirements',
+              },
+              {
+                label: 'Prom. días de entrega',
+                icon: <Clock className="h-4 w-4 text-slate-500" />,
+                value: data.avgDeliveryDays > 0 ? `${data.avgDeliveryDays.toFixed(1)} días` : '—',
+                iconBg: 'bg-slate-100',
               },
             ]}
           />
