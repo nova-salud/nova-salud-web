@@ -1,6 +1,7 @@
 import {
   Activity,
   AlertTriangle,
+  ArrowUpRight,
   Bell,
   CalendarDays,
   ClipboardList,
@@ -162,8 +163,9 @@ export const AdminDashboardPage = () => {
                   <p className="text-xs font-medium uppercase tracking-wider text-slate-400">{card.label}</p>
                   <p className={`mt-1 text-2xl font-semibold ${card.color}`}>{card.value}</p>
                 </div>
-                <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${card.bg}`}>
+                <div className={`relative flex h-9 w-9 items-center justify-center rounded-xl ${card.bg}`}>
                   {card.icon}
+                  {card.path && <ArrowUpRight className="absolute -right-1 -top-1 h-3 w-3 text-slate-400" />}
                 </div>
               </div>
             ))}

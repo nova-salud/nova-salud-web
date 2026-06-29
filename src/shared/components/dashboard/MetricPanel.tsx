@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { ChevronRight } from 'lucide-react'
 import { useNavigate } from 'react-router'
 
 export interface MetricPanelRow {
@@ -59,7 +60,7 @@ export function MetricPanel({
             key={row.label}
             onClick={row.path ? () => navigate(row.path!) : undefined}
             className={[
-              'flex items-center gap-3 rounded-xl px-1 transition-colors',
+              'group flex items-center gap-3 rounded-xl px-1 transition-colors',
               rowClass,
               row.path ? 'cursor-pointer hover:bg-slate-50' : '',
             ].join(' ')}
@@ -73,6 +74,9 @@ export function MetricPanel({
             <span className={`text-sm font-semibold ${row.valueClassName ?? 'text-slate-900'}`}>
               {row.value}
             </span>
+            {row.path && (
+              <ChevronRight className="h-3.5 w-3.5 shrink-0 text-slate-300 opacity-0 transition-opacity group-hover:opacity-100" />
+            )}
           </div>
         ))}
       </div>

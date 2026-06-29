@@ -3,8 +3,10 @@ import { format } from 'date-fns'
 import {
   ShieldAlert,
   AlertTriangle,
+  ArrowUpRight,
   CheckCircle2,
   Activity,
+  Eye,
   TrendingUp,
   Users,
   Clock,
@@ -319,7 +321,12 @@ export const SSTDashboardPage = () => {
                   <p className="text-xs uppercase tracking-[0.14em] text-slate-400">{c.label}</p>
                   <p className={cn('mt-1 text-lg font-semibold', c.valueClass ?? 'text-slate-900')}>{c.value}</p>
                 </div>
-                <div className={cn('rounded-2xl p-3', c.bg)}>{c.icon}</div>
+                <div className={cn('relative rounded-2xl p-3', c.bg)}>
+                  {c.icon}
+                  {c.onClick && (
+                    <ArrowUpRight className="absolute -right-1 -top-1 h-3 w-3 text-slate-400" />
+                  )}
+                </div>
               </div>
             ))}
           </div>
@@ -518,6 +525,7 @@ export const SSTDashboardPage = () => {
                 <th>Fecha</th>
                 <th>Tipo</th>
                 <th>Estado</th>
+                <th className="w-8" />
               </tr>
             </thead>
             <tbody>
@@ -557,6 +565,9 @@ export const SSTDashboardPage = () => {
                     >
                       {item.status === 'OPEN' ? 'Abierto' : 'Cerrado'}
                     </span>
+                  </td>
+                  <td className="px-4 py-4">
+                    <Eye className="h-3.5 w-3.5 text-slate-300" />
                   </td>
                 </tr>
               ))}

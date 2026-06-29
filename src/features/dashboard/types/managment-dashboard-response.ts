@@ -33,6 +33,25 @@ export type ManagementDashboardResponse = {
   avgDeliveryDays: number
   unresolvedInventoryAlerts: number
 
+  accidentSummary: {
+    openAccidents: number
+    pendingDischarges: number
+    withActiveRestrictions: number
+  }
+
+  recentAccidents: {
+    id: number
+    employeeName: string
+    areaName: string | null
+    occurredAt: string
+    type: string
+    status: string
+  }[]
+
+  absenteeismTrend: { date: string; count: number }[]
+  workersOnMedicalRest: number
+  workersWithOver21DmDays: number
+
   recentRequirements: {
     id: number
     code: string

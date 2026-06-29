@@ -2,10 +2,12 @@ import { useState } from 'react'
 import {
   Activity,
   AlertTriangle,
+  ArrowUpRight,
   CalendarDays,
   CheckCircle2,
   ClipboardList,
   Clock,
+  Eye,
   Package,
   Users,
   BedDouble,
@@ -253,7 +255,10 @@ export const MedicalDashboardPage = () => {
                     {c.value}
                   </p>
                 </div>
-                <div className={cn('rounded-2xl p-3', c.bg)}>{c.icon}</div>
+                <div className={cn('relative rounded-2xl p-3', c.bg)}>
+                  {c.icon}
+                  <ArrowUpRight className="absolute -right-1 -top-1 h-3 w-3 text-slate-400" />
+                </div>
               </div>
             ))}
           </div>
@@ -488,6 +493,7 @@ export const MedicalDashboardPage = () => {
                         Agotado
                       </span>
                     )}
+                    <Eye className="h-3.5 w-3.5 shrink-0 text-slate-300" />
                   </div>
                 )
               })}
@@ -523,6 +529,7 @@ export const MedicalDashboardPage = () => {
                     <th className="px-6 py-3">Triage</th>
                     <th className="px-6 py-3">Diagnóstico</th>
                     <th className="px-6 py-3">Seguimiento</th>
+                    <th className="w-8" />
                   </tr>
                 </thead>
 
@@ -578,6 +585,9 @@ export const MedicalDashboardPage = () => {
                             ? `${item.followUpCount} seguimiento(s)`
                             : 'Sin seguimiento'}
                         </span>
+                      </td>
+                      <td className="px-4 py-4">
+                        <Eye className="h-3.5 w-3.5 text-slate-300" />
                       </td>
                     </tr>
                   ))}

@@ -2,10 +2,14 @@ import { useState } from 'react'
 import {
   Activity,
   AlertTriangle,
+  ArrowUpRight,
+  BedDouble,
   Bell,
   CheckCircle2,
   ClipboardList,
+  Eye,
   Package,
+  ShieldAlert,
   Timer,
   TrendingUp,
   Users,
@@ -20,6 +24,8 @@ import { MetricPanel } from '@/shared/components/dashboard/MetricPanel'
 import { useManagementDashboard } from '../hooks/useManagementDashboard'
 import { ManagementDashboardSkeleton } from '../components/management/ManagementDashboardSkeleton'
 import { RequirementsTrendChart } from '../components/management/RequirementsTrendChart'
+import { AbsenteeismTrendChart } from '../components/management/AbsenteeismTrendChart'
+import { ACCIDENT_STATUS_CLASSNAME, ACCIDENT_STATUS_LABEL, ACCIDENT_TYPE_LABEL } from '@/features/accidents/accidents/types'
 
 const REQ_STATUS_LABEL: Record<string, string> = {
   PENDING: 'Pendiente',
@@ -95,46 +101,29 @@ export const ManagementDashboardPage = () => {
           <LastUpdatedLabel timestamp={dataUpdatedAt} />
         </div>
 
+        {/* Quick stat cards + tendencia requerimientos */}
         <div className="grid gap-4 xl:grid-cols-4">
           <div className="flex flex-col gap-3">
-            <div
-              className="flex flex-1 cursor-pointer items-center justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md"
-              onClick={() => navigate('/clinical-attention')}
-            >
-              <div>
-                <p className="text-xs font-medium uppercase tracking-wider text-slate-400">Atenciones en rango</p>
-                <p className="mt-1 text-2xl font-semibold text-emerald-600">{data.summary.attentionsInRange}</p>
+            {[
+              { label: 'Atenciones en rango', value: data.summary.attentionsInRange, color: 'text-emerald-600', bg: 'bg-emerald-50', Icon: TrendingUp, path: '/clinical-attention' },
+              { label: 'Seguimientos en rango', value: data.summary.followUpsInRange, color: 'text-blue-600', bg: 'bg-blue-50', Icon: ClipboardList, path: '/clinical-attention' },
+              { label: 'Requerimientos en rango', value: data.requirementsInRange, color: 'text-indigo-600', bg: 'bg-indigo-50', Icon: Package, path: '/requirements' },
+            ].map(card => (
+              <div
+                key={card.label}
+                className="flex flex-1 cursor-pointer items-center justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md"
+                onClick={() => navigate(card.path)}
+              >
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-wider text-slate-400">{card.label}</p>
+                  <p className={cn('mt-1 text-2xl font-semibold', card.color)}>{card.value}</p>
+                </div>
+                <div className={cn('relative flex h-9 w-9 items-center justify-center rounded-xl', card.bg)}>
+                  <card.Icon className={cn('h-5 w-5', card.color)} />
+                  <ArrowUpRight className="absolute -right-1 -top-1 h-3 w-3 text-slate-400" />
+                </div>
               </div>
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50">
-                <TrendingUp className="h-5 w-5 text-emerald-600" />
-              </div>
-            </div>
-
-            <div
-              className="flex flex-1 cursor-pointer items-center justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md"
-              onClick={() => navigate('/clinical-attention')}
-            >
-              <div>
-                <p className="text-xs font-medium uppercase tracking-wider text-slate-400">Seguimientos en rango</p>
-                <p className="mt-1 text-2xl font-semibold text-blue-600">{data.summary.followUpsInRange}</p>
-              </div>
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50">
-                <ClipboardList className="h-5 w-5 text-blue-600" />
-              </div>
-            </div>
-
-            <div
-              className="flex flex-1 cursor-pointer items-center justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md"
-              onClick={() => navigate('/requirements')}
-            >
-              <div>
-                <p className="text-xs font-medium uppercase tracking-wider text-slate-400">Requerimientos en rango</p>
-                <p className="mt-1 text-2xl font-semibold text-indigo-600">{data.requirementsInRange}</p>
-              </div>
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50">
-                <Package className="h-5 w-5 text-indigo-600" />
-              </div>
-            </div>
+            ))}
           </div>
 
           <div className="overflow-hidden rounded-3xl bg-white p-5 shadow-sm xl:col-span-3">
@@ -150,7 +139,50 @@ export const ManagementDashboardPage = () => {
           </div>
         </div>
 
-        {/* Estado de requerimientos — panel con mini-cards */}
+        {/* Tendencia de ausentismo */}
+        <div className="grid gap-4 xl:grid-cols-4">
+          <div className="flex flex-col gap-3">
+            <div
+              className="flex flex-1 cursor-pointer items-center justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md"
+              onClick={() => navigate('/medical-rests')}
+            >
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wider text-slate-400">En descanso médico</p>
+                <p className="mt-1 text-2xl font-semibold text-amber-600">{data.workersOnMedicalRest}</p>
+              </div>
+              <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50">
+                <BedDouble className="h-5 w-5 text-amber-600" />
+                <ArrowUpRight className="absolute -right-1 -top-1 h-3 w-3 text-slate-400" />
+              </div>
+            </div>
+
+            <div className="flex flex-1 items-center justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wider text-slate-400">+21 días en DM</p>
+                <p className={cn('mt-1 text-2xl font-semibold', data.workersWithOver21DmDays > 0 ? 'text-red-600' : 'text-slate-700')}>
+                  {data.workersWithOver21DmDays}
+                </p>
+              </div>
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-red-50">
+                <AlertTriangle className={cn('h-5 w-5', data.workersWithOver21DmDays > 0 ? 'text-red-500' : 'text-slate-400')} />
+              </div>
+            </div>
+          </div>
+
+          <div className="overflow-hidden rounded-3xl bg-white p-5 shadow-sm xl:col-span-3">
+            <p className="mb-3 text-sm font-semibold text-slate-700">Tendencia de ausentismo</p>
+            {data.absenteeismTrend.length === 0 ? (
+              <EmptyState title="Sin descansos médicos en el período" />
+            ) : (
+              <AbsenteeismTrendChart
+                data={data.absenteeismTrend}
+                onDateClick={(date) => navigate(`/medical-rests?startDateFrom=${date}`)}
+              />
+            )}
+          </div>
+        </div>
+
+        {/* Estado de requerimientos */}
         <div className="rounded-3xl bg-white p-5 shadow-sm">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-base font-semibold text-slate-900">Estado de requerimientos</h2>
@@ -246,6 +278,93 @@ export const ManagementDashboardPage = () => {
           </div>
         </div>
 
+        {/* Accidentes — resumen + últimos */}
+        <div className="grid gap-6 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-3">
+            {[
+              { label: 'Casos abiertos', value: data.accidentSummary.openAccidents, color: data.accidentSummary.openAccidents > 0 ? 'text-red-600' : 'text-slate-700', bg: 'bg-red-50', Icon: ShieldAlert, path: '/accidents' },
+              { label: 'Con restricciones', value: data.accidentSummary.withActiveRestrictions, color: data.accidentSummary.withActiveRestrictions > 0 ? 'text-amber-600' : 'text-slate-700', bg: 'bg-amber-50', Icon: AlertTriangle, path: '/employees' },
+              { label: 'Altas pendientes', value: data.accidentSummary.pendingDischarges, color: data.accidentSummary.pendingDischarges > 0 ? 'text-orange-600' : 'text-slate-700', bg: 'bg-orange-50', Icon: Activity, path: '/accidents' },
+            ].map(card => (
+              <div
+                key={card.label}
+                className="flex cursor-pointer items-center justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:shadow-md"
+                onClick={() => navigate(card.path)}
+              >
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-wider text-slate-400">{card.label}</p>
+                  <p className={cn('mt-1 text-xl font-semibold', card.color)}>{card.value}</p>
+                </div>
+                <div className={cn('relative flex h-8 w-8 shrink-0 items-center justify-center rounded-xl', card.bg)}>
+                  <card.Icon className={cn('h-4 w-4', card.color)} />
+                  <ArrowUpRight className="absolute -right-1 -top-1 h-3 w-3 text-slate-400" />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="overflow-hidden rounded-3xl bg-white shadow-sm xl:col-span-2">
+            <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
+              <h2 className="text-base font-semibold text-slate-900">Últimos accidentes</h2>
+              <button
+                onClick={() => navigate('/accidents')}
+                className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
+              >
+                Ver todos
+              </button>
+            </div>
+            {data.recentAccidents.length === 0 ? (
+              <div className="flex items-center justify-center py-10 text-sm text-slate-400">
+                No hay accidentes registrados
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-slate-100 text-left text-slate-400">
+                      <th className="px-6 py-3">Trabajador</th>
+                      <th className="px-6 py-3">Área</th>
+                      <th className="px-6 py-3">Fecha</th>
+                      <th className="px-6 py-3">Tipo</th>
+                      <th className="px-6 py-3">Estado</th>
+                      <th className="w-8" />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.recentAccidents.map(item => (
+                      <tr
+                        key={item.id}
+                        onClick={() => navigate(`/accidents/${item.id}`)}
+                        className="cursor-pointer border-t border-slate-100 transition hover:bg-slate-50"
+                      >
+                        <td className="px-6 py-4 font-medium text-slate-900">{item.employeeName}</td>
+                        <td className="px-6 py-4 text-slate-600">{item.areaName ?? '—'}</td>
+                        <td className="px-6 py-4 text-slate-500">
+                          {new Date(item.occurredAt).toLocaleDateString('es-PE', { day: '2-digit', month: 'short', year: 'numeric' })}
+                        </td>
+                        <td className="px-6 py-4 text-slate-600">
+                          {ACCIDENT_TYPE_LABEL[item.type as keyof typeof ACCIDENT_TYPE_LABEL] ?? item.type}
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={cn(
+                            'rounded-xl px-2 py-1 text-xs font-medium',
+                            ACCIDENT_STATUS_CLASSNAME[item.status as keyof typeof ACCIDENT_STATUS_CLASSNAME] ?? 'bg-slate-100 text-slate-600',
+                          )}>
+                            {ACCIDENT_STATUS_LABEL[item.status as keyof typeof ACCIDENT_STATUS_LABEL] ?? item.status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-4">
+                          <Eye className="h-3.5 w-3.5 text-slate-300" />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+
         <div className="grid gap-6 xl:grid-cols-3">
           <MetricPanel
             title="Personal"
@@ -288,6 +407,14 @@ export const ManagementDashboardPage = () => {
                 valueClassName: data.alerts.employeesWithRestrictions > 0 ? 'text-amber-600' : undefined,
                 path: '/employees',
               },
+              {
+                label: 'En descanso médico',
+                icon: <BedDouble className="h-4 w-4 text-amber-500" />,
+                value: data.workersOnMedicalRest,
+                iconBg: 'bg-amber-50',
+                valueClassName: data.workersOnMedicalRest > 0 ? 'text-amber-600' : undefined,
+                path: '/medical-rests',
+              },
             ]}
           />
 
@@ -319,6 +446,13 @@ export const ManagementDashboardPage = () => {
                 iconBg: 'bg-red-50',
                 valueClassName: data.unresolvedInventoryAlerts > 0 ? 'text-red-600' : undefined,
                 path: '/alerts',
+              },
+              {
+                label: 'Trabajadores +21 días DM',
+                icon: <BedDouble className="h-4 w-4 text-red-500" />,
+                value: data.workersWithOver21DmDays,
+                iconBg: 'bg-red-50',
+                valueClassName: data.workersWithOver21DmDays > 0 ? 'text-red-600' : undefined,
               },
               {
                 label: 'Prom. días de entrega',
@@ -393,6 +527,7 @@ export const ManagementDashboardPage = () => {
                     <th className="px-6 py-3">Estado</th>
                     <th className="px-6 py-3">Ítems</th>
                     <th className="px-6 py-3">Fecha</th>
+                    <th className="w-8" />
                   </tr>
                 </thead>
                 <tbody>
@@ -421,6 +556,9 @@ export const ManagementDashboardPage = () => {
                           month: 'short',
                           year: 'numeric',
                         })}
+                      </td>
+                      <td className="px-4 py-4">
+                        <Eye className="h-3.5 w-3.5 text-slate-300" />
                       </td>
                     </tr>
                   ))}
