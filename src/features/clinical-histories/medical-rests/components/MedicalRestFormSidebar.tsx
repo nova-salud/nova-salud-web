@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useCreateMedicalRest } from '../hooks/useCreateMedicalRest'
-import { Button, Textarea, Sidebar, InputFile, SearchSelect, DateRangeInput, Select } from '@/shared/components'
+import { Button, Textarea, Sidebar, InputFile, SearchSelect, DateRangeInput, Select, Input } from '@/shared/components'
 import type { DateRangeValue } from '@/shared/components'
 import { useSearchSpecialties } from '@/features/specialties/hooks'
 import type { MedicalRestContingency, MedicalRestType } from '../types'
+import { getMedicalRestDays } from '../utils/medical-rest-days.util'
 
 const MAX_REST_DAYS = 30
 
@@ -42,6 +43,8 @@ const MedicalRestFormSidebar = ({ isOpen, clinicalHistoryId, accidentId, attenti
   const [specialtyError, setSpecialtyError] = useState<string | null>(null)
   const [typeError, setTypeError] = useState<string | null>(null)
   const [contingencyError, setContingencyError] = useState<string | null>(null)
+  const [subsidizedDays, setSubsidizedDays] = useState<string>('')
+  const [subsidizedDaysError, setSubsidizedDaysError] = useState<string | null>(null)
 
   const { isLoading, error, createMedicalRest, clearError } = useCreateMedicalRest()
   const { specialties } = useSearchSpecialties()
@@ -55,6 +58,8 @@ const MedicalRestFormSidebar = ({ isOpen, clinicalHistoryId, accidentId, attenti
     setSpecialtyError(null)
     setTypeError(null)
     setContingencyError(null)
+    setSubsidizedDays('')
+    setSubsidizedDaysError(null)
     clearError()
   }, [isOpen, clearError])
 
@@ -104,6 +109,18 @@ const MedicalRestFormSidebar = ({ isOpen, clinicalHistoryId, accidentId, attenti
       setContingencyError(null)
     }
 
+    if (subsidizedDays && dateRange.from && dateRange.to) {
+      const totalDays = getMedicalRestDays(dateRange.from, dateRange.to)
+      if (Number(subsidizedDays) > totalDays) {
+        setSubsidizedDaysError(`Los días subsidiados no pueden superar los días del descanso médico (${totalDays}).`)
+        hasError = true
+      } else {
+        setSubsidizedDaysError(null)
+      }
+    } else {
+      setSubsidizedDaysError(null)
+    }
+
     if (hasError) return
 
     setDateRangeError(null)
@@ -121,6 +138,7 @@ const MedicalRestFormSidebar = ({ isOpen, clinicalHistoryId, accidentId, attenti
         startDate: dateRange.from,
         endDate: dateRange.to,
         notes: (data.get('notes') as string).trim() || undefined,
+        subsidizedDays: subsidizedDays ? Number(subsidizedDays) : undefined,
       },
       file ?? undefined,
     )
@@ -194,6 +212,28 @@ const MedicalRestFormSidebar = ({ isOpen, clinicalHistoryId, accidentId, attenti
           />
           {dateRangeError ? (
             <p className="px-1 text-xs text-red-500">{dateRangeError}</p>
+          ) : dateRange.from && dateRange.to ? (
+            <p className="px-1 text-xs text-slate-500">
+              Duración: {getMedicalRestDays(dateRange.from, dateRange.to)} días
+            </p>
+          ) : null}
+        </div>
+
+        <div className="space-y-1">
+          <Input
+            name="subsidizedDays"
+            label="Días subsidiados (opcional)"
+            type="number"
+            min={0}
+            placeholder="Ej: 20"
+            value={subsidizedDays}
+            onChange={(e) => {
+              setSubsidizedDays(e.target.value)
+              setSubsidizedDaysError(null)
+            }}
+          />
+          {subsidizedDaysError ? (
+            <p className="px-1 text-xs text-red-500">{subsidizedDaysError}</p>
           ) : null}
         </div>
 

@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router'
-import { format, differenceInDays } from 'date-fns'
+import { format } from 'date-fns'
 import { Download, Eye } from 'lucide-react'
 import { DataTable, Dropdown, DropdownItem, type Pagination } from '@/shared/components'
 import type { MedicalRestResponseDto, MedicalRestType } from '../types'
+import { getMedicalRestDays } from '../utils/medical-rest-days.util'
 
 const TYPE_LABEL: Record<MedicalRestType, string> = {
   CITT: 'CITT',
@@ -37,8 +38,7 @@ export const MedicalRestTable = ({ items, isLoading = false, pagination }: Props
       renderRow={(item) => {
         const start = new Date(item.startDate)
         const end = new Date(item.endDate)
-        const daysDm = differenceInDays(end, start) + 1
-        const daysSubsidized = Math.max(0, daysDm - 30)
+        const daysDm = getMedicalRestDays(item.startDate, item.endDate)
 
         return (
           <>
@@ -62,7 +62,7 @@ export const MedicalRestTable = ({ items, isLoading = false, pagination }: Props
             </td>
 
             <td className="px-6 py-5 text-sm text-slate-600">
-              {daysSubsidized > 0 ? daysSubsidized : '—'}
+              {item.subsidizedDays ?? '—'}
             </td>
 
             <td className="px-6 py-5 text-sm text-slate-600">

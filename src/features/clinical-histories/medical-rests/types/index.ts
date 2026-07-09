@@ -27,6 +27,7 @@ export type MedicalRestResponseDto = AuditResponseDto & {
   diagnosis: string | null
   type: MedicalRestType | null
   contingency: MedicalRestContingency | null
+  subsidizedDays: number | null
 }
 
 export type CreateMedicalRestDto = {
@@ -40,4 +41,10 @@ export type CreateMedicalRestDto = {
   diagnosis: string
   type: MedicalRestType
   contingency: MedicalRestContingency
+  subsidizedDays?: number
+}
+
+export type MedicalRestsSummaryDto = {
+  totalDays: number
+  count: number
 }

@@ -4,10 +4,16 @@ import { MedicalRestFilter } from '../components/MedicalRestFilter'
 import { MedicalRestTable } from '../components/MedicalRestTable'
 import { useMedicalRestsList } from '../hooks/useMedicalRestsList'
 import { useExportMedicalRests } from '../hooks/useExportMedicalRests'
+import { useMedicalRestsSummary } from '../hooks/useMedicalRestsSummary'
 
 const MedicalRestsPage = () => {
   const { data, isLoading, pagination, filters, onChangeFilters } = useMedicalRestsList()
   const { exportMedicalRests, isLoading: isExporting } = useExportMedicalRests()
+
+  const hasActiveFilters = Boolean(
+    filters.employeeFullName || filters.dni || filters.startDateFrom || filters.startDateTo,
+  )
+  const { summary } = useMedicalRestsSummary(filters, hasActiveFilters)
 
   return (
     <PageContainer
@@ -29,6 +35,14 @@ const MedicalRestsPage = () => {
     >
       <div className="space-y-6">
         <MedicalRestFilter filters={filters} onChangeFilters={onChangeFilters} />
+
+        {hasActiveFilters && (
+          <div className="rounded-2xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-sm text-indigo-800">
+            Total filtrado: <span className="font-semibold">{summary.count}</span> descansos médicos,{' '}
+            <span className="font-semibold">{summary.totalDays}</span> días acumulados.
+          </div>
+        )}
+
         <MedicalRestTable items={data ?? []} isLoading={isLoading} pagination={pagination} />
       </div>
     </PageContainer>

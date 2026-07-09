@@ -8,6 +8,7 @@ import type { MedicalRestResponseDto } from '../types'
 
 type ExtraFilters = {
   employeeFullName?: string
+  dni?: string
   startDateFrom?: string
   startDateTo?: string
 }
@@ -15,13 +16,15 @@ type ExtraFilters = {
 export const useMedicalRestsList = () => {
   const { filters: extraFilters, setFilters } = useUrlFilters<ExtraFilters>()
   const debouncedName = useDebounce(extraFilters.employeeFullName, 400)
+  const debouncedDni = useDebounce(extraFilters.dni, 400)
 
   const result = usePaginatedQuery<MedicalRestResponseDto, FindMedicalRestsParams>({
-    queryKey: ['medical-rests-list', extraFilters],
+    queryKey: ['medical-rests-list', { ...extraFilters, employeeFullName: debouncedName, dni: debouncedDni }],
     queryFn: (filters) => medicalRestService.findAll({
       ...filters,
       ...extraFilters,
       employeeFullName: debouncedName,
+      dni: debouncedDni,
     }),
     placeholderData: keepPreviousData,
   })

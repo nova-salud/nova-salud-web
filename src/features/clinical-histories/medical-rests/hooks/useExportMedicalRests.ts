@@ -1,9 +1,10 @@
 import * as XLSX from 'xlsx'
-import { format, differenceInDays } from 'date-fns'
+import { format } from 'date-fns'
 import { useAsyncAction } from '@/core/hooks/useAsyncAction'
 import { env } from '@/config/env'
 import { medicalRestService } from '../services/medical-rest.service'
 import type { MedicalRestContingency, MedicalRestResponseDto, MedicalRestType } from '../types'
+import { getMedicalRestDays } from '../utils/medical-rest-days.util'
 
 const TYPE_LABEL: Record<MedicalRestType, string> = {
   CITT: 'CITT',
@@ -25,7 +26,7 @@ const COLUMNS = [
 ]
 
 function toRow(item: MedicalRestResponseDto) {
-  const daysDm = differenceInDays(new Date(item.endDate), new Date(item.startDate)) + 1
+  const daysDm = getMedicalRestDays(item.startDate, item.endDate)
   return {
     'Empleado': item.employeeFullName ?? '',
     'Historia Clínica': item.clinicalHistoryId,
@@ -36,7 +37,7 @@ function toRow(item: MedicalRestResponseDto) {
     'Fecha inicio': format(new Date(item.startDate), 'dd/MM/yyyy'),
     'Fecha fin': format(new Date(item.endDate), 'dd/MM/yyyy'),
     'Días DM': daysDm,
-    'Días subsidiados': Math.max(0, daysDm - 30),
+    'Días subsidiados': item.subsidizedDays ?? '',
     'Observaciones': item.notes ?? '',
     'Documento': item.fileUrl ? 'Descargar' : '',
     _fileUrl: item.fileUrl ? `${env.fileBaseUrl}${item.fileUrl}` : '',
@@ -45,6 +46,7 @@ function toRow(item: MedicalRestResponseDto) {
 
 type Filters = {
   employeeFullName?: string
+  dni?: string
   startDateFrom?: string
   startDateTo?: string
 }

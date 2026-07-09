@@ -1,9 +1,10 @@
 import { useNavigate, useParams } from 'react-router'
-import { format, differenceInDays } from 'date-fns'
+import { format } from 'date-fns'
 import { Download, FileText, Stethoscope, AlertTriangle, ClipboardList } from 'lucide-react'
 import { EntityState, PageContainer, Button } from '@/shared/components'
 import { useMedicalRest } from '../hooks/useMedicalRest'
 import type { MedicalRestContingency, MedicalRestType } from '../types'
+import { getMedicalRestDays } from '../utils/medical-rest-days.util'
 
 const TYPE_LABEL: Record<MedicalRestType, string> = {
   CITT: 'CITT',
@@ -66,8 +67,7 @@ const MedicalRestDetailPage = () => {
 
   const start = new Date(rest.startDate)
   const end = new Date(rest.endDate)
-  const daysDm = differenceInDays(end, start) + 1
-  const daysSubsidized = Math.max(0, daysDm - 30)
+  const daysDm = getMedicalRestDays(rest.startDate, rest.endDate)
 
   const downloadFile = () => {
     if (!rest.fileUrl) return
@@ -122,7 +122,7 @@ const MedicalRestDetailPage = () => {
             <Field label="Fecha de inicio" value={format(start, 'dd/MM/yyyy')} />
             <Field label="Fecha de fin" value={format(end, 'dd/MM/yyyy')} />
             <Field label="Días DM" value={String(daysDm)} />
-            <Field label="Días subsidiados" value={daysSubsidized > 0 ? String(daysSubsidized) : '0'} />
+            <Field label="Días subsidiados" value={rest.subsidizedDays != null ? String(rest.subsidizedDays) : null} />
           </div>
         </div>
 

@@ -1,13 +1,14 @@
 import { ApiService } from '@/core/api/api.service'
 import type { PaginatedResponse } from '@/core/types/paginated-response.type'
 import type { QueryParams } from '@/core/types/query-params.type'
-import type { CreateMedicalRestDto, MedicalRestResponseDto } from '../types'
+import type { CreateMedicalRestDto, MedicalRestResponseDto, MedicalRestsSummaryDto } from '../types'
 
 export type FindMedicalRestsParams = QueryParams & {
   clinicalHistoryId?: number
   accidentId?: number
   attentionId?: number
   employeeFullName?: string
+  dni?: string
   startDateFrom?: string
   startDateTo?: string
 }
@@ -25,6 +26,7 @@ class MedicalRestService extends ApiService {
     formData.append('type', dto.type)
     formData.append('contingency', dto.contingency)
     if (dto.notes) formData.append('notes', dto.notes)
+    if (dto.subsidizedDays != null) formData.append('subsidizedDays', String(dto.subsidizedDays))
     if (file) formData.append('file', file)
 
     return await this.post<MedicalRestResponseDto>(
@@ -37,6 +39,13 @@ class MedicalRestService extends ApiService {
   async findAll(params?: FindMedicalRestsParams): Promise<PaginatedResponse<MedicalRestResponseDto>> {
     return await this.get<PaginatedResponse<MedicalRestResponseDto>>(
       '/clinical-histories/medical-rests',
+      { params },
+    )
+  }
+
+  async getSummary(params?: FindMedicalRestsParams): Promise<MedicalRestsSummaryDto> {
+    return await this.get<MedicalRestsSummaryDto>(
+      '/clinical-histories/medical-rests/summary',
       { params },
     )
   }

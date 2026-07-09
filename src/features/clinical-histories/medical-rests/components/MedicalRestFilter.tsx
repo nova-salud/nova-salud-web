@@ -2,6 +2,7 @@ import { Input } from '@/shared/components'
 
 type Filters = {
   employeeFullName?: string
+  dni?: string
   startDateFrom?: string
   startDateTo?: string
 }
@@ -14,7 +15,7 @@ interface MedicalRestFilterProps {
 export const MedicalRestFilter = ({ filters, onChangeFilters }: MedicalRestFilterProps) => {
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Input
           name="employeeFullName"
           label="Empleado"
@@ -23,6 +24,17 @@ export const MedicalRestFilter = ({ filters, onChangeFilters }: MedicalRestFilte
           value={filters.employeeFullName ?? ''}
           onChange={(e) =>
             onChangeFilters({ employeeFullName: (e.target as HTMLInputElement).value || undefined })
+          }
+        />
+
+        <Input
+          name="dni"
+          label="DNI"
+          type="text"
+          placeholder="Buscar por DNI..."
+          value={filters.dni ?? ''}
+          onChange={(e) =>
+            onChangeFilters({ dni: (e.target as HTMLInputElement).value || undefined })
           }
         />
 
