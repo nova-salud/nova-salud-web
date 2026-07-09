@@ -1,14 +1,20 @@
+import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { EntityState, PageContainer } from '@/shared/components'
 import { useAuth, useDisclosure, useTabs } from '@/shared/hooks'
 import { RoleEnum } from '@/core/enums/role.enum'
 
 import { useClinicalHistory } from '../hooks/useClinicalHistory'
+import { useConfirmNoAllergies } from '../hooks/useConfirmNoAllergies'
 import ClinicalHistoryHeader from '../components/ClinicalHistoryHeader'
 import ClinicalHistoryInfoCard from '../components/ClinicalHistoryInfoCard'
 import ClinicalHistoryAllergies from '../components/ClinicalHistoryAllergies'
+import { ConfirmNoAllergiesModal } from '../components/ConfirmNoAllergiesModal'
 import ClinicalHistoryAttentionsTable from '../components/ClinicalHistoryAttentionsTable'
 import AllergyFormSidebar from '../../allergies/components/AllergyFormSidebar'
+import { RemoveAllergyModal } from '../../allergies/components'
+import { useRemoveAllergy } from '../../allergies/hooks/useRemoveAllergy'
+import type { AllergyResponseDto } from '../../allergies/types'
 import ClinicalHistoryEmoCycleSection from '../../emo-cycles/components/ClinicalHistoryEmoCycleSection'
 import { ClinicalHistoryAccidentsSection } from '@/features/accidents/accidents/components/ClinicalHistoryAccidentsSection'
 import { ClinicalHistoryMedicalRestsSection } from '@/features/clinical-histories/medical-rests/components/ClinicalHistoryMedicalRestsSection'
@@ -33,9 +39,12 @@ const ClinicalHistoryDetailPage = () => {
   const isEmployee = user?.role === RoleEnum.EMPLOYEE || user?.role === RoleEnum.EMPLOYEE_EXT
 
   const { activeTab, activatedTabs, changeTab } = useTabs<TabId>('attentions')
-  const { isOpen, open, close } = useDisclosure<'add-allergy'>()
+  const { isOpen, open, close } = useDisclosure<'add-allergy' | 'confirm-no-allergies' | 'remove-allergy'>()
+  const [allergyToRemove, setAllergyToRemove] = useState<AllergyResponseDto | null>(null)
 
   const { data, isLoading, error, refetch } = useClinicalHistory(numericEmployeeId)
+  const { confirmNoAllergies, isLoading: isConfirmingNoAllergies } = useConfirmNoAllergies()
+  const { removeAllergy, isLoading: isRemovingAllergy } = useRemoveAllergy()
 
   const goToAttentionDetail = (id: number) => navigate(CLINICAL_HISTORY_ROUTES.attentionDetail(numericEmployeeId, id))
   const goToAttentionNew = () => { navigate(CLINICAL_HISTORY_ROUTES.attentionNew(numericEmployeeId)); window.scrollTo(0, 0) }
@@ -43,6 +52,32 @@ const ClinicalHistoryDetailPage = () => {
   const goToEmoCycleHistory = () => navigate(CLINICAL_HISTORY_ROUTES.emoCycleHistory(numericEmployeeId))
   const goToAccidentDetail = (id: number) => navigate(CLINICAL_HISTORY_ROUTES.accidentDetail(numericEmployeeId, id))
   const goToAccidentNew = () => navigate(CLINICAL_HISTORY_ROUTES.accidentNew(numericEmployeeId))
+
+  const handleConfirmNoAllergies = async () => {
+    if (!data) return
+    const result = await confirmNoAllergies(data.id)
+    if (result) {
+      close()
+      await refetch()
+    }
+  }
+
+  const handleOpenRemoveAllergy = (allergy: AllergyResponseDto) => {
+    setAllergyToRemove(allergy)
+    open('remove-allergy')
+  }
+
+  const handleCloseRemoveAllergy = () => {
+    close()
+    setAllergyToRemove(null)
+  }
+
+  const handleConfirmRemoveAllergy = async () => {
+    if (!allergyToRemove) return
+    await removeAllergy(allergyToRemove.id)
+    handleCloseRemoveAllergy()
+    await refetch()
+  }
 
   if (isLoading) return <ClinicalHistoryDetailSkeleton />
 
@@ -71,7 +106,14 @@ const ClinicalHistoryDetailPage = () => {
 
         <ClinicalHistoryInfoCard data={data} />
 
-        <ClinicalHistoryAllergies allergies={data.allergies} onAdd={!isEmployee ? () => open('add-allergy') : undefined} />
+        <ClinicalHistoryAllergies
+          allergies={data.allergies}
+          noAllergiesConfirmed={data.noAllergiesConfirmed}
+          noAllergiesConfirmedAt={data.noAllergiesConfirmedAt}
+          onAdd={!isEmployee ? () => open('add-allergy') : undefined}
+          onConfirmNoAllergies={!isEmployee ? () => open('confirm-no-allergies') : undefined}
+          onRemove={!isEmployee ? handleOpenRemoveAllergy : undefined}
+        />
 
         <ClinicalHistoryEmoCycleSection
           clinicalHistoryId={data.id}
@@ -128,12 +170,29 @@ const ClinicalHistoryDetailPage = () => {
       </div>
 
       {!isEmployee && (
-        <AllergyFormSidebar
-          isOpen={isOpen('add-allergy')}
-          clinicalHistoryId={data.id}
-          onClose={close}
-          onSuccess={refetch}
-        />
+        <>
+          <AllergyFormSidebar
+            isOpen={isOpen('add-allergy')}
+            clinicalHistoryId={data.id}
+            onClose={close}
+            onSuccess={refetch}
+          />
+
+          <ConfirmNoAllergiesModal
+            isOpen={isOpen('confirm-no-allergies')}
+            isLoading={isConfirmingNoAllergies}
+            onClose={close}
+            onConfirm={handleConfirmNoAllergies}
+          />
+
+          <RemoveAllergyModal
+            isOpen={isOpen('remove-allergy')}
+            item={allergyToRemove}
+            isLoading={isRemovingAllergy}
+            onClose={handleCloseRemoveAllergy}
+            onConfirm={handleConfirmRemoveAllergy}
+          />
+        </>
       )}
     </PageContainer>
   )

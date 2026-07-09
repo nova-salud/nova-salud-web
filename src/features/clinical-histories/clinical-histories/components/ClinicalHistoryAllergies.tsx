@@ -3,13 +3,23 @@ import { Button } from '@/shared/components/ui/form'
 
 type Props = {
   allergies: AllergyResponseDto[]
+  noAllergiesConfirmed?: boolean
+  noAllergiesConfirmedAt?: string | null
   onAdd?: () => void
+  onConfirmNoAllergies?: () => void
+  onRemove?: (allergy: AllergyResponseDto) => void
 }
 
 const ClinicalHistoryAllergies = ({
   allergies,
+  noAllergiesConfirmed = false,
+  noAllergiesConfirmedAt = null,
   onAdd,
+  onConfirmNoAllergies,
+  onRemove,
 }: Props) => {
+  const canConfirmNoAllergies = allergies.length === 0
+
   return (
     <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="mb-5 flex items-center justify-between gap-3">
@@ -20,17 +30,34 @@ const ClinicalHistoryAllergies = ({
           </p>
         </div>
 
-        {onAdd && (
-          <Button type="button" className="w-auto" onClick={onAdd}>
-            Agregar alergia
-          </Button>
-        )}
+        <div className="flex items-center gap-2">
+          {canConfirmNoAllergies && !noAllergiesConfirmed && onConfirmNoAllergies && (
+            <Button type="button" variant="outline" className="w-auto" onClick={onConfirmNoAllergies}>
+              Confirmar sin alergias
+            </Button>
+          )}
+
+          {onAdd && (
+            <Button type="button" className="w-auto" onClick={onAdd}>
+              Agregar alergia
+            </Button>
+          )}
+        </div>
       </div>
 
       {allergies.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-slate-200 px-4 py-8 text-center text-sm text-slate-500">
-          No hay alergias registradas.
-        </div>
+        noAllergiesConfirmed ? (
+          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-8 text-center text-sm text-emerald-700">
+            Se registra que el paciente confirma explicitamente que no tiene alergias (
+            {noAllergiesConfirmedAt
+              ? `${new Date(noAllergiesConfirmedAt).toLocaleDateString('es-PE')} ${new Date(noAllergiesConfirmedAt).toLocaleTimeString('es-PE', { hour: 'numeric', minute: '2-digit', hour12: true })}`
+              : ''}).
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-dashed border-slate-200 px-4 py-8 text-center text-sm text-slate-500">
+            No hay alergias registradas.
+          </div>
+        )
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {allergies.map((allergy) => (
@@ -68,6 +95,19 @@ const ClinicalHistoryAllergies = ({
                   {allergy.reaction?.trim() || 'No registrada'}
                 </p>
               </div>
+
+              {onRemove && (
+                <div className="mt-3 flex justify-end">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-auto rounded-xl px-3 py-1.5 text-xs"
+                    onClick={() => onRemove(allergy)}
+                  >
+                    Eliminar
+                  </Button>
+                </div>
+              )}
             </div>
           ))}
         </div>

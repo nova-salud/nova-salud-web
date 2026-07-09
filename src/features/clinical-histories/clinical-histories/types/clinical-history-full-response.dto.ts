@@ -17,6 +17,10 @@ export type ClinicalHistoryFullResponseDto = AuditResponseDto & {
 
   isActive: boolean
 
+  noAllergiesConfirmed: boolean
+  noAllergiesConfirmedAt: string | null
+  noAllergiesConfirmedBy: number | null
+
   employee: EmployeeResponseDto
   allergies: AllergyResponseDto[]
 }

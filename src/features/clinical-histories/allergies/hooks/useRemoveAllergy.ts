@@ -7,7 +7,7 @@ export const useRemoveAllergy = () => {
     void
   >(
     allergyService.remove.bind(allergyService),
-    { successMessage: 'Alergia desactivada correctamente.' },
+    { successMessage: 'Alergia eliminada correctamente.' },
   )
 
   return {

@@ -33,6 +33,12 @@ class ClinicalHistoryService extends ApiService {
     )
   }
 
+  async confirmNoAllergies(id: number): Promise<ClinicalHistoryResponseDto> {
+    return await this.patch<ClinicalHistoryResponseDto>(
+      `/attentions/clinical-histories/${id}/confirm-no-allergies`,
+    )
+  }
+
   async create(
     dto: CreateClinicalHistoryDto,
   ): Promise<ClinicalHistoryResponseDto> {
