@@ -20,7 +20,7 @@ type TabId = 'attentions' | 'accidents' | 'medical-rests'
 
 const TABS: { id: TabId; label: string }[] = [
   { id: 'attentions', label: 'Atenciones' },
-  { id: 'accidents', label: 'Accidentes' },
+  { id: 'accidents', label: 'Accidentes / Incidentes' },
   { id: 'medical-rests', label: 'Descansos médicos' },
 ]
 

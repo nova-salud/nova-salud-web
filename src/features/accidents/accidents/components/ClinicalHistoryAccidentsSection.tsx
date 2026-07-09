@@ -20,7 +20,7 @@ export const ClinicalHistoryAccidentsSection = ({ clinicalHistoryId, onCreate, o
     <div className="px-5">
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <h2 className="text-2xl font-bold text-slate-900">Accidentes</h2>
+          <h2 className="text-2xl font-bold text-slate-900">Accidentes / Incidentes</h2>
           {!isLoading && (
             <span className="rounded-xl bg-slate-100 px-3 py-1 text-xs text-slate-600">{pagination.total}</span>
           )}

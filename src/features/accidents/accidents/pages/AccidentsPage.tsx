@@ -40,7 +40,7 @@ export const AccidentsPage = () => {
 
   return (
     <PageContainer
-      title="Accidentes"
+      title="Accidentes / Incidentes"
       description="Gestión de accidentes e incidentes registrados."
       action={
         <Button
@@ -52,6 +52,10 @@ export const AccidentsPage = () => {
       }
     >
       <div className="space-y-6">
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          Solo se pueden registrar accidentes/incidentes al personal que ya cuenta con una historia clínica registrada.
+        </div>
+
         <AccidentFilter filters={filters} onChangeFilters={onChangeFilters} />
 
         {error && (
