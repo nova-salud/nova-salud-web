@@ -27,7 +27,9 @@ const MedicationDetailPage = () => {
   const [selectedLot, setSelectedLot] = useState<MedicationLotResponseDto | null>(null)
 
   const canRegisterLot =
-    user?.role === RoleEnum.ADMIN || user?.role === RoleEnum.OCCUPATIONAL_DOCTOR
+    user?.role === RoleEnum.ADMIN ||
+    user?.role === RoleEnum.HR ||
+    user?.role === RoleEnum.MANAGEMENT
 
   if (isLoading) {
     return (
