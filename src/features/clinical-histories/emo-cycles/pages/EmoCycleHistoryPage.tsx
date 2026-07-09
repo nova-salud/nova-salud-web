@@ -46,6 +46,12 @@ const EmoCycleHistoryPage = () => {
 
   const canGenerate = (cycle: ClinicalHistoryEmoCycleResponseDto) => cycle.conclusion !== null
 
+  const sortedCycles = [...cycles].sort(
+    (a, b) => new Date(a.startedAt).getTime() - new Date(b.startedAt).getTime(),
+  )
+  const getRelativeNumber = (cycle: ClinicalHistoryEmoCycleResponseDto) =>
+    sortedCycles.findIndex((c) => c.id === cycle.id) + 1
+
   if (isLoadingHistory || isLoadingCycles) return <EmoCycleHistorySkeleton />
 
   return (
@@ -89,7 +95,7 @@ const EmoCycleHistoryPage = () => {
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-sm font-semibold text-slate-800">
-                  Ciclo #{cycle.id}
+                  Ciclo #{getRelativeNumber(cycle) || cycle.id}
                 </span>
 
                 <span className={cn('rounded-full px-2.5 py-0.5 text-xs font-medium', EMO_STATUS_CLASSNAME[cycle.status])}>

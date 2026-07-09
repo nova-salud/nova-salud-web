@@ -7,9 +7,12 @@ import { cn } from '@/shared/utils'
 import { getFileUrl } from '@/shared/utils'
 import { EntityState, PageContainer } from '@/shared/components'
 import { useDisclosure } from '@/shared/hooks'
+import { useEmployee } from '@/features/employees/hooks'
+import { EmployeeInfoCard } from '@/features/employees/components'
 import EmoCycleExamsSection from '../components/EmoCycleExamsSection'
 import { EmoCycleDetailSkeleton } from '../components/EmoCycleDetailSkeleton'
 import { useEmoCycle } from '../hooks/useEmoCycle'
+import { useEmoCycleHistory } from '../hooks/useEmoCycleHistory'
 import { EMO_STATUS_CLASSNAME, EMO_STATUS_LABEL } from '../types'
 import EmoCycleConclusionSection from '../components/EmoCycleConclusionSection'
 import EmoCycleConformitySection from '../components/EmoCycleConformitySection'
@@ -28,13 +31,16 @@ type SignaturePreview = {
 }
 
 const EmoCycleDetailPage = () => {
-  const { cycleId } = useParams()
+  const { employeeId, cycleId } = useParams()
   const numericCycleId = Number(cycleId)
+  const numericEmployeeId = Number(employeeId)
   const navigate = useNavigate()
 
   const { isOpen, open, close } = useDisclosure<ModalKey>()
 
   const { data: emoCycle, isLoading, error, refetch } = useEmoCycle(numericCycleId)
+  const { data: employee, isLoading: isEmployeeLoading } = useEmployee(numericEmployeeId)
+  const { cycles } = useEmoCycleHistory(numericEmployeeId)
   const { confirmExamReview, isLoading: isConfirming } = useConfirmEmoCycleExamReview()
   const { generate: handleGenerate, generatingType } = useGenerateEmoCycleDocument(numericCycleId)
   const [signaturePreview, setSignaturePreview] = useState<SignaturePreview | null>(null)
@@ -60,6 +66,11 @@ const EmoCycleDetailPage = () => {
   )
 
   const viewState = getEmoCycleViewState(emoCycle)
+
+  const sortedCycles = [...cycles].sort(
+    (a, b) => new Date(a.startedAt).getTime() - new Date(b.startedAt).getTime(),
+  )
+  const relativeNumber = sortedCycles.findIndex((c) => c.id === emoCycle.id) + 1
 
   const handlePreviewSignature = (signatureData: string, title: string) => {
     setSignaturePreview({ data: signatureData, title })
@@ -93,7 +104,7 @@ const EmoCycleDetailPage = () => {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <h1 className="text-xl font-semibold text-slate-900">
-                Ciclo EMO #{emoCycle.id}
+                Ciclo EMO #{relativeNumber || emoCycle.id}
               </h1>
 
               <div className="mt-3 flex flex-wrap gap-2">
@@ -178,6 +189,12 @@ const EmoCycleDetailPage = () => {
               </div>
             )}
           </div>
+
+          <EmployeeInfoCard
+            employee={employee}
+            isLoading={isEmployeeLoading}
+            className="mt-5 border-t border-slate-100 pt-5"
+          />
         </div>
 
         <EmoCycleExamsSection
