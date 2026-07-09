@@ -139,6 +139,12 @@ export const EmoProtocolExamsSection = ({
                     type="button"
                     variant="outline"
                     className="w-auto rounded-xl px-3 py-2 text-xs"
+                    disabled={items.length === 1}
+                    title={
+                      items.length === 1
+                        ? 'Debes mantener al menos un examen en el protocolo'
+                        : undefined
+                    }
                     onClick={() => handleOpenDelete(item)}
                   >
                     Eliminar

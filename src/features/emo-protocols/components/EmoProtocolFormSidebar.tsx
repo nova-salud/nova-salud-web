@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { Button, Input, Select, Sidebar } from '@/shared/components'
 import type { CreateEmoProtocolDto, EmoProtocolResponseDto, UpdateEmoProtocolDto } from '../types'
 import { EMO_CYCLE_TYPE_OPTIONS } from '@/features/clinical-histories/emo-cycles/types/emo-cycle-type.constants'
+import { useSearchExams } from '../hooks/useSearchExams'
+import { toastService } from '@/core/services/toast.service'
 
 type EmoProtocolFormSidebarMode = 'create' | 'edit'
 
@@ -30,10 +32,25 @@ export const EmoProtocolFormSidebar = ({
   onUpdate,
 }: Props) => {
   const [emoType, setEmoType] = useState(emoProtocol?.emoType ?? '')
+  const [examIds, setExamIds] = useState<number[]>([])
+
+  const { exams } = useSearchExams()
 
   useEffect(() => {
     setEmoType(emoProtocol?.emoType ?? '')
   }, [emoProtocol])
+
+  useEffect(() => {
+    if (isOpen && mode === 'create') {
+      setExamIds([])
+    }
+  }, [isOpen, mode])
+
+  const toggleExam = (examId: number) => {
+    setExamIds((prev) =>
+      prev.includes(examId) ? prev.filter((id) => id !== examId) : [...prev, examId],
+    )
+  }
 
   const handleSubmit = async (e: { preventDefault(): void; currentTarget: HTMLFormElement }) => {
     e.preventDefault()
@@ -46,7 +63,19 @@ export const EmoProtocolFormSidebar = ({
     const nextEmoDaysFitWithRestrictions = Number(data.get('nextEmoDaysFitWithRestrictions'))
 
     if (mode === 'create') {
-      await onCreate?.({ name, emoType: emoType || undefined, daysToExpire, nextEmoDaysFit, nextEmoDaysFitWithRestrictions })
+      if (examIds.length === 0) {
+        toastService.error('Debes seleccionar al menos un examen para el protocolo.')
+        return
+      }
+
+      await onCreate?.({
+        name,
+        examIds,
+        emoType: emoType || undefined,
+        daysToExpire,
+        nextEmoDaysFit,
+        nextEmoDaysFitWithRestrictions,
+      })
       return
     }
 
@@ -130,6 +159,32 @@ export const EmoProtocolFormSidebar = ({
             </label>
           )}
 
+          {mode === 'create' && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">Exámenes</label>
+              <div className="max-h-56 space-y-2 overflow-y-auto rounded-2xl border border-slate-200 p-3">
+                {exams.length === 0 ? (
+                  <p className="text-sm text-slate-500">No hay exámenes disponibles.</p>
+                ) : (
+                  exams.map((exam) => (
+                    <label
+                      key={exam.id}
+                      className="flex items-center gap-3 rounded-xl px-2 py-1.5 text-sm text-slate-700 hover:bg-slate-50"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={examIds.includes(exam.id)}
+                        onChange={() => toggleExam(exam.id)}
+                      />
+                      {exam.name}
+                    </label>
+                  ))
+                )}
+              </div>
+              <p className="text-xs text-slate-500">Selecciona al menos un examen.</p>
+            </div>
+          )}
+
           <div className="flex justify-end gap-3 pt-2">
             <Button type="button" variant="outline" className="w-auto" onClick={onClose}>
               Cancelar
@@ -139,6 +194,7 @@ export const EmoProtocolFormSidebar = ({
               type="submit"
               className="w-auto"
               isLoading={isLoading}
+              disabled={mode === 'create' && examIds.length === 0}
               loadingText={mode === 'create' ? 'Guardando...' : 'Actualizando...'}
             >
               {mode === 'create' ? 'Crear protocolo' : 'Guardar cambios'}
