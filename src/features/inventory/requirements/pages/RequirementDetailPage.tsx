@@ -1,9 +1,11 @@
 import { useNavigate, useParams } from 'react-router'
 import { EntityState, PageContainer } from '@/shared/components'
-import { useDisclosure } from '@/shared/hooks'
+import { RoleEnum } from '@/core/enums/role.enum'
+import { useAuth, useDisclosure } from '@/shared/hooks'
 import { cn } from '@/shared/utils'
 import { useRequirement } from '../hooks/useRequirement'
 import { useConfirmRequirement } from '../hooks/useConfirmRequirement'
+import { useMarkRequirementInProcess } from '../hooks/useMarkRequirementInProcess'
 import { MarkDeliveredModal } from '../components/MarkDeliveredModal'
 import { ConfirmReceptionSidebar } from '../components/ConfirmReceptionSidebar'
 import { STATUS_CLASSES, STATUS_LABELS } from '../types/inventory-requirement-response.dto'
@@ -18,12 +20,33 @@ const RequirementDetailPage = () => {
   const { id } = useParams()
   const requirementId = Number(id)
 
+  const { user } = useAuth()
   const { data, isLoading, error, refetch } = useRequirement(requirementId)
   const overlays = useDisclosure<RequirementDetailOverlay>()
   const { confirm, isLoading: isConfirming, error: confirmError } = useConfirmRequirement()
+  const { markInProcess, isLoading: isStartingProcess } = useMarkRequirementInProcess()
 
-  const canDeliver = data?.status === InventoryRequirementStatusEnum.PENDING
-  const canConfirm = data?.status === InventoryRequirementStatusEnum.DELIVERED
+  const isDoctorOrNurse =
+    user?.role === RoleEnum.ADMIN ||
+    user?.role === RoleEnum.OCCUPATIONAL_DOCTOR ||
+    user?.role === RoleEnum.NURSE
+
+  const isHrOrManagement =
+    user?.role === RoleEnum.ADMIN ||
+    user?.role === RoleEnum.HR ||
+    user?.role === RoleEnum.MANAGEMENT
+
+  const canStartProcess = data?.status === InventoryRequirementStatusEnum.PENDING && isHrOrManagement
+  const canDeliver = data?.status === InventoryRequirementStatusEnum.IN_PROCESS && isHrOrManagement
+  const canConfirm = data?.status === InventoryRequirementStatusEnum.DELIVERED && isDoctorOrNurse
+
+  const handleStartProcess = async () => {
+    if (!data) return
+    const result = await markInProcess(data.id)
+    if (result) {
+      await refetch()
+    }
+  }
 
   const handleConfirm = async (items: ConfirmInventoryRequirementItemDto[]) => {
     if (!data) return
@@ -72,6 +95,17 @@ const RequirementDetailPage = () => {
               className="rounded-2xl bg-[#0B1739] px-4 py-2 text-sm font-medium text-white"
             >
               Confirmar recepción
+            </button>
+          ) : null}
+
+          {canStartProcess ? (
+            <button
+              type="button"
+              onClick={() => void handleStartProcess()}
+              disabled={isStartingProcess}
+              className="rounded-2xl bg-[#0B1739] px-4 py-2 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {isStartingProcess ? 'Procesando...' : 'Iniciar proceso'}
             </button>
           ) : null}
 

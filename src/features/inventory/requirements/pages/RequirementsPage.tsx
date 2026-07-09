@@ -1,25 +1,35 @@
 import { useNavigate } from 'react-router'
 import { PageContainer } from '@/shared/components'
+import { RoleEnum } from '@/core/enums/role.enum'
+import { useAuth } from '@/shared/hooks'
 import { RequirementFilter } from '../components/RequirementFilter'
 import RequirementTable from '../components/RequirementTable'
 import { useRequirements } from '../hooks/useRequirements'
 
 const RequirementsPage = () => {
   const navigate = useNavigate()
+  const { user } = useAuth()
   const { data, isLoading, error, pagination, onChangeFilters } = useRequirements()
+
+  const canCreate =
+    user?.role === RoleEnum.ADMIN ||
+    user?.role === RoleEnum.OCCUPATIONAL_DOCTOR ||
+    user?.role === RoleEnum.NURSE
 
   return (
     <PageContainer
       title="Requerimientos"
       description="Solicitudes de compra y recepción de medicamentos"
       action={
-        <button
-          type="button"
-          onClick={() => navigate('/requirements/create')}
-          className="rounded-2xl bg-[#0B1739] px-4 py-2 text-sm font-medium text-white"
-        >
-          Nuevo requerimiento
-        </button>
+        canCreate ? (
+          <button
+            type="button"
+            onClick={() => navigate('/requirements/create')}
+            className="rounded-2xl bg-[#0B1739] px-4 py-2 text-sm font-medium text-white"
+          >
+            Nuevo requerimiento
+          </button>
+        ) : null
       }
     >
       <div className="space-y-5">

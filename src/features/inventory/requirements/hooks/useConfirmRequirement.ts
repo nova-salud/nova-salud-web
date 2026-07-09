@@ -6,6 +6,7 @@ export const useConfirmRequirement = () => {
   const { execute: confirm, isLoading, error, clearError } = useAsyncAction(
     (id: number, dto: ConfirmInventoryRequirementDto) =>
       requirementService.confirm(id, dto),
+    { successMessage: 'Recepción confirmada correctamente.' },
   )
   return { confirm, isLoading, error, clearError }
 }

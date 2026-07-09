@@ -21,6 +21,7 @@ export type InventoryRequirementResponseDto = AuditResponseDto & {
 
 export const STATUS_LABELS: Record<InventoryRequirementStatusEnum, string> = {
   PENDING: 'Pendiente',
+  IN_PROCESS: 'En proceso',
   DELIVERED: 'Entregado',
   RECEIVED_PARTIAL: 'Recepción parcial',
   RECEIVED_COMPLETE: 'Recepción completa',
@@ -29,6 +30,7 @@ export const STATUS_LABELS: Record<InventoryRequirementStatusEnum, string> = {
 
 export const STATUS_CLASSES: Record<InventoryRequirementStatusEnum, string> = {
   PENDING: 'border-amber-100 bg-amber-50 text-amber-700',
+  IN_PROCESS: 'border-indigo-100 bg-indigo-50 text-indigo-700',
   DELIVERED: 'border-sky-100 bg-sky-50 text-sky-700',
   RECEIVED_PARTIAL: 'border-orange-100 bg-orange-50 text-orange-700',
   RECEIVED_COMPLETE: 'border-emerald-100 bg-emerald-50 text-emerald-700',

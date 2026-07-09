@@ -28,6 +28,13 @@ class RequirementService extends ApiService {
     )
   }
 
+  async markInProcess(id: number): Promise<InventoryRequirementResponseDto> {
+    return await this.patch<InventoryRequirementResponseDto, undefined>(
+      `/inventory/requirements/${id}/start-process`,
+      undefined,
+    )
+  }
+
   async markDelivered(
     id: number,
     file: File,

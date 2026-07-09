@@ -1,11 +1,14 @@
 import { useMemo, useState } from 'react'
-import { PageContainer } from '@/shared/components'
+import { EntityState, PageContainer } from '@/shared/components'
+import { RoleEnum } from '@/core/enums/role.enum'
+import { useAuth } from '@/shared/hooks'
 import { useRequestableStocks } from '@/features/inventory/stocks/hooks/useRequestableStocks'
 import { useCreateRequirement } from '../hooks/useCreateRequirement'
 import type { CreateInventoryRequirementItemDto } from '../types/create-inventory-requirement-item.dto'
 import { Input, SearchSelect, Textarea } from '@/shared/components/ui/form'
 
 const CreateRequirementPage = () => {
+  const { user } = useAuth()
   const { create, isLoading, error } = useCreateRequirement()
   const [requestNote, setRequestNote] = useState('')
   const [selectedMedicationId, setSelectedMedicationId] = useState('')
@@ -13,6 +16,20 @@ const CreateRequirementPage = () => {
   const [items, setItems] = useState<CreateInventoryRequirementItemDto[]>([])
 
   const { data: stocks } = useRequestableStocks()
+
+  const canCreate =
+    user?.role === RoleEnum.ADMIN ||
+    user?.role === RoleEnum.OCCUPATIONAL_DOCTOR ||
+    user?.role === RoleEnum.NURSE
+
+  if (!canCreate) {
+    return (
+      <EntityState
+        title="Acceso restringido"
+        description="Solo médico ocupacional o enfermería pueden crear requerimientos de inventario."
+      />
+    )
+  }
 
   const medicationOptions = useMemo(
     () =>

@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Sidebar } from '@/shared/components/ui/sidebar/Sidebar'
 import { Input } from '@/shared/components/ui/form'
+import { toastService } from '@/core/services/toast.service'
 import type { ConfirmInventoryRequirementItemDto } from '../types/confirm-inventory-requirement.dto'
 import type { InventoryRequirementItemResponseDto } from '../types/inventory-requirement-item-response.dto'
+
+const TODAY = new Date().toISOString().slice(0, 10)
 
 type LocalItem = ConfirmInventoryRequirementItemDto & {
   lotCode: string
@@ -71,6 +74,15 @@ export const ConfirmReceptionSidebar = ({
   }, [localItems])
 
   const handleSubmit = async () => {
+    const hasPastExpirationDate = Object.values(localItems).some(
+      (item) => item.isReceived && item.expirationDate && item.expirationDate < TODAY,
+    )
+
+    if (hasPastExpirationDate) {
+      toastService.error('La fecha de vencimiento no puede ser anterior a hoy.')
+      return
+    }
+
     await onConfirm(
       Object.values(localItems).map((item) => {
         const base: ConfirmInventoryRequirementItemDto = {
@@ -198,6 +210,7 @@ export const ConfirmReceptionSidebar = ({
                       name={`expiration-${item.id}`}
                       type="date"
                       label="Fecha de vencimiento"
+                      min={TODAY}
                       value={current.expirationDate}
                       onChange={(e) => update(item.id, { expirationDate: e.target.value })}
                     />
