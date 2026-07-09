@@ -9,7 +9,7 @@ import {
   type AccidentFormEnum,
   type AccidentLaborRelationEnum,
 } from '../types'
-import { Select, Input, Textarea, Button } from '@/shared/components/ui/form'
+import { Select, Input, Textarea, Button, SearchSelect } from '@/shared/components/ui/form'
 import { useState, useRef } from 'react'
 import { useSearchHealthcareCenters } from '../hooks'
 
@@ -25,6 +25,7 @@ export const AccidentForm = ({
   isLoading = false,
 }: Props) => {
   const [requiresExternalCare, setRequiresExternalCare] = useState(false)
+  const [healthcareCenterId, setHealthcareCenterId] = useState('')
   const formRef = useRef<HTMLFormElement>(null)
 
   const maxOccurredAt = (() => {
@@ -51,7 +52,7 @@ export const AccidentForm = ({
       occurredAt: new Date(occurredAt).toISOString(),
       requiresExternalReferral: requiresExternalCare,
       healthcareCenterId: requiresExternalCare
-        ? Number(data.get('healthcareCenterId'))
+        ? Number(healthcareCenterId)
         : undefined,
       severityClassification: severity ? (severity as AccidentSeverityEnum) : undefined,
       formClassification: form ? (form as AccidentFormEnum) : undefined,
@@ -141,10 +142,10 @@ export const AccidentForm = ({
           </label>
 
           {requiresExternalCare && (
-            <Select
-              name="healthcareCenterId"
+            <SearchSelect
               label="Centro de salud"
-              defaultValue=""
+              value={healthcareCenterId}
+              onChange={setHealthcareCenterId}
               options={healthcareCenters.map((item) => ({
                 label: item.name,
                 value: item.id,
