@@ -41,6 +41,338 @@ export type NavigationSection = {
   items: NavigationItem[]
 }
 
+// export const navigationConfig: NavigationSection[] = [
+//   {
+//     label: 'PRINCIPAL',
+//     items: [
+//       {
+//         label: 'Dashboard',
+//         path: '/',
+//         icon: LayoutDashboard,
+//         roles: [
+//           RoleEnum.ADMIN,
+//           RoleEnum.OCCUPATIONAL_DOCTOR,
+//           RoleEnum.NURSE,
+//           RoleEnum.SST,
+//           RoleEnum.HR,
+//           RoleEnum.SUPERVISOR,
+//           RoleEnum.MANAGEMENT,
+//           RoleEnum.EMPLOYEE,
+//           RoleEnum.EMPLOYEE_EXT,
+//         ],
+//       },
+//       {
+//         label: 'Alertas',
+//         path: '/alerts',
+//         icon: BellDot,
+//         roles: [...ALERT_ROLES_WITH_ACCESS],
+//       },
+//       {
+//         label: 'Mi Historia Clínica',
+//         path: '/my-clinical-history',
+//         icon: BookOpen,
+//         roles: [RoleEnum.EMPLOYEE, RoleEnum.EMPLOYEE_EXT],
+//       },
+//     ],
+//   },
+//   {
+//     label: 'ATENCIONES',
+//     items: [
+//       {
+//         label: 'Historias Clínicas',
+//         path: '/clinical-histories',
+//         icon: BookOpen,
+//         roles: [
+//           RoleEnum.ADMIN,
+//           RoleEnum.OCCUPATIONAL_DOCTOR,
+//           RoleEnum.NURSE,
+//         ],
+//       },
+//       {
+//         label: 'Atención clínica',
+//         path: '/clinical-attention',
+//         icon: Stethoscope,
+//         roles: [
+//           RoleEnum.ADMIN,
+//           RoleEnum.OCCUPATIONAL_DOCTOR,
+//           RoleEnum.NURSE,
+//         ],
+//       },
+//       {
+//         label: 'Enfermedades',
+//         path: '/diseases',
+//         icon: Activity,
+//         roles: [
+//           RoleEnum.ADMIN,
+//           RoleEnum.OCCUPATIONAL_DOCTOR,
+//           RoleEnum.NURSE,
+//         ],
+//       },
+//       {
+//         label: 'Exámenes',
+//         path: '/exams',
+//         icon: FlaskConical,
+//         roles: [
+//           RoleEnum.ADMIN,
+//           RoleEnum.OCCUPATIONAL_DOCTOR,
+//           RoleEnum.NURSE,
+//         ],
+//       },
+//       {
+//         label: 'Tipos de alergia',
+//         path: '/allergy-types',
+//         icon: AlertCircle,
+//         roles: [
+//           RoleEnum.ADMIN,
+//           RoleEnum.OCCUPATIONAL_DOCTOR,
+//           RoleEnum.NURSE,
+//         ],
+//       },
+//       {
+//         label: 'Ciclos EMO',
+//         path: '/emo-cycles',
+//         icon: ClipboardList,
+//         roles: [
+//           RoleEnum.ADMIN,
+//           RoleEnum.OCCUPATIONAL_DOCTOR,
+//           RoleEnum.NURSE,
+//         ],
+//       },
+//       {
+//         label: 'Atenciones',
+//         path: '/attentions',
+//         icon: Stethoscope,
+//         roles: [
+//           RoleEnum.ADMIN,
+//           RoleEnum.OCCUPATIONAL_DOCTOR,
+//           RoleEnum.NURSE,
+//         ],
+//       },
+//       {
+//         label: 'Descansos Médicos',
+//         path: '/medical-rests',
+//         icon: BedDouble,
+//         roles: [
+//           RoleEnum.ADMIN,
+//           RoleEnum.OCCUPATIONAL_DOCTOR,
+//           RoleEnum.NURSE,
+//           RoleEnum.HR,
+//           RoleEnum.MANAGEMENT
+//         ],
+//       },
+//       {
+//         label: 'Especialidades',
+//         path: '/specialties',
+//         icon: Stethoscope,
+//         roles: [
+//           RoleEnum.ADMIN,
+//           RoleEnum.OCCUPATIONAL_DOCTOR,
+//           RoleEnum.NURSE,
+//         ],
+//       },
+//     ],
+//   },
+//   {
+//     label: 'SALUD OCUPACIONAL',
+//     items: [
+//       {
+//         label: 'Accidentes / Incidentes',
+//         path: '/accidents',
+//         icon: ShieldAlert,
+//         roles: [
+//           RoleEnum.SST,
+//           RoleEnum.ADMIN,
+//         ],
+//       },
+//       {
+//         label: 'Establecimientos de salud',
+//         path: '/healthcare-centers',
+//         icon: Building2,
+//         roles: [
+//           RoleEnum.ADMIN,
+//           RoleEnum.OCCUPATIONAL_DOCTOR,
+//           RoleEnum.NURSE,
+//           RoleEnum.SST,
+//         ],
+//       },
+//     ],
+//   },
+//   {
+//     label: 'FARMACIA',
+//     items: [
+//       {
+//         label: 'Medicamentos',
+//         path: '/medications',
+//         icon: Pill,
+//         roles: [
+//           RoleEnum.ADMIN,
+//           RoleEnum.OCCUPATIONAL_DOCTOR,
+//           RoleEnum.NURSE,
+//         ],
+//       },
+//       {
+//         label: 'Categorías de medicamentos',
+//         path: '/therapeutic-categories',
+//         icon: Tag,
+//         roles: [
+//           RoleEnum.ADMIN,
+//           RoleEnum.OCCUPATIONAL_DOCTOR,
+//           RoleEnum.NURSE,
+//         ],
+//       },
+//       {
+//         label: 'Requerimientos',
+//         path: '/requirements',
+//         icon: ShoppingCart,
+//         roles: [
+//           RoleEnum.ADMIN,
+//           RoleEnum.OCCUPATIONAL_DOCTOR,
+//           RoleEnum.NURSE,
+//           RoleEnum.HR,
+//           RoleEnum.MANAGEMENT
+//         ],
+//       },
+//       {
+//         label: 'Dispensaciones',
+//         path: '/dispensations',
+//         icon: ClipboardPlus,
+//         roles: [
+//           RoleEnum.ADMIN,
+//           RoleEnum.OCCUPATIONAL_DOCTOR,
+//           RoleEnum.NURSE,
+//           RoleEnum.SUPERVISOR,
+//         ],
+//       },
+//       {
+//         label: 'Movimientos',
+//         path: '/movements',
+//         icon: ArrowLeftRight,
+//         roles: [
+//           RoleEnum.ADMIN,
+//           RoleEnum.OCCUPATIONAL_DOCTOR,
+//           RoleEnum.NURSE,
+//         ],
+//       },
+//     ],
+//   },
+//   {
+//     label: 'RRHH',
+//     items: [
+//       {
+//         label: 'Empleados',
+//         path: '/employees',
+//         icon: Users,
+//         roles: [
+//           RoleEnum.ADMIN,
+//           RoleEnum.HR,
+//           RoleEnum.MANAGEMENT,
+//         ],
+//       },
+//       {
+//         label: 'Service - Externos',
+//         path: '/externos',
+//         icon: Users,
+//         roles: [
+//           RoleEnum.ADMIN,
+//           RoleEnum.HR,
+//           RoleEnum.MANAGEMENT,
+//         ],
+//       },
+//       {
+//         label: 'Áreas',
+//         path: '/areas',
+//         icon: Layers,
+//         roles: [
+//           RoleEnum.ADMIN,
+//           RoleEnum.HR,
+//           RoleEnum.MANAGEMENT,
+//         ],
+//       },
+//       {
+//         label: 'Posiciones',
+//         path: '/positions',
+//         icon: Briefcase,
+//         roles: [
+//           RoleEnum.ADMIN,
+//           RoleEnum.HR,
+//           RoleEnum.MANAGEMENT,
+//         ],
+//       },
+//       {
+//         label: 'Protocolos EMO',
+//         path: '/emo-protocols',
+//         icon: FileBadge,
+//         roles: [
+//           RoleEnum.ADMIN,
+//           RoleEnum.OCCUPATIONAL_DOCTOR,
+//         ],
+//       },
+//     ],
+//   },
+//   {
+//     label: 'SISTEMA',
+//     items: [
+//       {
+//         label: 'Sync RRHH',
+//         path: '/system-settings/employee-sync',
+//         icon: RefreshCw,
+//         roles: [
+//           RoleEnum.ADMIN,
+//         ],
+//       },
+//       {
+//         label: 'Plantillas',
+//         path: '/document-templates',
+//         icon: FileText,
+//         roles: [
+//           RoleEnum.ADMIN,
+//         ],
+//       },
+//     ],
+//   },
+//   {
+//     label: 'REPORTERÍA',
+//     items: [
+//       {
+//         label: 'Reporte de Eventos',
+//         path: '/events/report',
+//         icon: BarChart2,
+//         roles: [
+//           RoleEnum.ADMIN,
+//           RoleEnum.OCCUPATIONAL_DOCTOR,
+//           RoleEnum.NURSE,
+//           RoleEnum.SST,
+//           RoleEnum.HR,
+//           RoleEnum.MANAGEMENT,
+//         ],
+//       },
+//       {
+//         label: 'Documentos por Empleado',
+//         path: '/documents/employees',
+//         icon: FileText,
+//         roles: [
+//           RoleEnum.ADMIN,
+//           RoleEnum.HR,
+//           RoleEnum.MANAGEMENT,
+//         ],
+//       },
+//     ],
+//   },
+//   {
+//     label: 'SEGURIDAD',
+//     items: [
+//       {
+//         label: 'Usuarios',
+//         path: '/users',
+//         icon: UserCog,
+//         roles: [
+//           RoleEnum.ADMIN,
+//         ],
+//       },
+//     ],
+//   },
+// ]
+
 export const navigationConfig: NavigationSection[] = [
   {
     label: 'PRINCIPAL',
@@ -76,10 +408,10 @@ export const navigationConfig: NavigationSection[] = [
     ],
   },
   {
-    label: 'ATENCIONES',
+    label: 'VIGILANCIA MEDICA',
     items: [
       {
-        label: 'Historias Clínicas',
+        label: 'Gestion Historia Medica',
         path: '/clinical-histories',
         icon: BookOpen,
         roles: [
@@ -89,7 +421,7 @@ export const navigationConfig: NavigationSection[] = [
         ],
       },
       {
-        label: 'Atención clínica',
+        label: 'Gestion Atenciones Medicas',
         path: '/clinical-attention',
         icon: Stethoscope,
         roles: [
@@ -99,9 +431,9 @@ export const navigationConfig: NavigationSection[] = [
         ],
       },
       {
-        label: 'Enfermedades',
-        path: '/diseases',
-        icon: Activity,
+        label: 'Gestion Requerimientos Medicamentos',
+        path: '/requirements',
+        icon: ShoppingCart,
         roles: [
           RoleEnum.ADMIN,
           RoleEnum.OCCUPATIONAL_DOCTOR,
@@ -109,37 +441,7 @@ export const navigationConfig: NavigationSection[] = [
         ],
       },
       {
-        label: 'Exámenes',
-        path: '/exams',
-        icon: FlaskConical,
-        roles: [
-          RoleEnum.ADMIN,
-          RoleEnum.OCCUPATIONAL_DOCTOR,
-          RoleEnum.NURSE,
-        ],
-      },
-      {
-        label: 'Tipos de alergia',
-        path: '/allergy-types',
-        icon: AlertCircle,
-        roles: [
-          RoleEnum.ADMIN,
-          RoleEnum.OCCUPATIONAL_DOCTOR,
-          RoleEnum.NURSE,
-        ],
-      },
-      {
-        label: 'Ciclos EMO',
-        path: '/emo-cycles',
-        icon: ClipboardList,
-        roles: [
-          RoleEnum.ADMIN,
-          RoleEnum.OCCUPATIONAL_DOCTOR,
-          RoleEnum.NURSE,
-        ],
-      },
-      {
-        label: 'Atenciones',
+        label: 'Consultas Atenciones Medicas',
         path: '/attentions',
         icon: Stethoscope,
         roles: [
@@ -149,19 +451,7 @@ export const navigationConfig: NavigationSection[] = [
         ],
       },
       {
-        label: 'Descansos Médicos',
-        path: '/medical-rests',
-        icon: BedDouble,
-        roles: [
-          RoleEnum.ADMIN,
-          RoleEnum.OCCUPATIONAL_DOCTOR,
-          RoleEnum.NURSE,
-          RoleEnum.HR,
-          RoleEnum.MANAGEMENT
-        ],
-      },
-      {
-        label: 'Especialidades',
+        label: 'Maestro Especialidades Medicas',
         path: '/specialties',
         icon: Stethoscope,
         roles: [
@@ -170,38 +460,28 @@ export const navigationConfig: NavigationSection[] = [
           RoleEnum.NURSE,
         ],
       },
-    ],
-  },
-  {
-    label: 'SALUD OCUPACIONAL',
-    items: [
       {
-        label: 'Accidentes / Incidentes',
-        path: '/accidents',
-        icon: ShieldAlert,
-        roles: [
-          RoleEnum.SST,
-          RoleEnum.ADMIN,
-        ],
-      },
-      {
-        label: 'Establecimientos de salud',
-        path: '/healthcare-centers',
-        icon: Building2,
+        label: 'Maestro Enfermedades',
+        path: '/diseases',
+        icon: Activity,
         roles: [
           RoleEnum.ADMIN,
           RoleEnum.OCCUPATIONAL_DOCTOR,
           RoleEnum.NURSE,
-          RoleEnum.SST,
         ],
       },
-    ],
-  },
-  {
-    label: 'FARMACIA',
-    items: [
       {
-        label: 'Medicamentos',
+        label: 'Maestro Tipo Alergias',
+        path: '/allergy-types',
+        icon: AlertCircle,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.NURSE,
+        ],
+      },
+      {
+        label: 'Maestro Medicamento',
         path: '/medications',
         icon: Pill,
         roles: [
@@ -211,42 +491,9 @@ export const navigationConfig: NavigationSection[] = [
         ],
       },
       {
-        label: 'Categorías de medicamentos',
+        label: 'Maestro Categoria Medicamento',
         path: '/therapeutic-categories',
         icon: Tag,
-        roles: [
-          RoleEnum.ADMIN,
-          RoleEnum.OCCUPATIONAL_DOCTOR,
-          RoleEnum.NURSE,
-        ],
-      },
-      {
-        label: 'Requerimientos',
-        path: '/requirements',
-        icon: ShoppingCart,
-        roles: [
-          RoleEnum.ADMIN,
-          RoleEnum.OCCUPATIONAL_DOCTOR,
-          RoleEnum.NURSE,
-          RoleEnum.HR,
-          RoleEnum.MANAGEMENT
-        ],
-      },
-      {
-        label: 'Dispensaciones',
-        path: '/dispensations',
-        icon: ClipboardPlus,
-        roles: [
-          RoleEnum.ADMIN,
-          RoleEnum.OCCUPATIONAL_DOCTOR,
-          RoleEnum.NURSE,
-          RoleEnum.SUPERVISOR,
-        ],
-      },
-      {
-        label: 'Movimientos',
-        path: '/movements',
-        icon: ArrowLeftRight,
         roles: [
           RoleEnum.ADMIN,
           RoleEnum.OCCUPATIONAL_DOCTOR,
@@ -256,10 +503,104 @@ export const navigationConfig: NavigationSection[] = [
     ],
   },
   {
+    label: 'SST',
+    items: [
+      {
+        label: 'Gestion Accidentes / Incidentes',
+        path: '/accidents',
+        icon: ShieldAlert,
+        roles: [
+          RoleEnum.SST,
+          RoleEnum.ADMIN,
+        ],
+      },
+      {
+        label: 'Consultas EMOS',
+        path: '/emo-cycles',
+        icon: ClipboardList,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.NURSE,
+          RoleEnum.SST,
+        ],
+      },
+      {
+        label: 'Maestro Establecimiento Salud',
+        path: '/healthcare-centers',
+        icon: Building2,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.NURSE,
+          RoleEnum.SST,
+        ],
+      },
+      {
+        label: 'Maestro Examenes EMOS',
+        path: '/exams',
+        icon: FlaskConical,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.NURSE,
+          RoleEnum.SST,
+        ],
+      },
+      {
+        label: 'Maestro Protocolos EMOS',
+        path: '/emo-protocols',
+        icon: FileBadge,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.SST,
+        ],
+      },
+    ],
+  },
+  {
     label: 'RRHH',
     items: [
       {
-        label: 'Empleados',
+        label: 'Consulta Descanso Medico NP',
+        path: '/medical-rests',
+        icon: BedDouble,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.NURSE,
+          RoleEnum.HR,
+          RoleEnum.MANAGEMENT,
+        ],
+      },
+      {
+        label: 'Gestion Dispensaciones Medicamentos',
+        path: '/dispensations',
+        icon: ClipboardPlus,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.NURSE,
+          RoleEnum.SUPERVISOR,
+          RoleEnum.HR,
+          RoleEnum.MANAGEMENT,
+        ],
+      },
+      {
+        label: 'Consulta Movimiento Medicamentos',
+        path: '/movements',
+        icon: ArrowLeftRight,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.NURSE,
+          RoleEnum.HR,
+          RoleEnum.MANAGEMENT,
+        ],
+      },
+      {
+        label: 'Maestro Empleados NP',
         path: '/employees',
         icon: Users,
         roles: [
@@ -269,17 +610,7 @@ export const navigationConfig: NavigationSection[] = [
         ],
       },
       {
-        label: 'Service - Externos',
-        path: '/externos',
-        icon: Users,
-        roles: [
-          RoleEnum.ADMIN,
-          RoleEnum.HR,
-          RoleEnum.MANAGEMENT,
-        ],
-      },
-      {
-        label: 'Áreas',
+        label: 'Maestro Areas NP',
         path: '/areas',
         icon: Layers,
         roles: [
@@ -289,7 +620,7 @@ export const navigationConfig: NavigationSection[] = [
         ],
       },
       {
-        label: 'Posiciones',
+        label: 'Maestro Posicion / Puestos NP',
         path: '/positions',
         icon: Briefcase,
         roles: [
@@ -299,21 +630,32 @@ export const navigationConfig: NavigationSection[] = [
         ],
       },
       {
-        label: 'Protocolos EMO',
-        path: '/emo-protocols',
-        icon: FileBadge,
+        label: 'Maestro Personal Service - Externo',
+        path: '/externos',
+        icon: Users,
         roles: [
           RoleEnum.ADMIN,
-          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.HR,
+          RoleEnum.MANAGEMENT,
+        ],
+      },
+      {
+        label: 'Consulta Eventos (Atenciones - Incidentes - Accidentes)',
+        path: '/events/report',
+        icon: BarChart2,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.HR,
+          RoleEnum.MANAGEMENT,
         ],
       },
     ],
   },
   {
-    label: 'SISTEMA',
+    label: 'SISTEMAS',
     items: [
       {
-        label: 'Sync RRHH',
+        label: 'Configuracion SYNC - BD SCIRE',
         path: '/system-settings/employee-sync',
         icon: RefreshCw,
         roles: [
@@ -321,39 +663,11 @@ export const navigationConfig: NavigationSection[] = [
         ],
       },
       {
-        label: 'Plantillas',
+        label: 'Configuracion Formatos Doc. (Plantillas)',
         path: '/document-templates',
         icon: FileText,
         roles: [
           RoleEnum.ADMIN,
-        ],
-      },
-    ],
-  },
-  {
-    label: 'REPORTERÍA',
-    items: [
-      {
-        label: 'Reporte de Eventos',
-        path: '/events/report',
-        icon: BarChart2,
-        roles: [
-          RoleEnum.ADMIN,
-          RoleEnum.OCCUPATIONAL_DOCTOR,
-          RoleEnum.NURSE,
-          RoleEnum.SST,
-          RoleEnum.HR,
-          RoleEnum.MANAGEMENT,
-        ],
-      },
-      {
-        label: 'Documentos por Empleado',
-        path: '/documents/employees',
-        icon: FileText,
-        roles: [
-          RoleEnum.ADMIN,
-          RoleEnum.HR,
-          RoleEnum.MANAGEMENT,
         ],
       },
     ],

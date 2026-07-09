@@ -17,7 +17,7 @@ export const AppSidebar = () => {
   const { user, clearSession } = useAuth()
   const alertsCount = useAlertsCount()
 
-  const desktopWidthClass = sidebarCollapsed ? 'lg:w-[92px]' : 'lg:w-[230px]'
+  const desktopWidthClass = sidebarCollapsed ? 'lg:w-[92px]' : 'lg:w-[270px]'
 
   const filteredSections = navigationConfig
     .map(section => ({
