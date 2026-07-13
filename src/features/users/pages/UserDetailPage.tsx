@@ -87,7 +87,7 @@ const UserDetailPage = () => {
   return (
     <>
       <PageContainer
-        title={`#${user.id} — ${user.username}`}
+        title={user.username}
         description="Información del usuario y sus datos de acceso."
         action={
           <div className="flex flex-wrap items-center gap-2">
@@ -141,7 +141,7 @@ const UserDetailPage = () => {
         }
       >
         <div className="space-y-4">
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-6 shadow-lg">
             <h3 className="mb-4 text-sm font-semibold text-slate-900">Acceso</h3>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <Field label="Usuario" value={user.username} />
@@ -183,7 +183,7 @@ const UserDetailPage = () => {
           </div>
 
           {user.employee ? (
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="rounded-3xl border-2 border-slate-300 bg-white p-6 shadow-lg">
               <div className="mb-4 flex items-center justify-between">
                 <h3 className="text-sm font-semibold text-slate-900">Empleado vinculado</h3>
                 <Button
@@ -205,7 +205,7 @@ const UserDetailPage = () => {
             </div>
           ) : null}
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-6 shadow-lg">
             <h3 className="mb-4 text-sm font-semibold text-slate-900">Trazabilidad</h3>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <Field label="Creado" value={new Date(user.createdAt).toLocaleString('es-PE')} />

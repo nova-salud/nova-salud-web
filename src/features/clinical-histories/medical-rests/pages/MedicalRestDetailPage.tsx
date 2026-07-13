@@ -80,7 +80,7 @@ const MedicalRestDetailPage = () => {
 
   return (
     <PageContainer
-      title={`Descanso Médico #${rest.id}`}
+      title={`Descanso médico — ${rest.employeeFullName}`}
       description="Detalle del descanso médico registrado."
       action={
         <div className="flex flex-wrap items-center gap-2">
@@ -98,14 +98,13 @@ const MedicalRestDetailPage = () => {
     >
       <div className="space-y-5">
         {/* Información general */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border-2 border-slate-300 bg-white p-6 shadow-lg">
           <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold text-slate-700">
             <ClipboardList size={15} className="text-slate-400" />
             Información general
           </h3>
           <div className="grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-3">
             <Field label="Empleado" value={rest.employeeFullName} />
-            <Field label="Historia clínica" value={rest.clinicalHistoryId ? `#${rest.clinicalHistoryId}` : null} />
             <Field label="Especialidad" value={rest.specialtyName} />
             <Field label="Tipo" value={rest.type ? TYPE_LABEL[rest.type] : null} />
             <Field label="Contingencia" value={rest.contingency ? CONTINGENCY_LABEL[rest.contingency] : null} />
@@ -113,7 +112,7 @@ const MedicalRestDetailPage = () => {
         </div>
 
         {/* Fechas y días */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border-2 border-slate-300 bg-white p-6 shadow-lg">
           <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold text-slate-700">
             <Stethoscope size={15} className="text-slate-400" />
             Fechas y duración
@@ -127,7 +126,7 @@ const MedicalRestDetailPage = () => {
         </div>
 
         {/* Diagnóstico y observaciones */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border-2 border-slate-300 bg-white p-6 shadow-lg">
           <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold text-slate-700">
             <FileText size={15} className="text-slate-400" />
             Diagnóstico y observaciones
@@ -148,7 +147,7 @@ const MedicalRestDetailPage = () => {
 
         {/* Vínculos */}
         {(rest.employeeId || rest.attentionId || rest.accidentId) && (
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-2xl border-2 border-slate-300 bg-white p-6 shadow-lg">
             <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold text-slate-700">
               <AlertTriangle size={15} className="text-slate-400" />
               Vínculos

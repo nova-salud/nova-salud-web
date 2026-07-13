@@ -2,13 +2,13 @@ export const AccidentDetailSkeleton = () => {
   return (
     <div className="space-y-6 animate-pulse">
       {/* Header */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6">
+      <div className="rounded-2xl border-2 border-slate-300 bg-white p-6 shadow-lg">
         <div className="h-4 w-40 rounded bg-slate-200" />
         <div className="mt-2 h-3 w-64 rounded bg-slate-200" />
       </div>
 
       {/* Card resumen */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6">
+      <div className="rounded-2xl border-2 border-slate-300 bg-white p-6 shadow-lg">
         <div className="flex justify-between">
           <div className="space-y-2">
             <div className="h-4 w-32 rounded bg-slate-200" />
@@ -23,7 +23,7 @@ export const AccidentDetailSkeleton = () => {
       </div>
 
       {/* Información */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 space-y-4">
+      <div className="rounded-2xl border-2 border-slate-300 bg-white p-6 shadow-lg space-y-4">
         <div className="h-4 w-48 rounded bg-slate-200" />
 
         <div className="space-y-2">
@@ -42,7 +42,7 @@ export const AccidentDetailSkeleton = () => {
       </div>
 
       {/* FollowUps carousel */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 space-y-4">
+      <div className="rounded-2xl border-2 border-slate-300 bg-white p-6 shadow-lg space-y-4">
         <div className="h-4 w-40 rounded bg-slate-200" />
 
         <div className="flex gap-4 overflow-hidden">
@@ -67,7 +67,7 @@ export const AccidentDetailSkeleton = () => {
       </div>
 
       {/* Estado del caso */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 space-y-4">
+      <div className="rounded-2xl border-2 border-slate-300 bg-white p-6 shadow-lg space-y-4">
         <div className="flex justify-between items-center">
           <div className="h-4 w-40 rounded bg-slate-200" />
 

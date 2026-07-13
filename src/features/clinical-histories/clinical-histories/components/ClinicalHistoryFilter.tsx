@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Input, Select } from '@/shared/components'
+import { FilterContainer, Input, Select } from '@/shared/components'
 import { useSearchAreas } from '@/features/emo-protocols/hooks'
 import type { FindClinicalHistoriesDto } from '../types'
 
@@ -47,7 +47,7 @@ export const ClinicalHistoryFilter = ({ onChangeFilters }: ClinicalHistoryFilter
   })
 
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+    <FilterContainer>
       <div className="grid gap-4 md:grid-cols-3">
         <Input
           label="Nombre completo"
@@ -100,6 +100,6 @@ export const ClinicalHistoryFilter = ({ onChangeFilters }: ClinicalHistoryFilter
           onChange={(value) => onChangeFilters({ conclusion: value || undefined })}
         />
       </div>
-    </div>
+    </FilterContainer>
   )
 }

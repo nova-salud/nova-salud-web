@@ -1,4 +1,4 @@
-import { Input } from '@/shared/components'
+import { FilterContainer, Input } from '@/shared/components'
 
 type Filters = {
   employeeFullName?: string
@@ -14,7 +14,7 @@ interface MedicalRestFilterProps {
 
 export const MedicalRestFilter = ({ filters, onChangeFilters }: MedicalRestFilterProps) => {
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+    <FilterContainer>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Input
           name="employeeFullName"
@@ -58,6 +58,6 @@ export const MedicalRestFilter = ({ filters, onChangeFilters }: MedicalRestFilte
           }
         />
       </div>
-    </div>
+    </FilterContainer>
   )
 }

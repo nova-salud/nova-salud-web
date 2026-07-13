@@ -111,7 +111,7 @@ export const ManagementDashboardPage = () => {
             ].map(card => (
               <div
                 key={card.label}
-                className="flex flex-1 cursor-pointer items-center justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md"
+                className="flex flex-1 cursor-pointer items-center justify-between rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg transition hover:shadow-md"
                 onClick={() => navigate(card.path)}
               >
                 <div>
@@ -126,7 +126,7 @@ export const ManagementDashboardPage = () => {
             ))}
           </div>
 
-          <div className="overflow-hidden rounded-3xl bg-white p-5 shadow-sm xl:col-span-3">
+          <div className="overflow-hidden rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg xl:col-span-3">
             <p className="mb-3 text-sm font-semibold text-slate-700">Tendencia de requerimientos</p>
             {data.requirementsTrend.length === 0 ? (
               <EmptyState title="Sin datos en el período" />
@@ -143,7 +143,7 @@ export const ManagementDashboardPage = () => {
         <div className="grid gap-4 xl:grid-cols-4">
           <div className="flex flex-col gap-3">
             <div
-              className="flex flex-1 cursor-pointer items-center justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md"
+              className="flex flex-1 cursor-pointer items-center justify-between rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg transition hover:shadow-md"
               onClick={() => navigate('/medical-rests')}
             >
               <div>
@@ -156,7 +156,7 @@ export const ManagementDashboardPage = () => {
               </div>
             </div>
 
-            <div className="flex flex-1 items-center justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div className="flex flex-1 items-center justify-between rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
               <div>
                 <p className="text-xs font-medium uppercase tracking-wider text-slate-400">+21 días en DM</p>
                 <p className={cn('mt-1 text-2xl font-semibold', data.workersWithOver21DmDays > 0 ? 'text-red-600' : 'text-slate-700')}>
@@ -169,7 +169,7 @@ export const ManagementDashboardPage = () => {
             </div>
           </div>
 
-          <div className="overflow-hidden rounded-3xl bg-white p-5 shadow-sm xl:col-span-3">
+          <div className="overflow-hidden rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg xl:col-span-3">
             <p className="mb-3 text-sm font-semibold text-slate-700">Tendencia de ausentismo</p>
             {data.absenteeismTrend.length === 0 ? (
               <EmptyState title="Sin descansos médicos en el período" />
@@ -183,7 +183,7 @@ export const ManagementDashboardPage = () => {
         </div>
 
         {/* Estado de requerimientos */}
-        <div className="rounded-3xl bg-white p-5 shadow-sm">
+        <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-base font-semibold text-slate-900">Estado de requerimientos</h2>
             <button
@@ -213,7 +213,7 @@ export const ManagementDashboardPage = () => {
         </div>
 
         <div className="grid gap-6 xl:grid-cols-2">
-          <div className="rounded-3xl bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-base font-semibold text-slate-900">Empleados por área</h2>
               <button
@@ -245,7 +245,7 @@ export const ManagementDashboardPage = () => {
             )}
           </div>
 
-          <div className="rounded-3xl bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-base font-semibold text-slate-900">Accidentes por área</h2>
               <button
@@ -288,7 +288,7 @@ export const ManagementDashboardPage = () => {
             ].map(card => (
               <div
                 key={card.label}
-                className="flex cursor-pointer items-center justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:shadow-md"
+                className="flex cursor-pointer items-center justify-between rounded-2xl border-2 border-slate-300 bg-white p-4 shadow-lg transition hover:shadow-md"
                 onClick={() => navigate(card.path)}
               >
                 <div>
@@ -303,7 +303,7 @@ export const ManagementDashboardPage = () => {
             ))}
           </div>
 
-          <div className="overflow-hidden rounded-3xl bg-white shadow-sm xl:col-span-2">
+          <div className="overflow-hidden rounded-3xl border-2 border-slate-300 bg-white shadow-lg xl:col-span-2">
             <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
               <h2 className="text-base font-semibold text-slate-900">Últimos accidentes</h2>
               <button
@@ -510,7 +510,7 @@ export const ManagementDashboardPage = () => {
           />
         </div>
 
-        <div className="overflow-hidden rounded-3xl bg-white shadow-sm">
+        <div className="overflow-hidden rounded-3xl border-2 border-slate-300 bg-white shadow-lg">
           <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
             <h2 className="text-base font-semibold text-slate-900">Últimos requerimientos</h2>
             <button

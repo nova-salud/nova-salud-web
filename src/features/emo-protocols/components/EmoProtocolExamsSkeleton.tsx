@@ -1,6 +1,6 @@
 export const EmoProtocolExamsSkeleton = () => {
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="rounded-3xl border-2 border-slate-300 bg-white p-6 shadow-lg">
       <div className="mb-5 flex items-center justify-between">
         <div className="space-y-2">
           <div className="h-5 w-48 rounded shimmer" />
@@ -14,7 +14,7 @@ export const EmoProtocolExamsSkeleton = () => {
         {Array.from({ length: 3 }).map((_, index) => (
           <div
             key={index}
-            className="rounded-2xl border border-slate-200 bg-white p-4"
+            className="rounded-2xl border-2 border-slate-300 bg-white p-4 shadow-lg"
           >
             <div className="flex items-start justify-between">
               <div className="h-4 w-32 rounded shimmer" />

@@ -106,7 +106,7 @@ const EmoProtocolDetailPage = () => {
   return (
     <>
       <PageContainer
-        title={`Protocolo EMO #${emo.id}`}
+        title={emo.name}
         description="Gestiona la configuración del protocolo EMO."
         action={(
           <div className='flex items-center gap-x-2'>
@@ -136,7 +136,7 @@ const EmoProtocolDetailPage = () => {
             </div>
           ) : null}
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-6 shadow-lg">
             <div className="space-y-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.14em] text-slate-400">

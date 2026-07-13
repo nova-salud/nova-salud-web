@@ -35,7 +35,7 @@ export const DiseaseDetailSidebar = ({
   return (
     <Sidebar
       isOpen={isOpen}
-      title={disease ? `Enfermedad #${disease.id}` : 'Detalle de enfermedad'}
+      title={disease ? disease.name : 'Detalle de enfermedad'}
       description="Información general de la enfermedad."
       onClose={onClose}
       size="md"
@@ -57,7 +57,7 @@ export const DiseaseDetailSidebar = ({
 
       {!isLoading && disease ? (
         <div className="space-y-5">
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
             <div className="flex flex-wrap items-center gap-3">
               <span
                 className={cn(
@@ -110,7 +110,7 @@ export const DiseaseDetailSidebar = ({
             </div>
           </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
             <h3 className="text-sm font-semibold text-slate-900">
               Trazabilidad
             </h3>

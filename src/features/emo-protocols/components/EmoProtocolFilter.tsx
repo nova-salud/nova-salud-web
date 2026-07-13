@@ -1,4 +1,4 @@
-import { Input, Select } from '@/shared/components'
+import { FilterContainer, Input, Select } from '@/shared/components'
 import type { FindEmoProtocolsDto } from '../types'
 
 interface EmoProtocolFilterProps {
@@ -14,7 +14,7 @@ export const EmoProtocolFilter = ({ onChangeFilters }: EmoProtocolFilterProps) =
   })
 
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+    <FilterContainer>
       <div className="grid gap-4 md:grid-cols-2">
         <Input
           label="Nombre"
@@ -36,6 +36,6 @@ export const EmoProtocolFilter = ({ onChangeFilters }: EmoProtocolFilterProps) =
         />
 
       </div>
-    </div>
+    </FilterContainer>
   )
 }

@@ -41,7 +41,7 @@ export const AppSidebar = () => {
 
       <aside
         className={cn([
-          'fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-slate-200 bg-[#F9FAFB] transition-all duration-300',
+          'fixed left-0 top-0 z-40 flex h-screen flex-col border-r-2 border-slate-300 bg-[#F9FAFB] shadow-lg transition-all duration-300',
           sidebarOpen ? 'translate-x-0' : '-translate-x-full',
           'w-72.5',
           desktopWidthClass,

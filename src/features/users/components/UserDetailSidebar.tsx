@@ -83,7 +83,7 @@ export const UserDetailSidebar = ({
   return (
     <Sidebar
       isOpen={isOpen}
-      title={user ? `Usuario #${user.id}` : 'Detalle de usuario'}
+      title={user ? user.username : 'Detalle de usuario'}
       description="Información general del usuario."
       onClose={onClose}
       size="md"
@@ -105,7 +105,7 @@ export const UserDetailSidebar = ({
 
       {!isLoading && user ? (
         <div className="space-y-5">
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
             <div className="flex flex-wrap items-center gap-3">
               <span
                 className={cn(

@@ -36,7 +36,7 @@ export const AlertList = ({ alerts, isLoading, pagination, onNavigate, onResolve
 
   if (alerts.length === 0) {
     return (
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 text-sm text-slate-400 shadow-sm">
+      <div className="rounded-2xl border-2 border-slate-300 bg-white p-6 text-sm text-slate-400 shadow-lg">
         No hay alertas activas
       </div>
     )
@@ -51,7 +51,7 @@ export const AlertList = ({ alerts, isLoading, pagination, onNavigate, onResolve
           <div
             key={alert.id}
             className={cn(
-              'rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:bg-slate-50 hover:shadow-md',
+              'rounded-2xl border-2 border-slate-300 bg-white p-4 shadow-lg transition hover:bg-slate-50 hover:shadow-md',
               style.border,
             )}
           >

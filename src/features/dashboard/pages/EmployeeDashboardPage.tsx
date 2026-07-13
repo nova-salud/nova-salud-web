@@ -67,7 +67,7 @@ export const EmployeeDashboardPage = () => {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-3xl border-2 border-slate-300 bg-white p-6 shadow-lg">
         <div className="flex items-start gap-4">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-indigo-50">
             <User className="h-6 w-6 text-indigo-600" />
@@ -133,7 +133,7 @@ export const EmployeeDashboardPage = () => {
             ].map((c) => (
               <div
                 key={c.label}
-                className="flex items-center justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm"
+                className="flex items-center justify-between rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg"
               >
                 <div>
                   <p className="text-xs uppercase tracking-[0.14em] text-slate-400">{c.label}</p>
@@ -167,7 +167,7 @@ export const EmployeeDashboardPage = () => {
           )}
 
           {pendingFollowUps.length > 0 && (
-            <div className="overflow-hidden rounded-3xl bg-white shadow-sm">
+            <div className="overflow-hidden rounded-3xl border-2 border-slate-300 bg-white shadow-lg">
               <div className="flex items-center gap-2 border-b border-slate-100 px-6 py-5">
                 <AlertTriangle className="h-4 w-4 text-amber-500" />
                 <h2 className="text-base font-semibold text-slate-900">Seguimientos pendientes</h2>
@@ -214,7 +214,7 @@ export const EmployeeDashboardPage = () => {
           )}
 
           {activeMedicalRests.length > 0 && (
-            <div className="overflow-hidden rounded-3xl bg-white shadow-sm">
+            <div className="overflow-hidden rounded-3xl border-2 border-slate-300 bg-white shadow-lg">
               <div className="flex items-center gap-2 border-b border-slate-100 px-6 py-5">
                 <BedDouble className="h-4 w-4 text-emerald-500" />
                 <h2 className="text-base font-semibold text-slate-900">Descansos médicos vigentes</h2>

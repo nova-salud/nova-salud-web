@@ -78,7 +78,7 @@ export const EmployeeSearchSelector = ({ onSelect }: Props) => {
 
   return (
     <div className="space-y-5">
-      <div className="space-y-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="space-y-4 rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
         <h3 className="text-sm font-semibold text-slate-900">Buscar trabajador</h3>
 
         <form

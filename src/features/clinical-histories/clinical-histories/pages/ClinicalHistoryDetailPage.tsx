@@ -121,7 +121,7 @@ const ClinicalHistoryDetailPage = () => {
           onViewDetail={goToEmoCycleDetail}
         />
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="rounded-3xl border-2 border-slate-300 bg-white p-4 shadow-lg">
           <div className="flex gap-2 border-b border-slate-200">
             {TABS.map((tab) => (
               <button

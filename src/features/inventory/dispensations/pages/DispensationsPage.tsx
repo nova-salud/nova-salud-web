@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router'
-import { Button, PageContainer } from '@/shared/components'
+import { Button, FilterContainer, PageContainer } from '@/shared/components'
 import { useDispensations } from '../hooks'
 import DispensationTable from '../components/DispensationTable'
 import { DispensationFilter } from '../components'
@@ -23,9 +23,9 @@ const DispensationsPage = () => {
       }
     >
       <div className="space-y-5">
-        <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+        <FilterContainer>
           <DispensationFilter onChangeFilters={onChangeFilters}></DispensationFilter>
-        </div>
+        </FilterContainer>
 
         {error ? (
           <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">

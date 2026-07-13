@@ -107,11 +107,11 @@ const EmployeeDocumentsDetailPage = () => {
             </h3>
 
             {completedCycles.map((cycle) => (
-              <div key={cycle.id} className="rounded-xl border border-slate-200 bg-white p-4">
+              <div key={cycle.id} className="rounded-xl border-2 border-slate-300 bg-white p-4 shadow-lg">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="text-sm font-semibold text-slate-800">
-                      Ciclo EMO #{cycle.id}
+                      Ciclo EMO
                     </span>
                     {cycle.conclusion && (
                       <span className={cn('rounded-full px-2.5 py-0.5 text-xs font-medium', EMO_CONCLUSION_CLASSNAME[cycle.conclusion])}>
@@ -158,12 +158,12 @@ const EmployeeDocumentsDetailPage = () => {
             </h3>
 
             {attentions.map((attention) => (
-              <div key={attention.id} className="rounded-xl border border-slate-200 bg-white p-4">
+              <div key={attention.id} className="rounded-xl border-2 border-slate-300 bg-white p-4 shadow-lg">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex flex-wrap items-center gap-2">
                     <FileText className="h-4 w-4 text-slate-400" />
                     <span className="text-sm font-semibold text-slate-800">
-                      Atención #{attention.id}
+                      Atención médica
                     </span>
                     <span className="text-xs text-slate-400">
                       {format(new Date(attention.createdAt), 'd MMM yyyy', { locale: es })}

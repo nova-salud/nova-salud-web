@@ -248,7 +248,7 @@ export const MedicalDashboardPage = () => {
                 key={c.label}
                 onClick={c.onClick}
                 className={cn(
-                  'flex flex-1 items-center justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm',
+                  'flex flex-1 items-center justify-between rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg',
                   'cursor-pointer transition hover:-translate-y-0.5 hover:shadow-md'
                 )}
               >
@@ -266,7 +266,7 @@ export const MedicalDashboardPage = () => {
             ))}
           </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm xl:col-span-3">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg xl:col-span-3">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-base font-semibold text-slate-900">Tendencia de atenciones</h2>
               <button
@@ -296,7 +296,7 @@ export const MedicalDashboardPage = () => {
               <div
                 key={level}
                 onClick={() => navigate(`/attentions?triageLevel=${level}`)}
-                className="cursor-pointer rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                className="cursor-pointer rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg transition hover:-translate-y-0.5 hover:shadow-md"
               >
                 <div className="flex items-center justify-between">
                   <div>
@@ -325,7 +325,7 @@ export const MedicalDashboardPage = () => {
               : ''
           )}>
             {data.topDiagnoses?.length > 0 && (
-              <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-base font-semibold text-slate-900">Diagnósticos frecuentes</h2>
                   <button
@@ -360,7 +360,7 @@ export const MedicalDashboardPage = () => {
             )}
 
             {data.dispensationsByType?.length > 0 && (
-              <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
                 <div className="mb-4 flex items-center justify-between">
                   <h2 className="text-base font-semibold text-slate-900">Dispensaciones por tipo</h2>
                   <button
@@ -420,7 +420,7 @@ export const MedicalDashboardPage = () => {
         </div>
 
         {/* Medicamentos por acabarse */}
-        <div className="overflow-hidden rounded-3xl bg-white shadow-sm">
+        <div className="overflow-hidden rounded-3xl border-2 border-slate-300 bg-white shadow-lg">
           <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
             <div className="flex items-center gap-2">
               <h2 className="text-base font-semibold text-slate-900">
@@ -511,7 +511,7 @@ export const MedicalDashboardPage = () => {
         </div>
 
         {/* Últimas atenciones */}
-        <div className="overflow-hidden rounded-3xl bg-white shadow-sm">
+        <div className="overflow-hidden rounded-3xl border-2 border-slate-300 bg-white shadow-lg">
           <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
             <h2 className="text-base font-semibold text-slate-900">
               Últimas atenciones

@@ -1,4 +1,4 @@
-import { Input, Select } from '@/shared/components'
+import { FilterContainer, Input, Select } from '@/shared/components'
 import type { FindEmoCyclesDto } from '../types/find-emo-cycles.dto'
 import { EMO_STATUS_OPTIONS } from '../types/find-emo-cycles.dto'
 import { EMO_CYCLE_TYPE_OPTIONS } from '../types/emo-cycle-type.constants'
@@ -10,7 +10,7 @@ interface EmoCycleFilterProps {
 
 export const EmoCycleFilter = ({ filters, onChangeFilters }: EmoCycleFilterProps) => {
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+    <FilterContainer>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Input
           name="employeeFullName"
@@ -53,6 +53,6 @@ export const EmoCycleFilter = ({ filters, onChangeFilters }: EmoCycleFilterProps
           }
         />
       </div>
-    </div>
+    </FilterContainer>
   )
 }

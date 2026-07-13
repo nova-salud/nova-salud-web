@@ -18,7 +18,7 @@ export const MedicationLotsSection = ({ medicationId, onAdjust }: Props) => {
           <span className="text-sm text-slate-400">{pagination.total} en total</span>
         )}
       </div>
-      <div className="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="rounded-3xl border-2 border-slate-300 bg-white shadow-lg overflow-hidden">
         <MedicationLotsTable
           items={data}
           isLoading={isLoading}

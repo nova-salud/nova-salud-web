@@ -1,4 +1,4 @@
-import { Input, Select, DateRangeInput, type DateRangeValue } from '@/shared/components'
+import { FilterContainer, Input, Select, DateRangeInput, type DateRangeValue } from '@/shared/components'
 import type { EventReportTypeFilter } from '../types/event-report.types'
 
 const TYPE_OPTIONS = [
@@ -29,7 +29,7 @@ export const EventReportFilter = ({ filters, onChangeFilters }: EventReportFilte
   }
 
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+    <FilterContainer>
       <div className="grid gap-4 md:grid-cols-3">
         <DateRangeInput
           labelFrom="Fecha desde"
@@ -58,6 +58,6 @@ export const EventReportFilter = ({ filters, onChangeFilters }: EventReportFilte
           }
         />
       </div>
-    </div>
+    </FilterContainer>
   )
 }

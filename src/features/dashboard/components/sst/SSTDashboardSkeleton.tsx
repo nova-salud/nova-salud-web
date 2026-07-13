@@ -17,7 +17,7 @@ export const SSTDashboardSkeleton = () => {
         {Array.from({ length: 6 }).map((_, i) => (
           <div
             key={i}
-            className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm"
+            className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg"
           >
             <Skeleton className="h-3 w-20 mb-3" />
             <Skeleton className="h-6 w-12" />
@@ -25,7 +25,7 @@ export const SSTDashboardSkeleton = () => {
         ))}
       </div>
 
-      <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
         <Skeleton className="h-4 w-48 mb-4" />
         <Skeleton className="h-70 w-full" />
       </div>
@@ -34,7 +34,7 @@ export const SSTDashboardSkeleton = () => {
         {Array.from({ length: 3 }).map((_, i) => (
           <div
             key={i}
-            className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+            className="rounded-2xl border-2 border-slate-300 bg-white p-4 shadow-lg"
           >
             <Skeleton className="h-3 w-24 mb-2" />
             <Skeleton className="h-5 w-10" />
@@ -42,7 +42,7 @@ export const SSTDashboardSkeleton = () => {
         ))}
       </div>
 
-      <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
         <Skeleton className="h-4 w-56 mb-4" />
 
         <div className="grid gap-6 md:grid-cols-2">
@@ -70,7 +70,7 @@ export const SSTDashboardSkeleton = () => {
         </div>
       </div>
 
-      <div className="rounded-3xl border border-slate-200 bg-white shadow-sm">
+      <div className="rounded-3xl border-2 border-slate-300 bg-white shadow-lg">
         <div className="px-6 py-5 border-b border-slate-100">
           <Skeleton className="h-4 w-40 mb-2" />
           <Skeleton className="h-3 w-64" />

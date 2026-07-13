@@ -157,7 +157,7 @@ export const AdminDashboardPage = () => {
               <div
                 key={card.label}
                 onClick={() => card.path && navigate(card.path)}
-                className={`flex flex-1 ${card.path ? 'cursor-pointer' : ''} items-center justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md`}
+                className={`flex flex-1 ${card.path ? 'cursor-pointer' : ''} items-center justify-between rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg transition hover:shadow-md`}
               >
                 <div>
                   <p className="text-xs font-medium uppercase tracking-wider text-slate-400">{card.label}</p>
@@ -171,7 +171,7 @@ export const AdminDashboardPage = () => {
             ))}
           </div>
 
-          <div className="overflow-hidden rounded-3xl bg-white p-5 shadow-sm xl:col-span-3">
+          <div className="overflow-hidden rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg xl:col-span-3">
             <p className="mb-3 text-sm font-semibold text-slate-700">Actividad del período</p>
             {data.activityTrend.length === 0 ? (
               <EmptyState title="Sin datos en el período" />
@@ -186,7 +186,7 @@ export const AdminDashboardPage = () => {
 
         {/* Accidentes por área */}
         <div className="grid gap-6 xl:grid-cols-3">
-          <div className="rounded-3xl bg-white p-5 shadow-sm xl:col-span-2">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg xl:col-span-2">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-base font-semibold text-slate-900">Accidentes por área</h2>
               <button
@@ -218,7 +218,7 @@ export const AdminDashboardPage = () => {
             )}
           </div>
 
-          <div className="rounded-3xl bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-base font-semibold text-slate-900">Medicamentos más usados</h2>
               <button
@@ -252,7 +252,7 @@ export const AdminDashboardPage = () => {
         </div>
 
         {hasClassification && (
-          <div className="rounded-3xl bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-base font-semibold text-slate-900">Accidentes por clasificación</h2>
               <button

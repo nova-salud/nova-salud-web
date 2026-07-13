@@ -5,7 +5,7 @@ export const AttentionDetailSkeleton = () => {
     <PageContainer title="" description="">
       <div className="space-y-6 animate-pulse">
         {/* Header card */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6">
+        <div className="rounded-2xl border-2 border-slate-300 bg-white p-6 shadow-lg">
           <div className="flex justify-between">
             <div className="space-y-2">
               <div className="h-4 w-32 rounded bg-slate-200" />
@@ -21,7 +21,7 @@ export const AttentionDetailSkeleton = () => {
         </div>
 
         {/* Información clínica */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 space-y-4">
+        <div className="rounded-2xl border-2 border-slate-300 bg-white p-6 shadow-lg space-y-4">
           <div className="h-5 w-48 rounded bg-slate-200" />
 
           <div className="grid gap-4 md:grid-cols-2">
@@ -50,7 +50,7 @@ export const AttentionDetailSkeleton = () => {
         </div>
 
         {/* Dispensación */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 space-y-4">
+        <div className="rounded-2xl border-2 border-slate-300 bg-white p-6 shadow-lg space-y-4">
           <div className="space-y-1">
             <div className="h-5 w-36 rounded bg-slate-200" />
             <div className="h-3 w-64 rounded bg-slate-200" />
@@ -75,7 +75,7 @@ export const AttentionDetailSkeleton = () => {
         </div>
 
         {/* Seguimientos */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 space-y-4">
+        <div className="rounded-2xl border-2 border-slate-300 bg-white p-6 shadow-lg space-y-4">
           <div className="space-y-1">
             <div className="h-5 w-40 rounded bg-slate-200" />
             <div className="h-3 w-56 rounded bg-slate-200" />
@@ -93,7 +93,7 @@ export const AttentionDetailSkeleton = () => {
         </div>
 
         {/* Firmas */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 space-y-4">
+        <div className="rounded-2xl border-2 border-slate-300 bg-white p-6 shadow-lg space-y-4">
           <div className="h-5 w-32 rounded bg-slate-200" />
           <div className="flex gap-6">
             {Array.from({ length: 2 }).map((_, i) => (

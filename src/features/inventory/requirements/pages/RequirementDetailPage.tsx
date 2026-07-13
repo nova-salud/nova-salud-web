@@ -130,7 +130,7 @@ const RequirementDetailPage = () => {
       }
     >
       <div className="space-y-5">
-        <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">
+        <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg space-y-4">
           <div className="flex flex-wrap items-center gap-3">
             <span
               className={cn(
@@ -194,7 +194,7 @@ const RequirementDetailPage = () => {
           </div>
         </div>
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">
+        <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg space-y-4">
           <h3 className="text-sm font-semibold text-slate-900">Medicamentos solicitados</h3>
 
           <div className="space-y-2">

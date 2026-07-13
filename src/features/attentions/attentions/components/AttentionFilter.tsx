@@ -1,4 +1,4 @@
-import { Input, Select, DateRangeInput, type DateRangeValue } from '@/shared/components'
+import { FilterContainer, Input, Select, DateRangeInput, type DateRangeValue } from '@/shared/components'
 import type { FindAttentionsParams } from '../services/attention.service'
 import { TRIAGE_LEVEL_OPTIONS, type TriageLevelEnum } from '../types/triage.enum'
 
@@ -18,7 +18,7 @@ export const AttentionFilter = ({ filters, onChangeFilters }: AttentionFilterPro
   }
 
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+    <FilterContainer>
       <div className="grid gap-4 md:grid-cols-3">
         <Input
           name="employeeFullName"
@@ -61,6 +61,6 @@ export const AttentionFilter = ({ filters, onChangeFilters }: AttentionFilterPro
           onChange={handleDateChange}
         />
       </div>
-    </div>
+    </FilterContainer>
   )
 }

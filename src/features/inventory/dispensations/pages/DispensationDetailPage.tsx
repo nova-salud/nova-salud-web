@@ -54,7 +54,7 @@ const DispensationDetailPage = () => {
 
   return (
     <PageContainer
-      title={`Dispensación #${data.id}`}
+      title={data.employeeFullName ? `Dispensación — ${data.employeeFullName}` : 'Dispensación'}
       description="Detalle de la dispensación"
       action={
         <Button
@@ -69,7 +69,7 @@ const DispensationDetailPage = () => {
     >
       <div className="space-y-5">
         {data.employeeId ? (
-          <div className="space-y-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="space-y-4 rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-semibold text-slate-900">Trabajador</h3>
               {data.employeeIsThirdParty && (
@@ -108,7 +108,7 @@ const DispensationDetailPage = () => {
           </div>
         ) : null}
 
-        <div className="space-y-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="space-y-4 rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
           <div className="flex flex-wrap items-center gap-3">
             <span
               className={cn(
@@ -155,14 +155,14 @@ const DispensationDetailPage = () => {
           </div>
         </div>
 
-        <div className="space-y-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="space-y-4 rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
           <h3 className="text-sm font-semibold text-slate-900">Medicamentos dispensados</h3>
 
           <div className="space-y-3">
             {data.items.map((item) => (
               <div
                 key={item.id}
-                className="rounded-2xl border border-slate-200 p-4"
+                className="rounded-2xl border-2 border-slate-300 p-4"
               >
                 <div className="grid gap-4 md:grid-cols-2">
                   <div>

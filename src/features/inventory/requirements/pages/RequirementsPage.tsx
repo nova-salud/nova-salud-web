@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router'
-import { PageContainer } from '@/shared/components'
+import { FilterContainer, PageContainer } from '@/shared/components'
 import { RoleEnum } from '@/core/enums/role.enum'
 import { useAuth } from '@/shared/hooks'
 import { RequirementFilter } from '../components/RequirementFilter'
@@ -33,9 +33,9 @@ const RequirementsPage = () => {
       }
     >
       <div className="space-y-5">
-        <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+        <FilterContainer>
           <RequirementFilter onChangeFilters={onChangeFilters} />
-        </div>
+        </FilterContainer>
 
         {error ? (
           <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
@@ -43,7 +43,7 @@ const RequirementsPage = () => {
           </div>
         ) : null}
 
-        <div className="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+        <div className="rounded-3xl border-2 border-slate-300 bg-white shadow-lg overflow-hidden">
           <RequirementTable items={data} isLoading={isLoading} pagination={pagination} />
         </div>
       </div>

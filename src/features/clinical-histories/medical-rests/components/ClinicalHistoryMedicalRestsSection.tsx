@@ -57,10 +57,11 @@ export const ClinicalHistoryMedicalRestsSection = ({ clinicalHistoryId, accident
       <p className="mb-4 text-sm text-slate-500">Descansos médicos emitidos al trabajador.</p>
 
       <DataTable
+        variant="plain"
         data={data}
         isLoading={isLoading}
         emptyMessage="No hay descansos médicos registrados."
-        columns={['Inicio', 'Fin', 'Días DM', 'Días subsidiados', 'Tipo', 'Especialidad', 'Notas', 'Archivo']}
+        columns={['Inicio', 'Fin', 'Días DM', 'Días subsidiados', 'Tipo', 'Especialidad', 'Archivo']}
         renderRow={(item) => (
           <>
             <td className="px-6 py-5 text-slate-700">
@@ -80,9 +81,6 @@ export const ClinicalHistoryMedicalRestsSection = ({ clinicalHistoryId, accident
             </td>
             <td className="px-6 py-5 text-sm text-slate-600">
               {item.specialtyName ?? '—'}
-            </td>
-            <td className="max-w-64 truncate px-6 py-5 text-slate-500">
-              {item.notes || '—'}
             </td>
             <td className="px-6 py-5">
               {item.fileUrl ? (

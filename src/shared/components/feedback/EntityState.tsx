@@ -20,7 +20,7 @@ export const EntityState = ({
   return (
     <div
       className={cn(
-        'rounded-2xl border border-slate-200 bg-white px-6 py-12 shadow-sm',
+        'rounded-2xl border-2 border-slate-300 bg-white px-6 py-12 shadow-lg',
         className,
       )}
     >

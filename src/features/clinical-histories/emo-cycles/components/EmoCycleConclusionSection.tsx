@@ -15,7 +15,7 @@ const EmoCycleConclusionSection = ({ cycle, canEmitConclusion, areRequiredExamsC
   )
 
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="rounded-3xl border-2 border-slate-300 bg-white p-6 shadow-lg">
       <div className="flex gap-x-2 items-center justify-between">
         <div className="mb-5">
           <h2 className="text-lg font-semibold text-slate-900">

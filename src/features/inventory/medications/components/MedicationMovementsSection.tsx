@@ -11,7 +11,7 @@ export const MedicationMovementsSection = ({ medicationId }: Props) => {
   return (
     <div className="space-y-2">
       <h2 className="px-1 text-base font-semibold text-slate-900">Movimientos</h2>
-      <div className="rounded-3xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="rounded-3xl border-2 border-slate-300 bg-white shadow-lg overflow-hidden">
         <MedicationMovementsTable
           items={data}
           isLoading={isLoading}

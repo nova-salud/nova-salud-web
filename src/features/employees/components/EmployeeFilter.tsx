@@ -1,4 +1,4 @@
-import { Input, SearchSelect, Select } from '@/shared/components'
+import { FilterContainer, Input, SearchSelect, Select } from '@/shared/components'
 import type { FindEmployeesDto } from '../types'
 import { useSearchAreas } from '@/features/emo-protocols/hooks'
 import { useMemo } from 'react'
@@ -27,7 +27,7 @@ export const EmployeeFilter = ({ onChangeFilters, filters, hasCompanyFilter = fa
     , [areas])
 
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+    <FilterContainer>
       <div className="grid gap-4 md:grid-cols-4">
         <Input
           label="Nombre completo"
@@ -75,6 +75,6 @@ export const EmployeeFilter = ({ onChangeFilters, filters, hasCompanyFilter = fa
         />
 
       </div>
-    </div>
+    </FilterContainer>
   )
 }

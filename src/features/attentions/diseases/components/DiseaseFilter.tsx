@@ -1,4 +1,4 @@
-import { Input, Select } from '@/shared/components'
+import { FilterContainer, Input, Select } from '@/shared/components'
 import type { FindDiseasesDto } from '../types'
 
 type ExtraFilters = Pick<FindDiseasesDto, 'code' | 'name' | 'category' | 'isActive'>
@@ -14,7 +14,7 @@ const STATUS_OPTIONS = [
 ]
 
 export const DiseaseFilter = ({ onChangeFilters }: Props) => (
-  <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+  <FilterContainer>
     <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
       <Input
         label="Código"
@@ -44,5 +44,5 @@ export const DiseaseFilter = ({ onChangeFilters }: Props) => (
         onChange={(value) => onChangeFilters({ isActive: value === '' ? undefined : value === 'true' })}
       />
     </div>
-  </div>
+  </FilterContainer>
 )

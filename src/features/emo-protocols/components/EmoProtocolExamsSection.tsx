@@ -84,7 +84,7 @@ export const EmoProtocolExamsSection = ({
 
   return (
     <>
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-3xl border-2 border-slate-300 bg-white p-6 shadow-lg">
         <div className="mb-5 flex items-center justify-between gap-3">
           <div>
             <h2 className="text-lg font-semibold text-slate-900">Exámenes del protocolo</h2>
@@ -111,7 +111,7 @@ export const EmoProtocolExamsSection = ({
             {items.map((item) => (
               <div
                 key={item.id}
-                className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4 transition hover:border-slate-300"
+                className="flex flex-col justify-between rounded-2xl border-2 border-slate-300 bg-white p-4 shadow-lg transition hover:border-slate-400"
               >
                 <div className="flex items-start justify-between gap-3">
                   <h3 className="text-base font-semibold text-slate-900 leading-5">

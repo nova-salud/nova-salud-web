@@ -111,11 +111,11 @@ const AttentionDetailPage = () => {
           </div>
         ) : null}
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border-2 border-slate-300 bg-white p-6 shadow-lg">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-sm font-medium text-slate-900">
-                Atención #{attention.id}
+                Atención médica
               </p>
               <p className="mt-1 text-sm text-slate-500">
                 {attention.createdAt
@@ -160,7 +160,7 @@ const AttentionDetailPage = () => {
           </div>
         )}
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border-2 border-slate-300 bg-white p-6 shadow-lg">
           <h2 className="text-lg font-semibold text-slate-900">Información clínica</h2>
 
           <div className="mt-4 grid gap-4 md:grid-cols-2">
@@ -215,7 +215,7 @@ const AttentionDetailPage = () => {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border-2 border-slate-300 bg-white p-6 shadow-lg">
           <h2 className="text-lg font-semibold text-slate-900">Seguros activos al momento de la atención</h2>
           <div className="mt-4 grid gap-4 md:grid-cols-2">
             <div>
@@ -241,7 +241,7 @@ const AttentionDetailPage = () => {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border-2 border-slate-300 bg-white p-6 shadow-lg">
           <div className="mb-4">
             <h2 className="text-lg font-semibold text-slate-900">Dispensación</h2>
             <p className="text-sm text-slate-500">Medicamentos dispensados desde esta atención.</p>
@@ -321,7 +321,7 @@ const AttentionDetailPage = () => {
           )}
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border-2 border-slate-300 bg-white p-6 shadow-lg">
           <h2 className="text-lg font-semibold text-slate-900">Seguimientos</h2>
           <p className="mt-1 text-sm text-slate-500">Seguimientos programados a partir de esta atención.</p>
 
@@ -368,7 +368,7 @@ const AttentionDetailPage = () => {
           )}
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm py-5">
+        <div className="rounded-2xl border-2 border-slate-300 bg-white shadow-lg py-5">
           <ClinicalHistoryMedicalRestsSection
             clinicalHistoryId={attention.clinicalHistoryId}
             attentionId={numericAttentionId}

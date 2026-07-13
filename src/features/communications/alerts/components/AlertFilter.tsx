@@ -1,4 +1,4 @@
-import { Input, Select } from '@/shared/components'
+import { FilterContainer, Input, Select } from '@/shared/components'
 import { ALERT_LABELS, AlertType } from '../types/alert-type.enum'
 import { ALERT_PRIORITY_LABELS, AlertPriority } from '../types/alert-priority.enum'
 import type { FindAlertsDto } from '../types/find-alerts.dto'
@@ -30,7 +30,7 @@ export const AlertFilter = ({ onChangeFilters, allowedTypes }: Props) => {
   ]
 
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+    <FilterContainer>
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         <Input
           label="Título"
@@ -65,6 +65,6 @@ export const AlertFilter = ({ onChangeFilters, allowedTypes }: Props) => {
           onChange={(v) => onChangeFilters({ isResolved: v === '' ? undefined : v === 'true' })}
         />
       </div>
-    </div>
+    </FilterContainer>
   )
 }

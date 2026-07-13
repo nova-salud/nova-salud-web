@@ -4,7 +4,7 @@ export const AlertListSkeleton = ({ count = 5 }: { count?: number }) => {
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
-          className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm border-l-4 border-l-slate-200"
+          className="rounded-2xl border-2 border-slate-300 bg-white p-4 shadow-lg border-l-4 border-l-slate-200"
         >
           <div className="flex items-start justify-between gap-4">
             {/* Left */}

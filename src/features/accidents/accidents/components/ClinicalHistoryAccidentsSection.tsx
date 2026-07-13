@@ -36,6 +36,7 @@ export const ClinicalHistoryAccidentsSection = ({ clinicalHistoryId, onCreate, o
       <p className="mb-4 text-sm text-slate-500">Eventos e incidentes registrados del trabajador.</p>
 
       <DataTable
+        variant="plain"
         data={data}
         isLoading={isLoading}
         emptyMessage="No hay accidentes registrados."

@@ -313,7 +313,7 @@ export const SSTDashboardPage = () => {
                 key={c.label}
                 onClick={c.onClick}
                 className={cn(
-                  'flex flex-1 items-center justify-between rounded-3xl border border-slate-200 bg-white p-5 shadow-sm',
+                  'flex flex-1 items-center justify-between rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg',
                   c.onClick && 'cursor-pointer transition hover:shadow-md hover:-translate-y-0.5'
                 )}
               >
@@ -331,7 +331,7 @@ export const SSTDashboardPage = () => {
             ))}
           </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm xl:col-span-3">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg xl:col-span-3">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-base font-semibold text-slate-900">Tendencia de accidentes</h2>
               <button
@@ -361,7 +361,7 @@ export const SSTDashboardPage = () => {
         </div>
 
         {(data.severityDistribution?.length ?? 0) > 0 && (
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-base font-semibold text-slate-900">Distribución por severidad</h2>
               <button
@@ -393,7 +393,7 @@ export const SSTDashboardPage = () => {
         )}
 
         {data.accidentsByForm?.length > 0 && (
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-base font-semibold text-slate-900">Formas de accidente</h2>
               <button
@@ -421,7 +421,7 @@ export const SSTDashboardPage = () => {
         )}
 
         {data.interestingMetrics.topAreas?.length > 0 && (
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-base font-semibold text-slate-900">Áreas con mayor incidencia</h2>
               <button
@@ -472,7 +472,7 @@ export const SSTDashboardPage = () => {
         </div>
 
         {(data.investigationsByResponsible?.length ?? 0) > 0 && (
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <h2 className="text-base font-semibold text-slate-900">Investigaciones abiertas</h2>
@@ -506,7 +506,7 @@ export const SSTDashboardPage = () => {
           </div>
         )}
 
-        <div className="rounded-3xl border border-slate-200 bg-white shadow-sm">
+        <div className="rounded-3xl border-2 border-slate-300 bg-white shadow-lg">
           <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
             <h2 className="text-base font-semibold text-slate-900">Últimos accidentes</h2>
             <button

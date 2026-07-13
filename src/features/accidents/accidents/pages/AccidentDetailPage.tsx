@@ -1,4 +1,5 @@
 import { useNavigate, useParams } from 'react-router'
+import { ExternalLink } from 'lucide-react'
 import { format } from 'date-fns'
 import { cn } from '@/shared/utils'
 import { useAuth } from '@/shared/hooks'
@@ -49,7 +50,7 @@ const AccidentDetailPage = () => {
 
   return (
     <PageContainer
-      title={`Accidente #${accident.id}`}
+      title="Detalle de accidente"
       description="Detalle del accidente registrado."
       action={
         <div className="flex flex-wrap items-center gap-2">
@@ -77,12 +78,17 @@ const AccidentDetailPage = () => {
       }
     >
       <div className="space-y-6">
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border-2 border-slate-300 bg-white p-6 shadow-lg">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-sm font-medium text-slate-900">
-                Accidente #{accident.id}
-              </p>
+              <button
+                type="button"
+                onClick={() => navigate(`/clinical-histories/${accident.employeeId}`)}
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-900 hover:underline"
+              >
+                {accident.employeeFullName ?? 'Trabajador no identificado'}
+                <ExternalLink size={14} className="text-slate-400" />
+              </button>
               <p className="mt-1 text-sm text-slate-500">
                 {accident.occurredAt
                   ? format(new Date(accident.occurredAt), 'dd/MM/yyyy HH:mm')
@@ -146,7 +152,7 @@ const AccidentDetailPage = () => {
           isReadOnly={!canEdit}
         />
 
-        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm py-5">
+        <div className="rounded-2xl border-2 border-slate-300 bg-white shadow-lg py-5">
           <ClinicalHistoryMedicalRestsSection
             clinicalHistoryId={accident.clinicalHistoryId}
             accidentId={accident.id}

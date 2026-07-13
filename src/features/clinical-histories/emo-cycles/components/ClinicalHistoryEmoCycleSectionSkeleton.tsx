@@ -1,6 +1,6 @@
 export const ClinicalHistoryEmoCycleSectionSkeleton = () => {
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="rounded-3xl border-2 border-slate-300 bg-white p-6 shadow-lg">
       <div className="space-y-2">
         <div className="h-6 w-40 rounded shimmer" />
         <div className="h-4 w-72 rounded shimmer" />

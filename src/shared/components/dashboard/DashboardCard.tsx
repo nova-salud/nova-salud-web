@@ -21,7 +21,7 @@ export const DashboardCard = ({
     <div
       onClick={onClick}
       className={cn(
-        'rounded-3xl border border-slate-200 bg-white p-5 shadow-sm flex items-center justify-between',
+        'rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg flex items-center justify-between',
         onClick && 'cursor-pointer transition hover:shadow-md hover:-translate-y-0.5',
         className,
       )}

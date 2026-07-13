@@ -9,7 +9,7 @@ export const MedicalDashboardSkeleton = () => (
     {/* 4 cards principales */}
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
       {Array.from({ length: 4 }).map((_, i) => (
-        <div key={i} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div key={i} className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
           <Skeleton className="mb-3 h-3 w-24" />
           <Skeleton className="h-7 w-14" />
         </div>
@@ -19,7 +19,7 @@ export const MedicalDashboardSkeleton = () => (
     {/* 3 alert cards */}
     <div className="grid gap-4 sm:grid-cols-3">
       {Array.from({ length: 3 }).map((_, i) => (
-        <div key={i} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div key={i} className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
           <Skeleton className="mb-3 h-3 w-28" />
           <Skeleton className="h-7 w-10" />
         </div>
@@ -27,7 +27,7 @@ export const MedicalDashboardSkeleton = () => (
     </div>
 
     {/* Gráfico */}
-    <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
       <div className="mb-4 flex items-center justify-between">
         <div className="space-y-2">
           <Skeleton className="h-4 w-48" />
@@ -39,7 +39,7 @@ export const MedicalDashboardSkeleton = () => (
     </div>
 
     {/* Medicamentos */}
-    <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+    <div className="overflow-hidden rounded-3xl border-2 border-slate-300 bg-white shadow-lg">
       <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
         <Skeleton className="h-4 w-52" />
         <Skeleton className="h-4 w-24" />
@@ -62,7 +62,7 @@ export const MedicalDashboardSkeleton = () => (
     </div>
 
     {/* Tabla */}
-    <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+    <div className="overflow-hidden rounded-3xl border-2 border-slate-300 bg-white shadow-lg">
       <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
         <Skeleton className="h-4 w-36" />
         <Skeleton className="h-4 w-28" />

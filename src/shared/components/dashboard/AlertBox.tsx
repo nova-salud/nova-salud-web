@@ -6,7 +6,7 @@ export const AlertBox = ({ title, value }: { title: string, value:  number}) => 
   return (
     <div
       className={cn(
-        'rounded-3xl border p-5 shadow-sm',
+        'rounded-3xl border-2 p-5 shadow-lg',
         isCritical
           ? 'border-red-200 bg-red-50'
           : 'border-amber-200 bg-amber-50'

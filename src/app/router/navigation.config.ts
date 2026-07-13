@@ -411,17 +411,7 @@ export const navigationConfig: NavigationSection[] = [
     label: 'VIGILANCIA MEDICA',
     items: [
       {
-        label: 'Gestion Historia Medica',
-        path: '/clinical-histories',
-        icon: BookOpen,
-        roles: [
-          RoleEnum.ADMIN,
-          RoleEnum.OCCUPATIONAL_DOCTOR,
-          RoleEnum.NURSE,
-        ],
-      },
-      {
-        label: 'Gestion Atenciones Medicas',
+        label: 'Gestión Historias / Atenciones Medicas',
         path: '/clinical-attention',
         icon: Stethoscope,
         roles: [
@@ -431,9 +421,19 @@ export const navigationConfig: NavigationSection[] = [
         ],
       },
       {
-        label: 'Gestion Requerimientos Medicamentos',
+        label: 'Gestión Requerimientos Medicamentos',
         path: '/requirements',
         icon: ShoppingCart,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.OCCUPATIONAL_DOCTOR,
+          RoleEnum.NURSE,
+        ],
+      },
+      {
+        label: 'Consulta Historia Medica',
+        path: '/clinical-histories',
+        icon: BookOpen,
         roles: [
           RoleEnum.ADMIN,
           RoleEnum.OCCUPATIONAL_DOCTOR,
@@ -506,7 +506,7 @@ export const navigationConfig: NavigationSection[] = [
     label: 'SST',
     items: [
       {
-        label: 'Gestion Accidentes / Incidentes',
+        label: 'Gestión Accidentes / Incidentes',
         path: '/accidents',
         icon: ShieldAlert,
         roles: [
@@ -563,7 +563,7 @@ export const navigationConfig: NavigationSection[] = [
     label: 'RRHH',
     items: [
       {
-        label: 'Consulta Descanso Medico NP',
+        label: 'Gestión Descanso Medico NP',
         path: '/medical-rests',
         icon: BedDouble,
         roles: [
@@ -575,7 +575,7 @@ export const navigationConfig: NavigationSection[] = [
         ],
       },
       {
-        label: 'Gestion Dispensaciones Medicamentos',
+        label: 'Gestión Dispensaciones Medicamentos',
         path: '/dispensations',
         icon: ClipboardPlus,
         roles: [
@@ -595,6 +595,26 @@ export const navigationConfig: NavigationSection[] = [
           RoleEnum.ADMIN,
           RoleEnum.OCCUPATIONAL_DOCTOR,
           RoleEnum.NURSE,
+          RoleEnum.HR,
+          RoleEnum.MANAGEMENT,
+        ],
+      },
+      {
+        label: 'Consulta Eventos (Atenciones - Incidentes - Accidentes)',
+        path: '/events/report',
+        icon: BarChart2,
+        roles: [
+          RoleEnum.ADMIN,
+          RoleEnum.HR,
+          RoleEnum.MANAGEMENT,
+        ],
+      },
+      {
+        label: 'Consulta Formatos Doc. Empleado NP',
+        path: '/documents/employees',
+        icon: FileText,
+        roles: [
+          RoleEnum.ADMIN,
           RoleEnum.HR,
           RoleEnum.MANAGEMENT,
         ],
@@ -633,16 +653,6 @@ export const navigationConfig: NavigationSection[] = [
         label: 'Maestro Personal Service - Externo',
         path: '/externos',
         icon: Users,
-        roles: [
-          RoleEnum.ADMIN,
-          RoleEnum.HR,
-          RoleEnum.MANAGEMENT,
-        ],
-      },
-      {
-        label: 'Consulta Eventos (Atenciones - Incidentes - Accidentes)',
-        path: '/events/report',
-        icon: BarChart2,
         roles: [
           RoleEnum.ADMIN,
           RoleEnum.HR,

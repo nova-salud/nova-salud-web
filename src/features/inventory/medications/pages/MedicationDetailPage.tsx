@@ -92,7 +92,7 @@ const MedicationDetailPage = () => {
       description="Vista maestra y operativa del medicamento"
     >
       <div className="space-y-5">
-        <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-4 rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-xl font-semibold text-slate-900">
               {medication.commercialName}
@@ -160,28 +160,28 @@ const MedicationDetailPage = () => {
         </div>
 
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
             <p className="text-sm text-slate-400">Stock mínimo</p>
             <p className="mt-3 text-4xl font-semibold text-slate-900">
               {medication.minimumStock}
             </p>
           </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
             <p className="text-sm text-slate-400">Unidad</p>
             <p className="mt-3 text-lg font-semibold text-slate-900">
               {medication.unitOfMeasure}
             </p>
           </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
             <p className="text-sm text-slate-400">OTC</p>
             <p className="mt-3 text-lg font-semibold text-slate-900">
               {medication.isOtc ? 'Sí' : 'No'}
             </p>
           </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
             <p className="text-sm text-slate-400">Requiere receta</p>
             <p className="mt-3 text-lg font-semibold text-slate-900">
               {medication.requiresPrescription ? 'Sí' : 'No'}
@@ -189,7 +189,7 @@ const MedicationDetailPage = () => {
           </div>
         </div>
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
           <h2 className="mb-4 text-base font-semibold text-slate-900">Información general</h2>
 
           <div className="grid gap-4 md:grid-cols-2">

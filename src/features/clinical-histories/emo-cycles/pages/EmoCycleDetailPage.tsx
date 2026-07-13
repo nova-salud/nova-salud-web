@@ -100,11 +100,11 @@ const EmoCycleDetailPage = () => {
           </div>
         )}
 
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-3xl border-2 border-slate-300 bg-white p-6 shadow-lg">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <h1 className="text-xl font-semibold text-slate-900">
-                Ciclo EMO #{relativeNumber || emoCycle.id}
+                Ciclo EMO #{relativeNumber}
               </h1>
 
               <div className="mt-3 flex flex-wrap gap-2">

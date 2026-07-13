@@ -36,7 +36,7 @@ const EmoCycleExamsSection = ({
   }
 
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="rounded-3xl border-2 border-slate-300 bg-white p-6 shadow-lg">
 
       <div className="mb-5 flex items-start justify-between gap-4">
         <div>
@@ -72,7 +72,7 @@ const EmoCycleExamsSection = ({
         {exams.map((exam) => (
           <div
             key={exam.id}
-            className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-4"
+            className="flex flex-col justify-between rounded-2xl border-2 border-slate-300 bg-white p-4 shadow-lg"
           >
             <div className="flex items-start justify-between gap-3">
               <h3 className="text-sm font-medium text-slate-700">

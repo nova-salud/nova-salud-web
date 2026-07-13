@@ -66,7 +66,7 @@ const HealthcareCenterDetailPage = () => {
         description="Información completa del centro de salud"
       >
         <div className="space-y-5">
-          <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-col gap-4 rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg md:flex-row md:items-center md:justify-between">
             <div>
               <h1 className="text-xl font-semibold text-slate-900">{center.name}</h1>
               {center.ruc && (
@@ -101,7 +101,7 @@ const HealthcareCenterDetailPage = () => {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
             <h2 className="mb-4 text-base font-semibold text-slate-900">Información general</h2>
             <div className="grid gap-4 md:grid-cols-2">
               <div>
@@ -136,7 +136,7 @@ const HealthcareCenterDetailPage = () => {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
             <h2 className="mb-4 text-base font-semibold text-slate-900">Datos de contacto</h2>
             <div className="grid gap-4 md:grid-cols-2">
               <div>
@@ -156,7 +156,7 @@ const HealthcareCenterDetailPage = () => {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg">
             <h2 className="mb-4 text-base font-semibold text-slate-900">Trazabilidad</h2>
             <div className="grid gap-4 md:grid-cols-2">
               <div>

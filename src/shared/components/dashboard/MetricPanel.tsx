@@ -39,7 +39,7 @@ export function MetricPanel({
 
   return (
     <div
-      className="flex flex-col rounded-3xl bg-white p-5 shadow-sm"
+      className="flex flex-col rounded-3xl border-2 border-slate-300 bg-white p-5 shadow-lg"
       style={panelHeight ? { height: panelHeight } : undefined}
     >
       <div className="mb-3 flex items-center justify-between">

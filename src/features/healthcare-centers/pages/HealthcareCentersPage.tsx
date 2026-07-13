@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router'
 import { useDisclosure } from '@/shared/hooks'
 import { useCreateHealthcareCenter, useHealthcareCenters } from '../hooks'
 import type { CreateHealthcareCenterDto, HealthcareCenterResponseDto } from '../types'
-import { Button, PageContainer } from '@/shared/components'
+import { Button, FilterContainer, PageContainer } from '@/shared/components'
 import HealthcareCenterTable from '../components/HealthcareCenterTable'
 import HealthcareCenterFormSidebar from '../components/HealthcareCenterFormSidebar'
 import { HealthcareCenterFilter } from '../components/HealthcareCenterFilter'
@@ -43,9 +43,9 @@ const HealthcareCentersPage = () => {
         )}
       >
         <div className="space-y-5">
-          <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+          <FilterContainer>
             <HealthcareCenterFilter onChangeFilters={onChangeFilters} />
-          </div>
+          </FilterContainer>
 
           {error ? (
             <div className="rounded-3xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">

@@ -5,7 +5,7 @@ export const EmoCycleDetailSkeleton = () => {
     <PageContainer>
       <div className="animate-pulse space-y-6">
         {/* Header */}
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-3xl border-2 border-slate-300 bg-white p-6 shadow-lg">
           <div className="flex items-start justify-between">
             <div className="space-y-3">
               <div className="h-6 w-36 rounded-lg bg-slate-200" />
@@ -22,7 +22,7 @@ export const EmoCycleDetailSkeleton = () => {
         </div>
 
         {/* Exams section */}
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
+        <div className="rounded-3xl border-2 border-slate-300 bg-white p-6 shadow-lg space-y-4">
           <div className="h-5 w-40 rounded-lg bg-slate-200" />
           <div className="space-y-3">
             {Array.from({ length: 4 }).map((_, i) => (
@@ -38,7 +38,7 @@ export const EmoCycleDetailSkeleton = () => {
         </div>
 
         {/* Conclusion section */}
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
+        <div className="rounded-3xl border-2 border-slate-300 bg-white p-6 shadow-lg space-y-4">
           <div className="h-5 w-32 rounded-lg bg-slate-200" />
           <div className="grid grid-cols-2 gap-3">
             {Array.from({ length: 4 }).map((_, i) => (
@@ -51,7 +51,7 @@ export const EmoCycleDetailSkeleton = () => {
         </div>
 
         {/* Conformity section */}
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm space-y-4">
+        <div className="rounded-3xl border-2 border-slate-300 bg-white p-6 shadow-lg space-y-4">
           <div className="h-5 w-36 rounded-lg bg-slate-200" />
           <div className="flex gap-6">
             {Array.from({ length: 2 }).map((_, i) => (

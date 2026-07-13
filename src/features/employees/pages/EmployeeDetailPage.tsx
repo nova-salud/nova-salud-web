@@ -88,7 +88,7 @@ const EmployeeDetailPage = () => {
   return (
     <>
       <PageContainer
-        title={employee ? `#${employee.id} — ${displayName}` : 'Detalle de empleado'}
+        title={employee ? displayName : 'Detalle de empleado'}
         description="Información del usuario y sus datos de empleado."
         action={
           <div className="flex flex-wrap items-center gap-2">
@@ -130,7 +130,7 @@ const EmployeeDetailPage = () => {
         }
       >
         <div className="space-y-4">
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-6 shadow-lg">
             <h3 className="mb-4 text-sm font-semibold text-slate-900">
               Datos del usuario
             </h3>
@@ -159,7 +159,7 @@ const EmployeeDetailPage = () => {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-6 shadow-lg">
             <h3 className="mb-4 text-sm font-semibold text-slate-900">
               Datos del empleado
             </h3>
@@ -189,7 +189,7 @@ const EmployeeDetailPage = () => {
           </div>
 
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-6 shadow-lg">
             <h3 className="mb-4 text-sm font-semibold text-slate-900">
               Datos personales
             </h3>
@@ -203,7 +203,7 @@ const EmployeeDetailPage = () => {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-6 shadow-lg">
             <h3 className="mb-4 text-sm font-semibold text-slate-900">
               Información laboral
             </h3>
@@ -217,7 +217,7 @@ const EmployeeDetailPage = () => {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-6 shadow-lg">
             <h3 className="mb-4 text-sm font-semibold text-slate-900">
               Información de salud
             </h3>
@@ -230,7 +230,7 @@ const EmployeeDetailPage = () => {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="rounded-3xl border-2 border-slate-300 bg-white p-6 shadow-lg">
             <h3 className="mb-4 text-sm font-semibold text-slate-900">
               Trazabilidad
             </h3>

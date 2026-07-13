@@ -76,7 +76,7 @@ const EmoLegacyRecordsPage = () => {
         )}
 
         {records.map(record => (
-          <div key={record.id} className="rounded-xl border border-slate-200 bg-white p-4">
+          <div key={record.id} className="rounded-xl border-2 border-slate-300 bg-white p-4 shadow-lg">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-sm font-semibold text-slate-800">

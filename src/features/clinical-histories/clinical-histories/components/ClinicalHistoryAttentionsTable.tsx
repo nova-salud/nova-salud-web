@@ -32,6 +32,7 @@ const ClinicalHistoryAttentionsTable = ({ clinicalHistoryId, onViewDetail, onCre
       </div>
 
       <DataTable
+        variant="plain"
         data={data}
         isLoading={isLoading}
         emptyMessage="No hay atenciones registradas."

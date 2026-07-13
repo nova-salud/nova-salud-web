@@ -1,4 +1,4 @@
-import { Select } from '@/shared/components'
+import { FilterContainer, Select } from '@/shared/components'
 import { ACCIDENT_STATUS_OPTIONS } from '../types/accident-status.enum'
 import { AccidentTypeEnum, ACCIDENT_TYPE_OPTIONS } from '../types/accident-type.enum'
 import { AccidentSeverityEnum, ACCIDENT_SEVERITY_OPTIONS } from '../types/accident-severity.enum'
@@ -39,7 +39,7 @@ export const AccidentFilter = ({ filters = {}, onChangeFilters }: AccidentFilter
   }
 
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+    <FilterContainer>
       <div className="grid gap-4 md:grid-cols-4">
         <Select
           name="status"
@@ -90,6 +90,6 @@ export const AccidentFilter = ({ filters = {}, onChangeFilters }: AccidentFilter
           }
         />
       </div>
-    </div>
+    </FilterContainer>
   )
 }

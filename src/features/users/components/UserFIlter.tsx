@@ -1,4 +1,4 @@
-import { Input, Select } from '@/shared/components'
+import { FilterContainer, Input, Select } from '@/shared/components'
 import type { RoleEnum } from '@/core/enums/role.enum'
 import type { FindUsersDto } from '../types/find-users.dto'
 import { USER_ROLE_OPTIONS } from '../types'
@@ -20,7 +20,7 @@ export const UserFilter = ({ onChangeFilters }: UserFilterProps) => {
   })
 
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm">
+    <FilterContainer>
       <div className="grid gap-4 md:grid-cols-2">
         <Input
           label="Usuario"
@@ -52,6 +52,6 @@ export const UserFilter = ({ onChangeFilters }: UserFilterProps) => {
         />
 
       </div>
-    </div>
+    </FilterContainer>
   )
 }

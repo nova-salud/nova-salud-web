@@ -26,7 +26,7 @@ export const EmoProtocolAreasSection = ({
   }
 
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="rounded-3xl border-2 border-slate-300 bg-white p-6 shadow-lg">
       <div className="mb-4 flex items-center justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold text-slate-900">Áreas asignadas</h2>

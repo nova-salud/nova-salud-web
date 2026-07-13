@@ -87,15 +87,6 @@ const EmitClinicalHistoryConclusionSidebar = ({
             </div>
           ) : null}
 
-          <div className="rounded-2xl bg-slate-50 px-4 py-3">
-            <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
-              Ciclo EMO
-            </p>
-            <p className="mt-2 text-sm font-medium text-slate-700">
-              #{cycle.id}
-            </p>
-          </div>
-
           <div className="space-y-2">
             <p className="text-sm font-medium text-slate-700">Conclusión</p>
 
