@@ -40,6 +40,7 @@ export const AccidentDetailPage = lazy(() => import('@/features/accidents/accide
 export const AccidentsPage = lazy(() => import('@/features/accidents/accidents/pages/AccidentsPage').then(m => ({ default: m.AccidentsPage })))
 export const CreateAccidentFromClinicaHistoryPage = lazy(() => import('@/features/accidents/accidents/pages/CreateAccidentFromClinicalHistoryPage'))
 export const CreateAccidentPage = lazy(() => import('@/features/accidents/accidents/pages/CreateAccidentPage').then(m => ({ default: m.CreateAccidentPage })))
+export const CreateMedicalRestPage = lazy(() => import('@/features/clinical-histories/medical-rests/pages/CreateMedicalRestPage').then(m => ({ default: m.CreateMedicalRestPage })))
 export const AlertsPage = lazy(() => import('@/features/communications/alerts/pages/AlertPage'))
 export const DocumentTemplatesPage = lazy(() => import('@/features/document-templates/pages/DocumentTemplatesPage'))
 export const EmployeeDocumentsListPage = lazy(() => import('@/features/employee-documents/pages/EmployeeDocumentsListPage'))

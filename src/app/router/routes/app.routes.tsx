@@ -55,6 +55,7 @@ import {
   AccidentsPage,
   CreateAccidentFromClinicaHistoryPage,
   CreateAccidentPage,
+  CreateMedicalRestPage,
   AlertsPage,
   DocumentTemplatesPage,
   UserDetailPage,
@@ -228,6 +229,15 @@ export const appRoutes: RouteObject = {
             {
               path: '/requirements/:id',
               element: <RequirementDetailPage />,
+            },
+          ],
+        },
+        {
+          element: <RoleGuard roles={[RoleEnum.ADMIN, RoleEnum.SST, RoleEnum.MANAGEMENT]} />,
+          children: [
+            {
+              path: '/medical-rests/create',
+              element: <CreateMedicalRestPage />,
             },
           ],
         },

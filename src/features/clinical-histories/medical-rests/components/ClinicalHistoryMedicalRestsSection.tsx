@@ -3,6 +3,8 @@ import { format, startOfYear, endOfYear } from 'date-fns'
 import { Button } from '@/shared/components/ui/form'
 import { DataTable } from '@/shared/components/ui/table/DataTable'
 import { getFileUrl } from '@/shared/utils'
+import { RoleEnum } from '@/core/enums/role.enum'
+import { useAuth } from '@/shared/hooks'
 import { useMedicalRests } from '../hooks/useMedicalRests'
 import { useMedicalRestsSummary } from '../hooks/useMedicalRestsSummary'
 import { getMedicalRestDays } from '../utils/medical-rest-days.util'
@@ -23,6 +25,12 @@ type Props = {
 
 export const ClinicalHistoryMedicalRestsSection = ({ clinicalHistoryId, accidentId, attentionId, isReadOnly = false }: Props) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const { user } = useAuth()
+
+  const canCreate =
+    user?.role === RoleEnum.ADMIN ||
+    user?.role === RoleEnum.SST ||
+    user?.role === RoleEnum.MANAGEMENT
 
   const { data, isLoading, refetch, pagination } =
     useMedicalRests({ clinicalHistoryId, accidentId, attentionId })
@@ -47,7 +55,7 @@ export const ClinicalHistoryMedicalRestsSection = ({ clinicalHistoryId, accident
           </span>
         </div>
 
-        {!isReadOnly && (
+        {!isReadOnly && canCreate && (
           <Button type="button" className="w-auto" onClick={() => setIsSidebarOpen(true)}>
             Registrar DM
           </Button>
