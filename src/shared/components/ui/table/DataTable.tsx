@@ -54,7 +54,7 @@ export const DataTable = <T,>({
       <div className="overflow-x-auto">
         <table className="min-w-full border-collapse">
           <thead className={isPlain ? 'border-b border-slate-200' : 'bg-[#00587c]'}>
-            <tr className="text-left">
+            <tr className="text-center">
               {columns.map((column) => (
                 <th
                   key={column}
