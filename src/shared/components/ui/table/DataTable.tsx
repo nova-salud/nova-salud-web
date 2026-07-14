@@ -53,13 +53,13 @@ export const DataTable = <T,>({
     >
       <div className="overflow-x-auto">
         <table className="min-w-full border-collapse">
-          <thead className={isPlain ? 'border-b border-slate-200' : 'bg-[#d6001c]'}>
+          <thead className={isPlain ? 'border-b border-slate-200' : 'bg-[#00587c]'}>
             <tr className="text-left">
               {columns.map((column) => (
                 <th
                   key={column}
                   className={cn(
-                    'px-6 py-4 text-[12px] font-semibold uppercase tracking-[0.18em]',
+                    'px-6 py-4 text-[13px] font-semibold uppercase tracking-[0.18em]',
                     isPlain ? 'text-slate-900' : 'text-white',
                   )}
                 >
@@ -70,7 +70,7 @@ export const DataTable = <T,>({
               {renderActions && (
                 <th
                   className={cn(
-                    'w-16 px-6 py-4 text-center text-[12px] font-semibold uppercase tracking-[0.18em]',
+                    'w-16 px-6 py-4 text-center text-[13px] font-semibold uppercase tracking-[0.18em]',
                     isPlain ? 'text-slate-900' : 'text-white',
                   )}
                 >
@@ -100,7 +100,7 @@ export const DataTable = <T,>({
                 <tr
                   key={String((item as { id?: string | number }).id)}
                   onDoubleClick={() => onRowDoubleClick?.(item)}
-                  className="text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                  className="text-[13px] text-slate-700 hover:bg-slate-50 transition-colors"
                 >
                   {renderRow(item)}
 

@@ -5,6 +5,7 @@ import type { DateRangeValue } from '@/shared/components'
 import { useSearchSpecialties } from '@/features/specialties/hooks'
 import type { MedicalRestContingency, MedicalRestType } from '../types'
 import { getMedicalRestDays } from '../utils/medical-rest-days.util'
+import { toastService } from '@/core/services/toast.service'
 
 const MAX_REST_DAYS = 30
 
@@ -66,6 +67,11 @@ export const MedicalRestForm = ({ clinicalHistoryId, accidentId, attentionId, on
     const diagnosis = (data.get('diagnosis') as string).trim()
 
     let hasError = false
+
+    if(!file) {
+      toastService.error('El archivo es obligatorio')
+      return
+    }
 
     if (!dateRange.from || !dateRange.to) {
       setDateRangeError('Selecciona el rango de fechas.')
@@ -198,6 +204,7 @@ export const MedicalRestForm = ({ clinicalHistoryId, accidentId, attentionId, on
           label="Días subsidiados (opcional)"
           type="number"
           min={0}
+          step={1}
           placeholder="Ej: 20"
           value={subsidizedDays}
           onChange={(e) => {
@@ -229,7 +236,7 @@ export const MedicalRestForm = ({ clinicalHistoryId, accidentId, attentionId, on
         label="Documento DM (PDF)"
         value={file}
         onChange={setFile}
-        allowedExtensions={['pdf']}
+        allowedExtensions={['pdf', 'jpg', 'png']}
       />
 
       <div className="flex justify-end gap-3 pt-2">
