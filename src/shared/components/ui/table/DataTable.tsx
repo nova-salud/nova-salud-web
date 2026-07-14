@@ -100,7 +100,7 @@ export const DataTable = <T,>({
                 <tr
                   key={String((item as { id?: string | number }).id)}
                   onDoubleClick={() => onRowDoubleClick?.(item)}
-                  className="text-[13px] text-slate-700 hover:bg-slate-50 transition-colors"
+                  className="text-[13px] text-center text-slate-700 hover:bg-slate-50 transition-colors"
                 >
                   {renderRow(item)}
 
