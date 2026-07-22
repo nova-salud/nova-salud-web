@@ -3,7 +3,7 @@ import { format } from 'date-fns'
 import { Download, Eye } from 'lucide-react'
 import { DataTable, Dropdown, DropdownItem, type Pagination } from '@/shared/components'
 import type { MedicalRestResponseDto, MedicalRestType } from '../types'
-import { getMedicalRestDays } from '../utils/medical-rest-days.util'
+import { getDmDays } from '../utils/medical-rest-days.util'
 
 const TYPE_LABEL: Record<MedicalRestType, string> = {
   CITT: 'CITT',
@@ -38,7 +38,7 @@ export const MedicalRestTable = ({ items, isLoading = false, pagination }: Props
       renderRow={(item) => {
         const start = new Date(item.startDate)
         const end = new Date(item.endDate)
-        const daysDm = getMedicalRestDays(item.startDate, item.endDate)
+        const daysDm = getDmDays(item.startDate, item.endDate, item.subsidizedDays)
 
         return (
           <>

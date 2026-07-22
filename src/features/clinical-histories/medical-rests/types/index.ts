@@ -45,6 +45,7 @@ export type CreateMedicalRestDto = {
 }
 
 export type MedicalRestsSummaryDto = {
-  totalDays: number
+  totalDmDays: number
+  totalSubsidizedDays: number
   count: number
 }

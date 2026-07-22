@@ -1,12 +1,6 @@
 import { createChart, LineSeries, ColorType } from 'lightweight-charts'
 import { useEffect, useRef } from 'react'
-
-const MONTHS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
-
-const formatDate = (time: string) => {
-  const [year, month, day] = time.split('-').map(Number)
-  return `${day} ${MONTHS[month - 1]} ${year}`
-}
+import { formatChartDate } from '../../utils/chart-date.util'
 
 export const AccidentTrendChart = ({
   data,
@@ -44,6 +38,7 @@ export const AccidentTrendChart = ({
         borderVisible: false,
         timeVisible: true,
         secondsVisible: false,
+        tickMarkFormatter: (time: unknown) => formatChartDate(time as string | { year: number; month: number; day: number }),
       },
     })
 
@@ -82,7 +77,7 @@ export const AccidentTrendChart = ({
 
       const date = param.time as string
       tooltip.innerHTML = `
-        <p style="font-size:11px;color:#94a3b8;margin-bottom:4px">${formatDate(date)}</p>
+        <p style="font-size:11px;color:#94a3b8;margin-bottom:4px">${formatChartDate(date)}</p>
         ${acc ? `<p style="font-size:13px;font-weight:600;color:#1e293b">Accidentes: <span style="color:#2563eb">${Math.round(acc.value)}</span></p>` : ''}
         ${inc ? `<p style="font-size:13px;font-weight:600;color:#1e293b">Incidentes: <span style="color:#f59e0b">${Math.round(inc.value)}</span></p>` : ''}
       `

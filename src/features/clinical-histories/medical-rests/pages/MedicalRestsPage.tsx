@@ -56,7 +56,8 @@ const MedicalRestsPage = () => {
         {hasActiveFilters && (
           <div className="rounded-2xl border border-indigo-200 bg-indigo-50 px-4 py-3 text-sm text-indigo-800">
             Total filtrado: <span className="font-semibold">{summary.count}</span> descansos médicos,{' '}
-            <span className="font-semibold">{summary.totalDays}</span> días acumulados.
+            <span className="font-semibold">{summary.totalDmDays}</span> días DM y{' '}
+            <span className="font-semibold">{summary.totalSubsidizedDays}</span> días subsidiados acumulados.
           </div>
         )}
 

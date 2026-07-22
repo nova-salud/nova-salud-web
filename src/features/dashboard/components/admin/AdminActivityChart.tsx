@@ -1,13 +1,6 @@
 import { createChart, LineSeries, ColorType } from 'lightweight-charts'
 import { useEffect, useRef } from 'react'
-
-const MONTHS_SHORT = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
-const MONTHS_LOWER = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
-
-const formatDate = (time: string) => {
-  const [year, month, day] = time.split('-').map(Number)
-  return `${day} ${MONTHS_LOWER[month - 1]} ${year}`
-}
+import { formatChartDate } from '../../utils/chart-date.util'
 
 export const AdminActivityChart = ({
   data,
@@ -44,13 +37,7 @@ export const AdminActivityChart = ({
       timeScale: {
         borderVisible: false,
         timeVisible: false,
-        tickMarkFormatter: (time: unknown) => {
-          if (time !== null && typeof time === 'object' && 'year' in time) {
-            const t = time as { year: number; month: number; day: number }
-            return `${t.day} ${MONTHS_SHORT[t.month - 1]} ${t.year}`
-          }
-          return String(time)
-        },
+        tickMarkFormatter: (time: unknown) => formatChartDate(time as string | { year: number; month: number; day: number }),
       },
     })
 
@@ -89,7 +76,7 @@ export const AdminActivityChart = ({
 
       const date = param.time as string
       tooltip.innerHTML = `
-        <p style="font-size:11px;color:#94a3b8;margin-bottom:4px">${formatDate(date)}</p>
+        <p style="font-size:11px;color:#94a3b8;margin-bottom:4px">${formatChartDate(date)}</p>
         ${cons ? `<p style="font-size:13px;font-weight:600;color:#1e293b">Consultas: <span style="color:#6366f1">${Math.round(cons.value)}</span></p>` : ''}
         ${acc ? `<p style="font-size:13px;font-weight:600;color:#1e293b">Accidentes: <span style="color:#ef4444">${Math.round(acc.value)}</span></p>` : ''}
       `

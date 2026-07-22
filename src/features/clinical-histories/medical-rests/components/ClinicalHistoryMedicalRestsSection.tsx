@@ -7,7 +7,7 @@ import { RoleEnum } from '@/core/enums/role.enum'
 import { useAuth } from '@/shared/hooks'
 import { useMedicalRests } from '../hooks/useMedicalRests'
 import { useMedicalRestsSummary } from '../hooks/useMedicalRestsSummary'
-import { getMedicalRestDays } from '../utils/medical-rest-days.util'
+import { getDmDays } from '../utils/medical-rest-days.util'
 import type { MedicalRestType } from '../types'
 import MedicalRestFormSidebar from './MedicalRestFormSidebar'
 
@@ -51,7 +51,7 @@ export const ClinicalHistoryMedicalRestsSection = ({ clinicalHistoryId, accident
             <span className="rounded-xl bg-slate-100 px-3 py-1 text-xs text-slate-600">{pagination.total}</span>
           )}
           <span className="rounded-xl bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
-            Acumulado {currentYear}: {summary.totalDays} días
+            Acumulado {currentYear}: {summary.totalDmDays} días DM · {summary.totalSubsidizedDays} días subsidiados
           </span>
         </div>
 
@@ -79,7 +79,7 @@ export const ClinicalHistoryMedicalRestsSection = ({ clinicalHistoryId, accident
               {format(new Date(item.endDate), 'dd/MM/yyyy')}
             </td>
             <td className="px-6 py-5 text-sm text-slate-600">
-              {getMedicalRestDays(item.startDate, item.endDate)}
+              {getDmDays(item.startDate, item.endDate, item.subsidizedDays)}
             </td>
             <td className="px-6 py-5 text-sm text-slate-600">
               {item.subsidizedDays ?? '—'}

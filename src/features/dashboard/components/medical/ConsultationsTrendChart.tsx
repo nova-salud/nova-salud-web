@@ -1,12 +1,6 @@
 import { createChart, LineSeries, ColorType } from 'lightweight-charts'
 import { useEffect, useRef } from 'react'
-
-const MONTHS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
-
-const formatDate = (time: string) => {
-  const [year, month, day] = time.split('-').map(Number)
-  return `${day} ${MONTHS[month - 1]} ${year}`
-}
+import { formatChartDate } from '../../utils/chart-date.util'
 
 type Props = {
   data: { date: string; count: number }[]
@@ -36,7 +30,10 @@ export const ConsultationsTrendChart = ({ data, onDateClick }: Props) => {
         horzLines: { color: '#f1f5f9' },
       },
       rightPriceScale: { borderVisible: false },
-      timeScale: { borderVisible: false },
+      timeScale: {
+        borderVisible: false,
+        tickMarkFormatter: (time: unknown) => formatChartDate(time as string | { year: number; month: number; day: number }),
+      },
     })
 
     const series = chart.addSeries(LineSeries, {
@@ -58,7 +55,7 @@ export const ConsultationsTrendChart = ({ data, onDateClick }: Props) => {
 
       const date = param.time as string
       tooltip.innerHTML = `
-        <p style="font-size:11px;color:#94a3b8;margin-bottom:2px">${formatDate(date)}</p>
+        <p style="font-size:11px;color:#94a3b8;margin-bottom:2px">${formatChartDate(date)}</p>
         <p style="font-size:13px;font-weight:600;color:#1e293b">Atenciones: <span style="color:#6366f1">${Math.round(item.value)}</span></p>
       `
       const tw = tooltip.offsetWidth

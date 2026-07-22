@@ -9,5 +9,5 @@ export const useMedicalRestsSummary = (params: FindMedicalRestsParams, enabled =
     enabled,
   })
 
-  return { ...rest, summary: data ?? { totalDays: 0, count: 0 } }
+  return { ...rest, summary: data ?? { totalDmDays: 0, totalSubsidizedDays: 0, count: 0 } }
 }
