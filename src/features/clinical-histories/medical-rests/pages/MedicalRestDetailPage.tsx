@@ -5,6 +5,8 @@ import { EntityState, PageContainer, Button } from '@/shared/components'
 import { useMedicalRest } from '../hooks/useMedicalRest'
 import type { MedicalRestContingency, MedicalRestType } from '../types'
 import { getMedicalRestDays } from '../utils/medical-rest-days.util'
+import { useAuth } from '@/shared/hooks'
+import { RoleEnum } from '@/core/enums/role.enum'
 
 const TYPE_LABEL: Record<MedicalRestType, string> = {
   CITT: 'CITT',
@@ -32,6 +34,9 @@ const MedicalRestDetailPage = () => {
   const numericId = Number(id)
 
   const { data: rest, isLoading, error, refetch } = useMedicalRest(numericId)
+  const { user } = useAuth()
+
+  const isHr = user?.role === RoleEnum.HR
 
   if (isLoading) {
     return (
@@ -153,7 +158,7 @@ const MedicalRestDetailPage = () => {
               Vínculos
             </h3>
             <div className="flex flex-wrap gap-3">
-              {rest.employeeId && (
+              {rest.employeeId && !isHr && (
                 <Button
                   type="button"
                   variant="outline"

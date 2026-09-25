@@ -5,6 +5,8 @@ import { cn } from '@/shared/utils'
 import { Badge, DataTable, Dropdown, DropdownItem, type Pagination } from '@/shared/components'
 import { TRIAGE_LEVEL_CLASSNAME, TRIAGE_LEVEL_LABEL } from '../types/triage.enum'
 import type { AttentionResponseDto } from '../types'
+import { useAuth } from '@/shared/hooks'
+import { RoleEnum } from '@/core/enums/role.enum'
 
 type Props = {
   items: AttentionResponseDto[]
@@ -14,6 +16,7 @@ type Props = {
 
 export const AttentionTable = ({ items, isLoading = false, pagination }: Props) => {
   const navigate = useNavigate()
+  const { user } = useAuth()
 
   const goToDetail = (item: AttentionResponseDto) => {
     if (item.employeeId) navigate(`/clinical-histories/${item.employeeId}/attentions/${item.id}`)
@@ -69,10 +72,10 @@ export const AttentionTable = ({ items, isLoading = false, pagination }: Props) 
             <Eye size={14} />
             Ver detalle atención
           </DropdownItem>
-          <DropdownItem onClick={() => goToClinicalHistory(item)}>
+          {!(user?.role === RoleEnum.HR) && <DropdownItem onClick={() => goToClinicalHistory(item)}>
             <User size={14} />
             Ver historia clínica
-          </DropdownItem>
+          </DropdownItem>}
         </Dropdown>
       )}
     />

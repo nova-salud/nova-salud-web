@@ -428,6 +428,8 @@ export const navigationConfig: NavigationSection[] = [
           RoleEnum.ADMIN,
           RoleEnum.OCCUPATIONAL_DOCTOR,
           RoleEnum.NURSE,
+          RoleEnum.HR,
+          RoleEnum.MANAGEMENT
         ],
       },
       {

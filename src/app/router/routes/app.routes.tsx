@@ -116,6 +116,10 @@ export const appRoutes: RouteObject = {
               element: <AccidentsPage />,
             },
             {
+              path: '/medical-rests/create',
+              element: <CreateMedicalRestPage />,
+            },
+            {
               path: '/accidents/:accidentId',
               element: <AccidentDetailPage />,
             },
@@ -220,10 +224,6 @@ export const appRoutes: RouteObject = {
               element: <EditMedicationPage />,
             },
             {
-              path: '/movements',
-              element: <MovementsPage />,
-            },
-            {
               path: '/requirements/create',
               element: <CreateRequirementPage />,
             },
@@ -268,14 +268,9 @@ export const appRoutes: RouteObject = {
               path: '/requirements/:id',
               element: <RequirementDetailPage />,
             },
-          ],
-        },
-        {
-          element: <RoleGuard roles={[RoleEnum.ADMIN, RoleEnum.SST, RoleEnum.MANAGEMENT]} />,
-          children: [
             {
-              path: '/medical-rests/create',
-              element: <CreateMedicalRestPage />,
+              path: '/movements',
+              element: <MovementsPage />,
             },
           ],
         },
@@ -309,6 +304,8 @@ export const appRoutes: RouteObject = {
                 RoleEnum.OCCUPATIONAL_DOCTOR,
                 RoleEnum.NURSE,
                 RoleEnum.SUPERVISOR,
+                RoleEnum.HR,
+                RoleEnum.MANAGEMENT
               ]}
             />
           ),
