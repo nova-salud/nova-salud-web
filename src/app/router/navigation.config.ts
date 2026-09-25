@@ -448,6 +448,8 @@ export const navigationConfig: NavigationSection[] = [
           RoleEnum.ADMIN,
           RoleEnum.OCCUPATIONAL_DOCTOR,
           RoleEnum.NURSE,
+          RoleEnum.HR,
+          RoleEnum.MANAGEMENT
         ],
       },
       {
@@ -512,6 +514,8 @@ export const navigationConfig: NavigationSection[] = [
         roles: [
           RoleEnum.SST,
           RoleEnum.ADMIN,
+          RoleEnum.HR,
+          RoleEnum.MANAGEMENT
         ],
       },
       {

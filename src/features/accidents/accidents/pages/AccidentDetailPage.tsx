@@ -156,7 +156,7 @@ const AccidentDetailPage = () => {
           <ClinicalHistoryMedicalRestsSection
             clinicalHistoryId={accident.clinicalHistoryId}
             accidentId={accident.id}
-            isReadOnly={accident.status === AccidentStatusEnum.CLOSED}
+            isReadOnly={accident.status === AccidentStatusEnum.CLOSED && (!isHR || !isAdmin)}
           />
         </div>
       </div>

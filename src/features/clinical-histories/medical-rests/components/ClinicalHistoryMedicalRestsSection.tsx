@@ -29,7 +29,7 @@ export const ClinicalHistoryMedicalRestsSection = ({ clinicalHistoryId, accident
 
   const canCreate =
     user?.role === RoleEnum.ADMIN ||
-    user?.role === RoleEnum.SST ||
+    user?.role === RoleEnum.HR ||
     user?.role === RoleEnum.MANAGEMENT
 
   const { data, isLoading, refetch, pagination } =

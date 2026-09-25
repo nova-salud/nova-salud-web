@@ -75,7 +75,52 @@ export const appRoutes: RouteObject = {
           path: '/',
           element: <DashboardPage />,
         },
-
+        {
+          element: (
+            <RoleGuard
+              roles={[
+                RoleEnum.HR,
+                RoleEnum.MANAGEMENT,
+                RoleEnum.ADMIN,
+                RoleEnum.OCCUPATIONAL_DOCTOR,
+                RoleEnum.NURSE,
+                RoleEnum.EMPLOYEE,
+                RoleEnum.EMPLOYEE_EXT,
+              ]}
+            />
+          ),
+          children: [
+            {
+              path: '/attentions',
+              element: <AttentionsPage />,
+            },
+            {
+              path: '/clinical-histories/:employeeId/attentions/:attentionId',
+              element: <AttentionDetailPage />,
+            },
+          ]
+        },
+        {
+          element: (
+            <RoleGuard
+              roles={[
+                RoleEnum.HR,
+                RoleEnum.MANAGEMENT,
+                RoleEnum.SST, RoleEnum.ADMIN
+              ]}
+            />
+          ),
+          children: [
+            {
+              path: '/accidents',
+              element: <AccidentsPage />,
+            },
+            {
+              path: '/accidents/:accidentId',
+              element: <AccidentDetailPage />,
+            },
+          ]
+        },
         {
           element: (
             <RoleGuard
@@ -121,10 +166,7 @@ export const appRoutes: RouteObject = {
               path: '/clinical-histories/:employeeId/attentions/new',
               element: <CreateAttentionPage />,
             },
-            {
-              path: '/clinical-histories/:employeeId/attentions/:attentionId',
-              element: <AttentionDetailPage />,
-            },
+
             {
               path: '/clinical-histories/:employeeId/accidents/:accidentId',
               element: <AccidentDetailPage />,
@@ -148,10 +190,6 @@ export const appRoutes: RouteObject = {
             {
               path: '/emo-cycles',
               element: <EmoCyclesPage />,
-            },
-            {
-              path: '/attentions',
-              element: <AttentionsPage />,
             },
             {
               path: '/specialties',
@@ -348,16 +386,8 @@ export const appRoutes: RouteObject = {
           element: <RoleGuard roles={[RoleEnum.SST, RoleEnum.ADMIN]} />,
           children: [
             {
-              path: '/accidents',
-              element: <AccidentsPage />,
-            },
-            {
               path: '/accidents/create',
               element: <CreateAccidentPage />,
-            },
-            {
-              path: '/accidents/:accidentId',
-              element: <AccidentDetailPage />,
             },
           ],
         },

@@ -5,14 +5,19 @@ import { PageContainer, Button, DashboardCard } from '@/shared/components'
 import { AccidentStatusEnum } from '../types'
 import { AccidentFilter, AccidentTable } from '../components'
 import { useAccidents } from '../hooks'
+import { useAuth } from '@/shared/hooks'
+import { RoleEnum } from '@/core/enums/role.enum'
 
 export const AccidentsPage = () => {
   const navigate = useNavigate()
 
+  const { user } = useAuth()
   const { data, isLoading, error, pagination, filters, onChangeFilters } = useAccidents()
 
   const open = data.filter(a => a.status === AccidentStatusEnum.OPEN).length
   const closed = data.filter(a => a.status === AccidentStatusEnum.CLOSED).length
+
+  const canCreate = user?.role === RoleEnum.ADMIN || user?.role === RoleEnum.SST
 
   const cards = [
     {
@@ -43,7 +48,7 @@ export const AccidentsPage = () => {
       title="Accidentes / Incidentes"
       description="Gestión de accidentes e incidentes registrados."
       action={
-        <Button
+        canCreate && <Button
           className="w-auto"
           onClick={() => navigate('/accidents/create')}
         >
